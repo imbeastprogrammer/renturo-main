@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EncryptionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +30,9 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return 'Central Domain';
 });
+
+Route::get('/encrypt', [CryptographyController::class, 'encrypt']);
+Route::get('/decrypt', [CryptographyController::class, 'decrypt']);
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
