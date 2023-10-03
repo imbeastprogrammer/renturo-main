@@ -28,6 +28,7 @@ use Inertia\Inertia;
 //     ]);
 // });
 
+
 Route::get('/', function () {
     return 'Central Domain';
 });
