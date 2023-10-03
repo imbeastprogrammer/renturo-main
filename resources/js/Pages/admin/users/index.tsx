@@ -1,5 +1,7 @@
+import AdminLayout from "@/Layouts/AdminLayout";
+
 function UsersPage() {
-    return <div>UsersPage</div>;
+    return <AdminLayout>UsersPage</AdminLayout>;
 }
 
 export default UsersPage;

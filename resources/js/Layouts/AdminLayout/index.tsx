@@ -1,17 +1,17 @@
 import { ReactNode } from "react";
-import DashboardSidebar from "./DashboardSidebar";
+import AdminSidebar from "./AdminSidebar";
 
-type DashboardLayoutProps = {
+type AdminLayoutProps = {
     children: ReactNode;
 };
 
-function DashboardLayout({ children }: DashboardLayoutProps) {
+function AdminLayout({ children }: AdminLayoutProps) {
     return (
         <div className="grid h-screen grid-cols-[auto_1fr]">
-            <DashboardSidebar />
+            <AdminSidebar />
             <main className="p-4">{children}</main>
         </div>
     );
 }
 
-export default DashboardLayout;
+export default AdminLayout;

@@ -1,5 +1,7 @@
+import AdminLayout from "@/Layouts/AdminLayout";
+
 function BookingsPage() {
-    return <div>BookingsPage</div>;
+    return <AdminLayout>BookingsPage</AdminLayout>;
 }
 
 export default BookingsPage;
