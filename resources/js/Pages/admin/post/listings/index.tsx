@@ -1,5 +1,7 @@
+import AdminLayout from "@/Layouts/AdminLayout";
+
 function ListingsPage() {
-    return <div>Listings</div>;
+    return <AdminLayout>Listings</AdminLayout>;
 }
 
 export default ListingsPage;

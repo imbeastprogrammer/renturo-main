@@ -16,6 +16,83 @@ module.exports = {
             },
         },
         extend: {
+            colors: {
+                "celtic-blue": "#185ADC",
+                "metalic-blue": "#185ADC",
+                "arylide-yellow": "#EDCA5E",
+                "pure-white": "#ffffff",
+                "off-white": "#F9F9F9",
+                "light-carbon": "#F0F0F0",
+                "cloud-gray": "#D2D2D2",
+                "dark-gray": "#999D9E",
+                "heavy-carbon": "#545557",
+            },
+            fontSize: {
+                "headline-1": [
+                    "49px",
+                    {
+                        lineHeight: "58px",
+                        fontWeight: 500,
+                        letterSpacing: "-2.8%",
+                    },
+                ],
+                "headline-2": [
+                    "42px",
+                    {
+                        lineHeight: "52px",
+                        fontWeight: 500,
+                        letterSpacing: "-4%",
+                    },
+                ],
+                "headline-3": [
+                    "31px",
+                    {
+                        lineHeight: "40px",
+                        fontWeight: 500,
+                        letterSpacing: "-3%",
+                    },
+                ],
+                "headline-4": [
+                    "18px",
+                    {
+                        lineHeight: "26px",
+                        fontWeight: 500,
+                        letterSpacing: "-3%",
+                    },
+                ],
+                subtitle: [
+                    "19px",
+                    {
+                        lineHeight: "28px",
+                        fontWeight: 500,
+                        letterSpacing: "-4%",
+                    },
+                ],
+                overline: [
+                    "3px",
+                    {
+                        lineHeight: "19px",
+                        fontWeight: 500,
+                        letterSpacing: "3%",
+                    },
+                ],
+                "body-1": [
+                    "11px",
+                    {
+                        lineHeight: "19px",
+                        fontWeight: 400,
+                        letterSpacing: "-3%",
+                    },
+                ],
+                "body-2": [
+                    "9px",
+                    {
+                        lineHeight: "16px",
+                        fontWeight: 400,
+                        letterSpacing: "0%",
+                    },
+                ],
+            },
             keyframes: {
                 "accordion-down": {
                     from: { height: 0 },

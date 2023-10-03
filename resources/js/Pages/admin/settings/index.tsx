@@ -1,5 +1,7 @@
+import AdminLayout from "@/Layouts/AdminLayout";
+
 function SettingsPage() {
-    return <div>SettingsPage</div>;
+    return <AdminLayout>SettingsPage</AdminLayout>;
 }
 
 export default SettingsPage;
