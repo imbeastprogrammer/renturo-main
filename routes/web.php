@@ -24,6 +24,7 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
+
 Route::get('/', function () {
     return 'Central Domain';
 });
