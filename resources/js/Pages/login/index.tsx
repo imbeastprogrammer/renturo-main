@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { Link, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -6,9 +7,9 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { EyeIcon, MailIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +31,7 @@ function LoginPage() {
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+        router.visit("/admin?active=Dashboard", { replace: true });
     };
 
     return (
@@ -55,38 +56,59 @@ function LoginPage() {
                         </div>
                         <img src={loginHero} className="w-[250px]" />
                     </div>
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className="grid gap-4">
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <div className="flex gap-2 relative items-center">
+                                            <Input
+                                                placeholder="Email"
+                                                className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
+                                                {...field}
+                                            />
+                                            <MailIcon className="absolute right-6 text-gray-400" />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <div className="flex gap-2 relative items-center">
+                                            <Input
+                                                type="password"
+                                                placeholder="Password"
+                                                className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
+                                                {...field}
+                                            />
+                                            <EyeIcon className="absolute right-6 text-gray-400" />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Link
+                            href="/forgot-password"
+                            className="text-orange-500 inline-block ml-auto"
+                        >
+                            Forgot Password?
+                        </Link>
+                    </div>
                     <div className="grid gap-4 place-items-center">
                         <Button
                             type="submit"
-                            className="bg-metalic-blue uppercase px-20 py-6"
+                            className="bg-metalic-blue uppercase hover:bg-metalic-blue/90 px-20 py-6"
                         >
-                            Submit
+                            log in
                         </Button>
                         <span className="inline-block text-xs mx-auto absolute bottom-4">
                             version 1.0
