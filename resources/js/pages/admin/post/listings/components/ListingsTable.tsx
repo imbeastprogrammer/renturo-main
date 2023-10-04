@@ -7,7 +7,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-function AllListingsTable() {
+function ListingsTable() {
     return (
         <Table>
             <TableHeader>
@@ -50,4 +50,4 @@ function AllListingsTable() {
     );
 }
 
-export default AllListingsTable;
+export default ListingsTable;
