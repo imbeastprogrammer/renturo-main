@@ -82,14 +82,14 @@ function SecondaryLink({
 
 function AdminSidebar() {
     const searchParams = new URLSearchParams(window.location.search);
-    const activeLink = searchParams.get("active");
+    const activeLink = searchParams.get("active") || "Dashboard";
 
     const activeLinkChildrenLinks = dashboardLinks.find(
         (link) => link.label === activeLink
     );
 
     return (
-        <aside className="h-full p-4">
+        <aside className="h-full">
             <div className="flex h-full rounded-lg border shadow-lg">
                 <div className="bg-metalic-blue grid h-full w-[130px] grid-rows-[1fr_auto] rounded-lg px-4 py-8 pr-0 text-white">
                     <div>
@@ -124,7 +124,7 @@ function AdminSidebar() {
                                     isActive={route().current(link.to)}
                                     key={link.to}
                                     href={route(link.to, {
-                                        active: activeLink as string,
+                                        active: activeLink,
                                     })}
                                 >
                                     {link.label}
