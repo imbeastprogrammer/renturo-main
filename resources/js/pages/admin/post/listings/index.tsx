@@ -27,7 +27,7 @@ function ListingsPage() {
                     </span>
                 </div>
                 <ListingFilter
-                    value={filter || ""}
+                    value={filter || "all"}
                     data={tabs}
                     onChange={(value) => {
                         router.visit(`/admin/post?active=Post&filter=${value}`);
