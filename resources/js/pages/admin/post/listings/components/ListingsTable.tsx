@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Table,
     TableBody,
@@ -6,8 +7,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { ListingStatusSelector } from "./ListingStatusSelector";
 
 function ListingsTable() {
+    const [status, setStatus] = useState<"posted" | "to review" | "declined">(
+        "posted"
+    );
+
     return (
         <Table>
             <TableHeader>
@@ -27,23 +33,12 @@ function ListingsTable() {
                     <TableCell>Dela Cruz Basketball Court</TableCell>
                     <TableCell>Joshua Dela Cruz</TableCell>
                     <TableCell>PHP 15k - 30k</TableCell>
-                    <TableCell>Posted</TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Dela Cruz Basketball Court</TableCell>
-                    <TableCell>Joshua Dela Cruz</TableCell>
-                    <TableCell>PHP 15k - 30k</TableCell>
-                    <TableCell>Posted</TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Dela Cruz Basketball Court</TableCell>
-                    <TableCell>Joshua Dela Cruz</TableCell>
-                    <TableCell>PHP 15k - 30k</TableCell>
-                    <TableCell>Posted</TableCell>
+                    <TableCell>
+                        <ListingStatusSelector
+                            value={status}
+                            onChange={(value) => setStatus(value)}
+                        />
+                    </TableCell>
                 </TableRow>
             </TableBody>
         </Table>
