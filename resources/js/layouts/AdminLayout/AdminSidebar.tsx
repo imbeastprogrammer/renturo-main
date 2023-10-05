@@ -1,4 +1,3 @@
-import route from "ziggy-js";
 import { Link, InertiaLinkProps } from "@inertiajs/react";
 
 import {
@@ -13,21 +12,21 @@ import { cn } from "@/lib/utils";
 import dashboardLogo from "@/assets/dashboard-logo.png";
 
 const dashboardLinks = [
-    { label: "Dashboard", to: "admin", icon: HomeIcon, links: [] },
+    { label: "Dashboard", to: "/admin", icon: HomeIcon, links: [] },
     {
         label: "Post",
-        to: "admin.post",
+        to: "/admin/post",
         icon: PlusIcon,
         links: [
-            { label: "Listings", to: "admin.post" },
-            { label: "Bookings", to: "admin.post.bookings" },
-            { label: "Categories", to: "admin.post.categories" },
+            { label: "Listings", to: "/admin/post" },
+            { label: "Bookings", to: "/admin/post/bookings" },
+            { label: "Categories", to: "/admin/post/categories" },
         ],
     },
-    { label: "Users", to: "admin.users", icon: UsersIcon, links: [] },
+    { label: "Users", to: "/admin/users", icon: UsersIcon, links: [] },
     {
         label: "Settings",
-        to: "admin.settings",
+        to: "/admin/settings",
         icon: SettingsIcon,
         links: [],
     },
@@ -81,7 +80,8 @@ function SecondaryLink({
 }
 
 function AdminSidebar() {
-    const searchParams = new URLSearchParams(window.location.search);
+    const { search, pathname } = window.location;
+    const searchParams = new URLSearchParams(search);
     const activeLink = searchParams.get("active") || "Dashboard";
 
     const activeLinkChildrenLinks = dashboardLinks.find(
@@ -103,9 +103,7 @@ function AdminSidebar() {
                                     <li key={i}>
                                         <SidebarLink
                                             icon={link.icon}
-                                            href={route(link.to, {
-                                                active: link.label,
-                                            })}
+                                            href={`${link.to}?active=${link.label}`}
                                             label={link.label}
                                             isActive={activeLink === link.label}
                                         />
@@ -121,11 +119,9 @@ function AdminSidebar() {
                         <nav className="flex w-[200px] flex-col gap-4 p-4">
                             {activeLinkChildrenLinks?.links.map((link) => (
                                 <SecondaryLink
-                                    isActive={route().current(link.to)}
+                                    isActive={link.to === pathname}
                                     key={link.to}
-                                    href={route(link.to, {
-                                        active: activeLink,
-                                    })}
+                                    href={`${link.to}?active=${activeLink}`}
                                 >
                                     {link.label}
                                 </SecondaryLink>
