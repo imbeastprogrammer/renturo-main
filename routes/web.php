@@ -48,6 +48,9 @@ Route::get('/register', function () {
 Route::get('/forgot-password', function () {
     return Inertia::render('forgot-password/index');
 });
+Route::get('/forgot-password/enter-otp', function () {
+    return Inertia::render('forgot-password/EnterOtp');
+});
 Route::get('/admin', function () {
     return Inertia::render('admin/index');
 });
