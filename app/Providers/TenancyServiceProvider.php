@@ -134,6 +134,18 @@ class TenancyServiceProvider extends ServiceProvider
                 ->prefix('admin')
                 ->group(base_path('routes/tenants/admin.php'));
         }
+
+        if (file_exists(base_path('routes/tenants/owner.php'))) {
+            Route::namespace(static::$controllerNamespace)
+                ->prefix('owner')
+                ->group(base_path('routes/tenants/owner.php'));
+        }
+
+        if (file_exists(base_path('routes/tenants/user.php'))) {
+            Route::namespace(static::$controllerNamespace)
+                ->prefix('user')
+                ->group(base_path('routes/tenants/user.php'));
+        }
     }
 
     protected function makeTenancyMiddlewareHighestPriority()
