@@ -61,7 +61,10 @@ Route::get('/admin/settings', function () {
     return Inertia::render('admin/settings/index');
 });
 Route::get('/admin/users', function () {
-    return Inertia::render('admin/users/index');
+    return Inertia::render('admin/users/list/index');
+});
+Route::get('/admin/users/create', function () {
+    return Inertia::render('admin/users/create/index');
 });
     
 
