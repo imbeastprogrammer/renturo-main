@@ -39,6 +39,9 @@ Route::get('/decrypt', [CryptographyController::class, 'decrypt']);
 Route::get('/login', function () {
     return Inertia::render('login/index');
 });
+Route::get('/login/enter-pin', function () {
+    return Inertia::render('login/EnterPin');
+});
 Route::get('/register', function () {
     return Inertia::render('register/index');
 });
