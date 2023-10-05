@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use App\Models\Central\Tenant;
-
+use App\Models\User;
 class TenantSeeder extends Seeder
 {
     /**
@@ -18,11 +18,18 @@ class TenantSeeder extends Seeder
     {
         $tenant = Tenant::create([
             'id' => Str::lower(Str::random(6)),
-            'name' => 'sample'
+            'name' => 'main',
+            'status' => 'active'
         ]);
 
         $tenant->domains()->create([
-            'domain' => 'sample.' . config('tenancy.central_domains')[2]
+            'domain' => 'main.' . config('tenancy.central_domains')[2]
         ]);
+
+        $tenant->run(function(){
+            User::factory()->create([
+                'email' => 'admin@main.renturo.test'
+            ]);
+        });
     }
 }
