@@ -6,38 +6,35 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-
-type Status = "posted" | "to review" | "declined";
 
 type ListingStatusSelectorProps = {
-    value: Status;
-    onChange: (value: Status) => void;
-};
-
-const statusColor: Record<Status, string> = {
-    posted: "#B1EEB7",
-    "to review": "#FBDF88",
-    declined: "#FFA1A1",
+    value: string;
+    onChange: (value: string) => void;
+    color: string;
+    data: { label: string; value: string }[];
 };
 
 export function ListingStatusSelector({
     value,
     onChange,
+    color,
+    data,
 }: ListingStatusSelectorProps) {
     return (
         <Select value={value} onValueChange={onChange}>
             <SelectTrigger
-                style={{ background: statusColor[value] }}
+                style={{ background: color }}
                 className="w-[180px] px-4 h-6 ring-0 rounded-xl focus:ring-0"
             >
                 <SelectValue placeholder="Select Status" />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectItem value="posted">Posted</SelectItem>
-                    <SelectItem value="to review">To Review</SelectItem>
-                    <SelectItem value="declined">Declined</SelectItem>
+                    {data.map((d) => (
+                        <SelectItem key={d.value} value={d.value}>
+                            {d.label}
+                        </SelectItem>
+                    ))}
                 </SelectGroup>
             </SelectContent>
         </Select>
