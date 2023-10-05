@@ -6,10 +6,14 @@ use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Middleware\RedirectIfTenantActivated;
+
+use App\Http\Controllers\Tenants\Admin\UserManagementController;
+
 use Inertia\Inertia;
 
 Route::middleware([
     'web',
+    'auth',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
     RedirectIfTenantActivated::class
@@ -30,10 +34,6 @@ Route::middleware([
     Route::get('/settings', function () {
         return Inertia::render('admin/settings/index');
     });
-    Route::get('/users', function () {
-        return Inertia::render('admin/users/list/index');
-    });
-    Route::get('/users/create', function () {
-        return Inertia::render('admin/users/create/index');
-    });
+
+    Route::resource('/users', UserManagementController::class);
 });
