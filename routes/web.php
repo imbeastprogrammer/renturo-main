@@ -38,32 +38,32 @@ Route::get('/decrypt', [CryptographyController::class, 'decrypt']);
 
 Route::get('/login', function () {
     return Inertia::render('login/index');
-})->name('login');
+});
 Route::get('/register', function () {
     return Inertia::render('register/index');
-})->name('register');
+});
 Route::get('/forgot-password', function () {
     return Inertia::render('forgot-password/index');
-})->name('forgot-password');
+});
 Route::get('/admin', function () {
     return Inertia::render('admin/index');
-})->name('admin');
+});
 Route::get('/admin/post', function () {
     return Inertia::render('admin/post/listings/index');
-})->name('admin.post');
+});
 Route::get('/admin/post/bookings', function () {
     return Inertia::render('admin/post/bookings/index');
-})->name('admin.post.bookings');
+});
 Route::get('/admin/post/categories', function () {
     return Inertia::render('admin/post/categories/index');
-})->name('admin.post.categories');
+});
 Route::get('/admin/settings', function () {
     return Inertia::render('admin/settings/index');
-})->name('admin.settings');
+});
 Route::get('/admin/users', function () {
     return Inertia::render('admin/users/index');
-})->name('admin.users');
-
+});
+    
 
 
 
