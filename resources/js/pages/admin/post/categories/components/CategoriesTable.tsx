@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HomeIcon, TrashIcon } from "lucide-react";
 import {
     Table,
     TableBody,
@@ -7,56 +8,63 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { ListingStatusSelector } from "./ListingStatusSelector";
+import { ListingStatusSelector } from "../../listings/components/ListingStatusSelector";
 
 const statusColor: Record<string, string> = {
-    posted: "#B1EEB7",
+    approved: "#B1EEB7",
     "to review": "#FBDF88",
     declined: "#FFA1A1",
 };
 
 const statuses = [
-    { label: "Posted", value: "posted" },
+    { label: "Approved", value: "approved" },
     { label: "To Review", value: "to review" },
     { label: "Declined", value: "declined" },
 ];
 
-function ListingsTable() {
+function CategoriesTable() {
     const [status, setStatus] = useState(
         statuses[Math.floor(Math.random() * 3)].value
     );
 
-    const handleStatusUpdate = (value: string) => {
-        // update status here
-        setStatus(value);
+    const handleUpdateStatus = (status: string) => {
+        //update status here
+        setStatus(status);
     };
 
     return (
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[100px]">#</TableHead>
+                    <TableHead className="w-[50px]">#</TableHead>
                     <TableHead>Id</TableHead>
-                    <TableHead>Listing Name</TableHead>
-                    <TableHead>Posted By</TableHead>
-                    <TableHead>Price Range</TableHead>
+                    <TableHead>Category Name</TableHead>
+                    <TableHead>Icon</TableHead>
+                    <TableHead>Parent</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 <TableRow>
                     <TableCell className="font-medium">1</TableCell>
                     <TableCell>LI-000-001</TableCell>
-                    <TableCell>Dela Cruz Basketball Court</TableCell>
-                    <TableCell>Joshua Dela Cruz</TableCell>
-                    <TableCell>PHP 15k - 30k</TableCell>
+                    <TableCell>Business</TableCell>
+                    <TableCell>
+                        <HomeIcon />
+                    </TableCell>
+                    <TableCell>None</TableCell>
+                    <TableCell>July 26, 2023</TableCell>
                     <TableCell>
                         <ListingStatusSelector
                             value={status}
                             data={statuses}
+                            onChange={handleUpdateStatus}
                             color={statusColor[status]}
-                            onChange={handleStatusUpdate}
                         />
+                    </TableCell>
+                    <TableCell>
+                        <TrashIcon className="text-red-500" />
                     </TableCell>
                 </TableRow>
             </TableBody>
@@ -64,4 +72,4 @@ function ListingsTable() {
     );
 }
 
-export default ListingsTable;
+export default CategoriesTable;
