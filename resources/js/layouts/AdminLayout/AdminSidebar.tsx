@@ -23,7 +23,15 @@ const dashboardLinks = [
             { label: "Categories", to: "/admin/post/categories" },
         ],
     },
-    { label: "Users", to: "/admin/users", icon: UsersIcon, links: [] },
+    {
+        label: "Users",
+        to: "/admin/users",
+        icon: UsersIcon,
+        links: [
+            { label: "List of Users", to: "/admin/users" },
+            { label: "Add User", to: "/admin/users/create" },
+        ],
+    },
     {
         label: "Settings",
         to: "/admin/settings",

@@ -17,7 +17,7 @@ function ListingsPage() {
 
     return (
         <AdminLayout>
-            <div className="bg-pure-white border shadow-lg grid grid-rows-[auto_auto_1fr] gap-y-8 rounded-lg h-full p-4">
+            <div className="bg-pure-white border shadow-lg grid grid-rows-[auto_auto_1fr] gap-y-8 rounded-lg h-full p-8">
                 <div className="flex gap-4 items-end">
                     <h1 className="text-headline-3 font-semibold leading-none">
                         Listings
