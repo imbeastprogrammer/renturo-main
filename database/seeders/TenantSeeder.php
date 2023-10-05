@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use App\Models\Central\Tenant;
-
+use App\Models\User;
 class TenantSeeder extends Seeder
 {
     /**
@@ -25,5 +25,11 @@ class TenantSeeder extends Seeder
         $tenant->domains()->create([
             'domain' => 'main.' . config('tenancy.central_domains')[2]
         ]);
+
+        $tenant->run(function(){
+            User::factory()->create([
+                'email' => 'admin@main.renturo.test'
+            ]);
+        });
     }
 }
