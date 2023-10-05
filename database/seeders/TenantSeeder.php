@@ -18,11 +18,12 @@ class TenantSeeder extends Seeder
     {
         $tenant = Tenant::create([
             'id' => Str::lower(Str::random(6)),
-            'name' => 'sample'
+            'name' => 'main',
+            'status' => 'active'
         ]);
 
         $tenant->domains()->create([
-            'domain' => 'sample.' . config('tenancy.central_domains')[2]
+            'domain' => 'main.' . config('tenancy.central_domains')[2]
         ]);
     }
 }
