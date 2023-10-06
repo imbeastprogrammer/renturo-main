@@ -3,6 +3,7 @@ import { router } from "@inertiajs/react";
 import AdminLayout from "@/layouts/AdminLayout";
 import ListingsTable from "./components/ListingsTable";
 import ListingFilter from "./components/ListingFilter";
+import dummyListings from "@/data/dummyListings";
 
 const tabs = [
     { label: "All Listings", value: "all" },
@@ -33,7 +34,7 @@ function ListingsPage() {
                         router.visit(`/admin/post?active=Post&filter=${value}`);
                     }}
                 />
-                <ListingsTable />
+                <ListingsTable listings={dummyListings} />
             </div>
         </AdminLayout>
     );
