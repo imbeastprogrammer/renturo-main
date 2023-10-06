@@ -44,7 +44,7 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
             </TableHeader>
             <TableBody>
                 {listings.map((listing) => (
-                    <TableRow>
+                    <TableRow key={listing.no}>
                         <TableCell className="font-medium">
                             {listing.no}
                         </TableCell>
