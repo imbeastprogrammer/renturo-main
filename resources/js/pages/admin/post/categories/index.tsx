@@ -1,7 +1,8 @@
+import { router } from "@inertiajs/react";
 import AdminLayout from "@/layouts/AdminLayout";
 import ListingFilter from "../listings/components/ListingFilter";
-import { router } from "@inertiajs/react";
 import CategoriesTable from "./components/CategoriesTable";
+import dummyCategories from "@/data/dummyCategories";
 
 const tabs = [
     { label: "All Categories", value: "all" },
@@ -29,7 +30,7 @@ function CategoriesPage() {
                     data={tabs}
                     onChange={handleChangeFilter}
                 />
-                <CategoriesTable />
+                <CategoriesTable categories={dummyCategories} />
             </div>
         </AdminLayout>
     );

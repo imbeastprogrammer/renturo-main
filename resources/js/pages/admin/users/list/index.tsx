@@ -1,5 +1,6 @@
 import AdminLayout from "@/layouts/AdminLayout";
 import UsersTable from "./components/UsersTable";
+import dummyUsers from "@/data/dummyUsers";
 
 function UsersPage() {
     return (
@@ -8,7 +9,7 @@ function UsersPage() {
                 <h1 className="text-headline-3 leading-none font-semibold">
                     Users
                 </h1>
-                <UsersTable />
+                <UsersTable users={dummyUsers} />
             </div>
         </AdminLayout>
     );

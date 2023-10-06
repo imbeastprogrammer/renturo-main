@@ -9,6 +9,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { ListingStatusSelector } from "../../listings/components/ListingStatusSelector";
+import { Category } from "@/types/categories";
 
 const statusColor: Record<string, string> = {
     approved: "#B1EEB7",
@@ -22,15 +23,12 @@ const statuses = [
     { label: "Declined", value: "declined" },
 ];
 
-function CategoriesTable() {
-    const [status, setStatus] = useState(
-        statuses[Math.floor(Math.random() * 3)].value
-    );
+type CategoriesTableProps = {
+    categories: Category[];
+};
 
-    const handleUpdateStatus = (status: string) => {
-        //update status here
-        setStatus(status);
-    };
+function CategoriesTable({ categories = [] }: CategoriesTableProps) {
+    const handleUpdateStatus = (status: string) => {};
 
     return (
         <Table>
@@ -46,27 +44,30 @@ function CategoriesTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Business</TableCell>
-                    <TableCell>
-                        <HomeIcon />
-                    </TableCell>
-                    <TableCell>None</TableCell>
-                    <TableCell>July 26, 2023</TableCell>
-                    <TableCell>
-                        <ListingStatusSelector
-                            value={status}
-                            data={statuses}
-                            onChange={handleUpdateStatus}
-                            color={statusColor[status]}
-                        />
-                    </TableCell>
-                    <TableCell>
-                        <TrashIcon className="text-red-500" />
-                    </TableCell>
-                </TableRow>
+                {categories.map((category) => (
+                    <TableRow key={category.no}>
+                        <TableCell className="font-medium">
+                            {category.no}
+                        </TableCell>
+                        <TableCell>{category.id}</TableCell>
+                        <TableCell>{category.category_name}</TableCell>
+                        <TableCell>
+                            <HomeIcon />
+                        </TableCell>
+                        <TableCell>{category.parent}</TableCell>
+                        <TableCell>
+                            <ListingStatusSelector
+                                value={category.status}
+                                data={statuses}
+                                onChange={handleUpdateStatus}
+                                color={statusColor[category.status]}
+                            />
+                        </TableCell>
+                        <TableCell>
+                            <TrashIcon className="text-red-500" />
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );

@@ -1,0 +1,66 @@
+import { Booking } from "@/types/bookings";
+
+const dummyBookings: Booking[] = [
+    {
+        no: 1,
+        id: "booking001",
+        listing_name: "Cozy Apartment in Downtown",
+        booked_by: "Alice Smith",
+        date_booked: "2023-10-10",
+        reservation_data: "2023-10-15",
+        price: "$120",
+        status: "done",
+    },
+    {
+        no: 2,
+        id: "booking002",
+        listing_name: "Luxury Beachfront Villa",
+        booked_by: "John Doe",
+        date_booked: "2023-09-20",
+        reservation_data: "2023-09-25",
+        price: "$600",
+        status: "upcoming",
+    },
+    {
+        no: 3,
+        id: "booking003",
+        listing_name: "Rustic Cabin in the Woods",
+        booked_by: "Emma Davis",
+        date_booked: "2023-08-05",
+        reservation_data: "2023-08-10",
+        price: "$60",
+        status: "canceled",
+    },
+    {
+        no: 4,
+        id: "booking004",
+        listing_name: "Urban Loft in the City",
+        booked_by: "Sophia Wilson",
+        date_booked: "2023-07-15",
+        reservation_data: "2023-07-20",
+        price: "$220",
+        status: "done",
+    },
+    {
+        no: 5,
+        id: "booking005",
+        listing_name: "Mountain View Chalet",
+        booked_by: "Bob Johnson",
+        date_booked: "2023-06-25",
+        reservation_data: "2023-06-30",
+        price: "$350",
+        status: "upcoming",
+    },
+    {
+        no: 6,
+        id: "booking006",
+        listing_name: "Seaside Cottage Retreat",
+        booked_by: "Ella Brown",
+        date_booked: "2023-05-10",
+        reservation_data: "2023-05-15",
+        price: "$90",
+        status: "canceled",
+    },
+];
+
+export default dummyBookings;

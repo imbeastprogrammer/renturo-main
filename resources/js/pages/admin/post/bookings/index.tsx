@@ -2,6 +2,7 @@ import { router } from "@inertiajs/react";
 import AdminLayout from "@/layouts/AdminLayout";
 import ListingFilter from "../listings/components/ListingFilter";
 import BookingsTable from "./components/BookingsTable";
+import dummyBookings from "@/data/dummyBookings";
 
 const tabs = [
     { label: "All Bookings", value: "all" },
@@ -31,7 +32,7 @@ function BookingsPage() {
                         );
                     }}
                 />
-                <BookingsTable />
+                <BookingsTable bookings={dummyBookings} />
             </div>
         </AdminLayout>
     );

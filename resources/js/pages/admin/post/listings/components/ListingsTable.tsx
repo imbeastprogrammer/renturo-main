@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
     Table,
     TableBody,
@@ -8,6 +7,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { ListingStatusSelector } from "./ListingStatusSelector";
+import { Listing } from "@/types/listings";
 
 const statusColor: Record<string, string> = {
     posted: "#B1EEB7",
@@ -21,14 +21,13 @@ const statuses = [
     { label: "Declined", value: "declined" },
 ];
 
-function ListingsTable() {
-    const [status, setStatus] = useState(
-        statuses[Math.floor(Math.random() * 3)].value
-    );
+type ListingTableProps = {
+    listings: Listing[];
+};
 
+function ListingsTable({ listings = [] }: ListingTableProps) {
     const handleStatusUpdate = (value: string) => {
         // update status here
-        setStatus(value);
     };
 
     return (
@@ -44,21 +43,25 @@ function ListingsTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Dela Cruz Basketball Court</TableCell>
-                    <TableCell>Joshua Dela Cruz</TableCell>
-                    <TableCell>PHP 15k - 30k</TableCell>
-                    <TableCell>
-                        <ListingStatusSelector
-                            value={status}
-                            data={statuses}
-                            color={statusColor[status]}
-                            onChange={handleStatusUpdate}
-                        />
-                    </TableCell>
-                </TableRow>
+                {listings.map((listing) => (
+                    <TableRow key={listing.no}>
+                        <TableCell className="font-medium">
+                            {listing.no}
+                        </TableCell>
+                        <TableCell>{listing.id}</TableCell>
+                        <TableCell>{listing.listing_name}</TableCell>
+                        <TableCell>{listing.posted_by}</TableCell>
+                        <TableCell>{listing.price_range}</TableCell>
+                        <TableCell>
+                            <ListingStatusSelector
+                                value={listing.status}
+                                data={statuses}
+                                color={statusColor[listing.status]}
+                                onChange={handleStatusUpdate}
+                            />
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );

@@ -6,6 +6,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { User } from "@/types/users";
 import { TrashIcon } from "lucide-react";
 
 const statusColor: Record<string, string> = {
@@ -13,7 +14,11 @@ const statusColor: Record<string, string> = {
     offline: "#EB4F4F",
 };
 
-function UsersTable() {
+type UsersTableProps = {
+    users: User[];
+};
+
+function UsersTable({ users = [] }: UsersTableProps) {
     return (
         <Table>
             <TableHeader>
@@ -29,58 +34,27 @@ function UsersTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Joshua dela cruz</TableCell>
-                    <TableCell>delacruzjoshua691@gmail.com</TableCell>
-                    <TableCell>October 1, 2023</TableCell>
-                    <TableCell>Business</TableCell>
-                    <TableCell>
-                        <span style={{ color: statusColor["active"] }}>
-                            Active
-                        </span>
-                    </TableCell>
-                    <TableCell>
-                        <TrashIcon />
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Joshua dela cruz</TableCell>
-                    <TableCell>delacruzjoshua691@gmail.com</TableCell>
-                    <TableCell>October 1, 2023</TableCell>
-                    <TableCell>Business</TableCell>
-                    <TableCell>
-                        <span style={{ color: statusColor["offline"] }}>
-                            Offline
-                        </span>
-                    </TableCell>
-                    <TableCell>
-                        <TrashIcon />
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Joshua dela cruz</TableCell>
-                    <TableCell>delacruzjoshua691@gmail.com</TableCell>
-                    <TableCell>October 1, 2023</TableCell>
-                    <TableCell>Business</TableCell>
-                    <TableCell>
-                        <span
-                            style={{
-                                color: statusColor["sample-status"] || "gray",
-                            }}
-                        >
-                            Active 30 Days ago
-                        </span>
-                    </TableCell>
-                    <TableCell>
-                        <TrashIcon />
-                    </TableCell>
-                </TableRow>
+                {users.map((user) => (
+                    <TableRow key={user.no}>
+                        <TableCell className="font-medium">{user.no}</TableCell>
+                        <TableCell>{user.id}</TableCell>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{user.date_joined}</TableCell>
+                        <TableCell>{user.account}</TableCell>
+                        <TableCell>
+                            <span
+                                className="capitalize"
+                                style={{ color: statusColor[user.status] }}
+                            >
+                                {user.status}
+                            </span>
+                        </TableCell>
+                        <TableCell>
+                            <TrashIcon className="text-red-500" />
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );

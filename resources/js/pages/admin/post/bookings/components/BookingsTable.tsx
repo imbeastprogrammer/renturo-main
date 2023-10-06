@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Booking } from "@/types/bookings";
 
 const statusColor: Record<string, string> = {
     done: "#B1EEB7",
@@ -14,7 +15,11 @@ const statusColor: Record<string, string> = {
     canceled: "#FFA1A1",
 };
 
-function BookingsTable() {
+type BookingsTableProps = {
+    bookings: Booking[];
+};
+
+function BookingsTable({ bookings = [] }: BookingsTableProps) {
     return (
         <Table>
             <TableHeader>
@@ -30,57 +35,29 @@ function BookingsTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="font-medium">1</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Dela Cruz Basketball Court</TableCell>
-                    <TableCell>Joshua Dela Cruz</TableCell>
-                    <TableCell>July 15, 2023</TableCell>
-                    <TableCell>July 26, 2023</TableCell>
-                    <TableCell>₱ 15,000</TableCell>
-                    <TableCell>
-                        <Badge
-                            className="text-black w-full justify-center"
-                            style={{ background: statusColor["done"] }}
-                        >
-                            Done
-                        </Badge>
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell className="font-medium">2</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Dela Cruz Basketball Court</TableCell>
-                    <TableCell>Joshua Dela Cruz</TableCell>
-                    <TableCell>July 15, 2023</TableCell>
-                    <TableCell>July 26, 2023</TableCell>
-                    <TableCell>₱ 15,000</TableCell>
-                    <TableCell>
-                        <Badge
-                            className="text-black w-full justify-center"
-                            style={{ background: statusColor["upcoming"] }}
-                        >
-                            Upcoming
-                        </Badge>
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell className="font-medium">3</TableCell>
-                    <TableCell>LI-000-001</TableCell>
-                    <TableCell>Dela Cruz Basketball Court</TableCell>
-                    <TableCell>Joshua Dela Cruz</TableCell>
-                    <TableCell>July 15, 2023</TableCell>
-                    <TableCell>July 26, 2023</TableCell>
-                    <TableCell>₱ 15,000</TableCell>
-                    <TableCell>
-                        <Badge
-                            className="text-black w-full justify-center"
-                            style={{ background: statusColor["canceled"] }}
-                        >
-                            Canceled
-                        </Badge>
-                    </TableCell>
-                </TableRow>
+                {bookings.map((booking) => (
+                    <TableRow key={booking.no}>
+                        <TableCell className="font-medium">
+                            {booking.no}
+                        </TableCell>
+                        <TableCell>{booking.id}</TableCell>
+                        <TableCell>{booking.listing_name}</TableCell>
+                        <TableCell>{booking.booked_by}</TableCell>
+                        <TableCell>{booking.date_booked}</TableCell>
+                        <TableCell>{booking.reservation_data}</TableCell>
+                        <TableCell>{booking.price}</TableCell>
+                        <TableCell>
+                            <Badge
+                                className="text-black uppercase w-full justify-center"
+                                style={{
+                                    background: statusColor[booking.status],
+                                }}
+                            >
+                                {booking.status}
+                            </Badge>
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );
