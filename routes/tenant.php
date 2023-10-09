@@ -81,4 +81,16 @@ Route::middleware([
 
     Route::get('/encrypt', [CryptographyController::class, 'encrypt']);
     Route::get('/decrypt', [CryptographyController::class, 'decrypt']);
+    Route::get('/enter-pin', function () {
+        return Inertia::render('login/EnterPin');
+    });
+    Route::get('/login/enter-pin', function () {
+        return Inertia::render('login/EnterPin');
+    });
+    Route::get('/forgot-password', function () {
+        return Inertia::render('forgot-password/index');
+    });
+    Route::get('/forgot-password/enter-otp', function () {
+        return Inertia::render('forgot-password/EnterOtp');
+    });
 });

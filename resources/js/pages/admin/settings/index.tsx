@@ -6,7 +6,7 @@ import PersonalInformation from "./components/PersonalInformation";
 function SettingsPage() {
     return (
         <AdminLayout>
-            <div className="h-full border shadow-lg rounded-lg grid grid-cols-[300px_auto]">
+            <div className="h-full rounded-lg grid grid-cols-[300px_auto]">
                 <div className="space-y-4 p-6">
                     <UserPicture />
                     <SettingsNavigation />

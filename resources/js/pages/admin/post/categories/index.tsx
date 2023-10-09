@@ -21,7 +21,7 @@ function CategoriesPage() {
 
     return (
         <AdminLayout>
-            <div className="h-full grid grid-rows-[auto_auto_1fr] gap-y-4 p-8 rounded-lg border shadow-lg">
+            <div className="h-full grid grid-rows-[auto_auto_1fr] gap-y-4 p-8">
                 <h1 className="text-headline-3 leading-none font-semibold">
                     Categories
                 </h1>
