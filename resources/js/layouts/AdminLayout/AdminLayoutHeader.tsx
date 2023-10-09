@@ -1,8 +1,11 @@
+import Searchbar from "@/components/Searchbar";
+
 function AdminLayoutHeader() {
     return (
         <header className="p-4">
-            this is the header
-            <nav></nav>
+            <nav>
+                <Searchbar />
+            </nav>
         </header>
     );
 }
