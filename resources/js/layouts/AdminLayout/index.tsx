@@ -7,7 +7,7 @@ type AdminLayoutProps = {
 
 function AdminLayout({ children }: AdminLayoutProps) {
     return (
-        <div className="grid h-screen grid-cols-[auto_1fr] overflow-hidden">
+        <div className="grid h-screen gap-4 grid-cols-[auto_1fr] overflow-hidden">
             <AdminSidebar />
             <main className="overflow-hidden">{children}</main>
         </div>

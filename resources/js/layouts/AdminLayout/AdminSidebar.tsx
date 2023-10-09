@@ -97,7 +97,7 @@ function AdminSidebar() {
     );
 
     return (
-        <aside className="h-full">
+        <aside className="h-full border-r">
             <div className="flex h-full">
                 <div className="bg-metalic-blue grid h-full w-[130px] grid-rows-[1fr_auto] px-4 py-8 pr-0 text-white">
                     <div>

@@ -1,8 +1,8 @@
+import { useState } from "react";
 import AdminLayout from "@/layouts/AdminLayout";
 import UsersTable from "./components/UsersTable";
 import dummyUsers from "@/data/dummyUsers";
 import Pagination from "@/components/Pagination";
-import { useState } from "react";
 
 function UsersPage() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -12,9 +12,12 @@ function UsersPage() {
 
     return (
         <AdminLayout>
-            <div className="h-full gap-y-4 grid p-8 grid-rows-[auto_1fr_auto]">
-                <h1 className="text-headline-3 leading-none font-semibold">
-                    Users
+            <div className="h-full gap-y-4 grid p-4 grid-rows-[auto_auto_1fr_auto]">
+                <p className="text-[15px] text-gray-500">
+                    Users / User Management / List of Users
+                </p>
+                <h1 className="text-[30px] leading-none font-semibold">
+                    List of Users
                 </h1>
                 <UsersTable users={dummyUsers} />
                 <Pagination
