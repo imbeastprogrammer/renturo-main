@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { User } from "@/types/users";
 import AdminLayout from "@/layouts/AdminLayout";
 import UsersTable from "./components/UsersTable";
 import dummyUsers from "@/data/dummyUsers";
 import Pagination from "@/components/Pagination";
 
-function UsersPage() {
+type UsersPageProps = {
+    auth: { user: User };
+};
+
+function UsersPage({ auth }: UsersPageProps) {
     const [currentPage, setCurrentPage] = useState(1);
     const handleNextPage = (page: number) => setCurrentPage(page + 1);
     const handlePrevPage = (page: number) => setCurrentPage(page - 1);
