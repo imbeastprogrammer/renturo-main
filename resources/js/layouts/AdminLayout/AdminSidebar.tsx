@@ -98,8 +98,8 @@ function AdminSidebar() {
 
     return (
         <aside className="h-full">
-            <div className="flex h-full rounded-lg border shadow-lg">
-                <div className="bg-metalic-blue grid h-full w-[130px] grid-rows-[1fr_auto] rounded-lg px-4 py-8 pr-0 text-white">
+            <div className="flex h-full">
+                <div className="bg-metalic-blue grid h-full w-[130px] grid-rows-[1fr_auto] px-4 py-8 pr-0 text-white">
                     <div>
                         <img
                             className="h-[80px]a mx-auto w-[80px] object-contain"

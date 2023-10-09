@@ -17,7 +17,7 @@ function BookingsPage() {
 
     return (
         <AdminLayout>
-            <div className="h-full border rounded-lg grid grid-rows-[auto_auto_1fr] gap-y-4 shadow-lg p-8">
+            <div className="h-full grid grid-rows-[auto_auto_1fr] gap-y-4 p-8">
                 <div>
                     <h1 className="text-headline-3 font-semibold leading-none">
                         Bookings
