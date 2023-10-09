@@ -21,7 +21,10 @@ const formSchema = z.object({
     password: z.string().min(8).max(32),
 });
 
-function LoginPage() {
+type LoginPageProps = {
+    errors: { email: string };
+};
+function LoginPage({ errors }: LoginPageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -31,7 +34,7 @@ function LoginPage() {
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        router.visit("/admin?active=Dashboard", { replace: true });
+        router.post("/login", values);
     };
 
     return (
@@ -57,6 +60,11 @@ function LoginPage() {
                         <img src={loginHero} className="w-[250px]" />
                     </div>
                     <div className="grid gap-4">
+                        {errors.email && (
+                            <p className="text-red-500 text-center">
+                                {errors.email}
+                            </p>
+                        )}
                         <FormField
                             control={form.control}
                             name="email"
