@@ -1,11 +1,10 @@
 import AdminLayout from "@/layouts/AdminLayout";
-import React from "react";
 import CreateUserForm from "./CreateUserForm";
 
 function CreateUserPage() {
     return (
         <AdminLayout>
-            <div className="p-8 border shadow-lg h-full rounded-lg grid grid-rows-[auto_auto_1fr] gap-y-4">
+            <div className="p-8 h-full grid grid-rows-[auto_auto_1fr] gap-y-4">
                 <p className="text-gray-500 font-medium">
                     Users / User Management / Add User
                 </p>

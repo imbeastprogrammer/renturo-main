@@ -97,9 +97,9 @@ function AdminSidebar() {
     );
 
     return (
-        <aside className="h-full">
-            <div className="flex h-full rounded-lg border shadow-lg">
-                <div className="bg-metalic-blue grid h-full w-[130px] grid-rows-[1fr_auto] rounded-lg px-4 py-8 pr-0 text-white">
+        <aside className="h-full border-r">
+            <div className="flex h-full">
+                <div className="bg-metalic-blue grid h-full w-[130px] grid-rows-[1fr_auto] px-4 py-8 pr-0 text-white">
                     <div>
                         <img
                             className="h-[80px]a mx-auto w-[80px] object-contain"
@@ -124,7 +124,7 @@ function AdminSidebar() {
                 </div>
                 {activeLinkChildrenLinks &&
                     activeLinkChildrenLinks.links.length > 0 && (
-                        <nav className="flex w-[200px] flex-col gap-4 p-4">
+                        <nav className="flex w-[200px] flex-col gap-2 p-4">
                             {activeLinkChildrenLinks?.links.map((link) => (
                                 <SecondaryLink
                                     isActive={link.to === pathname}
