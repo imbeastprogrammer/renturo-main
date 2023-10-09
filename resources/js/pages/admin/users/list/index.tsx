@@ -6,10 +6,10 @@ import dummyUsers from "@/data/dummyUsers";
 import Pagination from "@/components/Pagination";
 
 type UsersPageProps = {
-    auth: { user: User };
+    users: User[];
 };
 
-function UsersPage({ auth }: UsersPageProps) {
+function UsersPage({ users }: UsersPageProps) {
     const [currentPage, setCurrentPage] = useState(1);
     const handleNextPage = (page: number) => setCurrentPage(page + 1);
     const handlePrevPage = (page: number) => setCurrentPage(page - 1);
@@ -24,7 +24,7 @@ function UsersPage({ auth }: UsersPageProps) {
                 <h1 className="text-[30px] leading-none font-semibold">
                     List of Users
                 </h1>
-                <UsersTable users={dummyUsers} />
+                <UsersTable users={users} />
                 <Pagination
                     currentPage={currentPage}
                     numberOfPages={100}

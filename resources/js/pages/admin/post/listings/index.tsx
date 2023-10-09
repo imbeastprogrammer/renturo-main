@@ -18,9 +18,9 @@ function ListingsPage() {
 
     return (
         <AdminLayout>
-            <div className="grid grid-rows-[auto_auto_1fr] gap-y-4 -h-full p-8">
+            <div className="grid grid-rows-[auto_auto_1fr] border rounded-lg shadow-lg gap-y-4 -h-full p-8">
                 <div className="flex gap-4 items-end">
-                    <h1 className="text-headline-3 font-semibold leading-none">
+                    <h1 className="text-[30px] font-semibold leading-none">
                         Listings
                     </h1>
                     <span className="text-[15px] text-gray-500 font-semibold">
