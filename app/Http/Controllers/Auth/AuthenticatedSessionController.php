@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -34,7 +35,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        if (Auth::user()->role === User::ROLE_ADMIN) {
+            return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
+        } else if (Auth::user()->role === User::ROLE_OWNER) {
+            return redirect()->intended(RouteServiceProvider::OWNER_HOME);
+        } else if (Auth::user()->role === User::ROLE_USER) {
+            return redirect()->intended(RouteServiceProvider::USER_HOME);
+        }
     }
 
     /**

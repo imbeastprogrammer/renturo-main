@@ -28,7 +28,8 @@ class TenantSeeder extends Seeder
 
         $tenant->run(function(){
             User::factory()->create([
-                'email' => 'admin@main.renturo.test'
+                'email' => 'admin@main.renturo.test',
+                'role' => User::ROLE_ADMIN
             ]);
         });
     }
