@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenants\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Tenants\Admin\UserManagement\StoreUserRequest;
+use App\Http\Requests\Tenants\Admin\UserManagement\UpdateUserRequest;
 
 use App\Models\User;
 
@@ -78,9 +79,13 @@ class UserManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->update($request->validated());
+
+        return back()->with(['success' => 'You have successfully deleted a user.']);
     }
 
     /**
@@ -91,6 +96,10 @@ class UserManagementController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return back()->with(['success' => 'You have successfully deleted a user.']);
     }
 }
