@@ -124,7 +124,7 @@ function AdminSidebar() {
                 </div>
                 {activeLinkChildrenLinks &&
                     activeLinkChildrenLinks.links.length > 0 && (
-                        <nav className="flex w-[200px] flex-col gap-4 p-4">
+                        <nav className="flex w-[200px] flex-col gap-2 p-4">
                             {activeLinkChildrenLinks?.links.map((link) => (
                                 <SecondaryLink
                                     isActive={link.to === pathname}

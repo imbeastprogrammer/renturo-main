@@ -12,7 +12,7 @@ function UsersPage() {
 
     return (
         <AdminLayout>
-            <div className="h-full gap-y-4 grid p-4 grid-rows-[auto_auto_1fr_auto]">
+            <div className="h-full gap-y-4 grid p-8 border rounded-lg shadow-lg grid-rows-[auto_auto_1fr_auto]">
                 <p className="text-[15px] text-gray-500">
                     Users / User Management / List of Users
                 </p>
