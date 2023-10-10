@@ -42,6 +42,7 @@ function UsersTable({ users = [] }: UsersTableProps) {
             case MenuItems.DELETE:
                 return setDeletModalOpen(true);
             case MenuItems.VIEW:
+            case MenuItems.UPDATE:
                 return router.visit(`/admin/users/view/${10}?active=Users`);
         }
     };
