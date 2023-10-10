@@ -1,21 +1,14 @@
 import * as z from 'zod';
-import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
 import FormInput from '@/components/forms/FormInput';
 
 const formSchema = z.object({
     first_name: z.string(),
     last_name: z.string(),
     gender: z.string(),
-    martial_status: z.string(),
-    address_line1: z.string(),
-    address_line2: z.string(),
-    country: z.string(),
-    province: z.string(),
-    city: z.string(),
-    zipcode: z.string(),
     email: z.string(),
     phone_number: z.string(),
 });
@@ -27,20 +20,13 @@ function PersonalIformation() {
             first_name: '',
             last_name: '',
             gender: '',
-            martial_status: '',
-            address_line1: '',
-            address_line2: '',
-            country: '',
-            province: '',
-            city: '',
-            zipcode: '',
             phone_number: '',
             email: '',
         },
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        router.visit('/admin?active=Dashboard', { replace: true });
+        // submission here
     };
 
     return (
@@ -67,51 +53,8 @@ function PersonalIformation() {
                                 name='gender'
                                 control={form.control}
                             />
-                            <FormInput
-                                label='Marital Status'
-                                name='marital_status'
-                                control={form.control}
-                            />
                         </div>
                     </div>
-                    <div className='space-y-4'>
-                        <h1 className='text-[22px] text-heavy-carbon'>
-                            Address Information
-                        </h1>
-                        <div className='grid grid-cols-2 gap-4'>
-                            <FormInput
-                                label='Address Line 1'
-                                name='address_line1'
-                                control={form.control}
-                            />
-                            <FormInput
-                                label='Address Line 2'
-                                name='address_line2'
-                                control={form.control}
-                            />
-                            <FormInput
-                                label='Country'
-                                name='country'
-                                control={form.control}
-                            />
-                            <FormInput
-                                label='State/Province'
-                                name='province'
-                                control={form.control}
-                            />
-                            <FormInput
-                                label='City'
-                                name='city'
-                                control={form.control}
-                            />
-                            <FormInput
-                                label='Zip Code'
-                                name='zipcode'
-                                control={form.control}
-                            />
-                        </div>
-                    </div>
-
                     <div className='space-y-4'>
                         <h1 className='text-[22px] text-heavy-carbon'>
                             Contact Information
@@ -129,6 +72,12 @@ function PersonalIformation() {
                             />
                         </div>
                     </div>
+                    <Button
+                        type='submit'
+                        className='ml-auto w-max bg-metalic-blue p-6 px-20 uppercase hover:bg-metalic-blue/90'
+                    >
+                        Update
+                    </Button>
                 </div>
             </form>
         </Form>
