@@ -1,9 +1,9 @@
 export type User = {
-    no: number;
-    id: string;
-    name: string;
+    id: number;
+    first_name: string;
+    last_name: string;
+    mobile_no: string;
+    role: string;
     email: string;
-    date_joined: string;
-    account: string;
-    status: string;
+    email_verified_at: string;
 };
