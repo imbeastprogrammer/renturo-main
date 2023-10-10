@@ -1,4 +1,4 @@
-import { Link, InertiaLinkProps } from "@inertiajs/react";
+import { Link, InertiaLinkProps } from '@inertiajs/react';
 
 import {
     HomeIcon,
@@ -7,34 +7,34 @@ import {
     PlusIcon,
     SettingsIcon,
     UsersIcon,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import dashboardLogo from "@/assets/dashboard-logo.png";
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import dashboardLogo from '@/assets/dashboard-logo.png';
 
 const dashboardLinks = [
-    { label: "Dashboard", to: "/admin", icon: HomeIcon, links: [] },
+    { label: 'Dashboard', to: '/admin', icon: HomeIcon, links: [] },
     {
-        label: "Post",
-        to: "/admin/post",
+        label: 'Post',
+        to: '/admin/post',
         icon: PlusIcon,
         links: [
-            { label: "Listings", to: "/admin/post" },
-            { label: "Bookings", to: "/admin/post/bookings" },
-            { label: "Categories", to: "/admin/post/categories" },
+            { label: 'Listings', to: '/admin/post' },
+            { label: 'Bookings', to: '/admin/post/bookings' },
+            { label: 'Categories', to: '/admin/post/categories' },
         ],
     },
     {
-        label: "Users",
-        to: "/admin/users",
+        label: 'Users',
+        to: '/admin/users',
         icon: UsersIcon,
         links: [
-            { label: "List of Users", to: "/admin/users" },
-            { label: "Add User", to: "/admin/users/create" },
+            { label: 'List of Users', to: '/admin/users' },
+            { label: 'Add User', to: '/admin/users/create' },
         ],
     },
     {
-        label: "Settings",
-        to: "/admin/settings",
+        label: 'Settings',
+        to: '/admin/settings',
         icon: SettingsIcon,
         links: [],
     },
@@ -51,20 +51,20 @@ function SidebarLink({ isActive, ...props }: SidebarLinkProps) {
         <Link
             {...props}
             className={cn(
-                "relative inline-grid w-full place-items-center gap-2 rounded-l-full p-2 text-[15px] transition",
-                { "text-metalic-blue bg-white": isActive }
+                'relative inline-grid w-full place-items-center gap-2 rounded-l-full p-2 text-[15px] transition',
+                { 'bg-white text-metalic-blue': isActive },
             )}
         >
             {isActive && (
-                <span className="absolute -top-5 left-0 h-5 w-full bg-white">
-                    <div className="bg-metalic-blue absolute inset-0 rounded-br-full"></div>
+                <span className='absolute -top-5 left-0 h-5 w-full bg-white'>
+                    <div className='absolute inset-0 rounded-br-full bg-metalic-blue'></div>
                 </span>
             )}
-            <props.icon className="h-[43px] w-[43px]" />
+            <props.icon className='h-[43px] w-[43px]' />
             {props.label}
             {isActive && (
-                <span className="absolute -bottom-5 left-0 h-5 w-full bg-white">
-                    <div className="bg-metalic-blue absolute inset-0 rounded-tr-full"></div>
+                <span className='absolute -bottom-5 left-0 h-5 w-full bg-white'>
+                    <div className='absolute inset-0 rounded-tr-full bg-metalic-blue'></div>
                 </span>
             )}
         </Link>
@@ -74,12 +74,12 @@ function SidebarLink({ isActive, ...props }: SidebarLinkProps) {
 function SecondaryLink({
     isActive,
     ...props
-}: Omit<SidebarLinkProps, "icon" | "label">) {
+}: Omit<SidebarLinkProps, 'icon' | 'label'>) {
     return (
         <Link
             {...props}
-            className={cn("inline-block rounded-lg p-2 px-4 transition", {
-                "bg-gray-100": isActive,
+            className={cn('inline-block rounded-lg p-2 px-4 transition', {
+                'bg-gray-100': isActive,
             })}
         >
             {props.children}
@@ -90,23 +90,23 @@ function SecondaryLink({
 function AdminSidebar() {
     const { search, pathname } = window.location;
     const searchParams = new URLSearchParams(search);
-    const activeLink = searchParams.get("active") || "Dashboard";
+    const activeLink = searchParams.get('active') || 'Dashboard';
 
     const activeLinkChildrenLinks = dashboardLinks.find(
-        (link) => link.label === activeLink
+        (link) => link.label === activeLink,
     );
 
     return (
-        <aside className="h-full border-r">
-            <div className="flex h-full">
-                <div className="bg-metalic-blue grid h-full w-[130px] grid-rows-[1fr_auto] px-4 py-8 pr-0 text-white">
+        <aside className='h-full border-r'>
+            <div className='flex h-full'>
+                <div className='grid h-full w-[130px] grid-rows-[1fr_auto] bg-metalic-blue px-4 py-8 pr-0 text-white'>
                     <div>
                         <img
-                            className="h-[80px]a mx-auto w-[80px] object-contain"
+                            className='h-[80px]a mx-auto w-[80px] object-contain'
                             src={dashboardLogo}
                         />
                         <nav>
-                            <ul className="mt-6 space-y-4">
+                            <ul className='mt-6 space-y-4'>
                                 {dashboardLinks.map((link, i) => (
                                     <li key={i}>
                                         <SidebarLink
@@ -120,11 +120,11 @@ function AdminSidebar() {
                             </ul>
                         </nav>
                     </div>
-                    <LogOutIcon className="mx-auto h-[40px] w-[40px]" />
+                    <LogOutIcon className='mx-auto h-[40px] w-[40px]' />
                 </div>
                 {activeLinkChildrenLinks &&
                     activeLinkChildrenLinks.links.length > 0 && (
-                        <nav className="flex w-[200px] flex-col gap-2 p-4">
+                        <nav className='flex w-[200px] flex-col p-4'>
                             {activeLinkChildrenLinks?.links.map((link) => (
                                 <SecondaryLink
                                     isActive={link.to === pathname}

@@ -1,20 +1,18 @@
-import AdminLayout from "@/layouts/AdminLayout";
-import CreateUserForm from "./CreateUserForm";
+import AdminLayout from '@/layouts/AdminLayout';
+import CreateUserForm from './CreateUserForm';
 
 function CreateUserPage() {
     return (
-        <AdminLayout>
-            <div className="p-8 h-full border rounded-lg shadow-lg grid grid-rows-[auto_auto_1fr] gap-y-4">
-                <p className="text-gray-500 text-[15px] font-medium">
-                    Users / User Management / Add User
-                </p>
-                <h1 className="text-[30px] leading-none font-semibold">
-                    Add User
-                </h1>
-                <CreateUserForm />
-            </div>
-        </AdminLayout>
+        <div className='grid h-full grid-rows-[auto_auto_1fr] gap-y-4 rounded-lg border p-8 shadow-lg'>
+            <p className='text-[15px] font-medium text-gray-500'>
+                Users / User Management / Add User
+            </p>
+            <h1 className='text-[30px] font-semibold leading-none'>Add User</h1>
+            <CreateUserForm />
+        </div>
     );
 }
+
+CreateUserPage.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
 
 export default CreateUserPage;

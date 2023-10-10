@@ -1,7 +1,9 @@
-import AdminLayout from "@/layouts/AdminLayout";
+import AdminLayout from '@/layouts/AdminLayout';
 
 function Dashboard() {
-    return <AdminLayout>Dashboard</AdminLayout>;
+    return <div>Dashboard</div>;
 }
+
+Dashboard.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
 
 export default Dashboard;
