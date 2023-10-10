@@ -25,12 +25,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Passport::loadKeysFrom('storage');
+        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
         //
     }
 
     public function register()
     {
-        Passport::ignoreMigrations();
         Passport::ignoreRoutes();
     }
 }

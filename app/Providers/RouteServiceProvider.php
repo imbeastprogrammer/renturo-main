@@ -36,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api.php'));
 
             $this->mapWebRoutes();
+            $this->mapApiRoutes();
         });
     }
 
@@ -58,6 +59,17 @@ class RouteServiceProvider extends ServiceProvider
                 ->domain($domain)
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
+        }
+    }
+
+    protected function mapApiRoutes()
+    {
+        foreach ($this->centralDomains() as $domain) {
+            Route::prefix('api')
+                ->domain($domain)
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
         }
     }
 

@@ -11,4 +11,19 @@ use Stancl\Tenancy\Database\Concerns\HasDomains;
 class Tenant extends BaseTenant implements TenantWithDatabase
 {
     use HasFactory, HasDatabase, HasDomains;
+
+    const ACTIVE_STATUS = 'active';
+    const INACTIVE_STATUS = 'inactive';
+
+    protected $fillable = [
+        'status'
+    ];
+
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'status',
+        ];
+    }
 }

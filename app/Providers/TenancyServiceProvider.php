@@ -100,7 +100,8 @@ class TenancyServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootEvents();
-        $this->mapRoutes();
+        $this->mapWebRoutes();
+        $this->mapApiRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
 
@@ -122,7 +123,7 @@ class TenancyServiceProvider extends ServiceProvider
         }
     }
 
-    protected function mapRoutes()
+    protected function mapWebRoutes()
     {
         if (file_exists(base_path('routes/tenant.php'))) {
             Route::namespace(static::$controllerNamespace)
@@ -145,6 +146,26 @@ class TenancyServiceProvider extends ServiceProvider
             Route::namespace(static::$controllerNamespace)
                 ->prefix('user')
                 ->group(base_path('routes/tenants/user.php'));
+        }
+    }
+
+    protected function mapApiRoutes() {
+        if (file_exists(base_path('routes/apis/tenant.php'))) {
+            Route::namespace(static::$controllerNamespace)
+                ->prefix('api')
+                ->group(base_path('routes/apis/tenant.php'));
+        }
+
+        if (file_exists(base_path('routes/apis/tenants/owner.php'))) {
+            Route::namespace(static::$controllerNamespace)
+                ->prefix('api/owner')
+                ->group(base_path('routes/apis/tenants/owner.php'));
+        }
+
+        if (file_exists(base_path('routes/apis/tenants/user.php'))) {
+            Route::namespace(static::$controllerNamespace)
+                ->prefix('api/user')
+                ->group(base_path('routes/apis/tenants/user.php'));
         }
     }
 

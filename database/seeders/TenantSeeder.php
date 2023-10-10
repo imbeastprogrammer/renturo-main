@@ -20,8 +20,7 @@ class TenantSeeder extends Seeder
     {
         $tenant = Tenant::create([
             'id' => Str::lower(Str::random(6)),
-            'name' => 'main',
-            'status' => 'active'
+            'status' => Tenant::ACTIVE_STATUS
         ]);
 
         $tenant->domains()->create([
@@ -43,9 +42,9 @@ class TenantSeeder extends Seeder
                 'email' => 'user@main.renturo.test',
                 'role' => User::ROLE_USER
             ]);
-        });
 
-        //Passport install
-        Artisan::call("tenants:run passport:client --option='personal=personal' --option='name={$tenant->id}' --tenants={$tenant->id}");
+            //Passport install
+            Artisan::call("tenants:run passport:client --option='personal=personal' --option='name={$tenant->id}' --tenants={$tenant->id}");
+        });
     }
 }
