@@ -6,8 +6,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { EditIcon, EyeIcon, TrashIcon } from "lucide-react";
 import { User } from "@/types/users";
-import { TrashIcon } from "lucide-react";
+import ActionMenu from "./ActionMenu";
 
 // const statusColor: Record<string, string> = {
 //     active: "#84C58A",
@@ -18,7 +19,23 @@ type UsersTableProps = {
     users: User[];
 };
 
+enum MenuItems {
+    UPDATE = "Update",
+    VIEW = "Delete",
+    DELETE = "Delete",
+}
+
+const menuItems = [
+    { label: MenuItems.UPDATE, icon: EditIcon },
+    { label: MenuItems.VIEW, icon: EyeIcon },
+    { label: MenuItems.DELETE, icon: TrashIcon },
+];
+
 function UsersTable({ users = [] }: UsersTableProps) {
+    const handleMenuSelection = (value: string) => {
+        console.log(value);
+    };
+
     return (
         <Table>
             <TableHeader>
@@ -53,7 +70,10 @@ function UsersTable({ users = [] }: UsersTableProps) {
                             NA for now
                         </TableCell>
                         <TableCell>
-                            <TrashIcon className="text-red-500" />
+                            <ActionMenu
+                                menuItems={menuItems}
+                                onSelect={handleMenuSelection}
+                            />
                         </TableCell>
                     </TableRow>
                 ))}
