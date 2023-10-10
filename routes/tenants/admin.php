@@ -34,6 +34,9 @@ Route::middleware([
     Route::get('/settings', function () {
         return Inertia::render('admin/settings/index');
     });
+    Route::get('/users/view/{userid}', function() {
+        return Inertia::render('admin/users/view/index');
+    });
 
     Route::resource('/users', UserManagementController::class);
 });
