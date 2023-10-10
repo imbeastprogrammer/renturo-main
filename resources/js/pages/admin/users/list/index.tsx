@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { User } from '@/types/users';
+import { Input } from '@/components/ui/input';
 import AdminLayout from '@/layouts/AdminLayout';
 import UsersTable from './components/UsersTable';
 import Pagination from '@/components/Pagination';
@@ -23,13 +24,30 @@ function UsersPage({ users }: UsersPageProps) {
                 List of Users
             </h1>
             <UsersTable users={users} />
-            <Pagination
-                currentPage={currentPage}
-                numberOfPages={100}
-                onNextPage={handleNextPage}
-                onPrevPage={handlePrevPage}
-                onPageChange={handlePageChange}
-            />
+            <div className='flex items-center justify-between'>
+                <div className='text-sm'>
+                    <span>Showing 1 to 3 of 3 users</span>
+                </div>
+                <Pagination
+                    currentPage={currentPage || 1}
+                    numberOfPages={100}
+                    onNextPage={handleNextPage}
+                    onPrevPage={handlePrevPage}
+                    onPageChange={handlePageChange}
+                />
+                <div className='flex items-center gap-2 text-sm'>
+                    <span>Page</span>
+                    <Input
+                        value={currentPage || 1}
+                        className='h-8 w-16 text-center'
+                        type='number'
+                        onChange={(e) =>
+                            handlePageChange(Number(e.target.value))
+                        }
+                    />
+                    <span>of {100}</span>
+                </div>
+            </div>
         </div>
     );
 }
