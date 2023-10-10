@@ -1,13 +1,13 @@
-import { LucideIcon } from "lucide-react";
+import { LucideIcon } from 'lucide-react';
 import {
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "../ui/form";
-import { Input, InputProps } from "../ui/input";
-import { Control, FieldValues, Path } from "react-hook-form";
+} from '../ui/form';
+import { Input, InputProps } from '../ui/input';
+import { Control, FieldValues, Path } from 'react-hook-form';
 
 type FormInputProps<T> = {
     label?: string;
@@ -16,6 +16,7 @@ type FormInputProps<T> = {
     icon?: LucideIcon;
 } & InputProps;
 
+// change the background of this based on the figma
 function FormInput<T>({
     control,
     name,
@@ -27,17 +28,17 @@ function FormInput<T>({
             control={control}
             name={name}
             render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className='w-full'>
                     {props.label && <FormLabel>{props.label}</FormLabel>}
                     <FormControl>
-                        <div className="flex gap-2 relative items-center">
+                        <div className='relative flex items-center gap-2'>
                             <Input
-                                className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
+                                className='rounded-lg bg-[#F3F7FD] p-6 pr-16 placeholder:text-gray-400 focus-visible:ring-transparent'
                                 {...field}
                                 {...props}
                             />
                             {Icon && (
-                                <Icon className="absolute right-6 text-gray-400" />
+                                <Icon className='absolute right-6 text-gray-400' />
                             )}
                         </div>
                     </FormControl>

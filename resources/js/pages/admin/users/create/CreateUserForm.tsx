@@ -1,6 +1,6 @@
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Form,
     FormControl,
@@ -8,9 +8,10 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import FormInput from '@/components/forms/FormInput';
 
 const formSchema = z.object({
     first_name: z.string().nonempty(),
@@ -23,10 +24,10 @@ function CreateUserForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            first_name: "",
-            last_name: "",
-            phone: "",
-            email: "",
+            first_name: '',
+            last_name: '',
+            phone: '',
+            email: '',
         },
     });
 
@@ -38,88 +39,44 @@ function CreateUserForm() {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8 relative"
+                className='relative space-y-8'
             >
-                <div className="grid gap-4">
-                    <h1 className="text-headline-4 font-semibold text-gray-400">
+                <div className='grid gap-4'>
+                    <h1 className='text-headline-4 font-semibold text-gray-400'>
                         Personal Information
                     </h1>
-                    <div className="grid grid-cols-2 gap-4 items-start">
-                        <FormField
+                    <div className='grid grid-cols-2 items-start gap-4'>
+                        <FormInput
+                            name='first_name'
+                            label='First Name'
                             control={form.control}
-                            name="first_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>First Name</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
                         />
-                        <FormField
+                        <FormInput
+                            name='last_name'
+                            label='Last Name'
                             control={form.control}
-                            name="last_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Last Name</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
                         />
                     </div>
-                    <h1 className="text-headline-4 font-semibold text-gray-400">
+                    <h1 className='text-headline-4 font-semibold text-gray-400'>
                         Personal Information
                     </h1>
-                    <div className="grid grid-cols-2 gap-4 items-start">
-                        <FormField
+                    <div className='grid grid-cols-2 items-start gap-4'>
+                        <FormInput
+                            name='phone'
+                            label='Phone'
                             control={form.control}
-                            name="phone"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Phone</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
                         />
-                        <FormField
+                        <FormInput
+                            name='email'
+                            label='Email'
                             control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
                         />
                     </div>
                 </div>
-                <div className="flex justify-end">
+                <div className='flex justify-end'>
                     <Button
-                        type="submit"
-                        className="bg-metalic-blue uppercase hover:bg-metalic-blue/90 px-20 py-6"
+                        type='submit'
+                        className='bg-metalic-blue px-20 py-6 uppercase hover:bg-metalic-blue/90'
                     >
                         create
                     </Button>
