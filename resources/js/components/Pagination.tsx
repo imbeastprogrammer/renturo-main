@@ -1,7 +1,8 @@
-import _ from "lodash";
-import { useMemo } from "react";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import { Button } from "./ui/button";
+import _ from 'lodash';
+import { useMemo } from 'react';
+import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
+import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 
 type UsePaginationParams = {
     numberOfPages: number;
@@ -24,7 +25,7 @@ export const usePagination = ({
         const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
         const rightSiblingIndex = Math.min(
             currentPage + siblingCount,
-            numberOfPages
+            numberOfPages,
         );
 
         const shouldShowLeftDots = leftSiblingIndex > 2;
@@ -37,23 +38,23 @@ export const usePagination = ({
             let leftItemCount = 3 + 2 * siblingCount;
             let leftRange = _.range(1, leftItemCount + 1);
 
-            return [...leftRange, "right-dots", numberOfPages];
+            return [...leftRange, 'right-dots', numberOfPages];
         }
         if (shouldShowLeftDots && !shouldShowRightDots) {
             let rightItemCount = 3 + 2 * siblingCount;
             let rightRange = _.range(
                 numberOfPages - rightItemCount + 1,
-                numberOfPages + 1
+                numberOfPages + 1,
             );
-            return [firstPageIndex, "left-dots", ...rightRange];
+            return [firstPageIndex, 'left-dots', ...rightRange];
         }
         if (shouldShowLeftDots && shouldShowRightDots) {
             let middleRange = _.range(leftSiblingIndex, rightSiblingIndex + 1);
             return [
                 firstPageIndex,
-                "left-dots",
+                'left-dots',
                 ...middleRange,
-                "right-dots",
+                'right-dots',
                 lastPageIndex,
             ];
         }
@@ -73,8 +74,8 @@ type PaginationProps = {
 };
 
 const DotsMap: Record<string, string> = {
-    "right-dots": "...",
-    "left-dots": "...",
+    'right-dots': '...',
+    'left-dots': '...',
 };
 
 function Pagination({
@@ -90,11 +91,11 @@ function Pagination({
     });
 
     return (
-        <ul className="flex gap-2">
+        <ul className='flex gap-2'>
             <li>
                 <Button
-                    size="icon"
-                    variant="ghost"
+                    size='icon'
+                    variant='ghost'
                     disabled={currentPage === 1}
                     onClick={() => onPrevPage(currentPage)}
                 >
@@ -104,19 +105,23 @@ function Pagination({
             {pages.map((page) => (
                 <li key={page}>
                     <Button
-                        variant={currentPage === page ? "default" : "outline"}
+                        className={cn({
+                            'bg-arylide-yellow hover:bg-arylide-yellow/90':
+                                currentPage === page,
+                        })}
+                        variant={currentPage === page ? 'default' : 'outline'}
                         onClick={() => {
                             if (
-                                typeof page === "string" &&
-                                page === "right-dots"
+                                typeof page === 'string' &&
+                                page === 'right-dots'
                             )
                                 return onPageChange(numberOfPages);
                             if (
-                                typeof page === "string" &&
-                                page === "left-dots"
+                                typeof page === 'string' &&
+                                page === 'left-dots'
                             )
                                 return onPageChange(1);
-                            if (typeof page === "number") onPageChange(page);
+                            if (typeof page === 'number') onPageChange(page);
                         }}
                     >
                         {DotsMap[page] || page}
@@ -125,8 +130,8 @@ function Pagination({
             ))}
             <li>
                 <Button
-                    size="icon"
-                    variant="ghost"
+                    size='icon'
+                    variant='ghost'
                     disabled={currentPage === numberOfPages}
                     onClick={() => onNextPage(currentPage)}
                 >
