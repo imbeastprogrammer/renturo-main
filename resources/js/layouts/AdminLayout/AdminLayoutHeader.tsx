@@ -1,13 +1,9 @@
-import Searchbar from "@/components/Searchbar";
-import UserButton from "@/components/UserButton";
+import UserButton from '@/components/UserButton';
 
 function AdminLayoutHeader() {
     return (
         <header>
-            <div className="flex gap-4 items-center justify-between">
-                <div className="flex-1 max-w-xl">
-                    <Searchbar />
-                </div>
+            <div className='flex items-center justify-end gap-4'>
                 <UserButton />
             </div>
         </header>
