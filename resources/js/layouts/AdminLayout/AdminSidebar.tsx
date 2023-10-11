@@ -1,16 +1,16 @@
 import { Link, InertiaLinkProps } from '@inertiajs/react';
-
+import { cn } from '@/lib/utils';
 import {
     HomeIcon,
-    LogOutIcon,
     LucideIcon,
     PlusIcon,
     SettingsIcon,
     UsersIcon,
     XIcon,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
 import dashboardLogo from '@/assets/dashboard-logo.png';
+import LogoutButton from './LogoutButton';
 
 const dashboardLinks = [
     { label: 'Dashboard', to: '/admin', icon: HomeIcon, links: [] },
@@ -127,7 +127,7 @@ function AdminSidebar() {
                             </ul>
                         </nav>
                     </div>
-                    <LogOutIcon className='mx-auto h-[40px] w-[40px]' />
+                    <LogoutButton />
                 </div>
                 {displayChildLinks && (
                     <nav className='flex w-[200px] flex-col border-r p-4'>
