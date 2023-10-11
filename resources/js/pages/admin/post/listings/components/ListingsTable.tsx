@@ -5,20 +5,20 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import { ListingStatusSelector } from "./ListingStatusSelector";
-import { Listing } from "@/types/listings";
+} from '@/components/ui/table';
+import { ListingStatusSelector } from './ListingStatusSelector';
+import { Listing } from '@/types/listings';
 
 const statusColor: Record<string, string> = {
-    posted: "#B1EEB7",
-    "to review": "#FBDF88",
-    declined: "#FFA1A1",
+    posted: '#B1EEB7',
+    'to review': '#FBDF88',
+    declined: '#FFA1A1',
 };
 
 const statuses = [
-    { label: "Posted", value: "posted" },
-    { label: "To Review", value: "to review" },
-    { label: "Declined", value: "declined" },
+    { label: 'Posted', value: 'posted' },
+    { label: 'To Review', value: 'to review' },
+    { label: 'Declined', value: 'declined' },
 ];
 
 type ListingTableProps = {
@@ -34,7 +34,7 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[100px]">#</TableHead>
+                    <TableHead className='w-[100px]'>#</TableHead>
                     <TableHead>Id</TableHead>
                     <TableHead>Listing Name</TableHead>
                     <TableHead>Posted By</TableHead>
@@ -45,7 +45,7 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
             <TableBody>
                 {listings.map((listing) => (
                     <TableRow key={listing.no}>
-                        <TableCell className="font-medium">
+                        <TableCell className='font-medium'>
                             {listing.no}
                         </TableCell>
                         <TableCell>{listing.id}</TableCell>

@@ -4,6 +4,7 @@ import AdminLayout from '@/layouts/AdminLayout';
 import ListingsTable from './components/ListingsTable';
 import ListingFilter from './components/ListingFilter';
 import dummyListings from '@/data/dummyListings';
+import { useSearchParams } from '@/hooks/useSearchParams';
 
 const tabs = [
     { label: 'All Listings', value: 'all' },
@@ -13,7 +14,7 @@ const tabs = [
 ];
 
 function ListingsPage() {
-    const searchParams = new URLSearchParams(window.location.search);
+    const { searchParams, queryParams } = useSearchParams();
     const filter = searchParams.get('filter');
 
     return (
@@ -30,7 +31,9 @@ function ListingsPage() {
                 value={filter || 'all'}
                 data={tabs}
                 onChange={(value) => {
-                    router.visit(`/admin/post?active=Post&filter=${value}`);
+                    router.visit(`/admin/post`, {
+                        data: { ...queryParams, filter: value },
+                    });
                 }}
             />
             <ListingsTable listings={dummyListings} />

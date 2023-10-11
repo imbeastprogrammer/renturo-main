@@ -11,6 +11,7 @@ import {
 
 import dashboardLogo from '@/assets/dashboard-logo.png';
 import LogoutButton from './LogoutButton';
+import { useSearchParams } from '@/hooks/useSearchParams';
 
 const dashboardLinks = [
     { label: 'Dashboard', to: '/admin', icon: HomeIcon, links: [] },
@@ -89,8 +90,8 @@ function SecondaryLink({
 }
 
 function AdminSidebar() {
-    const { search, pathname } = window.location;
-    const searchParams = new URLSearchParams(search);
+    const { pathname } = window.location;
+    const { searchParams, queryParams } = useSearchParams();
     const activeLink = searchParams.get('active') || 'Dashboard';
     const toggleChildLinks = searchParams.get('toggle');
 
@@ -118,7 +119,11 @@ function AdminSidebar() {
                                     <li key={i}>
                                         <SidebarLink
                                             icon={link.icon}
-                                            href={`${link.to}?active=${link.label}&toggle=yes`}
+                                            href={link.to}
+                                            data={{
+                                                active: link.label,
+                                                toggle: 'yes',
+                                            }}
                                             label={link.label}
                                             isActive={activeLink === link.label}
                                         />
@@ -140,7 +145,8 @@ function AdminSidebar() {
                             <SecondaryLink
                                 isActive={link.to === pathname}
                                 key={link.to}
-                                href={`${link.to}?active=${activeLink}&toggle=yes`}
+                                href={link.to}
+                                data={{ ...queryParams }}
                             >
                                 {link.label}
                             </SecondaryLink>

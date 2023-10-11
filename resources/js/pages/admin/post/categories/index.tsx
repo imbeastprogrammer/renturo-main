@@ -3,6 +3,7 @@ import AdminLayout from '@/layouts/AdminLayout';
 import ListingFilter from '../listings/components/ListingFilter';
 import CategoriesTable from './components/CategoriesTable';
 import dummyCategories from '@/data/dummyCategories';
+import { useSearchParams } from '@/hooks/useSearchParams';
 
 const tabs = [
     { label: 'All Categories', value: 'all' },
@@ -12,11 +13,13 @@ const tabs = [
 ];
 
 function CategoriesPage() {
-    const searchParams = new URLSearchParams(window.location.search);
+    const { searchParams, queryParams } = useSearchParams();
     const filter = searchParams.get('filter') || 'all';
 
     const handleChangeFilter = (value: string) => {
-        router.visit(`/admin/post/categories?active=Post&filter=${value}`);
+        router.visit(`/admin/post/categories`, {
+            data: { ...queryParams, filter: value },
+        });
     };
 
     return (

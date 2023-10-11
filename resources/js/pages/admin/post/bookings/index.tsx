@@ -3,6 +3,7 @@ import AdminLayout from '@/layouts/AdminLayout';
 import ListingFilter from '../listings/components/ListingFilter';
 import BookingsTable from './components/BookingsTable';
 import dummyBookings from '@/data/dummyBookings';
+import { useSearchParams } from '@/hooks/useSearchParams';
 
 const tabs = [
     { label: 'All Bookings', value: 'all' },
@@ -12,7 +13,7 @@ const tabs = [
 ];
 
 function BookingsPage() {
-    const searchParams = new URLSearchParams(window.location.search);
+    const { queryParams, searchParams } = useSearchParams();
     const filter = searchParams.get('filter');
 
     return (
@@ -26,9 +27,12 @@ function BookingsPage() {
                 value={filter || 'all'}
                 data={tabs}
                 onChange={(value) => {
-                    router.visit(
-                        `/admin/post/bookings?active=Post&filter=${value}`,
-                    );
+                    router.visit(`/admin/post/bookings`, {
+                        data: {
+                            ...queryParams,
+                            filter: value,
+                        },
+                    });
                 }}
             />
             <BookingsTable bookings={dummyBookings} />
