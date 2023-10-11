@@ -6,4 +6,5 @@ export type User = {
     role: string;
     email: string;
     email_verified_at: string;
+    created_at: string;
 };

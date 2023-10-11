@@ -71,7 +71,9 @@ function UsersTable({ users = [] }: UsersTableProps) {
                                 {[user.first_name, user.last_name].join(' ')}
                             </TableCell>
                             <TableCell>{user.email}</TableCell>
-                            <TableCell>NA for now</TableCell>
+                            <TableCell>
+                                {new Date(user.created_at).toDateString()}
+                            </TableCell>
                             <TableCell>{user.role}</TableCell>
                             <TableCell>
                                 {/* <span
