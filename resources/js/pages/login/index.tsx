@@ -1,20 +1,14 @@
-import * as z from "zod";
-import { Link, router } from "@inertiajs/react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from "@/components/ui/form";
-import { EyeIcon, MailIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import * as z from 'zod';
+import { Link, router } from '@inertiajs/react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form } from '@/components/ui/form';
+import { EyeIcon, MailIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-import loginLogo from "@/assets/login-logo.png";
-import loginHero from "@/assets/login-hero.png";
+import loginLogo from '@/assets/login-logo.png';
+import loginHero from '@/assets/login-hero.png';
+import FormInput from '@/components/forms/FormInput';
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -28,97 +22,71 @@ function LoginPage({ errors }: LoginPageProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: "",
-            password: "",
+            email: '',
+            password: '',
         },
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        router.post("/login", values);
+        router.post('/login', values);
     };
 
     return (
-        <div className="p-4 bg-metalic-blue h-screen grid place-items-center">
+        <div className='grid h-screen place-items-center bg-metalic-blue p-4'>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8 relative bg-white w-full max-w-xl p-12 rounded-2xl shadow-sm"
+                    className='relative w-full max-w-xl space-y-8 rounded-2xl bg-white p-12 shadow-sm'
                 >
                     <img
                         src={loginLogo}
-                        className="mx-auto h-[50px] object-contain mb-10"
+                        className='mx-auto mb-10 h-[50px] object-contain'
                     />
-                    <div className="flex items-end justify-between">
+                    <div className='flex items-end justify-between'>
                         <div>
-                            <h1 className="text-metalic-blue text-headline-2">
+                            <h1 className='text-headline-2 text-metalic-blue'>
                                 Login
                             </h1>
-                            <h2 className="text-headline-3 font-normal">
+                            <h2 className='text-headline-3 font-normal'>
                                 Welcome Back!
                             </h2>
                         </div>
-                        <img src={loginHero} className="w-[250px]" />
+                        <img src={loginHero} className='w-[250px]' />
                     </div>
-                    <div className="grid gap-4">
+                    <div className='grid gap-4'>
                         {errors.email && (
-                            <p className="text-red-500 text-center">
+                            <p className='text-center text-red-500'>
                                 {errors.email}
                             </p>
                         )}
-                        <FormField
+                        <FormInput
+                            name='email'
+                            label='Email'
                             control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <div className="flex gap-2 relative items-center">
-                                            <Input
-                                                placeholder="Email"
-                                                className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
-                                                {...field}
-                                            />
-                                            <MailIcon className="absolute right-6 text-gray-400" />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            icon={MailIcon}
                         />
-                        <FormField
+                        <FormInput
+                            name='password'
+                            label='Password'
+                            type='password'
                             control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <div className="flex gap-2 relative items-center">
-                                            <Input
-                                                type="password"
-                                                placeholder="Password"
-                                                className="p-6 pr-16 bg-light-carbon placeholder:text-gray-400 rounded-lg"
-                                                {...field}
-                                            />
-                                            <EyeIcon className="absolute right-6 text-gray-400" />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            icon={EyeIcon}
                         />
                         <Link
-                            href="/forgot-password"
-                            className="text-orange-500 inline-block ml-auto"
+                            href='/forgot-password'
+                            className='ml-auto inline-block text-orange-500'
                         >
                             Forgot Password?
                         </Link>
                     </div>
-                    <div className="grid gap-4 place-items-center">
+                    <div className='grid place-items-center gap-4'>
                         <Button
-                            type="submit"
-                            className="bg-metalic-blue uppercase hover:bg-metalic-blue/90 px-20 py-6"
+                            type='submit'
+                            className='bg-metalic-blue px-20 py-6 uppercase hover:bg-metalic-blue/90'
                         >
                             log in
                         </Button>
-                        <span className="inline-block text-xs mx-auto absolute bottom-4">
+                        <span className='absolute bottom-4 mx-auto inline-block text-xs'>
                             version 1.0
                         </span>
                     </div>
