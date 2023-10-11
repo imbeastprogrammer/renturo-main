@@ -7,6 +7,7 @@ import {
     PlusIcon,
     SettingsIcon,
     UsersIcon,
+    XIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import dashboardLogo from '@/assets/dashboard-logo.png';
@@ -91,13 +92,19 @@ function AdminSidebar() {
     const { search, pathname } = window.location;
     const searchParams = new URLSearchParams(search);
     const activeLink = searchParams.get('active') || 'Dashboard';
+    const toggleChildLinks = searchParams.get('toggle');
 
     const activeLinkChildrenLinks = dashboardLinks.find(
         (link) => link.label === activeLink,
     );
 
+    const displayChildLinks =
+        activeLinkChildrenLinks &&
+        activeLinkChildrenLinks.links.length > 0 &&
+        toggleChildLinks === 'yes';
+
     return (
-        <aside className='h-full border-r'>
+        <aside className='h-full'>
             <div className='flex h-full'>
                 <div className='grid h-full w-[130px] grid-rows-[1fr_auto] bg-metalic-blue px-4 py-8 pr-0 text-white'>
                     <div>
@@ -111,7 +118,7 @@ function AdminSidebar() {
                                     <li key={i}>
                                         <SidebarLink
                                             icon={link.icon}
-                                            href={`${link.to}?active=${link.label}`}
+                                            href={`${link.to}?active=${link.label}&toggle=yes`}
                                             label={link.label}
                                             isActive={activeLink === link.label}
                                         />
@@ -122,20 +129,24 @@ function AdminSidebar() {
                     </div>
                     <LogOutIcon className='mx-auto h-[40px] w-[40px]' />
                 </div>
-                {activeLinkChildrenLinks &&
-                    activeLinkChildrenLinks.links.length > 0 && (
-                        <nav className='flex w-[200px] flex-col p-4'>
-                            {activeLinkChildrenLinks?.links.map((link) => (
-                                <SecondaryLink
-                                    isActive={link.to === pathname}
-                                    key={link.to}
-                                    href={`${link.to}?active=${activeLink}`}
-                                >
-                                    {link.label}
-                                </SecondaryLink>
-                            ))}
-                        </nav>
-                    )}
+                {displayChildLinks && (
+                    <nav className='flex w-[200px] flex-col border-r p-4'>
+                        <Link
+                            href={`${pathname}?active=${activeLink}&toggle=no`}
+                        >
+                            <XIcon className='mb-4 ml-auto text-metalic-blue' />
+                        </Link>
+                        {activeLinkChildrenLinks?.links.map((link) => (
+                            <SecondaryLink
+                                isActive={link.to === pathname}
+                                key={link.to}
+                                href={`${link.to}?active=${activeLink}`}
+                            >
+                                {link.label}
+                            </SecondaryLink>
+                        ))}
+                    </nav>
+                )}
             </div>
         </aside>
     );
