@@ -140,7 +140,7 @@ function AdminSidebar() {
                             <SecondaryLink
                                 isActive={link.to === pathname}
                                 key={link.to}
-                                href={`${link.to}?active=${activeLink}`}
+                                href={`${link.to}?active=${activeLink}&toggle=yes`}
                             >
                                 {link.label}
                             </SecondaryLink>
