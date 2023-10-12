@@ -31,6 +31,12 @@ Route::middleware([
     Route::get('/post/categories', function () {
         return Inertia::render('admin/post/categories/index');
     });
+    Route::get('/listings', function () {
+        return Inertia::render('admin/listings/properties/index');
+    });
+    Route::get('/listings/for-approval', function () {
+        return Inertia::render('admin/listings/for-approval/index');
+    });
     Route::get('/settings', function () {
         return Inertia::render('admin/settings/index');
     });
