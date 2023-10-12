@@ -10,6 +10,7 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Middleware\RedirectIfTenantActivated;
 
 use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\RegisterController;
 
 Route::middleware([
     'api',
@@ -20,6 +21,7 @@ Route::middleware([
     ->prefix('v1')
     ->group(function () {
         Route::post('login', [LoginController::class, 'login']);
+        Route::post('register', [RegisterController::class, 'register']);
 
         Route::middleware('auth:api')->group(function () {
             Route::get('/user', function (Request $request) {

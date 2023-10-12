@@ -4,8 +4,7 @@ namespace App\Http\Requests\Tenants\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\Hash;
-
+use App\Models\User;
 class RegisterRequest extends FormRequest
 {
     /**
@@ -42,18 +41,6 @@ class RegisterRequest extends FormRequest
                     ->uncompromised()
             ],
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'password' => Hash::make($this->password),
-        ]);
     }
 
     /**
