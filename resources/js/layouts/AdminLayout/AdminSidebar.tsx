@@ -1,6 +1,7 @@
 import { Link, InertiaLinkProps } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import {
+    Building2Icon,
     HomeIcon,
     LucideIcon,
     PlusIcon,
@@ -32,6 +33,15 @@ const dashboardLinks = [
         links: [
             { label: 'List of Users', to: '/admin/users' },
             { label: 'Add User', to: '/admin/users/create' },
+        ],
+    },
+    {
+        label: 'Listings',
+        to: '/admin/listings',
+        icon: Building2Icon,
+        links: [
+            { label: 'List of Properties', to: '/admin/listings' },
+            { label: 'For Approval', to: '/admin/listings/for-approval' },
         ],
     },
     {
