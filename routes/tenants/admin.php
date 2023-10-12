@@ -20,7 +20,7 @@ Route::middleware([
 ])->group(function () {
 
     Route::get('/', function () {
-        return Inertia::render('admin/index');
+        return Inertia::render('admin/dashboard/index');
     });
     Route::get('/post', function () {
         return Inertia::render('admin/post/listings/index');

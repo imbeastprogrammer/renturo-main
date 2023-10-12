@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .hide-scrollbar::-webkit-scrollbar {
-    width: 0px;
+    display: none;
 }
 
 /* Chrome, Safari, Edge, Opera */
