@@ -1,6 +1,7 @@
 import AdminLayout from '@/layouts/AdminLayout';
 import MonthlyRevenue from './components/MonthlyRevenue';
 import Activities from './components/Activities';
+import RecentBookings from './components/RecentBookings';
 
 function Dashboard() {
     return (
@@ -12,6 +13,7 @@ function Dashboard() {
                 gridTemplateAreas: `"monthly-revenue monthly-revenue monthly-trends overview"
                                     "activities      recent-bookings recent-bookings overview`,
                 gap: '1rem',
+                overflow: 'hidden',
             }}
         >
             <div
@@ -34,9 +36,9 @@ function Dashboard() {
             </div>
             <div
                 style={{ gridArea: 'recent-bookings' }}
-                className='bg-blue-300'
+                className='overflow-hidden'
             >
-                <MonthlyRevenue />
+                <RecentBookings />
             </div>
         </div>
     );
