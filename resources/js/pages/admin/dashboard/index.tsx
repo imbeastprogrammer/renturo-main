@@ -1,5 +1,6 @@
 import AdminLayout from '@/layouts/AdminLayout';
 import MonthlyRevenue from './components/MonthlyRevenue';
+import Activities from './components/Activities';
 
 function Dashboard() {
     return (
@@ -7,7 +8,7 @@ function Dashboard() {
             style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(4,1fr)',
-                gridTemplateRows: 'repeat(2,1fr)',
+                gridTemplateRows: '250px 1fr',
                 gridTemplateAreas: `"monthly-revenue monthly-revenue monthly-trends overview"
                                     "activities      recent-bookings recent-bookings overview`,
                 gap: '1rem',
@@ -28,8 +29,8 @@ function Dashboard() {
             <div style={{ gridArea: 'overview' }} className='bg-red-500'>
                 <MonthlyRevenue />
             </div>
-            <div style={{ gridArea: 'activities' }} className='bg-gray-500'>
-                <MonthlyRevenue />
+            <div style={{ gridArea: 'activities' }}>
+                <Activities />
             </div>
             <div
                 style={{ gridArea: 'recent-bookings' }}
