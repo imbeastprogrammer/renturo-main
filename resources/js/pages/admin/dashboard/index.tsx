@@ -3,6 +3,7 @@ import MonthlyRevenue from './components/MonthlyRevenue';
 import Activities from './components/Activities';
 import RecentBookings from './components/RecentBookings';
 import Overview from './components/Overview';
+import MontlyTrends from './components/MontlyTrends';
 
 function Dashboard() {
     return (
@@ -20,10 +21,9 @@ function Dashboard() {
             <div style={{ gridArea: 'monthly-revenue' }}>
                 <MonthlyRevenue />
             </div>
-            <div
-                style={{ gridArea: 'monthly-trends' }}
-                className='bg-green-500'
-            ></div>
+            <div style={{ gridArea: 'monthly-trends' }}>
+                <MontlyTrends />
+            </div>
             <div style={{ gridArea: 'overview' }}>
                 <Overview />
             </div>
