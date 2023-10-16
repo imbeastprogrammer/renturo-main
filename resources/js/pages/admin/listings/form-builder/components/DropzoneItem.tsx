@@ -1,4 +1,6 @@
 import { GripVerticalIcon, TrashIcon } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
@@ -23,8 +25,28 @@ const TypeFieldTypeMap: Record<string, string> = {
 };
 
 function DropzoneItem({ item, onRemove }: DropzoneItemProps) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: item.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
     return (
-        <div className='grid grid-cols-[1fr_auto] gap-8 rounded-lg border-2 border-dashed bg-white p-4'>
+        <div
+            ref={setNodeRef}
+            style={style}
+            {...attributes}
+            {...listeners}
+            className='grid grid-cols-[1fr_auto] gap-8 rounded-lg border-2 border-dashed bg-white p-4'
+        >
             <div>
                 <h1 className='text-[22px] font-semibold'>
                     {TypeFieldTypeMap[item.type]}

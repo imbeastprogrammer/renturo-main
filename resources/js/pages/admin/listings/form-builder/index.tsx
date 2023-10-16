@@ -41,6 +41,7 @@ const toolboxItems = [
 const formSchema = z.object({
     custom_fields: z.array(
         z.object({
+            id: z.string(),
             type: z.string(),
             label: z.string(),
             name: z.string(),
@@ -75,8 +76,6 @@ function FormBuilder() {
         control: form.control,
     });
 
-    console.log(fieldArray.fields);
-
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
         setActive(active.id.toString());
@@ -88,6 +87,7 @@ function FormBuilder() {
 
         if (over?.id === 'droppable') {
             fieldArray.append({
+                id: Date.now().toString(),
                 type: active.id.toString(),
                 label: '',
                 name: '',
@@ -120,6 +120,9 @@ function FormBuilder() {
                                 items={fieldArray.fields}
                                 isDragging={dragging}
                                 onRemove={(idx) => fieldArray.remove(idx)}
+                                onSort={(active, over) =>
+                                    fieldArray.swap(active, over)
+                                }
                             />
                             <DragOverlay>
                                 {activeDraggingItem && (

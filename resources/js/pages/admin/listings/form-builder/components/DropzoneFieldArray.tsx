@@ -1,5 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { useDroppable } from '@dnd-kit/core';
+import {
+    DndContext,
+    DragEndEvent,
+    closestCenter,
+    useDroppable,
+} from '@dnd-kit/core';
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+
 import DropzoneItem from './DropzoneItem';
 import { FormFields } from '..';
 
@@ -7,13 +17,27 @@ type DropzoneProps = {
     items: FormFields;
     isDragging: boolean;
     onRemove: (idx: number) => void;
+    onSort: (activeIdx: number, overIdx: number) => void;
 };
 
-function DropzoneFieldArray<T>({ items, isDragging, onRemove }: DropzoneProps) {
+function DropzoneFieldArray<T>({
+    items,
+    isDragging,
+    onRemove,
+    onSort,
+}: DropzoneProps) {
     const lastElement = useRef<HTMLDivElement>(null);
     const { setNodeRef } = useDroppable({
         id: 'droppable',
     });
+
+    const handleDragEnd = (e: DragEndEvent) => {
+        const { active, over } = e;
+        const activeIdx = active.data.current?.sortable.index;
+        const overIdx = over?.data.current?.sortable.index;
+
+        if (activeIdx !== overIdx) onSort(activeIdx, overIdx);
+    };
 
     useEffect(() => {
         lastElement.current?.scrollIntoView();
@@ -23,18 +47,28 @@ function DropzoneFieldArray<T>({ items, isDragging, onRemove }: DropzoneProps) {
         <div className='relative overflow-hidden'>
             <div
                 ref={setNodeRef}
-                className='relative h-full overflow-auto rounded-lg border-2 border-dashed bg-blue-50 p-4 shadow-lg'
+                className='hide-scrollbar relative h-full overflow-auto rounded-lg border-2 border-dashed bg-blue-50 p-4 shadow-lg'
             >
-                <div className='space-y-2 overflow-auto'>
-                    {items.map((item, i) => (
-                        <DropzoneItem
-                            key={i}
-                            item={item}
-                            onRemove={() => onRemove(i)}
-                        />
-                    ))}
-                    <div ref={lastElement}></div>
-                </div>
+                <DndContext
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                >
+                    <SortableContext
+                        items={items}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        <div className='space-y-2'>
+                            {items.map((item, i) => (
+                                <DropzoneItem
+                                    key={i}
+                                    item={item}
+                                    onRemove={() => onRemove(i)}
+                                />
+                            ))}
+                            <div ref={lastElement}></div>
+                        </div>
+                    </SortableContext>
+                </DndContext>
             </div>
             {(isDragging || items.length === 0) && (
                 <div className='absolute inset-0 z-[100] grid place-items-center backdrop-blur-sm'>
