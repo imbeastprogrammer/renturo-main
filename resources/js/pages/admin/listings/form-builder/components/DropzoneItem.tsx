@@ -3,9 +3,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { DropzoneField } from '..';
+import { FormFields } from '..';
 
-type DropzoneItemProps = { item: DropzoneField };
+type DropzoneItemProps = {
+    item: FormFields[0];
+    onRemove: () => void;
+};
 
 const TypeFieldTypeMap: Record<string, string> = {
     text: 'Text',
@@ -19,7 +22,7 @@ const TypeFieldTypeMap: Record<string, string> = {
     date: 'Date',
 };
 
-function DropzoneItem({ item }: DropzoneItemProps) {
+function DropzoneItem({ item, onRemove }: DropzoneItemProps) {
     return (
         <div className='grid grid-cols-[1fr_auto] gap-8 rounded-lg border-2 border-dashed bg-white p-4'>
             <div>
@@ -57,7 +60,10 @@ function DropzoneItem({ item }: DropzoneItemProps) {
             </div>
             <div className='space-y-4'>
                 <GripVerticalIcon className='text-blue-500' />
-                <TrashIcon className='text-red-500' />
+                <TrashIcon
+                    className='cursor-pointer text-red-500'
+                    onClick={onRemove}
+                />
             </div>
         </div>
     );

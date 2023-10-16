@@ -1,4 +1,6 @@
+import { z } from 'zod';
 import { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
 import {
     DndContext,
     DragOverEvent,
@@ -20,9 +22,9 @@ import {
 import { Form } from '@/components/ui/form';
 import AdminLayout from '@/layouts/AdminLayout';
 import Toolbox from './components/Toolbox';
-import Dropzone from './components/Dropzone';
+import DropzoneFieldArray from './components/DropzoneFieldArray';
 import ToolboxItem from './components/ToolBoxItem';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const toolboxItems = [
     { title: 'Text', icon: TypeIcon, id: 'text' },
@@ -36,25 +38,44 @@ const toolboxItems = [
     { title: 'Date', icon: CalendarIcon, id: 'date' },
 ];
 
-export type DropzoneField = {
-    id: string;
-    type: string;
-    label: string;
-    name: string;
-    placeholder: string;
-    min: string;
-    max: string;
-    is_required: boolean;
+const formSchema = z.object({
+    custom_fields: z.array(
+        z.object({
+            type: z.string(),
+            label: z.string(),
+            name: z.string(),
+            placeholder: z.string(),
+            min: z.string(),
+            max: z.string(),
+            is_required: z.boolean(),
+        }),
+    ),
+});
+
+export type FormbuilderForm = z.infer<typeof formSchema>;
+export type FormFields = FormbuilderForm['custom_fields'];
+
+const defaultValues: FormbuilderForm = {
+    custom_fields: [],
 };
 
 function FormBuilder() {
     const [dragging, setDragging] = useState(false);
     const [active, setActive] = useState('');
-    const [dropzoneItems, setDropzoneItems] = useState<DropzoneField[]>([]);
 
     const activeDraggingItem = toolboxItems.find((item) => item.id === active);
 
-    const form = useForm();
+    const form = useForm<FormbuilderForm>({
+        defaultValues,
+        resolver: zodResolver(formSchema),
+    });
+
+    const fieldArray = useFieldArray({
+        name: 'custom_fields',
+        control: form.control,
+    });
+
+    console.log(fieldArray.fields);
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
@@ -66,19 +87,15 @@ function FormBuilder() {
         setDragging(false);
 
         if (over?.id === 'droppable') {
-            setDropzoneItems((prev) => [
-                ...prev,
-                {
-                    id: Date.now().toString(),
-                    type: active.id.toString(),
-                    label: '',
-                    name: '',
-                    placeholder: '',
-                    min: '',
-                    max: '',
-                    is_required: false,
-                },
-            ]);
+            fieldArray.append({
+                type: active.id.toString(),
+                label: '',
+                name: '',
+                placeholder: '',
+                min: '',
+                max: '',
+                is_required: false,
+            });
             setActive('');
         }
     };
@@ -99,9 +116,10 @@ function FormBuilder() {
                             onDragEnd={handleDragEnd}
                         >
                             <Toolbox items={toolboxItems} />
-                            <Dropzone
-                                items={dropzoneItems}
+                            <DropzoneFieldArray
+                                items={fieldArray.fields}
                                 isDragging={dragging}
+                                onRemove={(idx) => fieldArray.remove(idx)}
                             />
                             <DragOverlay>
                                 {activeDraggingItem && (

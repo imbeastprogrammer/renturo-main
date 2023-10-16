@@ -1,11 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import DropzoneItem from './DropzoneItem';
-import { DropzoneField } from '..';
+import { FormFields } from '..';
 
-type DropzoneProps = { items: DropzoneField[]; isDragging: boolean };
+type DropzoneProps = {
+    items: FormFields;
+    isDragging: boolean;
+    onRemove: (idx: number) => void;
+};
 
-function Dropzone({ items, isDragging }: DropzoneProps) {
+function DropzoneFieldArray<T>({ items, isDragging, onRemove }: DropzoneProps) {
     const lastElement = useRef<HTMLDivElement>(null);
     const { setNodeRef } = useDroppable({
         id: 'droppable',
@@ -23,12 +27,16 @@ function Dropzone({ items, isDragging }: DropzoneProps) {
             >
                 <div className='space-y-2 overflow-auto'>
                     {items.map((item, i) => (
-                        <DropzoneItem key={i} item={item} />
+                        <DropzoneItem
+                            key={i}
+                            item={item}
+                            onRemove={() => onRemove(i)}
+                        />
                     ))}
                     <div ref={lastElement}></div>
                 </div>
             </div>
-            {isDragging && (
+            {(isDragging || items.length === 0) && (
                 <div className='absolute inset-0 z-[100] grid place-items-center backdrop-blur-sm'>
                     <h1 className='text-center text-[20px] text-gray-500'>
                         Drop item from toolbox
@@ -39,4 +47,4 @@ function Dropzone({ items, isDragging }: DropzoneProps) {
     );
 }
 
-export default Dropzone;
+export default DropzoneFieldArray;
