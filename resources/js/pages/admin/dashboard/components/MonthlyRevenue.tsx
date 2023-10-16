@@ -112,11 +112,10 @@ function MontlyRevenue() {
                     />
                     <Tooltip content={<CustomTooltip />} cursor={false} />
                     <Bar dataKey='total' fill='#F0F0F0' radius={[4, 4, 4, 4]}>
-                        {data.map((_, index) => (
+                        {data.map((_, i) => (
                             <Cell
-                                fill={
-                                    focusBar === index ? '#EDCA5E' : '#F0F0F0'
-                                }
+                                key={i}
+                                fill={focusBar === i ? '#EDCA5E' : '#F0F0F0'}
                             />
                         ))}
                     </Bar>
