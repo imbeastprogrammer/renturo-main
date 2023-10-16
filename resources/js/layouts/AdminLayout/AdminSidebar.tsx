@@ -42,6 +42,7 @@ const dashboardLinks = [
         links: [
             { label: 'List of Properties', to: '/admin/listings' },
             { label: 'For Approval', to: '/admin/listings/for-approval' },
+            { label: 'Form Builder', to: '/admin/listings/form-builder' },
         ],
     },
     {
@@ -90,9 +91,12 @@ function SecondaryLink({
     return (
         <Link
             {...props}
-            className={cn('inline-block rounded-lg p-2 px-4 transition', {
-                'bg-gray-100': isActive,
-            })}
+            className={cn(
+                'inline-block rounded-full p-2 px-4 font-semibold transition',
+                {
+                    'bg-blue-50': isActive,
+                },
+            )}
         >
             {props.children}
         </Link>
@@ -145,7 +149,7 @@ function AdminSidebar() {
                     <LogoutButton />
                 </div>
                 {displayChildLinks && (
-                    <nav className='flex w-[200px] flex-col border-r p-4'>
+                    <nav className='flex w-[200px] flex-col gap-2 border-r p-4'>
                         <Link
                             href={`${pathname}?active=${activeLink}&toggle=no`}
                         >

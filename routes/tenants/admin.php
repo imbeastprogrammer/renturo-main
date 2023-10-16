@@ -37,6 +37,9 @@ Route::middleware([
     Route::get('/listings/for-approval', function () {
         return Inertia::render('admin/listings/for-approval/index');
     });
+    Route::get('/listings/form-builder', function () {
+        return Inertia::render('admin/listings/form-builder/index');
+    });
     Route::get('/settings', function () {
         return Inertia::render('admin/settings/index');
     });
