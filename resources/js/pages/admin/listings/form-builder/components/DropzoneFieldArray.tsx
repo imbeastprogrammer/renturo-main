@@ -60,7 +60,7 @@ function DropzoneFieldArray<T>({
                         <div className='space-y-2'>
                             {items.map((item, i) => (
                                 <DropzoneItem
-                                    key={i}
+                                    key={item.id}
                                     item={item}
                                     onRemove={() => onRemove(i)}
                                 />

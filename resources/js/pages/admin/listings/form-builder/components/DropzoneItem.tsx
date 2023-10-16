@@ -25,14 +25,8 @@ const TypeFieldTypeMap: Record<string, string> = {
 };
 
 function DropzoneItem({ item, onRemove }: DropzoneItemProps) {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        isDragging,
-    } = useSortable({ id: item.id });
+    const { attributes, listeners, setNodeRef, transform, transition } =
+        useSortable({ id: item.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
