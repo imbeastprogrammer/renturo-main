@@ -6,9 +6,10 @@ import { Label } from '@/components/ui/label';
 import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { FormFields } from '..';
+import { Button } from '@/components/ui/button';
 
 type DropzoneItemProps = {
-    item: FormFields[0];
+    item: FormFields;
     onRemove: () => void;
 };
 
@@ -37,8 +38,6 @@ function DropzoneItem({ item, onRemove }: DropzoneItemProps) {
         <div
             ref={setNodeRef}
             style={style}
-            {...attributes}
-            {...listeners}
             className='grid grid-cols-[1fr_auto] gap-8 rounded-lg border-2 border-dashed bg-white p-4'
         >
             <div>
@@ -74,12 +73,18 @@ function DropzoneItem({ item, onRemove }: DropzoneItemProps) {
                     </FormControl>
                 </FormItem>
             </div>
-            <div className='space-y-4'>
-                <GripVerticalIcon className='text-blue-500' />
-                <TrashIcon
-                    className='cursor-pointer text-red-500'
-                    onClick={onRemove}
-                />
+            <div className='flex flex-col'>
+                <Button
+                    variant='ghost'
+                    size='icon'
+                    {...attributes}
+                    {...listeners}
+                >
+                    <GripVerticalIcon className='text-blue-500' />
+                </Button>
+                <Button size='icon' variant='ghost' onClick={onRemove}>
+                    <TrashIcon className='cursor-pointer text-red-500' />
+                </Button>
             </div>
         </div>
     );

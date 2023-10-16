@@ -14,7 +14,7 @@ import DropzoneItem from './DropzoneItem';
 import { FormFields } from '..';
 
 type DropzoneProps = {
-    items: FormFields;
+    items: FormFields[];
     isDragging: boolean;
     onRemove: (idx: number) => void;
     onSort: (activeIdx: number, overIdx: number) => void;
@@ -47,7 +47,7 @@ function DropzoneFieldArray<T>({
         <div className='relative overflow-hidden'>
             <div
                 ref={setNodeRef}
-                className='hide-scrollbar relative h-full overflow-auto rounded-lg border-2 border-dashed bg-blue-50 p-4 shadow-lg'
+                className='hide-scrollbar relative h-full overflow-y-auto overflow-x-hidden rounded-lg border-2 border-dashed bg-blue-50 p-4 shadow-lg'
             >
                 <DndContext
                     collisionDetection={closestCenter}

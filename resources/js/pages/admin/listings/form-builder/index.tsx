@@ -41,7 +41,6 @@ const toolboxItems = [
 const formSchema = z.object({
     custom_fields: z.array(
         z.object({
-            id: z.string(),
             type: z.string(),
             label: z.string(),
             name: z.string(),
@@ -54,7 +53,7 @@ const formSchema = z.object({
 });
 
 export type FormbuilderForm = z.infer<typeof formSchema>;
-export type FormFields = FormbuilderForm['custom_fields'];
+export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
 
 const defaultValues: FormbuilderForm = {
     custom_fields: [],
@@ -87,7 +86,6 @@ function FormBuilder() {
 
         if (over?.id === 'droppable') {
             fieldArray.append({
-                id: Date.now().toString(),
                 type: active.id.toString(),
                 label: '',
                 name: '',
