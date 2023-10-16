@@ -1,13 +1,24 @@
-import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import {
+    Cell,
+    Pie,
+    PieChart,
+    ResponsiveContainer,
+    Tooltip,
+    TooltipProps,
+} from 'recharts';
+import {
+    ValueType,
+    NameType,
+} from 'recharts/types/component/DefaultTooltipContent';
 
 const data = [
     {
         name: 'Group A',
-        value: 100,
+        value: 50,
     },
     {
         name: 'Group B',
-        value: 90,
+        value: 10,
     },
     {
         name: 'Group C',
@@ -17,6 +28,22 @@ const data = [
 
 const COLORS = ['#185ADC', '#EDCA5E', '#DC8A4A'];
 const ColorsInRGBA = ['#f7faff', '#fffdf9', '#fffaf7'];
+
+const CustomTooltip = ({
+    active,
+    payload,
+    label,
+}: TooltipProps<ValueType, NameType>) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className='rounded-lg bg-black p-2 px-4 text-white'>
+                {`${payload?.[0]?.name}: ${payload?.[0]?.value}`}
+            </div>
+        );
+    }
+
+    return null;
+};
 
 function MontlyTrends() {
     return (
@@ -58,6 +85,7 @@ function MontlyTrends() {
                             />
                         ))}
                     </Pie>
+                    <Tooltip content={<CustomTooltip />} />
                 </PieChart>
             </ResponsiveContainer>
             <div className='flex items-center justify-center gap-2'>
