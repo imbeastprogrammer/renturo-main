@@ -9,6 +9,7 @@ import {
     SortableContext,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 import DropzoneItem from './DropzoneItem';
 import { FormFields } from '..';
@@ -27,6 +28,7 @@ function DropzoneFieldArray<T>({
     onSort,
 }: DropzoneProps) {
     const lastElement = useRef<HTMLDivElement>(null);
+
     const { setNodeRef } = useDroppable({
         id: 'droppable',
     });
@@ -52,6 +54,7 @@ function DropzoneFieldArray<T>({
                 <DndContext
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
+                    modifiers={[restrictToVerticalAxis]}
                 >
                     <SortableContext
                         items={items}
