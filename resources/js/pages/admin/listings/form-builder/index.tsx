@@ -6,6 +6,9 @@ import {
     DragEndEvent,
     DragOverlay,
     DragStartEvent,
+    PointerSensor,
+    useSensor,
+    useSensors,
 } from '@dnd-kit/core';
 import {
     CalendarIcon,
@@ -75,6 +78,14 @@ function FormBuilder() {
         control: form.control,
     });
 
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 10,
+            },
+        }),
+    );
+
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
         setActive(active.id.toString());
@@ -110,6 +121,7 @@ function FormBuilder() {
                     <h1 className='text-[30px] font-semibold'>Form Builders</h1>
                     <div className='grid h-full grid-cols-[300px_1fr] gap-x-4 overflow-hidden'>
                         <DndContext
+                            sensors={sensors}
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd}
                         >

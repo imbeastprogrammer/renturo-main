@@ -19,7 +19,7 @@ function ToolboxItem({ title, ...props }: ToolBoxItemProps) {
             {...listeners}
             {...attributes}
             className={cn(
-                'flex items-center justify-between gap-2 rounded-lg border-2 border-dashed bg-blue-50 px-4 py-3',
+                'flex select-none items-center justify-between gap-2 rounded-lg border-2 border-dashed bg-blue-50 px-4 py-3',
                 isDragging && 'opacity-20',
             )}
         >
