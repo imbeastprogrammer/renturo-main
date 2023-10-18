@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import {
     DndContext,
-    DragOverEvent,
+    DragEndEvent,
     DragOverlay,
     DragStartEvent,
 } from '@dnd-kit/core';
@@ -80,11 +80,13 @@ function FormBuilder() {
         setActive(active.id.toString());
         setDragging(true);
     };
-    const handleDragEnd = (event: DragOverEvent) => {
+
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         setDragging(false);
+        setActive('');
 
-        if (over?.id === 'droppable') {
+        if (over?.id === 'droppable')
             fieldArray.append({
                 type: active.id.toString(),
                 label: '',
@@ -94,8 +96,6 @@ function FormBuilder() {
                 max: '',
                 is_required: false,
             });
-            setActive('');
-        }
     };
 
     const handleSubmit = form.handleSubmit((data) => {});
@@ -122,11 +122,11 @@ function FormBuilder() {
                                     fieldArray.swap(active, over)
                                 }
                             />
-                            <DragOverlay>
-                                {activeDraggingItem && (
+                            {activeDraggingItem && (
+                                <DragOverlay>
                                     <ToolboxItem {...activeDraggingItem} />
-                                )}
-                            </DragOverlay>
+                                </DragOverlay>
+                            )}
                         </DndContext>
                     </div>
                 </form>
