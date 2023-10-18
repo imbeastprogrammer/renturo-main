@@ -28,6 +28,7 @@ import Toolbox from './components/Toolbox';
 import DropzoneFieldArray from './components/DropzoneFieldArray';
 import ToolboxItem from './components/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
+import EmptyDropzone from './components/EmptyDropzone';
 
 const toolboxItems = [
     { title: 'Text', icon: TypeIcon, id: 'text' },
@@ -125,20 +126,21 @@ function FormBuilder() {
                     >
                         <div className='grid h-full grid-cols-[350px_1fr] overflow-hidden'>
                             <Toolbox items={toolboxItems} />
-                            <DropzoneFieldArray
+                            <EmptyDropzone />
+                            {/* <DropzoneFieldArray
                                 items={fieldArray.fields}
                                 isDragging={dragging}
                                 onRemove={(idx) => fieldArray.remove(idx)}
                                 onSort={(active, over) =>
                                     fieldArray.swap(active, over)
                                 }
-                            />
-                            {activeDraggingItem && (
-                                <DragOverlay>
-                                    <ToolboxItem {...activeDraggingItem} />
-                                </DragOverlay>
-                            )}
+                            /> */}
                         </div>
+                        {activeDraggingItem && (
+                            <DragOverlay>
+                                <ToolboxItem {...activeDraggingItem} />
+                            </DragOverlay>
+                        )}
                     </DndContext>
                 </form>
             </Form>

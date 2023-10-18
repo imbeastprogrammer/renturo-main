@@ -8,7 +8,6 @@ type ToolboxProps = {
 function Toolbox({ items }: ToolboxProps) {
     return (
         <div className='rounded-lg border p-4 shadow-lg'>
-            <h2 className='mb-4 text-center text-[22px]'>Toolbox</h2>
             <div className='space-y-2'>
                 {items.map((toolboxItem) => (
                     <ToolboxItem key={toolboxItem.id} {...toolboxItem} />
