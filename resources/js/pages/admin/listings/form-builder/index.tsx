@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import {
     DndContext,
@@ -23,11 +24,10 @@ import {
 } from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
-import AdminLayout from '@/layouts/AdminLayout';
 import Toolbox from './components/Toolbox';
 import DropzoneFieldArray from './components/DropzoneFieldArray';
 import ToolboxItem from './components/ToolBoxItem';
-import { zodResolver } from '@hookform/resolvers/zod';
+import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 
 const toolboxItems = [
     { title: 'Text', icon: TypeIcon, id: 'text' },
@@ -147,6 +147,8 @@ function FormBuilder() {
     );
 }
 
-FormBuilder.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
+FormBuilder.layout = (page: any) => (
+    <FormBuilderLayout>{page}</FormBuilderLayout>
+);
 
 export default FormBuilder;
