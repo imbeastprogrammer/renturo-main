@@ -116,15 +116,14 @@ function FormBuilder() {
             <Form {...form}>
                 <form
                     onSubmit={handleSubmit}
-                    className='grid h-full grid-rows-[auto_1fr] gap-4 overflow-hidden'
+                    className='h-full overflow-hidden'
                 >
-                    <h1 className='text-[30px] font-semibold'>Form Builders</h1>
-                    <div className='grid h-full grid-cols-[300px_1fr] gap-x-4 overflow-hidden'>
-                        <DndContext
-                            sensors={sensors}
-                            onDragStart={handleDragStart}
-                            onDragEnd={handleDragEnd}
-                        >
+                    <DndContext
+                        sensors={sensors}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <div className='grid h-full grid-cols-[350px_1fr] overflow-hidden'>
                             <Toolbox items={toolboxItems} />
                             <DropzoneFieldArray
                                 items={fieldArray.fields}
@@ -139,8 +138,8 @@ function FormBuilder() {
                                     <ToolboxItem {...activeDraggingItem} />
                                 </DragOverlay>
                             )}
-                        </DndContext>
-                    </div>
+                        </div>
+                    </DndContext>
                 </form>
             </Form>
         </div>

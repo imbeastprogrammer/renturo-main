@@ -7,7 +7,7 @@ type FormBuilderLayoutProps = {
 
 function FormBuilderLayout({ children }: FormBuilderLayoutProps) {
     return (
-        <div className='grid grid-rows-[auto_1fr]'>
+        <div className='grid h-screen grid-rows-[auto_1fr]'>
             <FormBuilderHeader />
             {children}
         </div>
