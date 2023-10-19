@@ -19,6 +19,7 @@ import DropzoneFieldArray from './components/DropzoneFieldArray';
 import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import { toolboxItems } from './components/toolboxItems';
+import Properties from './components/Properties';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -110,6 +111,7 @@ function FormBuilder() {
                                     fieldArray.swap(active, over)
                                 }
                             />
+                            <Properties items={fieldArray.fields} />
                         </div>
                         {active?.toolBoxItem && (
                             <DragOverlay>
