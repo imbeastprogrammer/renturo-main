@@ -1,79 +1,56 @@
+import _ from 'lodash';
+import { CSS } from '@dnd-kit/utilities';
 import { GripVerticalIcon, TrashIcon } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { FormFields } from '..';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { FormFields } from '..';
+import { Input } from '@/components/ui/input';
+import { useController } from 'react-hook-form';
+import { toolboxItems } from './toolboxItems';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 type DropzoneItemProps = {
+    index: number;
     item: FormFields;
     onRemove: () => void;
 };
 
-const TypeFieldTypeMap: Record<string, string> = {
-    text: 'Text',
-    textarea: 'TextArea',
-    dropdown: 'Dropdown',
-    checkbox: 'Checkbox',
-    'checkbox-group': 'Checkbox Group',
-    'radio-group': 'Radio Group',
-    'file-upload': 'File Upload',
-    number: 'Number',
-    date: 'Date',
-};
-
-function DropzoneItem({ item, onRemove }: DropzoneItemProps) {
+function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
     const { attributes, listeners, setNodeRef, transform, transition } =
         useSortable({ id: item.id });
+
+    const fieldTypes = _.flattenDeep(toolboxItems.map(({ items }) => items));
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
     };
 
+    const labelField = useController({
+        name: `custom_fields.${index}.label`,
+    });
+    const fieldTypeField = useController({
+        name: `custom_fields.${index}.type`,
+    });
+
+    const SelectedFieldTypeIcon = fieldTypes.find(
+        ({ id }) => id === fieldTypeField.field.value,
+    )?.icon;
+
     return (
         <div
             ref={setNodeRef}
             style={style}
-            className='grid grid-cols-[1fr_auto] gap-8 rounded-lg border-2 border-dashed bg-white p-4'
+            className='grid grid-cols-[40px_1fr] gap-4 rounded-lg bg-white p-4'
         >
             <div>
-                <h1 className='text-[22px] font-semibold'>
-                    {TypeFieldTypeMap[item.type]}
-                </h1>
-                <TextField label='Label' />
-                <TextField label='Name' />
-                <TextField label='Placeholder' />
-                <TextField label='Min' />
-                <TextField label='Max' />
-                <FormItem className='flex items-center gap-4'>
-                    <FormLabel className='min-w-[100px]'>Required</FormLabel>
-                    <FormControl>
-                        <RadioGroup defaultValue='yes' className='flex'>
-                            <div className='flex items-center space-x-2'>
-                                <RadioGroupItem
-                                    className='text-metalic-blue'
-                                    value='yes'
-                                    id='yes'
-                                />
-                                <Label htmlFor='yes'>Yes</Label>
-                            </div>
-                            <div className='flex items-center space-x-2'>
-                                <RadioGroupItem
-                                    value='no'
-                                    id='no'
-                                    className='text-metalic-blue'
-                                />
-                                <Label htmlFor='no'>No</Label>
-                            </div>
-                        </RadioGroup>
-                    </FormControl>
-                </FormItem>
-            </div>
-            <div className='flex flex-col'>
                 <Button
                     variant='ghost'
                     size='icon'
@@ -82,26 +59,50 @@ function DropzoneItem({ item, onRemove }: DropzoneItemProps) {
                 >
                     <GripVerticalIcon className='text-blue-500' />
                 </Button>
-                <Button size='icon' variant='ghost' onClick={onRemove}>
-                    <TrashIcon className='cursor-pointer text-red-500' />
-                </Button>
+            </div>
+            <div className='space-y-2'>
+                <div className='flex items-center justify-between'>
+                    <Select
+                        value={fieldTypeField.field.value}
+                        onValueChange={(value) =>
+                            fieldTypeField.field.onChange(value)
+                        }
+                    >
+                        <SelectTrigger className='w-[180px] border-none'>
+                            <div className='flex items-center gap-2'>
+                                {SelectedFieldTypeIcon && (
+                                    <SelectedFieldTypeIcon className='text-metalic-blue' />
+                                )}
+                                <SelectValue />
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {fieldTypes.map((fieldType, idx) => (
+                                <SelectItem key={idx} value={fieldType.id}>
+                                    {fieldType.title}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Button size='icon' variant='ghost' onClick={onRemove}>
+                        <TrashIcon className='cursor-pointer text-red-500' />
+                    </Button>
+                </div>
+                <Separator />
+                <div>
+                    <Input
+                        value={labelField.field.value}
+                        onChange={(e) =>
+                            labelField.field.onChange(e.target.value)
+                        }
+                        className='border-none p-0 text-[20px] font-medium outline-none'
+                    />
+                </div>
+                <div>
+                    <Input />
+                </div>
             </div>
         </div>
-    );
-}
-
-type TextFieldProps = {
-    label: string;
-};
-
-function TextField({ label }: TextFieldProps) {
-    return (
-        <FormItem className='flex items-center gap-4'>
-            <FormLabel className='min-w-[100px]'>{label}</FormLabel>
-            <FormControl>
-                <Input className='textsm h-6 rounded-none bg-blue-50 focus-visible:ring-0 focus-visible:ring-offset-0' />
-            </FormControl>
-        </FormItem>
     );
 }
 
