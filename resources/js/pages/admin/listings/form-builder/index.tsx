@@ -16,7 +16,7 @@ import { LucideIcon } from 'lucide-react';
 import { Form } from '@/components/ui/form';
 import Toolbox from './components/Toolbox';
 import DropzoneFieldArray from './components/DropzoneFieldArray';
-import ToolboxItem from './components/ToolBoxItem';
+import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import { toolboxItems } from './components/toolboxItems';
 
@@ -100,7 +100,7 @@ function FormBuilder() {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                     >
-                        <div className='grid h-full grid-cols-[390px_1fr] overflow-hidden'>
+                        <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
                             <Toolbox items={toolboxItems} />
                             <DropzoneFieldArray
                                 items={fieldArray.fields}

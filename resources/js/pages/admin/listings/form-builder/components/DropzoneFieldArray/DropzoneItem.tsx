@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { useController } from 'react-hook-form';
-import { FieldTypes, toolboxItems } from './toolboxItems';
+import { FieldTypes, toolboxItems } from '../toolboxItems';
 import {
     Select,
     SelectContent,
@@ -14,9 +14,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { FormFields } from '..';
+import { FormFields } from '../..';
 import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 
 type DropzoneItemProps = {
     index: number;
@@ -35,9 +34,6 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
         transition,
     };
 
-    const labelField = useController({
-        name: `custom_fields.${index}.label`,
-    });
     const fieldTypeField = useController({
         name: `custom_fields.${index}.type`,
     });
@@ -92,13 +88,7 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
                 </div>
                 <Separator />
                 <div>
-                    <Input
-                        value={labelField.field.value}
-                        onChange={(e) =>
-                            labelField.field.onChange(e.target.value)
-                        }
-                        className='border-none p-0 text-[20px] font-medium outline-none'
-                    />
+                    <h1 className='text-[20px] font-medium'>{item.label}</h1>
                 </div>
                 <div className='pointer-events-none'>
                     {renderElement(fieldTypeField.field.value)}
