@@ -11,15 +11,14 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
+import { LucideIcon } from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
 import Toolbox from './components/Toolbox';
 import DropzoneFieldArray from './components/DropzoneFieldArray';
 import ToolboxItem from './components/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
-import EmptyDropzone from './components/EmptyDropzone';
 import { toolboxItems } from './components/toolboxItems';
-import { LucideIcon } from 'lucide-react';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -111,15 +110,14 @@ function FormBuilder() {
                     >
                         <div className='grid h-full grid-cols-[390px_1fr] overflow-hidden'>
                             <Toolbox items={toolboxItems} />
-                            <EmptyDropzone />
-                            {/* <DropzoneFieldArray
+                            <DropzoneFieldArray
                                 items={fieldArray.fields}
                                 isDragging={dragging}
                                 onRemove={(idx) => fieldArray.remove(idx)}
                                 onSort={(active, over) =>
                                     fieldArray.swap(active, over)
                                 }
-                            /> */}
+                            />
                         </div>
                         {active?.toolBoxItem && (
                             <DragOverlay>

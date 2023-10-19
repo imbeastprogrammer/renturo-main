@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import {
     DndContext,
     DragEndEvent,
@@ -11,8 +11,9 @@ import {
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
-import DropzoneItem from './DropzoneItem';
 import { FormFields } from '..';
+import DropzoneItem from './DropzoneItem';
+import EmptyDropzone from './EmptyDropzone';
 
 type DropzoneProps = {
     items: FormFields[];
@@ -21,12 +22,7 @@ type DropzoneProps = {
     onSort: (activeIdx: number, overIdx: number) => void;
 };
 
-function DropzoneFieldArray<T>({
-    items,
-    isDragging,
-    onRemove,
-    onSort,
-}: DropzoneProps) {
+function DropzoneFieldArray<T>({ items, onRemove, onSort }: DropzoneProps) {
     const lastElement = useRef<HTMLDivElement>(null);
 
     const { setNodeRef } = useDroppable({
@@ -41,16 +37,9 @@ function DropzoneFieldArray<T>({
         if (activeIdx !== overIdx) onSort(activeIdx, overIdx);
     };
 
-    useEffect(() => {
-        lastElement.current?.scrollIntoView();
-    }, [items.length]);
-
     return (
-        <div className='relative overflow-hidden'>
-            <div
-                ref={setNodeRef}
-                className='hide-scrollbar relative h-full overflow-y-auto overflow-x-hidden rounded-lg border-2 border-dashed bg-blue-50 p-4 shadow-lg'
-            >
+        <div ref={setNodeRef} className='relative overflow-hidden'>
+            <div className='hide-scrollbar relative h-full overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-4 shadow-lg'>
                 <DndContext
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
@@ -72,14 +61,8 @@ function DropzoneFieldArray<T>({
                         </div>
                     </SortableContext>
                 </DndContext>
+                {!items.length && <EmptyDropzone />}
             </div>
-            {(isDragging || items.length === 0) && (
-                <div className='absolute inset-0 z-[100] grid place-items-center backdrop-blur-sm'>
-                    <h1 className='text-center text-[20px] text-gray-500'>
-                        Drop item from toolbox
-                    </h1>
-                </div>
-            )}
         </div>
     );
 }
