@@ -19,6 +19,7 @@ import ToolboxItem from './components/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import EmptyDropzone from './components/EmptyDropzone';
 import { toolboxItems } from './components/toolboxItems';
+import { LucideIcon } from 'lucide-react';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -43,19 +44,12 @@ const defaultValues: FormbuilderForm = {
 
 type ActiveToolbox = {
     id: string;
-    container: string;
+    toolBoxItem: { title: string; icon: LucideIcon; id: string };
 };
 
 function FormBuilder() {
     const [dragging, setDragging] = useState(false);
     const [active, setActive] = useState<ActiveToolbox | null>(null);
-
-    const activeContainer = toolboxItems.find(
-        ({ label }) => label === active?.container,
-    );
-    const activeToolboxItem = activeContainer?.items.find(
-        (item) => item.id === active?.id,
-    );
 
     const form = useForm<FormbuilderForm>({
         defaultValues,
@@ -77,8 +71,11 @@ function FormBuilder() {
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
-        setActive(active.data.current as ActiveToolbox);
         setDragging(true);
+        setActive({
+            id: active.data.current?.id,
+            toolBoxItem: active.data.current?.toolboxItem,
+        });
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -124,12 +121,9 @@ function FormBuilder() {
                                 }
                             /> */}
                         </div>
-                        {activeContainer && activeToolboxItem && (
+                        {active?.toolBoxItem && (
                             <DragOverlay>
-                                <ToolboxItem
-                                    {...activeToolboxItem}
-                                    container={activeContainer?.label}
-                                />
+                                <ToolboxItem {...active.toolBoxItem} />
                             </DragOverlay>
                         )}
                     </DndContext>

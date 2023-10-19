@@ -16,11 +16,7 @@ function Toolbox({ items }: ToolboxProps) {
                         <h1 className='text-[15px] font-semibold'>{label}</h1>
                         <div className='grid grid-cols-2 gap-4'>
                             {items.map((item) => (
-                                <ToolboxItem
-                                    key={item.id}
-                                    {...item}
-                                    container={label}
-                                />
+                                <ToolboxItem key={item.id} {...item} />
                             ))}
                         </div>
                     </div>

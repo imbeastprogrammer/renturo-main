@@ -8,14 +8,13 @@ type ToolBoxItemProps = {
     title: string;
     icon: LucideIcon;
     id: string;
-    container: string;
 };
 
-function ToolboxItem({ title, ...props }: ToolBoxItemProps) {
+function ToolboxItem(props: ToolBoxItemProps) {
     const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({
             id: props.id,
-            data: { id: props.id, container: props.container },
+            data: { id: props.id, toolboxItem: props },
         });
 
     const style: CSSProperties = {
@@ -32,8 +31,8 @@ function ToolboxItem({ title, ...props }: ToolBoxItemProps) {
             )}
         >
             <div className='flex flex-1 items-center gap-2 text-[14px] font-medium'>
-                <props.icon className='text-metalic-blue' />
-                {title}
+                {props.icon && <props.icon className='text-metalic-blue' />}
+                {props.title}
             </div>
             <GripVertical
                 className='h-6 w-6 text-gray-400 outline-none'
