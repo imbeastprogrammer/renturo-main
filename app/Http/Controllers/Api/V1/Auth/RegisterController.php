@@ -13,10 +13,13 @@ class RegisterController extends Controller
     {
         $user = User::create($request->validated());
 
+        $accessToken = $user->createToken('personal-access-token')->accessToken;
+
         event(new Registered($user));
 
         return response()->json([
-            'message' => 'Registration complete!'
+            'message' => 'Registration complete!',
+            'access_token' => $accessToken
         ], 201);
     }
 }
