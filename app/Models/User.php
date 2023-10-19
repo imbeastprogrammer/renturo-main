@@ -54,10 +54,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['verified_mobile_no'];
+
     protected function password(): Attribute
     {
         return Attribute::make(
             set: fn (string $value) => Hash::make($value)
         );
+    }
+
+    protected function getVerifiedMobileNoAttribute()
+    {
+        return $this->mobileVerification()->latest()->first();
+    }
+
+    public function mobileVerification()
+    {
+        return $this->hasMany(MobileVerification::class);
     }
 }

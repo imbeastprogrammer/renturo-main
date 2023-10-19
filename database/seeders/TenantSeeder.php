@@ -28,19 +28,37 @@ class TenantSeeder extends Seeder
         ]);
 
         $tenant->run(function () use ($tenant) {
-            User::factory()->create([
+            $admin = User::factory()->create([
                 'email' => 'admin@main.renturo.test',
                 'role' => User::ROLE_ADMIN
             ]);
 
-            User::factory()->create([
+            $admin->mobileVerification()->create([
+                'mobile_no' => fake()->phoneNumber(),
+                'code' => rand(1000,9999),
+                'verified_at' => now()
+            ]);
+
+            $owner = User::factory()->create([
                 'email' => 'owner@main.renturo.test',
                 'role' => User::ROLE_OWNER
             ]);
 
-            User::factory()->create([
+            $owner->mobileVerification()->create([
+                'mobile_no' => fake()->phoneNumber(),
+                'code' => rand(1000,9999),
+                'verified_at' => now()
+            ]);
+
+            $user = User::factory()->create([
                 'email' => 'user@main.renturo.test',
                 'role' => User::ROLE_USER
+            ]);
+
+            $user->mobileVerification()->create([
+                'mobile_no' => fake()->phoneNumber(),
+                'code' => rand(1000,9999),
+                'verified_at' => now()
             ]);
 
             //Passport install
