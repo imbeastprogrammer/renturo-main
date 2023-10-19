@@ -13,37 +13,72 @@ import {
     TypeIcon,
 } from 'lucide-react';
 
+enum FieldTypes {
+    TEXT_FIELD = 'text-field',
+    TEXT_AREA = 'text-area',
+    NUMBER = 'number',
+    EMAIL = 'email',
+    DATE = 'date',
+    TIME = 'time',
+    DROPDOWN = 'dropdown',
+    CHECKBOX = 'checkbox',
+    RADIO_BUTTON = 'radion-button',
+    CHECKLIST = 'checklist',
+    ATTACHMENT = 'attachment',
+    IMAGE = 'image',
+}
+
 export const toolboxItems = [
     {
         label: 'Text',
         items: [
-            { title: 'Text Field', icon: TypeIcon, id: 'text-field' },
-            { title: 'Text Area', icon: FileTypeIcon, id: 'text-area' },
-            { title: 'Number', icon: FileDigitIcon, id: 'number' },
-            { title: 'Email', icon: MailIcon, id: 'email' },
+            { title: 'Text Field', icon: TypeIcon, id: FieldTypes.TEXT_FIELD },
+            {
+                title: 'Text Area',
+                icon: FileTypeIcon,
+                id: FieldTypes.TEXT_AREA,
+            },
+            { title: 'Number', icon: FileDigitIcon, id: FieldTypes.NUMBER },
+            { title: 'Email', icon: MailIcon, id: FieldTypes.EMAIL },
         ],
     },
     {
         label: 'Date',
         items: [
-            { title: 'Date', icon: CalendarIcon, id: 'date' },
-            { title: 'Time', icon: ClockIcon, id: 'time' },
+            { title: 'Date', icon: CalendarIcon, id: FieldTypes.DATE },
+            { title: 'Time', icon: ClockIcon, id: FieldTypes.TIME },
         ],
     },
     {
         label: 'Multi',
         items: [
-            { title: 'Dropdown', icon: ChevronDownSquareIcon, id: 'dropdown' },
-            { title: 'Checkbox', icon: CheckSquareIcon, id: 'checkbox' },
-            { title: 'Radio Button', icon: CircleIcon, id: 'radio-button' },
-            { title: 'Check List', icon: FileCheck, id: 'checklist' },
+            {
+                title: 'Dropdown',
+                icon: ChevronDownSquareIcon,
+                id: FieldTypes.DROPDOWN,
+            },
+            {
+                title: 'Checkbox',
+                icon: CheckSquareIcon,
+                id: FieldTypes.CHECKBOX,
+            },
+            {
+                title: 'Radio Button',
+                icon: CircleIcon,
+                id: FieldTypes.RADIO_BUTTON,
+            },
+            { title: 'Check List', icon: FileCheck, id: FieldTypes.CHECKLIST },
         ],
     },
     {
         label: 'Media',
         items: [
-            { title: 'Attachment', icon: PaperclipIcon, id: 'attachment' },
-            { title: 'Image', icon: ImageIcon, id: 'image' },
+            {
+                title: 'Attachment',
+                icon: PaperclipIcon,
+                id: FieldTypes.ATTACHMENT,
+            },
+            { title: 'Image', icon: ImageIcon, id: FieldTypes.IMAGE },
         ],
     },
 ];

@@ -25,11 +25,7 @@ const formSchema = z.object({
         z.object({
             type: z.string(),
             label: z.string(),
-            name: z.string(),
-            placeholder: z.string(),
-            min: z.string(),
-            max: z.string(),
-            is_required: z.boolean(),
+            options: z.array(z.string()),
         }),
     ),
 });
@@ -85,12 +81,8 @@ function FormBuilder() {
         if (over?.id === 'droppable')
             fieldArray.append({
                 type: active.id.toString(),
-                label: '',
-                name: '',
-                placeholder: '',
-                min: '',
-                max: '',
-                is_required: false,
+                label: 'This label is editable',
+                options: [],
             });
     };
 

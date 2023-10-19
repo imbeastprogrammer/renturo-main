@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Control, FieldValues } from 'react-hook-form';
 import {
     DndContext,
     DragEndEvent,
@@ -22,7 +23,7 @@ type DropzoneProps = {
     onSort: (activeIdx: number, overIdx: number) => void;
 };
 
-function DropzoneFieldArray<T>({ items, onRemove, onSort }: DropzoneProps) {
+function DropzoneFieldArray({ items, onRemove, onSort }: DropzoneProps) {
     const lastElement = useRef<HTMLDivElement>(null);
 
     const { setNodeRef } = useDroppable({
@@ -50,11 +51,12 @@ function DropzoneFieldArray<T>({ items, onRemove, onSort }: DropzoneProps) {
                         strategy={verticalListSortingStrategy}
                     >
                         <div className='space-y-2'>
-                            {items.map((item, i) => (
+                            {items.map((item, idx) => (
                                 <DropzoneItem
                                     key={item.id}
                                     item={item}
-                                    onRemove={() => onRemove(i)}
+                                    index={idx}
+                                    onRemove={() => onRemove(idx)}
                                 />
                             ))}
                             <div ref={lastElement}></div>
