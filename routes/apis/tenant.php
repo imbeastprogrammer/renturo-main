@@ -11,6 +11,8 @@ use App\Http\Middleware\RedirectIfTenantActivated;
 
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
+use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use Illuminate\Support\Facades\Password;
 
 Route::middleware([
     'api',
@@ -27,6 +29,7 @@ Route::middleware([
             Route::get('/user', function (Request $request) {
                 return $request->user();
             });
+            Route::put('/password', [PasswordController::class, 'update']);
             Route::delete('logout', [LoginController::class, 'logout']);
         });
     });
