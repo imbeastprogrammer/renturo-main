@@ -11,17 +11,6 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import {
-    CalendarIcon,
-    CheckSquareIcon,
-    ChevronDownSquareIcon,
-    CircleIcon,
-    FileDigitIcon,
-    FileTypeIcon,
-    ListChecksIcon,
-    TypeIcon,
-    UploadIcon,
-} from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
 import Toolbox from './components/Toolbox';
@@ -29,18 +18,7 @@ import DropzoneFieldArray from './components/DropzoneFieldArray';
 import ToolboxItem from './components/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import EmptyDropzone from './components/EmptyDropzone';
-
-const toolboxItems = [
-    { title: 'Text', icon: TypeIcon, id: 'text' },
-    { title: 'TextArea', icon: FileTypeIcon, id: 'textarea' },
-    { title: 'Dropdown', icon: ChevronDownSquareIcon, id: 'dropdown' },
-    { title: 'Checkbox', icon: CheckSquareIcon, id: 'checkbox' },
-    { title: 'Checkbox Group', icon: ListChecksIcon, id: 'checkbox-group' },
-    { title: 'Radio Group', icon: CircleIcon, id: 'radio-group' },
-    { title: 'File Upload', icon: UploadIcon, id: 'file-upload' },
-    { title: 'Number', icon: FileDigitIcon, id: 'number' },
-    { title: 'Date', icon: CalendarIcon, id: 'date' },
-];
+import { toolboxItems } from './components/toolboxItems';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -63,11 +41,21 @@ const defaultValues: FormbuilderForm = {
     custom_fields: [],
 };
 
+type ActiveToolbox = {
+    id: string;
+    container: string;
+};
+
 function FormBuilder() {
     const [dragging, setDragging] = useState(false);
-    const [active, setActive] = useState('');
+    const [active, setActive] = useState<ActiveToolbox | null>(null);
 
-    const activeDraggingItem = toolboxItems.find((item) => item.id === active);
+    const activeContainer = toolboxItems.find(
+        ({ label }) => label === active?.container,
+    );
+    const activeToolboxItem = activeContainer?.items.find(
+        (item) => item.id === active?.id,
+    );
 
     const form = useForm<FormbuilderForm>({
         defaultValues,
@@ -89,14 +77,14 @@ function FormBuilder() {
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
-        setActive(active.id.toString());
+        setActive(active.data.current as ActiveToolbox);
         setDragging(true);
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         setDragging(false);
-        setActive('');
+        setActive(null);
 
         if (over?.id === 'droppable')
             fieldArray.append({
@@ -124,7 +112,7 @@ function FormBuilder() {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                     >
-                        <div className='grid h-full grid-cols-[350px_1fr] overflow-hidden'>
+                        <div className='grid h-full grid-cols-[390px_1fr] overflow-hidden'>
                             <Toolbox items={toolboxItems} />
                             <EmptyDropzone />
                             {/* <DropzoneFieldArray
@@ -136,9 +124,12 @@ function FormBuilder() {
                                 }
                             /> */}
                         </div>
-                        {activeDraggingItem && (
+                        {activeContainer && activeToolboxItem && (
                             <DragOverlay>
-                                <ToolboxItem {...activeDraggingItem} />
+                                <ToolboxItem
+                                    {...activeToolboxItem}
+                                    container={activeContainer?.label}
+                                />
                             </DragOverlay>
                         )}
                     </DndContext>

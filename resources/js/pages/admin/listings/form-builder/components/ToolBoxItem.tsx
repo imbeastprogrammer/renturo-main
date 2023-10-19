@@ -1,30 +1,45 @@
+import { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
-import { useDraggable } from '@dnd-kit/core';
-import { LucideIcon } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { GripVertical, LucideIcon } from 'lucide-react';
+import { CSS } from '@dnd-kit/utilities';
 
 type ToolBoxItemProps = {
     title: string;
     icon: LucideIcon;
     id: string;
+    container: string;
 };
 
 function ToolboxItem({ title, ...props }: ToolBoxItemProps) {
-    const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
-        id: props.id,
-    });
+    const { setNodeRef, attributes, listeners, transform, transition } =
+        useSortable({
+            id: props.id,
+            data: { id: props.id, container: props.container },
+        });
+
+    const style: CSSProperties = {
+        transition,
+        transform: CSS.Transform.toString(transform),
+    };
 
     return (
         <div
             ref={setNodeRef}
-            {...listeners}
-            {...attributes}
+            style={style}
             className={cn(
-                'flex select-none items-center justify-between gap-2 rounded-lg border-2 border-dashed bg-blue-50 px-4 py-3',
-                isDragging && 'opacity-20',
+                'flex select-none items-center justify-between gap-2 rounded-lg bg-blue-50 p-2 py-4',
             )}
         >
-            {title}
-            <props.icon />
+            <div className='flex flex-1 items-center gap-2 text-[14px] font-medium'>
+                <props.icon className='text-metalic-blue' />
+                {title}
+            </div>
+            <GripVertical
+                className='h-6 w-6 text-gray-400 outline-none'
+                {...listeners}
+                {...attributes}
+            />
         </div>
     );
 }
