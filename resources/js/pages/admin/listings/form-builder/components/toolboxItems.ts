@@ -13,7 +13,7 @@ import {
     TypeIcon,
 } from 'lucide-react';
 
-enum FieldTypes {
+export enum FieldTypes {
     TEXT_FIELD = 'text-field',
     TEXT_AREA = 'text-area',
     NUMBER = 'number',
