@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { Control, FieldValues } from 'react-hook-form';
 import {
     DndContext,
     DragEndEvent,
@@ -12,7 +11,7 @@ import {
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
-import { FormFields } from '..';
+import { FormFields } from '../..';
 import DropzoneItem from './DropzoneItem';
 import EmptyDropzone from './EmptyDropzone';
 
@@ -23,7 +22,7 @@ type DropzoneProps = {
     onSort: (activeIdx: number, overIdx: number) => void;
 };
 
-function DropzoneFieldArray({ items, onRemove, onSort }: DropzoneProps) {
+function Dropzone({ items, onRemove, onSort }: DropzoneProps) {
     const lastElement = useRef<HTMLDivElement>(null);
 
     const { setNodeRef } = useDroppable({
@@ -40,7 +39,7 @@ function DropzoneFieldArray({ items, onRemove, onSort }: DropzoneProps) {
 
     return (
         <div ref={setNodeRef} className='relative overflow-hidden'>
-            <div className='hide-scrollbar relative h-full overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-4 shadow-lg'>
+            <div className='hide-scrollbar relative h-full overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-8 shadow-lg'>
                 <DndContext
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
@@ -69,4 +68,4 @@ function DropzoneFieldArray({ items, onRemove, onSort }: DropzoneProps) {
     );
 }
 
-export default DropzoneFieldArray;
+export default Dropzone;
