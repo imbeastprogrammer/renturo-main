@@ -38,6 +38,10 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
         name: `custom_fields.${index}.type`,
     });
 
+    const labelField = useController({
+        name: `custom_fields.${index}.label`,
+    });
+
     const SelectedFieldTypeIcon = fieldTypes.find(
         ({ id }) => id === fieldTypeField.field.value,
     )?.icon;
@@ -61,7 +65,7 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
             <div className='space-y-2'>
                 <div className='flex items-center justify-between'>
                     <Select
-                        value={fieldTypeField.field.value}
+                        {...fieldTypeField.field}
                         onValueChange={(value) =>
                             fieldTypeField.field.onChange(value)
                         }
@@ -88,7 +92,9 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
                 </div>
                 <Separator />
                 <div>
-                    <h1 className='text-[20px] font-medium'>{item.label}</h1>
+                    <h1 className='text-[20px] font-medium'>
+                        {labelField.field.value}
+                    </h1>
                 </div>
                 <div className='pointer-events-none'>
                     {renderElement(fieldTypeField.field.value)}

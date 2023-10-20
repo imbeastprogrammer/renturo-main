@@ -22,7 +22,7 @@ type DropzoneProps = {
     onSort: (activeIdx: number, overIdx: number) => void;
 };
 
-function DropzoneFieldArray({ items, onRemove, onSort }: DropzoneProps) {
+function Dropzone({ items, onRemove, onSort }: DropzoneProps) {
     const lastElement = useRef<HTMLDivElement>(null);
 
     const { setNodeRef } = useDroppable({
@@ -68,4 +68,4 @@ function DropzoneFieldArray({ items, onRemove, onSort }: DropzoneProps) {
     );
 }
 
-export default DropzoneFieldArray;
+export default Dropzone;

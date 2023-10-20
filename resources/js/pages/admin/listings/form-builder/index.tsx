@@ -15,7 +15,7 @@ import { LucideIcon } from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
 import Toolbox from './components/Toolbox';
-import DropzoneFieldArray from './components/DropzoneFieldArray';
+import Dropzone from './components/Dropzone';
 import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import { toolboxItems } from './components/toolboxItems';
@@ -85,7 +85,7 @@ function FormBuilder() {
             fieldArray.append({
                 type: active.id.toString(),
                 label: 'This label is editable',
-                is_required: false,
+                is_required: true,
                 options: [],
             });
     };
@@ -106,7 +106,7 @@ function FormBuilder() {
                     >
                         <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
                             <Toolbox items={toolboxItems} />
-                            <DropzoneFieldArray
+                            <Dropzone
                                 items={fieldArray.fields}
                                 isDragging={dragging}
                                 onRemove={(idx) => fieldArray.remove(idx)}
