@@ -5,23 +5,27 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Input } from '@/components/ui/input';
-import {
-    FormControl,
-    FormItem,
-    FormLabel,
-    useFormField,
-} from '@/components/ui/form';
+import { FormControl, FormItem, FormLabel } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
 
+import { FieldTypes, toolboxItems } from '../toolboxItems';
+import { useController, useFieldArray } from 'react-hook-form';
+import ChoicesGenerator from './ChoicesGenerator';
 import { FormFields } from '../..';
-import { toolboxItems } from '../toolboxItems';
-import { useController } from 'react-hook-form';
 
 type PropertyEditorProps = {
     index: number;
     item: FormFields;
 };
-function PropertyEditor({ index, item }: PropertyEditorProps) {
+
+const hasOptions = [
+    FieldTypes.CHECKBOX,
+    FieldTypes.CHECKLIST,
+    FieldTypes.DROPDOWN,
+    FieldTypes.RADIO_BUTTON,
+];
+
+function PropertyEditor<T>({ index, item }: PropertyEditorProps) {
     const formLabelField = useController({
         name: `custom_fields.${index}.label`,
     });
@@ -36,6 +40,10 @@ function PropertyEditor({ index, item }: PropertyEditorProps) {
     const fieldType = fieldTypes.find(
         ({ id }) => id === fieldTypeField.field.value,
     );
+
+    const optionsFieldArray = useFieldArray({
+        name: `custom_fields.${index}.options`,
+    });
 
     return (
         <AccordionItem key={item.id} className='border-none' value={item.id}>
@@ -84,6 +92,15 @@ function PropertyEditor({ index, item }: PropertyEditorProps) {
                             </FormControl>
                         </FormItem>
                     </div>
+                    {fieldType?.id && hasOptions.includes(fieldType?.id) && (
+                        <ChoicesGenerator
+                            choices={optionsFieldArray.fields as any}
+                            onRemove={(i) => optionsFieldArray.remove(i)}
+                            onAppend={() =>
+                                optionsFieldArray.append({ value: 'option' })
+                            }
+                        />
+                    )}
                 </div>
             </AccordionContent>
         </AccordionItem>

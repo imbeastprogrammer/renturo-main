@@ -18,8 +18,8 @@ import Toolbox from './components/Toolbox';
 import Dropzone from './components/Dropzone';
 import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
-import { toolboxItems } from './components/toolboxItems';
 import Properties from './components/Properties';
+import { toolboxItems } from './components/toolboxItems';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -27,7 +27,7 @@ const formSchema = z.object({
             type: z.string(),
             label: z.string(),
             is_required: z.boolean(),
-            options: z.array(z.string()),
+            options: z.array(z.object({ value: z.string() })),
         }),
     ),
 });
