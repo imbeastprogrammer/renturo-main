@@ -24,6 +24,7 @@ import { toolboxItems } from './components/toolboxItems';
 const formSchema = z.object({
     custom_fields: z.array(
         z.object({
+            allow_multiple_option_answer: z.boolean(),
             type: z.string(),
             label: z.string(),
             is_required: z.boolean(),
@@ -83,6 +84,7 @@ function FormBuilder() {
 
         if (over?.id === 'droppable')
             fieldArray.append({
+                allow_multiple_option_answer: false,
                 type: active.id.toString(),
                 label: 'This label is editable',
                 is_required: true,
