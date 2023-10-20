@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use App\Models\Central\Tenant;
 use App\Models\User;
+use Carbon\Carbon;
 use Artisan;
 
 class TenantSeeder extends Seeder
@@ -35,8 +36,9 @@ class TenantSeeder extends Seeder
 
             $admin->mobileVerification()->create([
                 'mobile_no' => fake()->phoneNumber(),
-                'code' => rand(1000,9999),
-                'verified_at' => now()
+                'code' => rand(1000, 9999),
+                'verified_at' => Carbon::now(),
+                'expires_at' => Carbon::now()->addSeconds(300),
             ]);
 
             $owner = User::factory()->create([
@@ -46,8 +48,9 @@ class TenantSeeder extends Seeder
 
             $owner->mobileVerification()->create([
                 'mobile_no' => fake()->phoneNumber(),
-                'code' => rand(1000,9999),
-                'verified_at' => now()
+                'code' => rand(1000, 9999),
+                'verified_at' => Carbon::now(),
+                'expires_at' => Carbon::now()->addSeconds(300)
             ]);
 
             $user = User::factory()->create([
@@ -57,8 +60,9 @@ class TenantSeeder extends Seeder
 
             $user->mobileVerification()->create([
                 'mobile_no' => fake()->phoneNumber(),
-                'code' => rand(1000,9999),
-                'verified_at' => now()
+                'code' => rand(1000, 9999),
+                'verified_at' => Carbon::now(),
+                'expires_at' => Carbon::now()->addSeconds(300)
             ]);
 
             //Passport install
