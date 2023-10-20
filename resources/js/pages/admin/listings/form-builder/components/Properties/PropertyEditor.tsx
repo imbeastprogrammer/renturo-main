@@ -25,7 +25,7 @@ const hasOptions = [
     FieldTypes.RADIO_BUTTON,
 ];
 
-function PropertyEditor<T>({ index, item }: PropertyEditorProps) {
+function PropertyEditor({ index, item }: PropertyEditorProps) {
     const formLabelField = useController({
         name: `custom_fields.${index}.label`,
     });
@@ -94,6 +94,7 @@ function PropertyEditor<T>({ index, item }: PropertyEditorProps) {
                     </div>
                     {fieldType?.id && hasOptions.includes(fieldType?.id) && (
                         <ChoicesGenerator
+                            index={index}
                             choices={optionsFieldArray.fields as any}
                             onRemove={(i) => optionsFieldArray.remove(i)}
                             onAppend={() =>

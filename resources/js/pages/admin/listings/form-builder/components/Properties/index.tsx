@@ -1,6 +1,6 @@
 import { Accordion } from '@/components/ui/accordion';
-import { FormFields } from '../..';
 import PropertyEditor from './PropertyEditor';
+import { FormFields } from '../..';
 
 type PropertiesProps = {
     items: FormFields[];
