@@ -50,6 +50,7 @@ function ChoicesGenerator({
                     <Accordion type='single' collapsible className='space-y-2'>
                         {choices.map((option, i) => (
                             <ChoiceItem
+                                key={option.id}
                                 option={option}
                                 nestedIndex={index}
                                 currentIndex={i}

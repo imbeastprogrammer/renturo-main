@@ -92,7 +92,11 @@ function FormBuilder() {
             });
     };
 
-    const handleSubmit = form.handleSubmit((data) => {});
+    const handleSubmit = form.handleSubmit((data) => {
+        console.log(data);
+    });
+
+    // TODO use zustand store instead of react-hook-form field array
 
     return (
         <div className='overflow-hidden'>

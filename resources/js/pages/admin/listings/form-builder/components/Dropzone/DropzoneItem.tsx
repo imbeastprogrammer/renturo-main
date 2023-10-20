@@ -42,6 +42,10 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
         name: `custom_fields.${index}.label`,
     });
 
+    const multipleAnswersField = useController({
+        name: `custom_fields.${index}.allow_multiple_option_answer`,
+    });
+
     const SelectedFieldTypeIcon = fieldTypes.find(
         ({ id }) => id === fieldTypeField.field.value,
     )?.icon;
@@ -65,10 +69,12 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
             <div className='space-y-2'>
                 <div className='flex items-center justify-between'>
                     <Select
-                        {...fieldTypeField.field}
-                        onValueChange={(value) =>
-                            fieldTypeField.field.onChange(value)
-                        }
+                        value={fieldTypeField.field.value}
+                        onValueChange={(value) => {
+                            fieldTypeField.field.onChange(value);
+                            multipleAnswersField.field.onChange(false);
+                            // TODO delete the options
+                        }}
                     >
                         <SelectTrigger className='w-[180px] border-none'>
                             <div className='flex items-center gap-2'>
