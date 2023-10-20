@@ -26,6 +26,7 @@ const formSchema = z.object({
         z.object({
             type: z.string(),
             label: z.string(),
+            is_required: z.boolean(),
             options: z.array(z.string()),
         }),
     ),
@@ -33,6 +34,7 @@ const formSchema = z.object({
 
 export type FormbuilderForm = z.infer<typeof formSchema>;
 export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
+type ToolboxItem = { title: string; icon: LucideIcon; id: string };
 
 const defaultValues: FormbuilderForm = {
     custom_fields: [],
@@ -40,7 +42,7 @@ const defaultValues: FormbuilderForm = {
 
 type ActiveToolbox = {
     id: string;
-    toolBoxItem: { title: string; icon: LucideIcon; id: string };
+    toolBoxItem: ToolboxItem;
 };
 
 function FormBuilder() {
@@ -83,6 +85,7 @@ function FormBuilder() {
             fieldArray.append({
                 type: active.id.toString(),
                 label: 'This label is editable',
+                is_required: false,
                 options: [],
             });
     };
