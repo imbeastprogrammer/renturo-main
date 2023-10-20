@@ -2,7 +2,7 @@ import emptyDropzone from '@/assets/empty-dropzone.png';
 
 function EmptyDropzone() {
     return (
-        <div className='grid h-full place-items-center bg-[#F4F4F4]'>
+        <div className='grid h-full place-items-center rounded-lg border-2 border-dashed border-metalic-blue bg-blue-50'>
             <div className='max-w-xl space-y-6 text-center'>
                 <img src={emptyDropzone} className='mx-auto h-72 w-72 ' />
                 <h1 className='text-[32px] font-bold text-metalic-blue'>

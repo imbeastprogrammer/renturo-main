@@ -15,23 +15,27 @@ import { LucideIcon } from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
 import Toolbox from './components/Toolbox';
-import DropzoneFieldArray from './components/DropzoneFieldArray';
-import ToolboxItem from './components/ToolBoxItem';
+import Dropzone from './components/Dropzone';
+import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
+import Properties from './components/Properties';
 import { toolboxItems } from './components/toolboxItems';
 
 const formSchema = z.object({
     custom_fields: z.array(
         z.object({
+            allow_multiple_option_answer: z.boolean(),
             type: z.string(),
             label: z.string(),
-            options: z.array(z.string()),
+            is_required: z.boolean(),
+            options: z.array(z.object({ value: z.string() })),
         }),
     ),
 });
 
 export type FormbuilderForm = z.infer<typeof formSchema>;
 export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
+type ToolboxItem = { title: string; icon: LucideIcon; id: string };
 
 const defaultValues: FormbuilderForm = {
     custom_fields: [],
@@ -39,7 +43,7 @@ const defaultValues: FormbuilderForm = {
 
 type ActiveToolbox = {
     id: string;
-    toolBoxItem: { title: string; icon: LucideIcon; id: string };
+    toolBoxItem: ToolboxItem;
 };
 
 function FormBuilder() {
@@ -80,13 +84,19 @@ function FormBuilder() {
 
         if (over?.id === 'droppable')
             fieldArray.append({
+                allow_multiple_option_answer: false,
                 type: active.id.toString(),
                 label: 'This label is editable',
+                is_required: true,
                 options: [],
             });
     };
 
-    const handleSubmit = form.handleSubmit((data) => {});
+    const handleSubmit = form.handleSubmit((data) => {
+        console.log(data);
+    });
+
+    // TODO use zustand store instead of react-hook-form field array
 
     return (
         <div className='overflow-hidden'>
@@ -100,9 +110,9 @@ function FormBuilder() {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                     >
-                        <div className='grid h-full grid-cols-[390px_1fr] overflow-hidden'>
+                        <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
                             <Toolbox items={toolboxItems} />
-                            <DropzoneFieldArray
+                            <Dropzone
                                 items={fieldArray.fields}
                                 isDragging={dragging}
                                 onRemove={(idx) => fieldArray.remove(idx)}
@@ -110,6 +120,7 @@ function FormBuilder() {
                                     fieldArray.swap(active, over)
                                 }
                             />
+                            <Properties items={fieldArray.fields} />
                         </div>
                         {active?.toolBoxItem && (
                             <DragOverlay>

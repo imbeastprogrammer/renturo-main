@@ -4,10 +4,9 @@ import { GripVerticalIcon, TrashIcon } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { FormFields } from '..';
 import { Input } from '@/components/ui/input';
 import { useController } from 'react-hook-form';
-import { toolboxItems } from './toolboxItems';
+import { FieldTypes, toolboxItems } from '../toolboxItems';
 import {
     Select,
     SelectContent,
@@ -15,6 +14,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { FormFields } from '../..';
+import { Textarea } from '@/components/ui/textarea';
 
 type DropzoneItemProps = {
     index: number;
@@ -33,11 +34,16 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
         transition,
     };
 
+    const fieldTypeField = useController({
+        name: `custom_fields.${index}.type`,
+    });
+
     const labelField = useController({
         name: `custom_fields.${index}.label`,
     });
-    const fieldTypeField = useController({
-        name: `custom_fields.${index}.type`,
+
+    const multipleAnswersField = useController({
+        name: `custom_fields.${index}.allow_multiple_option_answer`,
     });
 
     const SelectedFieldTypeIcon = fieldTypes.find(
@@ -64,9 +70,11 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
                 <div className='flex items-center justify-between'>
                     <Select
                         value={fieldTypeField.field.value}
-                        onValueChange={(value) =>
-                            fieldTypeField.field.onChange(value)
-                        }
+                        onValueChange={(value) => {
+                            fieldTypeField.field.onChange(value);
+                            multipleAnswersField.field.onChange(false);
+                            // TODO delete the options
+                        }}
                     >
                         <SelectTrigger className='w-[180px] border-none'>
                             <div className='flex items-center gap-2'>
@@ -90,20 +98,46 @@ function DropzoneItem({ item, onRemove, index }: DropzoneItemProps) {
                 </div>
                 <Separator />
                 <div>
-                    <Input
-                        value={labelField.field.value}
-                        onChange={(e) =>
-                            labelField.field.onChange(e.target.value)
-                        }
-                        className='border-none p-0 text-[20px] font-medium outline-none'
-                    />
+                    <h1 className='text-[20px] font-medium'>
+                        {labelField.field.value}
+                    </h1>
                 </div>
-                <div>
-                    <Input />
+                <div className='pointer-events-none'>
+                    {renderElement(fieldTypeField.field.value)}
                 </div>
             </div>
         </div>
     );
 }
+
+const renderElement = (fieldType: FieldTypes) => {
+    switch (fieldType) {
+        case FieldTypes.TEXT_FIELD:
+            return <Input />;
+        case FieldTypes.TEXT_AREA:
+            return <Textarea />;
+        case FieldTypes.NUMBER:
+            return <Input type='number' />;
+        case FieldTypes.EMAIL:
+            return <Input type='email' />;
+        case FieldTypes.DATE:
+            return <Input type='date' />;
+        case FieldTypes.TIME:
+            return <Input type='time' />;
+        case FieldTypes.DROPDOWN:
+            return (
+                <Select>
+                    <SelectTrigger>
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent></SelectContent>
+                </Select>
+            );
+        case FieldTypes.ATTACHMENT:
+            return <Input type='file' />;
+        case FieldTypes.IMAGE:
+            return <Input type='file' />;
+    }
+};
 
 export default DropzoneItem;

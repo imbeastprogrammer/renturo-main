@@ -9,7 +9,7 @@ type Item = { title: string; icon: LucideIcon; id: string };
 
 function Toolbox({ items }: ToolboxProps) {
     return (
-        <div className='rounded-lg border p-4 shadow-lg'>
+        <div className='p-4'>
             <div className='space-y-6'>
                 {items.map(({ items, label }) => (
                     <div className='space-y-4' key={label}>
