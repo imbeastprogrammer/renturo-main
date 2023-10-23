@@ -1,3 +1,4 @@
+import Email from './fields/Email';
 import Number from './fields/Number';
 import TextArea from './fields/TextArea';
 import TextField from './fields/TextField';
@@ -41,4 +42,5 @@ export const FormElements: FormElementsType = {
     'text-field': TextField,
     textarea: TextArea,
     number: Number,
+    email: Email,
 };
