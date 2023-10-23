@@ -22,7 +22,7 @@ export enum FieldTypes {
     TIME = 'time',
     DROPDOWN = 'dropdown',
     CHECKBOX = 'checkbox',
-    RADIO_BUTTON = 'radion-button',
+    RADIO_BUTTON = 'radio-button',
     CHECKLIST = 'checklist',
     ATTACHMENT = 'attachment',
     IMAGE = 'image',
