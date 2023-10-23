@@ -1,4 +1,5 @@
 import DateField from './fields/DateField';
+import DropdownField from './fields/DropdownField';
 import EmailField from './fields/EmailField';
 import NumberField from './fields/NumberField';
 import TextAreaField from './fields/TextAreaField';
@@ -47,4 +48,5 @@ export const FormElements: FormElementsType = {
     email: EmailField,
     date: DateField,
     time: TimeField,
+    dropdown: DropdownField,
 };
