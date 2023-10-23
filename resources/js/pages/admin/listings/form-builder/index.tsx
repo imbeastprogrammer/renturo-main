@@ -1,24 +1,17 @@
 import { z } from 'zod';
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useFieldArray, useForm } from 'react-hook-form';
 import {
     DndContext,
-    DragEndEvent,
-    DragOverlay,
-    DragStartEvent,
     PointerSensor,
+    TouchSensor,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
 import { LucideIcon } from 'lucide-react';
 
-import { Form } from '@/components/ui/form';
 import Toolbox from './components/Toolbox';
 import Dropzone from './components/Dropzone';
 import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
-import Properties from './components/Properties';
 import { toolboxItems } from './components/toolboxItems';
 
 const formSchema = z.object({
@@ -47,89 +40,29 @@ type ActiveToolbox = {
 };
 
 function FormBuilder() {
-    const [dragging, setDragging] = useState(false);
-    const [active, setActive] = useState<ActiveToolbox | null>(null);
-
-    const form = useForm<FormbuilderForm>({
-        defaultValues,
-        resolver: zodResolver(formSchema),
+    const touchSensor = useSensor(TouchSensor, {
+        activationConstraint: {
+            delay: 300,
+            tolerance: 5,
+        },
     });
 
-    const fieldArray = useFieldArray({
-        name: 'custom_fields',
-        control: form.control,
+    const mouseSensor = useSensor(PointerSensor, {
+        activationConstraint: {
+            distance: 10,
+        },
     });
 
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: {
-                distance: 10,
-            },
-        }),
-    );
-
-    const handleDragStart = (event: DragStartEvent) => {
-        const { active } = event;
-        setDragging(true);
-        setActive({
-            id: active.data.current?.id,
-            toolBoxItem: active.data.current?.toolboxItem,
-        });
-    };
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        setDragging(false);
-        setActive(null);
-
-        if (over?.id === 'droppable')
-            fieldArray.append({
-                allow_multiple_option_answer: false,
-                type: active.id.toString(),
-                label: 'This label is editable',
-                is_required: true,
-                options: [],
-            });
-    };
-
-    const handleSubmit = form.handleSubmit((data) => {
-        console.log(data);
-    });
-
-    // TODO use zustand store instead of react-hook-form field array
+    const sensors = useSensors(mouseSensor, touchSensor);
 
     return (
         <div className='overflow-hidden'>
-            <Form {...form}>
-                <form
-                    onSubmit={handleSubmit}
-                    className='h-full overflow-hidden'
-                >
-                    <DndContext
-                        sensors={sensors}
-                        onDragStart={handleDragStart}
-                        onDragEnd={handleDragEnd}
-                    >
-                        <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
-                            <Toolbox items={toolboxItems} />
-                            <Dropzone
-                                items={fieldArray.fields}
-                                isDragging={dragging}
-                                onRemove={(idx) => fieldArray.remove(idx)}
-                                onSort={(active, over) =>
-                                    fieldArray.swap(active, over)
-                                }
-                            />
-                            <Properties items={fieldArray.fields} />
-                        </div>
-                        {active?.toolBoxItem && (
-                            <DragOverlay>
-                                <ToolboxItem {...active.toolBoxItem} />
-                            </DragOverlay>
-                        )}
-                    </DndContext>
-                </form>
-            </Form>
+            <DndContext sensors={sensors}>
+                <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
+                    <Toolbox items={toolboxItems} />
+                    <Dropzone />
+                </div>
+            </DndContext>
         </div>
     );
 }

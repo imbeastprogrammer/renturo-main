@@ -1,83 +1,52 @@
 import { create } from 'zustand';
-import { arrayMove } from '@dnd-kit/sortable';
-import { FieldTypes } from '@/pages/admin/listings/form-builder/components/toolboxItems';
-
-type Fields = {
-    id: string;
-    type: FieldTypes;
-    is_required: boolean;
-    options: string[];
-    multiple_answer_accepted: boolean;
-};
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { FormElementInstance } from '@/pages/admin/listings/form-builder/components/FormElement';
 
 type FormBuilder = {
-    active_id: string;
-    fields: Fields[];
+    fields: FormElementInstance[];
+    setFields: (fields: FormElementInstance[]) => void;
+    addField: (index: number, field: FormElementInstance) => void;
+    removeField: (id: string) => void;
 
-    append: (fields: Fields) => void;
-    remove: (id: string) => void;
-    setActive: (id: string) => void;
-    swap: (leftIdx: number, rightIdx: number) => void;
-
-    // specific actions
-    updateType: (type: FieldTypes, idx: number) => void;
-    updateIsRequired: (isRequired: boolean, idx: number) => void;
-    updateMultipleAnswerAccepted: (current: boolean, idx: number) => void;
-    addOption: (option: string, idx: number) => void;
-    removeOption: (idx: number, optionIdx: number) => void;
-    updateOption: (option: string, idx: number, optionIdx: number) => void;
+    selectedField: FormElementInstance | null;
+    setSelectedField: (field: FormElementInstance) => void;
+    updateField: (id: string, field: FormElementInstance) => void;
 };
 
-const useFormBuilder = create<FormBuilder>()((set) => ({
-    fields: [],
-    active_id: '',
-    setActive: (id) => set((state) => ({ ...state, active_id: id })),
-    append: (newFields) =>
-        set((state) => ({ ...state, fields: [...state.fields, newFields] })),
-    remove: (id) =>
-        set((state) => ({
-            ...state,
-            fields: state.fields.filter((field) => field.id !== id),
-        })),
-    swap: (leftIdx, rightIdx) =>
-        set((state) => {
-            state.fields = arrayMove(state.fields, leftIdx, rightIdx);
-            return state;
+const useFormBuilder = create<FormBuilder>()(
+    persist(
+        (set) => ({
+            fields: [],
+            selectedField: null,
+            setFields: (fields) => set({ fields }),
+            addField: (index, field) =>
+                set((state) => {
+                    const prev = [...state.fields];
+                    prev.splice(index, 0, field);
+                    return { ...state, fields: prev };
+                }),
+            removeField: (id) =>
+                set((state) => {
+                    const newFields = state.fields.filter(
+                        (field) => field.id !== id,
+                    );
+                    return { ...state, fields: newFields };
+                }),
+            setSelectedField: (field) => set({ selectedField: field }),
+            updateField: (id, field) =>
+                set((state) => {
+                    const idx = state.fields.findIndex(
+                        (field) => field.id === id,
+                    );
+                    state.fields[idx] = field;
+                    return state;
+                }),
         }),
-
-    // specific actions
-    updateType: (type, idx) =>
-        set((state) => {
-            state.fields[idx].type = type;
-            return state;
-        }),
-    updateIsRequired: (isRequired, idx) =>
-        set((state) => {
-            state.fields[idx].is_required = isRequired;
-            return state;
-        }),
-    updateMultipleAnswerAccepted: (current, idx) =>
-        set((state) => {
-            state.fields[idx].multiple_answer_accepted = current;
-            return state;
-        }),
-
-    // options actions
-    addOption: (option, idx) =>
-        set((state) => {
-            state.fields[idx].options.push(option);
-            return state;
-        }),
-    removeOption: (idx, optionIdx) =>
-        set((state) => {
-            state.fields[idx].options.splice(optionIdx, 1);
-            return state;
-        }),
-    updateOption: (option, idx, optionIdx) =>
-        set((state) => {
-            state.fields[idx].options[optionIdx] = option;
-            return state;
-        }),
-}));
+        {
+            name: 'form-builder-storage',
+            storage: createJSONStorage(() => sessionStorage),
+        },
+    ),
+);
 
 export default useFormBuilder;

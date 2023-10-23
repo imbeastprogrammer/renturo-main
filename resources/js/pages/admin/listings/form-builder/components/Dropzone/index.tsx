@@ -1,69 +1,108 @@
-import { useRef } from 'react';
 import {
-    DndContext,
-    DragEndEvent,
-    closestCenter,
+    DragOverEvent,
+    useDndMonitor,
+    useDraggable,
     useDroppable,
 } from '@dnd-kit/core';
 import {
-    SortableContext,
-    verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+    ElementsType,
+    FormElementInstance,
+    FormElements,
+} from '../FormElement';
+import useFormBuilder from '@/hooks/useFormBuilder';
 
-import { FormFields } from '../..';
-import DropzoneItem from './DropzoneItem';
-import EmptyDropzone from './EmptyDropzone';
-
-type DropzoneProps = {
-    items: FormFields[];
-    isDragging: boolean;
-    onRemove: (idx: number) => void;
-    onSort: (activeIdx: number, overIdx: number) => void;
-};
-
-function Dropzone({ items, onRemove, onSort }: DropzoneProps) {
-    const lastElement = useRef<HTMLDivElement>(null);
+function Dropzone() {
+    const { fields, addField } = useFormBuilder();
 
     const { setNodeRef } = useDroppable({
-        id: 'droppable',
+        id: 'designer-drop-area',
+        data: {
+            isDesignerDropArea: true,
+        },
     });
 
-    const handleDragEnd = (e: DragEndEvent) => {
-        const { active, over } = e;
-        const activeIdx = active.data.current?.sortable.index;
-        const overIdx = over?.data.current?.sortable.index;
+    useDndMonitor({
+        onDragOver: (event: DragOverEvent) => {
+            const { active, over } = event;
+            const isDesignerDroppingArea =
+                over?.data.current?.isDesignerDropArea;
 
-        if (activeIdx !== overIdx) onSort(activeIdx, overIdx);
-    };
+            if (isDesignerDroppingArea) {
+                const type = active.data?.current?.type;
+                const newField = FormElements[type as ElementsType].construct(
+                    Date.now().toString(),
+                );
+                addField(fields.length, newField);
+            }
+        },
+    });
 
     return (
         <div ref={setNodeRef} className='relative overflow-hidden'>
-            <div className='hide-scrollbar relative h-full overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-8 shadow-lg'>
-                <DndContext
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                    modifiers={[restrictToVerticalAxis]}
-                >
-                    <SortableContext
-                        items={items}
-                        strategy={verticalListSortingStrategy}
-                    >
-                        <div className='space-y-2'>
-                            {items.map((item, idx) => (
-                                <DropzoneItem
-                                    key={item.id}
-                                    item={item}
-                                    index={idx}
-                                    onRemove={() => onRemove(idx)}
-                                />
-                            ))}
-                            <div ref={lastElement}></div>
-                        </div>
-                    </SortableContext>
-                </DndContext>
-                {!items.length && <EmptyDropzone />}
+            <div className='hide-scrollbar relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-8 shadow-lg'>
+                {fields.map((field) => (
+                    <DesignerElementWrapper key={field.id} element={field} />
+                ))}
             </div>
+        </div>
+    );
+}
+
+function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
+    const topHalf = useDroppable({
+        id: element.id + '-top',
+        data: {
+            type: element.type,
+            elementId: element.id,
+            isTopHalfDesignerElement: true,
+        },
+    });
+
+    const bottomHalf = useDroppable({
+        id: element.id + '-bottom',
+        data: {
+            type: element.type,
+            elementId: element.id,
+            isBottomHalfDesignerElement: true,
+        },
+    });
+
+    const draggable = useDraggable({
+        id: element.id + '-drag-handler',
+        data: {
+            type: element.type,
+            elementId: element.id,
+            isDesignerElement: true,
+        },
+    });
+
+    if (draggable.isDragging) return null;
+
+    const DesignerElement = FormElements[element.type].designerComponent;
+
+    return (
+        <div
+            ref={draggable.setNodeRef}
+            {...draggable.listeners}
+            {...draggable.attributes}
+            className='relative'
+        >
+            <div
+                ref={topHalf.setNodeRef}
+                className='absolute -top-full h-1/2 w-full rounded-t-md'
+            />
+            <div
+                ref={bottomHalf.setNodeRef}
+                className='absolute -top-full bottom-0 h-1/2 w-full rounded-b-md'
+            />
+
+            {topHalf.isOver && (
+                <div className='bg-primary absolute top-0 h-[7px] w-full rounded-md rounded-b-none' />
+            )}
+            <DesignerElement element={element} />
+            {bottomHalf.isOver && (
+                <div className='bg-primary absolute bottom-0 h-[7px] w-full rounded-md rounded-t-none' />
+            )}
         </div>
     );
 }
