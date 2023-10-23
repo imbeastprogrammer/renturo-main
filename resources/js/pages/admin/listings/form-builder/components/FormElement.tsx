@@ -1,3 +1,4 @@
+import TextArea from './fields/TextArea';
 import TextField from './fields/TextField';
 
 export type ElementsType =
@@ -35,7 +36,7 @@ type FormElementsType = {
     [key in ElementsType]: FormElement;
 };
 
-// partial to be removed soon
 export const FormElements: FormElementsType = {
     'text-field': TextField,
+    textarea: TextArea,
 };

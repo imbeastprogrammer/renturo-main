@@ -15,7 +15,7 @@ import {
 
 export enum FieldTypes {
     TEXT_FIELD = 'text-field',
-    TEXT_AREA = 'text-area',
+    TEXT_AREA = 'textarea',
     NUMBER = 'number',
     EMAIL = 'email',
     DATE = 'date',
