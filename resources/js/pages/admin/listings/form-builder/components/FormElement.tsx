@@ -1,4 +1,5 @@
 import CheckboxField from './fields/CheckboxField';
+import ChecklistField from './fields/ChecklistField';
 import DateField from './fields/DateField';
 import DropdownField from './fields/DropdownField';
 import EmailField from './fields/EmailField';
@@ -52,5 +53,6 @@ export const FormElements: FormElementsType = {
     time: TimeField,
     dropdown: DropdownField,
     checkbox: CheckboxField,
+    checklist: ChecklistField,
     'radio-button': RadioField,
 };
