@@ -2,12 +2,7 @@ import { TrashIcon } from 'lucide-react';
 import { FormElement, FormElementInstance } from '../FormElement';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 const extraAttributes = {
@@ -16,11 +11,11 @@ const extraAttributes = {
     options: [],
     multiple_answer_accepted: false,
 };
-const DropdownField: FormElement = {
-    type: 'dropdown',
+const CheckboxField: FormElement = {
+    type: 'checkbox',
     construct: (id: string) => ({
         id,
-        type: 'dropdown',
+        type: 'checkbox',
         extraAttributes,
     }),
     designerComponent: DesignerComponent,
@@ -50,12 +45,15 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Select>
-                    <SelectTrigger className='pointer-events-none'>
-                        <SelectValue placeholder='Select a fruit' />
-                    </SelectTrigger>
-                    <SelectContent></SelectContent>
-                </Select>
+                {elementInstance.extraAttributes.options.map((option) => (
+                    <div
+                        key={option}
+                        className='flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-2 px-4 text-metalic-blue'
+                    >
+                        <Checkbox className='border-metalic-blue' />
+                        <Label>{option}</Label>
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -65,4 +63,4 @@ function PropertiesComponent() {
     return <div>TextField</div>;
 }
 
-export default DropdownField;
+export default CheckboxField;
