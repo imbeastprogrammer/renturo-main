@@ -1,3 +1,4 @@
+import AttachmentField from './fields/AttachmentField';
 import CheckboxField from './fields/CheckboxField';
 import ChecklistField from './fields/ChecklistField';
 import DateField from './fields/DateField';
@@ -55,4 +56,5 @@ export const FormElements: FormElementsType = {
     checkbox: CheckboxField,
     checklist: ChecklistField,
     'radio-button': RadioField,
+    attachment: AttachmentField,
 };
