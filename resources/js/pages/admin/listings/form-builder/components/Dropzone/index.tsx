@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import {
     DragOverEvent,
     useDndMonitor,
@@ -30,7 +31,7 @@ function Dropzone() {
             if (isDesignerDroppingArea) {
                 const type = active.data?.current?.type;
                 const newField = FormElements[type as ElementsType].construct(
-                    Date.now().toString(),
+                    uuidv4(),
                 );
                 addField(fields.length, newField);
             }
