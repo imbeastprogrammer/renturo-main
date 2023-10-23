@@ -1,8 +1,9 @@
-import Date from './fields/Date';
-import Email from './fields/Email';
-import Number from './fields/Number';
-import TextArea from './fields/TextArea';
+import DateField from './fields/DateField';
+import EmailField from './fields/EmailField';
+import NumberField from './fields/NumberField';
+import TextAreaField from './fields/TextAreaField';
 import TextField from './fields/TextField';
+import TimeField from './fields/TimeField';
 
 export type ElementsType =
     | 'text-field'
@@ -41,8 +42,9 @@ type FormElementsType = {
 
 export const FormElements: FormElementsType = {
     'text-field': TextField,
-    textarea: TextArea,
-    number: Number,
-    email: Email,
-    date: Date,
+    textarea: TextAreaField,
+    number: NumberField,
+    email: EmailField,
+    date: DateField,
+    time: TimeField,
 };
