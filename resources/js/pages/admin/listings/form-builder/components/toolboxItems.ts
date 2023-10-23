@@ -7,7 +7,6 @@ import {
     FileCheck,
     FileDigitIcon,
     FileTypeIcon,
-    ImageIcon,
     MailIcon,
     PaperclipIcon,
     TypeIcon,
@@ -25,7 +24,6 @@ export enum FieldTypes {
     RADIO_BUTTON = 'radio-button',
     CHECKLIST = 'checklist',
     ATTACHMENT = 'attachment',
-    IMAGE = 'image',
 }
 
 export const toolboxItems = [
@@ -78,7 +76,6 @@ export const toolboxItems = [
                 icon: PaperclipIcon,
                 id: FieldTypes.ATTACHMENT,
             },
-            { title: 'Image', icon: ImageIcon, id: FieldTypes.IMAGE },
         ],
     },
 ];

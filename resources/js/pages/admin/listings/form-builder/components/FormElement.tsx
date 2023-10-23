@@ -21,8 +21,7 @@ export type ElementsType =
     | 'checkbox'
     | 'radio-button'
     | 'checklist'
-    | 'attachment'
-    | 'image';
+    | 'attachment';
 
 export type FormElementInstance = {
     id: string;
