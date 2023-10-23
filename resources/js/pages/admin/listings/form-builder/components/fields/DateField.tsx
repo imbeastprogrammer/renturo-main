@@ -9,7 +9,7 @@ const extraAttributes = {
     is_required: false,
     label: 'Editable Label',
 };
-const Date: FormElement = {
+const DateField: FormElement = {
     type: 'date',
     construct: (id: string) => ({
         id,
@@ -53,4 +53,4 @@ function PropertiesComponent() {
     return <div>TextField</div>;
 }
 
-export default Date;
+export default DateField;

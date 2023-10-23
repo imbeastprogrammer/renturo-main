@@ -10,7 +10,7 @@ const extraAttributes = {
     label: 'Editable Label',
     type: '',
 };
-const Number: FormElement = {
+const NumberField: FormElement = {
     type: 'number',
     construct: (id: string) => ({
         id,
@@ -54,4 +54,4 @@ function PropertiesComponent() {
     return <div>TextField</div>;
 }
 
-export default Number;
+export default NumberField;

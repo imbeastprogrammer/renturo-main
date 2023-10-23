@@ -2,18 +2,18 @@ import { TrashIcon } from 'lucide-react';
 import { FormElement, FormElementInstance } from '../FormElement';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 const extraAttributes = {
     is_required: false,
     label: 'Editable Label',
 };
-const Email: FormElement = {
-    type: 'email',
+const TextAreaField: FormElement = {
+    type: 'textarea',
     construct: (id: string) => ({
         id,
-        type: 'email',
+        type: 'textarea',
         extraAttributes,
     }),
     designerComponent: DesignerComponent,
@@ -43,7 +43,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='email' readOnly />
+                <Textarea readOnly />
             </div>
         </div>
     );
@@ -53,4 +53,4 @@ function PropertiesComponent() {
     return <div>TextField</div>;
 }
 
-export default Email;
+export default TextAreaField;
