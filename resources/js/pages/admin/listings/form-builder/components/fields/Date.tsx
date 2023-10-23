@@ -9,11 +9,11 @@ const extraAttributes = {
     is_required: false,
     label: 'Editable Label',
 };
-const Email: FormElement = {
-    type: 'email',
+const Date: FormElement = {
+    type: 'date',
     construct: (id: string) => ({
         id,
-        type: 'email',
+        type: 'date',
         extraAttributes,
     }),
     designerComponent: DesignerComponent,
@@ -43,7 +43,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='email' readOnly />
+                <Input type='date' readOnly />
             </div>
         </div>
     );
@@ -53,4 +53,4 @@ function PropertiesComponent() {
     return <div>TextField</div>;
 }
 
-export default Email;
+export default Date;

@@ -1,3 +1,4 @@
+import Date from './fields/Date';
 import Email from './fields/Email';
 import Number from './fields/Number';
 import TextArea from './fields/TextArea';
@@ -43,4 +44,5 @@ export const FormElements: FormElementsType = {
     textarea: TextArea,
     number: Number,
     email: Email,
+    date: Date,
 };
