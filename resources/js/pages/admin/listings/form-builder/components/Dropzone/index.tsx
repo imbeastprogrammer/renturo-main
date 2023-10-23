@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
-    DragOverEvent,
+    DragEndEvent,
     useDndMonitor,
     useDraggable,
     useDroppable,
@@ -23,7 +23,7 @@ function Dropzone() {
     });
 
     useDndMonitor({
-        onDragOver: (event: DragOverEvent) => {
+        onDragEnd: (event: DragEndEvent) => {
             const { active, over } = event;
             const isDesignerDroppingArea =
                 over?.data.current?.isDesignerDropArea;
@@ -82,29 +82,27 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     const DesignerElement = FormElements[element.type].designerComponent;
 
     return (
-        <div
-            ref={draggable.setNodeRef}
-            {...draggable.listeners}
-            {...draggable.attributes}
-            className='relative'
-        >
+        <>
+            <div ref={topHalf.setNodeRef} className='h-2 w-full rounded-t-md' />
             <div
-                ref={topHalf.setNodeRef}
-                className='absolute -top-full h-1/2 w-full rounded-t-md'
-            />
-            <div
-                ref={bottomHalf.setNodeRef}
-                className='absolute -top-full bottom-0 h-1/2 w-full rounded-b-md'
-            />
-
-            {topHalf.isOver && (
-                <div className='bg-primary absolute top-0 h-[7px] w-full rounded-md rounded-b-none' />
-            )}
-            <DesignerElement element={element} />
-            {bottomHalf.isOver && (
-                <div className='bg-primary absolute bottom-0 h-[7px] w-full rounded-md rounded-t-none' />
-            )}
-        </div>
+                ref={draggable.setNodeRef}
+                {...draggable.listeners}
+                {...draggable.attributes}
+                className='relative'
+            >
+                {topHalf.isOver && (
+                    <div className='bg-primary absolute top-0 h-[7px] w-full rounded-md rounded-b-none' />
+                )}
+                <DesignerElement element={element} />
+                {bottomHalf.isOver && (
+                    <div className='bg-primary absolute bottom-0 h-[7px] w-full rounded-md rounded-t-none' />
+                )}
+                <div
+                    ref={bottomHalf.setNodeRef}
+                    className='h-2 w-full rounded-b-md'
+                />
+            </div>
+        </>
     );
 }
 

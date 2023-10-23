@@ -13,6 +13,7 @@ import Dropzone from './components/Dropzone';
 import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import { toolboxItems } from './components/toolboxItems';
+import OverlayWrapper from './components/OverlayWrapper';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -62,6 +63,7 @@ function FormBuilder() {
                     <Toolbox items={toolboxItems} />
                     <Dropzone />
                 </div>
+                <OverlayWrapper />
             </DndContext>
         </div>
     );
