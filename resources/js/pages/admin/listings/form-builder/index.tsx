@@ -14,6 +14,7 @@ import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import { toolboxItems } from './components/toolboxItems';
 import OverlayWrapper from './components/OverlayWrapper';
+import Properties from './components/Properties';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -62,6 +63,7 @@ function FormBuilder() {
                 <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
                     <Toolbox items={toolboxItems} />
                     <Dropzone />
+                    <Properties />
                 </div>
                 <OverlayWrapper />
             </DndContext>

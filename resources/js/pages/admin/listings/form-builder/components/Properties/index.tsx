@@ -1,17 +1,19 @@
 import { Accordion } from '@/components/ui/accordion';
-import PropertyEditor from './PropertyEditor';
-import { FormFields } from '../..';
+import useFormBuilder from '@/hooks/useFormBuilder';
+import { FormElements } from '../FormElement';
 
-type PropertiesProps = {
-    items: FormFields[];
-};
-function Properties({ items }: PropertiesProps) {
+function Properties() {
+    const { fields } = useFormBuilder();
+
     return (
-        <div className='bg-[#f4f4f4] p-4 py-8'>
-            <Accordion type='single' className='space-y-4' collapsible>
-                {items.map((item, i) => (
-                    <PropertyEditor key={item.id} index={i} item={item} />
-                ))}
+        <div className='space-y-4 bg-[#f4f4f4] p-4 py-8'>
+            <Accordion type='single' collapsible>
+                {fields.map((field) => {
+                    const PropertyEditor =
+                        FormElements[field.type].propertiesComponent;
+
+                    return <PropertyEditor key={field.id} element={field} />;
+                })}
             </Accordion>
         </div>
     );
