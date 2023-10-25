@@ -1,9 +1,11 @@
 import { Accordion } from '@/components/ui/accordion';
-import useFormBuilder from '@/hooks/useFormBuilder';
 import { FormElements } from '../FormElement';
+import useFormBuilder from '@/hooks/useFormBuilder';
 
 function Properties() {
     const { fields } = useFormBuilder();
+
+    console.log(fields);
 
     return (
         <div className='space-y-4 bg-[#f4f4f4] p-4 py-8'>

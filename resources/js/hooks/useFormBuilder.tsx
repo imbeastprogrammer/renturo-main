@@ -35,11 +35,10 @@ const useFormBuilder = create<FormBuilder>()(
             setSelectedField: (field) => set({ selectedField: field }),
             updateField: (id, field) =>
                 set((state) => {
-                    const idx = state.fields.findIndex(
-                        (field) => field.id === id,
+                    const updated = state.fields.map((curr) =>
+                        curr.id === id ? field : curr,
                     );
-                    state.fields[idx] = field;
-                    return state;
+                    return { ...state, fields: updated };
                 }),
         }),
         {
