@@ -33,6 +33,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import useFieldTypes from '../../useFieldTypes';
+import PropertyEditorHandle from '../PropertyEditorHandle';
+import FieldTypeChanger from '../FieldTypeChanger';
 
 const extraAttributes = {
     is_required: false,
@@ -77,28 +79,12 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             onSelect={() => setSelectedField(element)}
         >
             <div className='flex justify-between'>
-                <Select
+                <FieldTypeChanger
+                    icon={currentFieldType?.icon}
                     value={currentFieldType?.id}
                     onValueChange={handleValueChange}
-                >
-                    <SelectTrigger className='w-max gap-4 border-none ring-transparent focus:ring-transparent'>
-                        <div className='flex items-center gap-4'>
-                            <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                                {currentFieldType?.icon && (
-                                    <currentFieldType.icon />
-                                )}
-                            </div>
-                        </div>
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {fieldTypes.map((item) => (
-                            <SelectItem key={item.id} value={item.id}>
-                                {item.title}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                    data={fieldTypes}
+                />
                 <TrashIcon onClick={() => removeField(element.id)} />
             </div>
             <Separator className='my-2' />
@@ -134,12 +120,12 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
     return (
         <AccordionItem value={element.id} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
-                <div className='flex items-center gap-4'>
-                    <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                        {currentFieldType?.icon && <currentFieldType.icon />}
-                    </div>
-                    {currentFieldType?.title}
-                </div>
+                {currentFieldType && (
+                    <PropertyEditorHandle
+                        icon={currentFieldType?.icon}
+                        type={currentFieldType?.title}
+                    />
+                )}
             </AccordionTrigger>
             <AccordionContent>
                 <Form {...form}>

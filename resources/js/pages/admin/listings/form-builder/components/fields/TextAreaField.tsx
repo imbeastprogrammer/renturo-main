@@ -25,17 +25,12 @@ import {
 } from '@/components/ui/accordion';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
 import useFormBuilder from '@/hooks/useFormBuilder';
 import useFieldTypes from '../../useFieldTypes';
+import FieldTypeChanger from '../FieldTypeChanger';
+import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
@@ -76,28 +71,12 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             onSelect={() => setSelectedField(element)}
         >
             <div className='flex justify-between'>
-                <Select
+                <FieldTypeChanger
+                    data={fieldTypes}
+                    icon={currentFieldType?.icon}
                     value={currentFieldType?.id}
                     onValueChange={handleValueChange}
-                >
-                    <SelectTrigger className='w-max gap-4 border-none ring-transparent focus:ring-transparent'>
-                        <div className='flex items-center gap-4'>
-                            <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                                {currentFieldType?.icon && (
-                                    <currentFieldType.icon />
-                                )}
-                            </div>
-                        </div>
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {fieldTypes.map((item) => (
-                            <SelectItem key={item.id} value={item.id}>
-                                {item.title}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                />
                 <TrashIcon
                     className='text-red-500'
                     onClick={() => removeField(element.id)}
@@ -136,12 +115,12 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
     return (
         <AccordionItem value={element.id} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
-                <div className='flex items-center gap-4'>
-                    <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                        {currentFieldType?.icon && <currentFieldType.icon />}
-                    </div>
-                    {currentFieldType?.title}
-                </div>
+                {currentFieldType && (
+                    <PropertyEditorHandle
+                        icon={currentFieldType?.icon}
+                        type={currentFieldType?.title}
+                    />
+                )}
             </AccordionTrigger>
             <AccordionContent>
                 <Form {...form}>
