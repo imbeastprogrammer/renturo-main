@@ -85,7 +85,10 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <TrashIcon onClick={() => removeField(element.id)} />
+                <TrashIcon
+                    className='text-red-500'
+                    onClick={() => removeField(element.id)}
+                />
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
