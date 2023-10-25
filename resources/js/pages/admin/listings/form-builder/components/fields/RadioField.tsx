@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { TrashIcon } from 'lucide-react';
-import { FormElement, FormElementInstance } from '../FormElement';
+import {
+    ElementsType,
+    FormElement,
+    FormElementInstance,
+    FormElements,
+} from '../FormElement';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -22,7 +27,11 @@ import {
 } from '@/components/ui/accordion';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+
 import useFormBuilder from '@/hooks/useFormBuilder';
+import FieldTypeChanger from '../FieldTypeChanger';
+import useFieldTypes from '../../useFieldTypes';
+import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
@@ -51,9 +60,15 @@ type DesignerComponentProps = {
     element: FormElementInstance;
 };
 function DesignerComponent({ element }: DesignerComponentProps) {
-    const { removeField, setSelectedField } = useFormBuilder();
+    const { removeField, setSelectedField, updateField } = useFormBuilder();
     const elementInstance = element as FormElementInstance & {
         extraAttributes: typeof extraAttributes;
+    };
+
+    const { currentFieldType, fieldTypes } = useFieldTypes(element.type);
+
+    const handleValueChange = (value: ElementsType) => {
+        updateField(element.id, FormElements[value].construct(element.id));
     };
 
     return (
@@ -62,8 +77,16 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             onSelect={() => setSelectedField(element)}
         >
             <div className='flex justify-between'>
-                <h1>{element.type}</h1>
-                <TrashIcon onClick={() => removeField(element.id)} />
+                <FieldTypeChanger
+                    icon={currentFieldType?.icon}
+                    value={currentFieldType?.id}
+                    onValueChange={handleValueChange}
+                    data={fieldTypes}
+                />
+                <TrashIcon
+                    className='text-red-500'
+                    onClick={() => removeField(element.id)}
+                />
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
@@ -102,6 +125,8 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const options = form.watch('options');
 
+    const { currentFieldType } = useFieldTypes(element.type);
+
     const applyChanges = form.handleSubmit((values) => {
         updateField(element.id, {
             ...element,
@@ -112,7 +137,12 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
     return (
         <AccordionItem value={element.id} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
-                {element.type}
+                {currentFieldType && (
+                    <PropertyEditorHandle
+                        type={currentFieldType?.title}
+                        icon={currentFieldType.icon}
+                    />
+                )}
             </AccordionTrigger>
             <AccordionContent>
                 <Form {...form}>
