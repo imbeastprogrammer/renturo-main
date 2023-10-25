@@ -34,7 +34,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 import useFormBuilder from '@/hooks/useFormBuilder';
-import { toolboxItems } from '../toolboxItems';
+import useFieldTypes from '../../useFieldTypes';
 
 const extraAttributes = {
     is_required: false,
@@ -63,8 +63,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         extraAttributes: typeof extraAttributes;
     };
 
-    const items = _.flatMapDeep(toolboxItems.map(({ items }) => items));
-    const type = items.find((item) => item.id === element.type);
+    const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
     const handleValueChange = (value: ElementsType) => {
         updateField(element.id, FormElements[value].construct(element.id));
@@ -76,17 +75,22 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             onSelect={() => setSelectedField(element)}
         >
             <div className='flex justify-between'>
-                <Select value={type?.id} onValueChange={handleValueChange}>
+                <Select
+                    value={currentFieldType?.id}
+                    onValueChange={handleValueChange}
+                >
                     <SelectTrigger className='w-max gap-4 border-none ring-transparent focus:ring-transparent'>
                         <div className='flex items-center gap-4'>
                             <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                                {type?.icon && <type.icon />}
+                                {currentFieldType?.icon && (
+                                    <currentFieldType.icon />
+                                )}
                             </div>
                         </div>
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        {items.map((item) => (
+                        {fieldTypes.map((item) => (
                             <SelectItem key={item.id} value={item.id}>
                                 {item.title}
                             </SelectItem>
@@ -120,8 +124,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
         resolver: zodResolver(schema),
     });
 
-    const items = _.flatMapDeep(toolboxItems.map(({ items }) => items));
-    const type = items.find((item) => item.id === element.type);
+    const { currentFieldType } = useFieldTypes(element.type);
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(element.id, {
@@ -135,9 +138,9 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
                 <div className='flex items-center gap-4'>
                     <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                        {type?.icon && <type.icon />}
+                        {currentFieldType?.icon && <currentFieldType.icon />}
                     </div>
-                    {type?.title}
+                    {currentFieldType?.title}
                 </div>
             </AccordionTrigger>
             <AccordionContent>
