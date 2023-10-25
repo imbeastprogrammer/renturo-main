@@ -1,6 +1,12 @@
+import _ from 'lodash';
 import { z } from 'zod';
 import { TrashIcon } from 'lucide-react';
-import { FormElement, FormElementInstance } from '../FormElement';
+import {
+    ElementsType,
+    FormElement,
+    FormElementInstance,
+    FormElements,
+} from '../FormElement';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,8 +25,17 @@ import {
 } from '@/components/ui/accordion';
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+
 import useFormBuilder from '@/hooks/useFormBuilder';
+import useFieldTypes from '../../useFieldTypes';
 
 const extraAttributes = {
     is_required: false,
@@ -44,9 +59,15 @@ type DesignerComponentProps = {
     element: FormElementInstance;
 };
 function DesignerComponent({ element }: DesignerComponentProps) {
-    const { removeField, setSelectedField } = useFormBuilder();
+    const { removeField, setSelectedField, updateField } = useFormBuilder();
     const elementInstance = element as FormElementInstance & {
         extraAttributes: typeof extraAttributes;
+    };
+
+    const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
+
+    const handleValueChange = (value: ElementsType) => {
+        updateField(element.id, FormElements[value].construct(element.id));
     };
 
     return (
@@ -55,8 +76,32 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             onSelect={() => setSelectedField(element)}
         >
             <div className='flex justify-between'>
-                <h1>{element.type}</h1>
-                <TrashIcon onClick={() => removeField(element.id)} />
+                <Select
+                    value={currentFieldType?.id}
+                    onValueChange={handleValueChange}
+                >
+                    <SelectTrigger className='w-max gap-4 border-none ring-transparent focus:ring-transparent'>
+                        <div className='flex items-center gap-4'>
+                            <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
+                                {currentFieldType?.icon && (
+                                    <currentFieldType.icon />
+                                )}
+                            </div>
+                        </div>
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {fieldTypes.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                                {item.title}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <TrashIcon
+                    className='text-red-500'
+                    onClick={() => removeField(element.id)}
+                />
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
@@ -79,6 +124,8 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
         resolver: zodResolver(schema),
     });
 
+    const { currentFieldType } = useFieldTypes(element.type);
+
     const applyChanges = form.handleSubmit((values) => {
         updateField(element.id, {
             ...element,
@@ -89,7 +136,12 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
     return (
         <AccordionItem value={element.id} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
-                {element.type}
+                <div className='flex items-center gap-4'>
+                    <div className='grid h-10 w-10 place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
+                        {currentFieldType?.icon && <currentFieldType.icon />}
+                    </div>
+                    {currentFieldType?.title}
+                </div>
             </AccordionTrigger>
             <AccordionContent>
                 <Form {...form}>
