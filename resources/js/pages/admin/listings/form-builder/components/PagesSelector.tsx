@@ -1,19 +1,21 @@
 import { GripVerticalIcon, TrashIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import useFormBuilder, { Page } from '@/hooks/useFormBuilder';
+import useFormBuilder from '@/hooks/useFormBuilder';
 
 function PagesSelector() {
     const { pages, setPage, current_page, removePage } = useFormBuilder();
 
-    const handlePageChange = (page: Page) => setPage(page);
-    const handleRemovePage = (page: Page) => removePage(page);
+    const handlePageChange = (page: string) => setPage(page);
+    const handleRemovePage = (page: string) => removePage(page);
 
     return (
         <div className='space-y-2'>
-            {pages.map((page) => (
+            {pages.map((page, i) => (
                 <PageItem
+                    key={page}
                     page={page}
-                    isActive={page.number === current_page.number}
+                    number={i + 1}
+                    isActive={page === current_page}
                     onPageChange={handlePageChange}
                     onRemovePage={handleRemovePage}
                 />
@@ -23,13 +25,15 @@ function PagesSelector() {
 }
 
 type PageItemProps = {
-    page: Page;
+    page: string;
+    number: number;
     isActive: boolean;
-    onPageChange: (page: Page) => void;
-    onRemovePage: (page: Page) => void;
+    onPageChange: (page: string) => void;
+    onRemovePage: (page: string) => void;
 };
 
 function PageItem({
+    number,
     page,
     onPageChange,
     onRemovePage,
@@ -46,8 +50,8 @@ function PageItem({
             <div className='flex justify-between'>
                 <div className='flex gap-2'>
                     <GripVerticalIcon className='text-gray-400' />
-                    <span className='font-semibold'>{`Page ${page.number}:`}</span>
-                    {page.title}
+                    <span className='font-semibold'>{`Page ${number}:`}</span>
+                    {page}
                 </div>
                 <div>
                     <TrashIcon
