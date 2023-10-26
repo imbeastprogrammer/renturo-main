@@ -32,7 +32,7 @@ function Dropzone() {
                 const type = active.data?.current?.type;
                 const newField = FormElements[type as ElementsType].construct(
                     uuidv4(),
-                    current_page.number,
+                    current_page,
                 );
                 return addField(fields.length, newField);
             }
@@ -83,7 +83,7 @@ function Dropzone() {
             <div className='hide-scrollbar relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-8 shadow-lg'>
                 <SortableContext items={fields}>
                     {fields
-                        .filter((field) => field.page === current_page.number)
+                        .filter((field) => field.page === current_page)
                         .map((field) => (
                             <DesignerElementWrapper
                                 key={field.id}

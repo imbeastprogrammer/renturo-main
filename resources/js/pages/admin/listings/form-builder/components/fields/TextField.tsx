@@ -65,7 +65,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const handleValueChange = (value: ElementsType) => {
         updateField(
             element.id,
-            FormElements[value].construct(element.id, current_page.number),
+            FormElements[value].construct(element.id, current_page),
         );
     };
 

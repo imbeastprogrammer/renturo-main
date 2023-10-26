@@ -32,8 +32,13 @@ const useFormBuilder = create<FormBuilder>()(
                             'the currently selected page cannot be deleted',
                         );
                     const updated = state.pages.filter((p) => p !== page);
+                    const updatedFields = state.fields.filter(
+                        (field) => field.page !== page,
+                    );
+
                     return {
                         ...state,
+                        fields: updatedFields,
                         pages: updated,
                     };
                 }),

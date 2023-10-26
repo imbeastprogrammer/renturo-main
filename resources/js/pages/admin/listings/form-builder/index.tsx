@@ -55,16 +55,16 @@ function FormBuilder() {
                         defaultValue='components'
                         className='grid grid-rows-[auto_1fr] gap-y-4 overflow-hidden p-6'
                     >
-                        <TabsList className='w-full rounded-full'>
+                        <TabsList className='h-max w-full rounded-full'>
                             <TabsTrigger
                                 value='components'
-                                className='w-full rounded-full'
+                                className='w-full rounded-full text-[20px]'
                             >
                                 Components
                             </TabsTrigger>
                             <TabsTrigger
                                 value='pages'
-                                className='w-full rounded-full'
+                                className='w-full rounded-full text-[20px]'
                             >
                                 Pages
                             </TabsTrigger>
