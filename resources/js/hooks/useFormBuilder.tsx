@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { FormElementInstance } from '@/pages/admin/listings/form-builder/components/FormElement';
 
-type Page = { title: string; number: number };
+export type Page = { title: string; number: number };
 
 type FormBuilder = {
     pages: Page[];

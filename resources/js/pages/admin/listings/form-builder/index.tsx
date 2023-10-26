@@ -14,7 +14,7 @@ import Dropzone from './components/Dropzone';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import OverlayWrapper from './components/OverlayWrapper';
 import Properties from './components/Properties';
-import useFormBuilder from '@/hooks/useFormBuilder';
+import PagesSelector from './components/PagesSelector';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -32,8 +32,6 @@ export type FormbuilderForm = z.infer<typeof formSchema>;
 export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
 
 function FormBuilder() {
-    const { pages, setPage } = useFormBuilder();
-
     const touchSensor = useSensor(TouchSensor, {
         activationConstraint: {
             delay: 300,
@@ -55,7 +53,7 @@ function FormBuilder() {
                 <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
                     <Tabs
                         defaultValue='components'
-                        className='grid grid-rows-[auto_1fr] overflow-hidden p-6'
+                        className='grid grid-rows-[auto_1fr] gap-y-4 overflow-hidden p-6'
                     >
                         <TabsList className='w-full rounded-full'>
                             <TabsTrigger
@@ -78,17 +76,7 @@ function FormBuilder() {
                             <Toolbox items={toolboxItems} />
                         </TabsContent>
                         <TabsContent value='pages'>
-                            <div className='space-y-2'>
-                                {pages.map((page) => (
-                                    <div
-                                        key={page.number}
-                                        onClick={() => setPage(page)}
-                                        className='cursor-pointer rounded-lg bg-blue-50 p-2 px-4'
-                                    >
-                                        {page.title}
-                                    </div>
-                                ))}
-                            </div>
+                            <PagesSelector />
                         </TabsContent>
                     </Tabs>
                     <Dropzone />
