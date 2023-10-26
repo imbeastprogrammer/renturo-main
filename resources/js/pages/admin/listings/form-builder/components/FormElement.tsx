@@ -26,12 +26,13 @@ export type ElementsType =
 export type FormElementInstance = {
     id: string;
     type: ElementsType;
+    page: number;
     extraAttributes?: Record<string, any>;
 };
 
 export type FormElement = {
     type: ElementsType;
-    construct: (id: string) => FormElementInstance;
+    construct: (id: string, page: number) => FormElementInstance;
     designerComponent: React.FC<{
         element: FormElementInstance;
     }>;

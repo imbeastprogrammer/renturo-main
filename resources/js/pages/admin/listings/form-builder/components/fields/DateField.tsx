@@ -42,10 +42,11 @@ const schema = z.object({
 
 const DateField: FormElement = {
     type: 'date',
-    construct: (id: string) => ({
+    construct: (id, page) => ({
         id,
         type: 'date',
         extraAttributes,
+        page,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -55,7 +56,8 @@ type DesignerComponentProps = {
     element: FormElementInstance;
 };
 function DesignerComponent({ element }: DesignerComponentProps) {
-    const { removeField, setSelectedField, updateField } = useFormBuilder();
+    const { removeField, setSelectedField, updateField, current_page } =
+        useFormBuilder();
     const elementInstance = element as FormElementInstance & {
         extraAttributes: typeof extraAttributes;
     };
@@ -63,7 +65,10 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
     const handleValueChange = (value: ElementsType) => {
-        updateField(element.id, FormElements[value].construct(element.id));
+        updateField(
+            element.id,
+            FormElements[value].construct(element.id, current_page.number),
+        );
     };
 
     return (

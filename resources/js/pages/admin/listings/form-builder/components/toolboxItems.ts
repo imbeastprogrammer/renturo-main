@@ -61,7 +61,7 @@ export const toolboxItems = [
                 id: FieldTypes.CHECKBOX,
             },
             {
-                title: 'Radio Button',
+                title: 'Radio',
                 icon: CircleIcon,
                 id: FieldTypes.RADIO_BUTTON,
             },

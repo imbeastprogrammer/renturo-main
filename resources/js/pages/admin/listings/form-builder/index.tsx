@@ -6,15 +6,15 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import { LucideIcon } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+import { toolboxItems } from './components/toolboxItems';
 import Toolbox from './components/Toolbox';
 import Dropzone from './components/Dropzone';
-import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
-import { toolboxItems } from './components/toolboxItems';
 import OverlayWrapper from './components/OverlayWrapper';
 import Properties from './components/Properties';
+import useFormBuilder from '@/hooks/useFormBuilder';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -30,18 +30,10 @@ const formSchema = z.object({
 
 export type FormbuilderForm = z.infer<typeof formSchema>;
 export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
-type ToolboxItem = { title: string; icon: LucideIcon; id: string };
-
-const defaultValues: FormbuilderForm = {
-    custom_fields: [],
-};
-
-type ActiveToolbox = {
-    id: string;
-    toolBoxItem: ToolboxItem;
-};
 
 function FormBuilder() {
+    const { pages, setPage } = useFormBuilder();
+
     const touchSensor = useSensor(TouchSensor, {
         activationConstraint: {
             delay: 300,
@@ -61,7 +53,44 @@ function FormBuilder() {
         <div className='overflow-hidden'>
             <DndContext sensors={sensors}>
                 <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
-                    <Toolbox items={toolboxItems} />
+                    <Tabs
+                        defaultValue='components'
+                        className='grid grid-rows-[auto_1fr] overflow-hidden p-6'
+                    >
+                        <TabsList className='w-full rounded-full'>
+                            <TabsTrigger
+                                value='components'
+                                className='w-full rounded-full'
+                            >
+                                Components
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value='pages'
+                                className='w-full rounded-full'
+                            >
+                                Pages
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                            value='components'
+                            className='hide-scrollbar overflow-auto'
+                        >
+                            <Toolbox items={toolboxItems} />
+                        </TabsContent>
+                        <TabsContent value='pages'>
+                            <div className='space-y-2'>
+                                {pages.map((page) => (
+                                    <div
+                                        key={page.number}
+                                        onClick={() => setPage(page)}
+                                        className='cursor-pointer rounded-lg bg-blue-50 p-2 px-4'
+                                    >
+                                        {page.title}
+                                    </div>
+                                ))}
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                     <Dropzone />
                     <Properties />
                 </div>

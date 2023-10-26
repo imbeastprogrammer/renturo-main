@@ -2,12 +2,17 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { FormElementInstance } from '@/pages/admin/listings/form-builder/components/FormElement';
 
+type Page = { title: string; number: number };
+
 type FormBuilder = {
+    pages: Page[];
+    current_page: Page;
     fields: FormElementInstance[];
+
+    setPage: (page: Page) => void;
     setFields: (fields: FormElementInstance[]) => void;
     addField: (index: number, field: FormElementInstance) => void;
     removeField: (id: string) => void;
-
     selectedField: FormElementInstance | null;
     setSelectedField: (field: FormElementInstance) => void;
     updateField: (id: string, field: FormElementInstance) => void;
@@ -17,7 +22,13 @@ const useFormBuilder = create<FormBuilder>()(
     persist(
         (set) => ({
             fields: [],
+            pages: [
+                { title: 'Page 1', number: 1 },
+                { title: 'Page 2', number: 2 },
+            ],
+            current_page: { title: 'Page 1', number: 1 },
             selectedField: null,
+            setPage: (page) => set({ current_page: page }),
             setFields: (fields) => set({ fields }),
             addField: (index, field) =>
                 set((state) => {

@@ -9,7 +9,7 @@ import useFormBuilder from '@/hooks/useFormBuilder';
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
 
 function Dropzone() {
-    const { fields, addField, setFields } = useFormBuilder();
+    const { fields, addField, setFields, current_page } = useFormBuilder();
 
     const { setNodeRef } = useDroppable({
         id: 'designer-drop-area',
@@ -32,6 +32,7 @@ function Dropzone() {
                 const type = active.data?.current?.type;
                 const newField = FormElements[type as ElementsType].construct(
                     uuidv4(),
+                    current_page.number,
                 );
                 return addField(fields.length, newField);
             }
@@ -81,12 +82,14 @@ function Dropzone() {
         <div ref={setNodeRef} className='relative overflow-hidden'>
             <div className='hide-scrollbar relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-8 shadow-lg'>
                 <SortableContext items={fields}>
-                    {fields.map((field) => (
-                        <DesignerElementWrapper
-                            key={field.id}
-                            element={field}
-                        />
-                    ))}
+                    {fields
+                        .filter((field) => field.page === current_page.number)
+                        .map((field) => (
+                            <DesignerElementWrapper
+                                key={field.id}
+                                element={field}
+                            />
+                        ))}
                 </SortableContext>
             </div>
         </div>

@@ -39,10 +39,11 @@ const schema = z.object({ is_required: z.boolean(), label: z.string() });
 
 const EmailField: FormElement = {
     type: 'email',
-    construct: (id: string) => ({
+    construct: (id, page) => ({
         id,
         type: 'email',
         extraAttributes,
+        page,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -52,7 +53,8 @@ type DesignerComponentProps = {
     element: FormElementInstance;
 };
 function DesignerComponent({ element }: DesignerComponentProps) {
-    const { removeField, setSelectedField, updateField } = useFormBuilder();
+    const { removeField, setSelectedField, updateField, current_page } =
+        useFormBuilder();
     const elementInstance = element as FormElementInstance & {
         extraAttributes: typeof extraAttributes;
     };
@@ -60,7 +62,10 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { currentFieldType, fieldTypes } = useFieldTypes(element.type);
 
     const handleValueChange = (value: ElementsType) => {
-        updateField(element.id, FormElements[value].construct(element.id));
+        updateField(
+            element.id,
+            FormElements[value].construct(element.id, current_page.number),
+        );
     };
 
     return (
