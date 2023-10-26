@@ -7,7 +7,6 @@ import {
     FileCheck,
     FileDigitIcon,
     FileTypeIcon,
-    ImageIcon,
     MailIcon,
     PaperclipIcon,
     TypeIcon,
@@ -15,17 +14,16 @@ import {
 
 export enum FieldTypes {
     TEXT_FIELD = 'text-field',
-    TEXT_AREA = 'text-area',
+    TEXT_AREA = 'textarea',
     NUMBER = 'number',
     EMAIL = 'email',
     DATE = 'date',
     TIME = 'time',
     DROPDOWN = 'dropdown',
     CHECKBOX = 'checkbox',
-    RADIO_BUTTON = 'radion-button',
+    RADIO_BUTTON = 'radio-button',
     CHECKLIST = 'checklist',
     ATTACHMENT = 'attachment',
-    IMAGE = 'image',
 }
 
 export const toolboxItems = [
@@ -63,7 +61,7 @@ export const toolboxItems = [
                 id: FieldTypes.CHECKBOX,
             },
             {
-                title: 'Radio Button',
+                title: 'Radio',
                 icon: CircleIcon,
                 id: FieldTypes.RADIO_BUTTON,
             },
@@ -78,7 +76,6 @@ export const toolboxItems = [
                 icon: PaperclipIcon,
                 id: FieldTypes.ATTACHMENT,
             },
-            { title: 'Image', icon: ImageIcon, id: FieldTypes.IMAGE },
         ],
     },
 ];

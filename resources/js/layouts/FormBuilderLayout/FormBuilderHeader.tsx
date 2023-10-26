@@ -16,7 +16,9 @@ function FormBuilderHeader() {
                     </Button>
                 </div>
                 <div>
-                    <h1 className='text-[30px] font-semibold'>Form Builder</h1>
+                    <h1 className='text-[30px] font-semibold leading-none'>
+                        Form Builder
+                    </h1>
                     <p className='text-[20px] text-gray-500'>
                         Add and customize forms
                     </p>

@@ -1,25 +1,20 @@
 import { z } from 'zod';
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useFieldArray, useForm } from 'react-hook-form';
 import {
     DndContext,
-    DragEndEvent,
-    DragOverlay,
-    DragStartEvent,
     PointerSensor,
+    TouchSensor,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import { LucideIcon } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { Form } from '@/components/ui/form';
+import { toolboxItems } from './components/toolboxItems';
 import Toolbox from './components/Toolbox';
 import Dropzone from './components/Dropzone';
-import ToolboxItem from './components/Toolbox/ToolBoxItem';
 import FormBuilderLayout from '@/layouts/FormBuilderLayout';
+import OverlayWrapper from './components/OverlayWrapper';
 import Properties from './components/Properties';
-import { toolboxItems } from './components/toolboxItems';
+import PagesSelector from './components/PagesSelector';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -35,101 +30,60 @@ const formSchema = z.object({
 
 export type FormbuilderForm = z.infer<typeof formSchema>;
 export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
-type ToolboxItem = { title: string; icon: LucideIcon; id: string };
-
-const defaultValues: FormbuilderForm = {
-    custom_fields: [],
-};
-
-type ActiveToolbox = {
-    id: string;
-    toolBoxItem: ToolboxItem;
-};
 
 function FormBuilder() {
-    const [dragging, setDragging] = useState(false);
-    const [active, setActive] = useState<ActiveToolbox | null>(null);
-
-    const form = useForm<FormbuilderForm>({
-        defaultValues,
-        resolver: zodResolver(formSchema),
+    const touchSensor = useSensor(TouchSensor, {
+        activationConstraint: {
+            delay: 300,
+            tolerance: 5,
+        },
     });
 
-    const fieldArray = useFieldArray({
-        name: 'custom_fields',
-        control: form.control,
+    const mouseSensor = useSensor(PointerSensor, {
+        activationConstraint: {
+            distance: 10,
+        },
     });
 
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: {
-                distance: 10,
-            },
-        }),
-    );
-
-    const handleDragStart = (event: DragStartEvent) => {
-        const { active } = event;
-        setDragging(true);
-        setActive({
-            id: active.data.current?.id,
-            toolBoxItem: active.data.current?.toolboxItem,
-        });
-    };
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-        setDragging(false);
-        setActive(null);
-
-        if (over?.id === 'droppable')
-            fieldArray.append({
-                allow_multiple_option_answer: false,
-                type: active.id.toString(),
-                label: 'This label is editable',
-                is_required: true,
-                options: [],
-            });
-    };
-
-    const handleSubmit = form.handleSubmit((data) => {
-        console.log(data);
-    });
-
-    // TODO use zustand store instead of react-hook-form field array
+    const sensors = useSensors(mouseSensor, touchSensor);
 
     return (
         <div className='overflow-hidden'>
-            <Form {...form}>
-                <form
-                    onSubmit={handleSubmit}
-                    className='h-full overflow-hidden'
-                >
-                    <DndContext
-                        sensors={sensors}
-                        onDragStart={handleDragStart}
-                        onDragEnd={handleDragEnd}
+            <DndContext sensors={sensors}>
+                <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
+                    <Tabs
+                        defaultValue='components'
+                        className='grid grid-rows-[auto_1fr] gap-y-4 overflow-hidden p-6'
                     >
-                        <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
+                        <TabsList className='h-max w-full rounded-full'>
+                            <TabsTrigger
+                                value='components'
+                                className='w-full rounded-full text-[20px]'
+                            >
+                                Components
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value='pages'
+                                className='w-full rounded-full text-[20px]'
+                            >
+                                Pages
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                            value='components'
+                            className='hide-scrollbar overflow-auto'
+                        >
                             <Toolbox items={toolboxItems} />
-                            <Dropzone
-                                items={fieldArray.fields}
-                                isDragging={dragging}
-                                onRemove={(idx) => fieldArray.remove(idx)}
-                                onSort={(active, over) =>
-                                    fieldArray.swap(active, over)
-                                }
-                            />
-                            <Properties items={fieldArray.fields} />
-                        </div>
-                        {active?.toolBoxItem && (
-                            <DragOverlay>
-                                <ToolboxItem {...active.toolBoxItem} />
-                            </DragOverlay>
-                        )}
-                    </DndContext>
-                </form>
-            </Form>
+                        </TabsContent>
+                        <TabsContent value='pages'>
+                            <PagesSelector />
+                        </TabsContent>
+                    </Tabs>
+                    <Dropzone />
+                    <Properties />
+                </div>
+                <OverlayWrapper />
+            </DndContext>
         </div>
     );
 }

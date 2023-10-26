@@ -14,7 +14,7 @@ function ToolboxItem(props: ToolBoxItemProps) {
     const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({
             id: props.id,
-            data: { id: props.id, toolboxItem: props },
+            data: { type: props.id, toolboxItem: props, isToolboxItem: true },
         });
 
     const style: CSSProperties = {
