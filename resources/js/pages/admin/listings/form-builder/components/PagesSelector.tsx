@@ -1,11 +1,12 @@
-import useFormBuilder, { Page } from '@/hooks/useFormBuilder';
-import { cn } from '@/lib/utils';
 import { GripVerticalIcon, TrashIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import useFormBuilder, { Page } from '@/hooks/useFormBuilder';
 
 function PagesSelector() {
-    const { pages, setPage, current_page } = useFormBuilder();
+    const { pages, setPage, current_page, removePage } = useFormBuilder();
 
     const handlePageChange = (page: Page) => setPage(page);
+    const handleRemovePage = (page: Page) => removePage(page);
 
     return (
         <div className='space-y-2'>
@@ -14,6 +15,7 @@ function PagesSelector() {
                     page={page}
                     isActive={page.number === current_page.number}
                     onPageChange={handlePageChange}
+                    onRemovePage={handleRemovePage}
                 />
             ))}
         </div>
@@ -24,9 +26,15 @@ type PageItemProps = {
     page: Page;
     isActive: boolean;
     onPageChange: (page: Page) => void;
+    onRemovePage: (page: Page) => void;
 };
 
-function PageItem({ page, onPageChange, isActive }: PageItemProps) {
+function PageItem({
+    page,
+    onPageChange,
+    onRemovePage,
+    isActive,
+}: PageItemProps) {
     return (
         <div
             onClick={() => onPageChange(page)}
@@ -42,7 +50,13 @@ function PageItem({ page, onPageChange, isActive }: PageItemProps) {
                     {page.title}
                 </div>
                 <div>
-                    <TrashIcon className='h-5 w-5 text-red-500' />
+                    <TrashIcon
+                        className='h-5 w-5 text-red-500'
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRemovePage(page);
+                        }}
+                    />
                 </div>
             </div>
         </div>

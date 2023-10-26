@@ -10,6 +10,7 @@ type FormBuilder = {
     fields: FormElementInstance[];
 
     setPage: (page: Page) => void;
+    removePage: (page: Page) => void;
     setFields: (fields: FormElementInstance[]) => void;
     addField: (index: number, field: FormElementInstance) => void;
     removeField: (id: string) => void;
@@ -29,6 +30,11 @@ const useFormBuilder = create<FormBuilder>()(
             current_page: { title: 'Page 1', number: 1 },
             selectedField: null,
             setPage: (page) => set({ current_page: page }),
+            removePage: (page) =>
+                set((state) => ({
+                    ...state,
+                    pages: state.pages.filter((p) => p.number !== page.number),
+                })),
             setFields: (fields) => set({ fields }),
             addField: (index, field) =>
                 set((state) => {
