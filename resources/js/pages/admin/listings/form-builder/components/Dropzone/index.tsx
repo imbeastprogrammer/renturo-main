@@ -7,6 +7,7 @@ import {
 } from '../FormElement';
 import useFormBuilder from '@/hooks/useFormBuilder';
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
+import { GripVerticalIcon } from 'lucide-react';
 
 function Dropzone() {
     const { fields, addField, setFields, current_page } = useFormBuilder();
@@ -150,10 +151,13 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             )}
             <div
                 ref={sortable.setNodeRef}
-                {...sortable.listeners}
                 {...sortable.attributes}
-                className='relative'
+                className='relative flex items-center gap-4 rounded-lg border bg-white p-4'
             >
+                <GripVerticalIcon
+                    {...sortable.listeners}
+                    {...sortable.attributes}
+                />
                 <div
                     ref={topHalf.setNodeRef}
                     className='pointer-events-none absolute h-1/2 w-full rounded-t-md'
