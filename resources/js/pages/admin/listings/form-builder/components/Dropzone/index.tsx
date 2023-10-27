@@ -135,20 +135,35 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     const DesignerElement = FormElements[element.type].designerComponent;
 
     return (
-        <div
-            ref={sortable.setNodeRef}
-            {...sortable.listeners}
-            {...sortable.attributes}
-            className='relative'
-        >
+        <>
             {topHalf.isOver && (
-                <div className='bg-primary absolute top-0 h-[7px] w-full rounded-md rounded-b-none' />
+                <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
+                    Drag and drop elements from the left to add a new component
+                </div>
             )}
-            <DesignerElement element={element} />
+            <div
+                ref={sortable.setNodeRef}
+                {...sortable.listeners}
+                {...sortable.attributes}
+                className='relative'
+            >
+                <div
+                    ref={topHalf.setNodeRef}
+                    className='absolute h-1/2 w-full rounded-t-md'
+                />
+                <div
+                    ref={bottomHalf.setNodeRef}
+                    className='absolute  bottom-0 h-1/2 w-full rounded-b-md'
+                />
+
+                <DesignerElement element={element} />
+            </div>
             {bottomHalf.isOver && (
-                <div className='bg-primary absolute bottom-0 h-[7px] w-full rounded-md rounded-t-none' />
+                <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
+                    Drag and drop elements from the left to add a new component
+                </div>
             )}
-        </div>
+        </>
     );
 }
 
