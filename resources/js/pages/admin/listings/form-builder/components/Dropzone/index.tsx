@@ -11,7 +11,7 @@ import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
 function Dropzone() {
     const { fields, addField, setFields, current_page } = useFormBuilder();
 
-    const { setNodeRef } = useDroppable({
+    const { setNodeRef, isOver } = useDroppable({
         id: 'designer-drop-area',
         data: {
             isDesignerDropArea: true,
@@ -37,31 +37,38 @@ function Dropzone() {
                 return addField(fields.length, newField);
             }
 
-            // const isDroppingOverDesignerElementBottomHalf =
-            //     over.data?.current?.isBottomHalfDesignerElement;
+            const isDroppingOverDesignerElementBottomHalf =
+                over.data?.current?.isBottomHalfDesignerElement;
+            const isDroppingOverDesignerElementTopHalf =
+                over.data?.current?.isTopHalfDesignerElement;
 
-            // if (isToolboxItem && isDroppingOverDesignerElementBottomHalf) {
-            //     const type = active.data?.current?.type;
-            //     const newElement = FormElements[type as ElementsType].construct(
-            //         uuidv4(),
-            //     );
+            const isDroppingOverDesignerElement =
+                isDroppingOverDesignerElementBottomHalf ||
+                isDroppingOverDesignerElementTopHalf;
 
-            //     const overId = over.data?.current?.elementId;
+            if (isToolboxItem && isDroppingOverDesignerElement) {
+                const type = active.data?.current?.type;
+                const newElement = FormElements[type as ElementsType].construct(
+                    uuidv4(),
+                    current_page,
+                );
 
-            //     const overElementIndex = fields.findIndex(
-            //         (el) => el.id === overId,
-            //     );
-            //     if (overElementIndex === -1) {
-            //         throw new Error('element not found');
-            //     }
+                const overId = over.data?.current?.elementId;
 
-            //     let indexForNewElement = overElementIndex; // i assume i'm on top-half
-            //     if (isDroppingOverDesignerElementBottomHalf) {
-            //         indexForNewElement = overElementIndex + 1;
-            //     }
+                const overElementIndex = fields.findIndex(
+                    (el) => el.id === overId,
+                );
+                if (overElementIndex === -1) {
+                    throw new Error('element not found');
+                }
 
-            //     return addField(indexForNewElement, newElement);
-            // }
+                let indexForNewElement = overElementIndex; // i assume i'm on top-half
+                if (isDroppingOverDesignerElementBottomHalf) {
+                    indexForNewElement = overElementIndex + 1;
+                }
+
+                return addField(indexForNewElement, newElement);
+            }
 
             const isDraggingDesignerElement =
                 active.data?.current?.isDesignerElement;
@@ -91,6 +98,12 @@ function Dropzone() {
                             />
                         ))}
                 </SortableContext>
+                {isOver && (
+                    <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
+                        Drag and drop elements from the left to add a new
+                        component
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -129,20 +142,34 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     const DesignerElement = FormElements[element.type].designerComponent;
 
     return (
-        <div
-            ref={sortable.setNodeRef}
-            {...sortable.listeners}
-            {...sortable.attributes}
-            className='relative'
-        >
+        <>
             {topHalf.isOver && (
-                <div className='bg-primary absolute top-0 h-[7px] w-full rounded-md rounded-b-none' />
+                <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
+                    Drag and drop elements from the left to add a new component
+                </div>
             )}
-            <DesignerElement element={element} />
+            <div
+                ref={sortable.setNodeRef}
+                {...sortable.listeners}
+                {...sortable.attributes}
+                className='relative'
+            >
+                <div
+                    ref={topHalf.setNodeRef}
+                    className='pointer-events-none absolute h-1/2 w-full rounded-t-md'
+                />
+                <div
+                    ref={bottomHalf.setNodeRef}
+                    className='pointer-events-none  absolute bottom-0 h-1/2 w-full rounded-b-md'
+                />
+                <DesignerElement element={element} />
+            </div>
             {bottomHalf.isOver && (
-                <div className='bg-primary absolute bottom-0 h-[7px] w-full rounded-md rounded-t-none' />
+                <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
+                    Drag and drop elements from the left to add a new component
+                </div>
             )}
-        </div>
+        </>
     );
 }
 
