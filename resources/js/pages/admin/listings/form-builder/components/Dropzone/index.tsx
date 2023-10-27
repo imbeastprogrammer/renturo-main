@@ -37,31 +37,38 @@ function Dropzone() {
                 return addField(fields.length, newField);
             }
 
-            // const isDroppingOverDesignerElementBottomHalf =
-            //     over.data?.current?.isBottomHalfDesignerElement;
+            const isDroppingOverDesignerElementBottomHalf =
+                over.data?.current?.isBottomHalfDesignerElement;
+            const isDroppingOverDesignerElementTopHalf =
+                over.data?.current?.isTopHalfDesignerElement;
 
-            // if (isToolboxItem && isDroppingOverDesignerElementBottomHalf) {
-            //     const type = active.data?.current?.type;
-            //     const newElement = FormElements[type as ElementsType].construct(
-            //         uuidv4(),
-            //     );
+            const isDroppingOverDesignerElement =
+                isDroppingOverDesignerElementBottomHalf ||
+                isDroppingOverDesignerElementTopHalf;
 
-            //     const overId = over.data?.current?.elementId;
+            if (isToolboxItem && isDroppingOverDesignerElement) {
+                const type = active.data?.current?.type;
+                const newElement = FormElements[type as ElementsType].construct(
+                    uuidv4(),
+                    current_page,
+                );
 
-            //     const overElementIndex = fields.findIndex(
-            //         (el) => el.id === overId,
-            //     );
-            //     if (overElementIndex === -1) {
-            //         throw new Error('element not found');
-            //     }
+                const overId = over.data?.current?.elementId;
 
-            //     let indexForNewElement = overElementIndex; // i assume i'm on top-half
-            //     if (isDroppingOverDesignerElementBottomHalf) {
-            //         indexForNewElement = overElementIndex + 1;
-            //     }
+                const overElementIndex = fields.findIndex(
+                    (el) => el.id === overId,
+                );
+                if (overElementIndex === -1) {
+                    throw new Error('element not found');
+                }
 
-            //     return addField(indexForNewElement, newElement);
-            // }
+                let indexForNewElement = overElementIndex; // i assume i'm on top-half
+                if (isDroppingOverDesignerElementBottomHalf) {
+                    indexForNewElement = overElementIndex + 1;
+                }
+
+                return addField(indexForNewElement, newElement);
+            }
 
             const isDraggingDesignerElement =
                 active.data?.current?.isDesignerElement;
@@ -149,13 +156,12 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             >
                 <div
                     ref={topHalf.setNodeRef}
-                    className='absolute h-1/2 w-full rounded-t-md'
+                    className='pointer-events-none absolute h-1/2 w-full rounded-t-md'
                 />
                 <div
                     ref={bottomHalf.setNodeRef}
-                    className='absolute  bottom-0 h-1/2 w-full rounded-b-md'
+                    className='pointer-events-none  absolute bottom-0 h-1/2 w-full rounded-b-md'
                 />
-
                 <DesignerElement element={element} />
             </div>
             {bottomHalf.isOver && (
