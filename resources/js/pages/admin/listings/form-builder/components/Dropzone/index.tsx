@@ -11,7 +11,7 @@ import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
 function Dropzone() {
     const { fields, addField, setFields, current_page } = useFormBuilder();
 
-    const { setNodeRef } = useDroppable({
+    const { setNodeRef, isOver } = useDroppable({
         id: 'designer-drop-area',
         data: {
             isDesignerDropArea: true,
@@ -91,6 +91,12 @@ function Dropzone() {
                             />
                         ))}
                 </SortableContext>
+                {isOver && (
+                    <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
+                        Drag and drop elements from the left to add a new
+                        component
+                    </div>
+                )}
             </div>
         </div>
     );
