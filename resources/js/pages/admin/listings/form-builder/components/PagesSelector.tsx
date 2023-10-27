@@ -1,4 +1,5 @@
-import { GripVerticalIcon, TrashIcon } from 'lucide-react';
+import { FileIcon, GripVerticalIcon, TrashIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
@@ -20,6 +21,12 @@ function PagesSelector() {
                     onRemovePage={handleRemovePage}
                 />
             ))}
+            <div className='flex justify-end'>
+                <Button className='mt-4 gap-2 bg-metalic-blue hover:bg-metalic-blue/90'>
+                    <FileIcon className='h-4 w-4' />
+                    Add Page
+                </Button>
+            </div>
         </div>
     );
 }
