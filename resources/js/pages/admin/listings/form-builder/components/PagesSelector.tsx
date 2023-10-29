@@ -1,25 +1,32 @@
-import { GripVerticalIcon, TrashIcon } from 'lucide-react';
+import { FileIcon, GripVerticalIcon, TrashIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 function PagesSelector() {
-    const { pages, setPage, current_page, removePage } = useFormBuilder();
+    const { pages, setPage, current_page_id, removePage } = useFormBuilder();
 
     const handlePageChange = (page: string) => setPage(page);
     const handleRemovePage = (page: string) => removePage(page);
 
     return (
         <div className='space-y-2'>
-            {pages.map((page, i) => (
+            {pages.map((currentPage, i) => (
                 <PageItem
-                    key={page}
-                    page={page}
+                    key={currentPage.page_id}
+                    page={currentPage.page_title}
                     number={i + 1}
-                    isActive={page === current_page}
+                    isActive={currentPage.page_id === current_page_id}
                     onPageChange={handlePageChange}
                     onRemovePage={handleRemovePage}
                 />
             ))}
+            <div className='flex justify-end'>
+                <Button className='mt-4 gap-2 bg-metalic-blue hover:bg-metalic-blue/90'>
+                    <FileIcon className='h-4 w-4' />
+                    Add Page
+                </Button>
+            </div>
         </div>
     );
 }
@@ -51,7 +58,7 @@ function PageItem({
                 <div className='flex gap-2'>
                     <GripVerticalIcon className='text-gray-400' />
                     <span className='font-semibold'>{`Page ${number}:`}</span>
-                    {page}
+                    {page || 'Untitled'}
                 </div>
                 <div>
                     <TrashIcon

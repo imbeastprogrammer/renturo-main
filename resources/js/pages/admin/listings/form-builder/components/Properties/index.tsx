@@ -3,21 +3,18 @@ import { FormElements } from '../FormElement';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 function Properties() {
-    const { fields, current_page } = useFormBuilder();
+    const { pages, current_page_id: current_page } = useFormBuilder();
+    const currentPage = pages.find((page) => page.page_id === current_page);
 
     return (
         <div className='space-y-4 bg-[#f4f4f4] p-4 py-8'>
             <Accordion type='single' collapsible>
-                {fields
-                    .filter((field) => field.page === current_page)
-                    .map((field) => {
-                        const PropertyEditor =
-                            FormElements[field.type].propertiesComponent;
+                {currentPage?.fields.map((field) => {
+                    const PropertyEditor =
+                        FormElements[field.type].propertiesComponent;
 
-                        return (
-                            <PropertyEditor key={field.id} element={field} />
-                        );
-                    })}
+                    return <PropertyEditor key={field.id} element={field} />;
+                })}
             </Accordion>
         </div>
     );
