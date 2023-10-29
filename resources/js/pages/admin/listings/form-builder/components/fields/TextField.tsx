@@ -40,11 +40,10 @@ const schema = z.object({ is_required: z.boolean(), label: z.string() });
 
 const TextField: FormElement = {
     type: 'text-field',
-    construct: (id, page) => ({
+    construct: (id) => ({
         id,
         type: 'text-field',
         extraAttributes,
-        page,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -54,7 +53,7 @@ type DesignerComponentProps = {
     element: FormElementInstance;
 };
 function DesignerComponent({ element }: DesignerComponentProps) {
-    const { removeField, setSelectedField, updateField, current_page } =
+    const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
     const elementInstance = element as FormElementInstance & {
         extraAttributes: typeof extraAttributes;
@@ -64,8 +63,9 @@ function DesignerComponent({ element }: DesignerComponentProps) {
 
     const handleValueChange = (value: ElementsType) => {
         updateField(
+            current_page_id,
             element.id,
-            FormElements[value].construct(element.id, current_page),
+            FormElements[value].construct(element.id),
         );
     };
 
@@ -80,7 +80,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 />
                 <TrashIcon
                     className='text-red-500'
-                    onClick={() => removeField(element.id)}
+                    onClick={() => removeField(current_page_id, element.id)}
                 />
             </div>
             <Separator className='my-2' />
@@ -99,7 +99,7 @@ type PropertiesComponentProps = {
 };
 
 function PropertiesComponent({ element }: PropertiesComponentProps) {
-    const { updateField } = useFormBuilder();
+    const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
         defaultValues: element.extraAttributes,
         resolver: zodResolver(schema),
@@ -108,7 +108,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { currentFieldType } = useFieldTypes(element.type);
 
     const applyChanges = form.handleSubmit((values) => {
-        updateField(element.id, {
+        updateField(current_page_id, element.id, {
             ...element,
             extraAttributes: { ...values },
         });

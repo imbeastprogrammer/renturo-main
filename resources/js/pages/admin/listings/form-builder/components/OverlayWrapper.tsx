@@ -6,8 +6,9 @@ import ToolboxItem from './Toolbox/ToolBoxItem';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 function OverlayWrapper() {
-    const { fields } = useFormBuilder();
+    const { pages, current_page_id } = useFormBuilder();
     const [draggedItem, setDraggedItem] = useState<Active | null>(null);
+    const currentPage = pages.find((page) => page.page_id === current_page_id);
 
     useDndMonitor({
         onDragStart: (event) => {
@@ -32,9 +33,9 @@ function OverlayWrapper() {
     }
 
     const isDesignerElement = draggedItem.data?.current?.isDesignerElement;
-    if (isDesignerElement) {
+    if (isDesignerElement && currentPage) {
         const elementId = draggedItem.data?.current?.elementId;
-        const element = fields.find((el) => el.id === elementId);
+        const element = currentPage.fields.find((el) => el.id === elementId);
         if (!element) node = <div>Element not found!</div>;
         else {
             const DesignerElementComponent =
