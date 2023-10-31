@@ -8,6 +8,7 @@ import {
 import useFormBuilder from '@/hooks/useFormBuilder';
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
 import { GripVerticalIcon } from 'lucide-react';
+import EmptyDropzone from './EmptyDropzone';
 
 function Dropzone() {
     const { pages, addField, setFields, current_page_id } = useFormBuilder();
@@ -107,6 +108,7 @@ function Dropzone() {
                         />
                     ))}
                 </SortableContext>
+                {!currentPage?.fields.length && !isOver && <EmptyDropzone />}
                 {isOver && (
                     <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
                         Drag and drop elements from the left to add a new

@@ -3,7 +3,7 @@ import {
     DndContext,
     PointerSensor,
     TouchSensor,
-    closestCorners,
+    closestCenter,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -16,6 +16,8 @@ import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import OverlayWrapper from './components/OverlayWrapper';
 import Properties from './components/Properties';
 import PagesSelector from './components/PagesSelector';
+import { useState } from 'react';
+import PageEditors from './components/PageEditors';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -33,6 +35,8 @@ export type FormbuilderForm = z.infer<typeof formSchema>;
 export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
 
 function FormBuilder() {
+    const [active, setActive] = useState('components');
+
     const touchSensor = useSensor(TouchSensor, {
         activationConstraint: {
             delay: 300,
@@ -50,11 +54,12 @@ function FormBuilder() {
 
     return (
         <div className='overflow-hidden'>
-            <DndContext collisionDetection={closestCorners} sensors={sensors}>
+            <DndContext collisionDetection={closestCenter} sensors={sensors}>
                 <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
                     <Tabs
-                        defaultValue='components'
+                        defaultValue={active}
                         className='grid grid-rows-[auto_1fr] gap-y-4 overflow-hidden p-6'
+                        onValueChange={setActive}
                     >
                         <TabsList className='h-max w-full rounded-full'>
                             <TabsTrigger
@@ -81,7 +86,7 @@ function FormBuilder() {
                         </TabsContent>
                     </Tabs>
                     <Dropzone />
-                    <Properties />
+                    {active === 'components' ? <Properties /> : <PageEditors />}
                 </div>
                 <OverlayWrapper />
             </DndContext>
