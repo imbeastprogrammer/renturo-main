@@ -14,6 +14,7 @@ type FormBuilder = {
     current_page_id: string;
     setPage: (pageId: string) => void;
     addPage: () => void;
+    setPages: (pages: Page[]) => void;
     removePage: (pageId: string) => void;
     setFields: (pageId: string, fields: FormElementInstance[]) => void;
     addField: (
@@ -44,6 +45,7 @@ const useFormBuilder = create<FormBuilder>()(
             current_page_id: defaultPage.page_id,
             selectedField: null,
             setPage: (pageId) => set({ current_page_id: pageId }),
+            setPages: (pages) => set({ pages }),
             addPage: () =>
                 set((state) => ({
                     ...state,
