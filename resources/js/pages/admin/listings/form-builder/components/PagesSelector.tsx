@@ -105,7 +105,7 @@ export function PageItem({
             )}
         >
             <div className='flex justify-between'>
-                <div className='flex gap-2'>
+                <div className='flex gap-2 text-[14px]'>
                     <GripVerticalIcon
                         {...sortable.listeners}
                         {...sortable.attributes}

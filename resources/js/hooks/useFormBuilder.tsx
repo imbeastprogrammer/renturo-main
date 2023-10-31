@@ -15,6 +15,7 @@ type FormBuilder = {
     setPage: (pageId: string) => void;
     addPage: () => void;
     setPages: (pages: Page[]) => void;
+    updatePage: (pageId: string, page: Page) => void;
     removePage: (pageId: string) => void;
     setFields: (pageId: string, fields: FormElementInstance[]) => void;
     addField: (
@@ -54,6 +55,13 @@ const useFormBuilder = create<FormBuilder>()(
                         { page_id: uuidv4(), page_title: '', fields: [] },
                     ],
                 })),
+            updatePage: (pageId, newPage) =>
+                set((state) => {
+                    const pageUpdated = state.pages.map((page) =>
+                        page.page_id === pageId ? newPage : page,
+                    );
+                    return { ...state, pages: pageUpdated };
+                }),
             removePage: (pageId) =>
                 set((state) => {
                     if (state.current_page_id === pageId)
