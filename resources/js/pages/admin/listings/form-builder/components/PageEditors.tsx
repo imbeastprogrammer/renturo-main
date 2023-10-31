@@ -24,11 +24,11 @@ function PageEditors() {
     const { pages } = useFormBuilder();
 
     return (
-        <div className='h-full bg-[#f4f4f4] p-8'>
+        <div className='h-full bg-[#f4f4f4] px-4 py-8'>
             <Accordion type='single' collapsible className='space-y-2'>
                 {pages.map((page, i) => (
                     <AccordionItem value={page.page_id} className='border-0'>
-                        <AccordionTrigger className='rounded-lg bg-white px-4'>
+                        <AccordionTrigger className='rounded-lg bg-white px-4 py-3'>
                             <div className='flex items-center gap-4 text-[12px]'>
                                 <div className='grid h-[30px] w-[30px] place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
                                     <FileIcon className='h-[19px] w-[19px]' />
