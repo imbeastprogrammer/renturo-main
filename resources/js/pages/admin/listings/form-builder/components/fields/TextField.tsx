@@ -27,7 +27,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 
 import useFormBuilder from '@/hooks/useFormBuilder';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 

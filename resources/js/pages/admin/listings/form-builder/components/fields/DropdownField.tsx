@@ -35,7 +35,7 @@ import { Button } from '@/components/ui/button';
 
 import useFormBuilder from '@/hooks/useFormBuilder';
 import FieldTypeChanger from '../FieldTypeChanger';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { useState } from 'react';
 import {
     DndContext,
     PointerSensor,
@@ -16,8 +17,9 @@ import FormBuilderLayout from '@/layouts/FormBuilderLayout';
 import OverlayWrapper from './components/OverlayWrapper';
 import Properties from './components/Properties';
 import PagesSelector from './components/PagesSelector';
-import { useState } from 'react';
 import PageEditors from './components/PageEditors';
+import useMenuToggle from './hooks/useMenuToggle';
+import Sidebar from './components/Sidebar';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -35,6 +37,7 @@ export type FormbuilderForm = z.infer<typeof formSchema>;
 export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
 
 function FormBuilder() {
+    const sidebar = useMenuToggle();
     const [active, setActive] = useState('components');
 
     const touchSensor = useSensor(TouchSensor, {
@@ -56,35 +59,39 @@ function FormBuilder() {
         <div className='overflow-hidden'>
             <DndContext collisionDetection={closestCenter} sensors={sensors}>
                 <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
-                    <Tabs
-                        defaultValue={active}
-                        className='grid grid-rows-[auto_1fr] gap-y-4 overflow-hidden p-6'
-                        onValueChange={setActive}
-                    >
-                        <TabsList className='h-max w-full rounded-full'>
-                            <TabsTrigger
-                                value='components'
-                                className='w-full rounded-full text-[20px]'
-                            >
-                                Components
-                            </TabsTrigger>
-                            <TabsTrigger
-                                value='pages'
-                                className='w-full rounded-full text-[20px]'
-                            >
-                                Pages
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value='components'
-                            className='hide-scrollbar overflow-auto'
+                    {sidebar.isOpen ? (
+                        <Sidebar />
+                    ) : (
+                        <Tabs
+                            defaultValue={active}
+                            className='grid grid-rows-[auto_1fr] gap-y-4 overflow-hidden p-6'
+                            onValueChange={setActive}
                         >
-                            <Toolbox items={toolboxItems} />
-                        </TabsContent>
-                        <TabsContent value='pages'>
-                            <PagesSelector />
-                        </TabsContent>
-                    </Tabs>
+                            <TabsList className='h-max w-full rounded-full'>
+                                <TabsTrigger
+                                    value='components'
+                                    className='w-full rounded-full text-[20px]'
+                                >
+                                    Components
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value='pages'
+                                    className='w-full rounded-full text-[20px]'
+                                >
+                                    Pages
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent
+                                value='components'
+                                className='hide-scrollbar overflow-auto'
+                            >
+                                <Toolbox items={toolboxItems} />
+                            </TabsContent>
+                            <TabsContent value='pages'>
+                                <PagesSelector />
+                            </TabsContent>
+                        </Tabs>
+                    )}
                     <Dropzone />
                     {active === 'components' ? <Properties /> : <PageEditors />}
                 </div>

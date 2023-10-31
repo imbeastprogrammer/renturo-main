@@ -32,7 +32,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 import FieldTypeChanger from '../FieldTypeChanger';
 

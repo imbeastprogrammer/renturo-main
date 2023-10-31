@@ -34,7 +34,7 @@ import { Switch } from '@/components/ui/switch';
 
 import useFormBuilder from '@/hooks/useFormBuilder';
 import PropertyEditorHandle from '../PropertyEditorHandle';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 
 const extraAttributes = {
