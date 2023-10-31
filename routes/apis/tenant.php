@@ -27,10 +27,14 @@ Route::middleware([
         Route::post('register', [RegisterController::class, 'register']);
 
         Route::middleware('auth:api')->group(function () {
+            Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);
+            Route::post('/resend/mobile/verification', [VerifyMobileController::class, 'store']);
+        });
+
+        Route::middleware(['auth:api', 'verifiedMobileNumber'])->group(function () {
             Route::get('/user', function (Request $request) {
                 return $request->user();
             });
-            Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);
             Route::put('/password', [PasswordController::class, 'update']);
             Route::delete('logout', [LoginController::class, 'logout']);
         });

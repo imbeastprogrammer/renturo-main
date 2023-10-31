@@ -10,6 +10,29 @@ use Auth;
 
 class VerifyMobileController extends Controller
 {
+    public function store()
+    {
+        $verificationCode = rand(1000, 9999);
+        $mobileNumber = Auth::user()->verified_mobile_no->mobile_no;
+
+        if (Auth::user()->verified_mobile_no->expires_at > Carbon::now()) {
+            return response()->json([
+                'message' => 'Too many request for verification code. Please retry after waiting for 300 seconds.'
+            ], 429);
+        };
+
+        Auth::user()->mobileVerification()->create([
+            'mobile_no' => $mobileNumber,
+            'code' => $verificationCode,
+            'expires_at' => Carbon::now()->addSeconds(300)
+        ]);
+
+        return response()->json([
+            'message' => 'The verification code for your mobile has been sent to the number ' . $mobileNumber . '.',
+            'verification_code' => $verificationCode // return temporary in response
+        ], 201);
+    }
+
     public function update(Request $request)
     {
         $request->validate([

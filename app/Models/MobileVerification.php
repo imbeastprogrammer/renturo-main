@@ -13,7 +13,8 @@ class MobileVerification extends Model
         'user_id',
         'mobile_no',
         'code',
-        'verified_at'
+        'verified_at',
+        'expires_at'
     ];
 
     public function user()
