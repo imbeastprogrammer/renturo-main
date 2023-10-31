@@ -13,6 +13,9 @@ type FormBuilder = {
     pages: Page[];
     current_page_id: string;
     setPage: (pageId: string) => void;
+    addPage: () => void;
+    setPages: (pages: Page[]) => void;
+    updatePage: (pageId: string, page: Page) => void;
     removePage: (pageId: string) => void;
     setFields: (pageId: string, fields: FormElementInstance[]) => void;
     addField: (
@@ -43,8 +46,26 @@ const useFormBuilder = create<FormBuilder>()(
             current_page_id: defaultPage.page_id,
             selectedField: null,
             setPage: (pageId) => set({ current_page_id: pageId }),
+            setPages: (pages) => set({ pages }),
+            addPage: () =>
+                set((state) => ({
+                    ...state,
+                    pages: [
+                        ...state.pages,
+                        { page_id: uuidv4(), page_title: '', fields: [] },
+                    ],
+                })),
+            updatePage: (pageId, newPage) =>
+                set((state) => {
+                    const pageUpdated = state.pages.map((page) =>
+                        page.page_id === pageId ? newPage : page,
+                    );
+                    return { ...state, pages: pageUpdated };
+                }),
             removePage: (pageId) =>
                 set((state) => {
+                    if (state.current_page_id === pageId)
+                        throw new Error('You cannot delete a active page');
                     const pageRemoved = state.pages.filter(
                         (page) => page.page_id !== pageId,
                     );

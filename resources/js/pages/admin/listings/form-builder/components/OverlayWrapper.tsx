@@ -4,6 +4,7 @@ import { FormElements } from './FormElement';
 import { GripVerticalIcon } from 'lucide-react';
 import ToolboxItem from './Toolbox/ToolBoxItem';
 import useFormBuilder from '@/hooks/useFormBuilder';
+import { PageItem } from './PagesSelector';
 
 function OverlayWrapper() {
     const { pages, current_page_id } = useFormBuilder();
@@ -47,6 +48,12 @@ function OverlayWrapper() {
                 </div>
             );
         }
+    }
+
+    const isPageHandle = draggedItem?.data?.current?.isPageHandle;
+    if (isPageHandle) {
+        const activePageHandle = draggedItem.data.current?.activePageHandle;
+        node = <PageItem {...activePageHandle} />;
     }
 
     return <DragOverlay>{node}</DragOverlay>;

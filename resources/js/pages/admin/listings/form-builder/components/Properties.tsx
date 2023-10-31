@@ -1,5 +1,5 @@
 import { Accordion } from '@/components/ui/accordion';
-import { FormElements } from '../FormElement';
+import { FormElements } from './FormElement';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 function Properties() {
