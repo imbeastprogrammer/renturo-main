@@ -4,10 +4,11 @@ import { cn } from '@/lib/utils';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 function PagesSelector() {
-    const { pages, setPage, current_page_id, removePage } = useFormBuilder();
+    const { pages, setPage, current_page_id, removePage, addPage } =
+        useFormBuilder();
 
-    const handlePageChange = (page: string) => setPage(page);
-    const handleRemovePage = (page: string) => removePage(page);
+    const handlePageChange = (pageId: string) => setPage(pageId);
+    const handleRemovePage = (pageId: string) => removePage(pageId);
 
     return (
         <div className='space-y-2'>
@@ -17,12 +18,15 @@ function PagesSelector() {
                     page={currentPage.page_title}
                     number={i + 1}
                     isActive={currentPage.page_id === current_page_id}
-                    onPageChange={handlePageChange}
-                    onRemovePage={handleRemovePage}
+                    onPageChange={() => handlePageChange(currentPage.page_id)}
+                    onRemovePage={() => handleRemovePage(currentPage.page_id)}
                 />
             ))}
             <div className='flex justify-end'>
-                <Button className='mt-4 gap-2 bg-metalic-blue hover:bg-metalic-blue/90'>
+                <Button
+                    onClick={addPage}
+                    className='mt-4 gap-2 bg-metalic-blue hover:bg-metalic-blue/90'
+                >
                     <FileIcon className='h-4 w-4' />
                     Add Page
                 </Button>
@@ -35,8 +39,8 @@ type PageItemProps = {
     page: string;
     number: number;
     isActive: boolean;
-    onPageChange: (page: string) => void;
-    onRemovePage: (page: string) => void;
+    onPageChange: () => void;
+    onRemovePage: () => void;
 };
 
 function PageItem({
@@ -48,7 +52,7 @@ function PageItem({
 }: PageItemProps) {
     return (
         <div
-            onClick={() => onPageChange(page)}
+            onClick={onPageChange}
             className={cn(
                 'cursor-pointer select-none rounded-lg bg-metalic-blue/5 px-4 py-3 ring-2 ring-transparent transition',
                 isActive && ' ring-metalic-blue',
@@ -65,7 +69,7 @@ function PageItem({
                         className='h-5 w-5 text-red-500'
                         onClick={(e) => {
                             e.stopPropagation();
-                            onRemovePage(page);
+                            onRemovePage();
                         }}
                     />
                 </div>
