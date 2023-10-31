@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests\Tenants\Admin\UserManagement;
+namespace App\Http\Requests\Central\UserManagement;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\User;
+use App\Models\Central\User;
 
 class StoreUserRequest extends FormRequest
 {
@@ -28,8 +28,7 @@ class StoreUserRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
-            'mobile_no' => 'required',
-            'role' => 'required|in:ADMIN,OWNER,USER',
+            'role' => 'required|in:SUPER-ADMIN',
         ];
     }
 
@@ -41,6 +40,7 @@ class StoreUserRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
+            'role' => User::ROLE_SUPER_ADMIN,
             'password' => 'password'
         ]);
     }

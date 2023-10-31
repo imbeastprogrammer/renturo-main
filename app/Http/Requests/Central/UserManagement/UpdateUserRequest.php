@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Tenants\Admin\UserManagement;
+namespace App\Http\Requests\Central\UserManagement;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\User;
 
-class StoreUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,21 +26,6 @@ class StoreUserRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:' . User::class,
-            'mobile_no' => 'required',
-            'role' => 'required|in:ADMIN,OWNER,USER',
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'password' => 'password'
-        ]);
     }
 }

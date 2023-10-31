@@ -1,46 +1,32 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EncryptionController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
+use App\Http\Controllers\Central\Auth\LoginController;
+use App\Http\Controllers\Central\UserManagementController;
 
 Route::get('/', function () {
     return 'Central Domain';
 });
 
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified']);
+Route::prefix('super-admin')->group(function () {
+    Route::get('login', [LoginController::class, 'create']);
+    Route::post('login', [LoginController::class, 'store']);
 
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit']);
-//     Route::patch('/profile', [ProfileController::class, 'update']);
-//     Route::delete('/profile', [ProfileController::class, 'destroy']);
-// });
+    Route::middleware('auth')->group(function () {
+        Route::post('logout', [LoginController::class, 'destroy']);
 
-// require __DIR__ . '/auth.php';
+        Route::get('/', function () {
+            return 'super-admin dashboard page';
+        });
+
+        Route::controller(UserManagementController::class)->group(function () {
+            Route::get('users', 'index');
+            Route::get('users/create', 'create');
+            Route::post('users', 'store');
+            Route::get('users/{user}', 'show');
+            Route::get('users/{user}/edit', 'edit');
+            Route::put('users/{user}', 'update');
+            Route::delete('users/{user}', 'destroy');
+        });
+    });
+});
