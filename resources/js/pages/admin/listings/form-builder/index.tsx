@@ -3,7 +3,7 @@ import {
     DndContext,
     PointerSensor,
     TouchSensor,
-    closestCorners,
+    closestCenter,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -50,7 +50,7 @@ function FormBuilder() {
 
     return (
         <div className='overflow-hidden'>
-            <DndContext collisionDetection={closestCorners} sensors={sensors}>
+            <DndContext collisionDetection={closestCenter} sensors={sensors}>
                 <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
                     <Tabs
                         defaultValue='components'
