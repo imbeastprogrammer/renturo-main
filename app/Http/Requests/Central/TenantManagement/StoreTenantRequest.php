@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Tenants\Admin\UserManagement;
+namespace App\Http\Requests\Central\TenantManagement;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\User;
 
-class StoreUserRequest extends FormRequest
+use Str;
+
+class StoreTenantRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,24 +27,26 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'tenant_id' => 'required|max:6',
+            'name' => 'required|string|unique:tenants,name|max:255',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
             'mobile_no' => 'required',
             'password' => 'required',
-            'role' => 'required|in:ADMIN,OWNER,USER',
+            'role' => 'required|in:ADMIN',
         ];
     }
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
-            'password' => 'password'
+            'tenant_id' => Str::lower(Str::random(6)),
+            'password' => 'password',
+            'role' => User::ROLE_ADMIN,
         ]);
     }
 }

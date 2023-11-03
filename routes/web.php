@@ -9,13 +9,18 @@ Route::get('/', function () {
     return 'Central Domain';
 });
 
-Route::prefix('super-admin')->group(function () {
-    Route::get('login', [LoginController::class, 'create']);
-    Route::post('login', [LoginController::class, 'store']);
+Route::middleware(['guest'])->group(function () {
+    Route::controller(LoginController::class)->group(function () {
+        Route::get('login', 'create');
+        Route::post('login', 'store');
+    });
+});
 
-    Route::middleware('auth')->group(function () {
-        Route::post('logout', [LoginController::class, 'destroy']);
+Route::middleware(['web', 'auth'])->group(function () {
 
+    Route::post('logout', [LoginController::class, 'destroy']);
+
+    Route::prefix('super-admin')->group(function () {
         Route::get('/', function () {
             return 'super-admin dashboard page';
         });

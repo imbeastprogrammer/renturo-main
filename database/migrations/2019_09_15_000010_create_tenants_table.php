@@ -17,6 +17,7 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->string('id')->primary();
+            $table->string('name');
             $table->enum('status', ['active', 'inactive'])->default('inactive');
             $table->timestamps();
             $table->json('data')->nullable();

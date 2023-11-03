@@ -7,6 +7,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Central\User as CentralUser;
+
 class RedirectIfAuthenticated
 {
     /**
@@ -29,6 +31,8 @@ class RedirectIfAuthenticated
                     return redirect()->intended(RouteServiceProvider::OWNER_HOME);
                 } else if (Auth::user()->role === User::ROLE_USER) {
                     return redirect()->intended(RouteServiceProvider::USER_HOME);
+                } else if (Auth::user()->role === CentralUser::ROLE_SUPER_ADMIN) {
+                    return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
                 }
             }
         }

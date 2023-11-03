@@ -16,6 +16,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     const INACTIVE_STATUS = 'inactive';
 
     protected $fillable = [
+        'id',
+        'name',
         'status'
     ];
 
@@ -23,6 +25,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     {
         return [
             'id',
+            'name',
             'status',
         ];
     }

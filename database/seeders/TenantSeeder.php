@@ -19,8 +19,11 @@ class TenantSeeder extends Seeder
      */
     public function run()
     {
+        $tenantId = Str::lower(Str::random(6));
+
         $tenant = Tenant::create([
-            'id' => Str::lower(Str::random(6)),
+            'id' => $tenantId,
+            'name' => fake()->company(),
             'status' => Tenant::ACTIVE_STATUS
         ]);
 
