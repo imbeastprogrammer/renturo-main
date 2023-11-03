@@ -1,4 +1,5 @@
 import AttachmentField from './fields/AttachmentField';
+import Body from './fields/Body';
 import CheckboxField from './fields/CheckboxField';
 import ChecklistField from './fields/ChecklistField';
 import DateField from './fields/DateField';
@@ -6,11 +7,14 @@ import DropdownField from './fields/DropdownField';
 import EmailField from './fields/EmailField';
 import NumberField from './fields/NumberField';
 import RadioField from './fields/RadioField';
+import Heading from './fields/Heading';
 import TextAreaField from './fields/TextAreaField';
 import TextField from './fields/TextField';
 import TimeField from './fields/TimeField';
 
 export type ElementsType =
+    | 'heading'
+    | 'body'
     | 'text-field'
     | 'textarea'
     | 'number'
@@ -19,7 +23,7 @@ export type ElementsType =
     | 'time'
     | 'dropdown'
     | 'checkbox'
-    | 'radio-button'
+    | 'radio'
     | 'checklist'
     | 'attachment';
 
@@ -45,6 +49,8 @@ type FormElementsType = {
 };
 
 export const FormElements: FormElementsType = {
+    heading: Heading,
+    body: Body,
     'text-field': TextField,
     textarea: TextAreaField,
     number: NumberField,
@@ -54,6 +60,6 @@ export const FormElements: FormElementsType = {
     dropdown: DropdownField,
     checkbox: CheckboxField,
     checklist: ChecklistField,
-    'radio-button': RadioField,
+    radio: RadioField,
     attachment: AttachmentField,
 };

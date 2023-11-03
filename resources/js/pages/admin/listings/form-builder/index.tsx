@@ -56,15 +56,15 @@ function FormBuilder() {
     const sensors = useSensors(mouseSensor, touchSensor);
 
     return (
-        <div className='select-none overflow-hidden'>
-            <DndContext sensors={sensors}>
-                <div className='grid h-full grid-cols-[390px_1fr_auto_300px] overflow-hidden'>
+        <DndContext sensors={sensors}>
+            <div className='select-none overflow-hidden bg-[#f4f4f4]'>
+                <div className='grid h-full grid-cols-[390px_1fr_auto_300px] gap-x-4 overflow-hidden'>
                     {sidebar.isOpen ? (
                         <Sidebar />
                     ) : (
                         <Tabs
                             defaultValue={active}
-                            className='grid grid-rows-[auto_1fr] gap-y-4 overflow-hidden p-6'
+                            className='grid grid-rows-[auto_1fr] overflow-auto bg-white p-6'
                             onValueChange={setActive}
                         >
                             <TabsList className='h-max w-full rounded-full'>
@@ -81,10 +81,7 @@ function FormBuilder() {
                                     Pages
                                 </TabsTrigger>
                             </TabsList>
-                            <TabsContent
-                                value='components'
-                                className='hide-scrollbar overflow-auto'
-                            >
+                            <TabsContent value='components'>
                                 <Toolbox items={toolboxItems} />
                             </TabsContent>
                             <TabsContent value='pages'>
@@ -93,12 +90,16 @@ function FormBuilder() {
                         </Tabs>
                     )}
                     <Dropzone />
-                    <Separator orientation='vertical' className='w-[2px]' />
+                    <Separator
+                        orientation='vertical'
+                        className='h-full w-[2px]'
+                    />
+
                     {active === 'components' ? <Properties /> : <PageEditors />}
                 </div>
                 <OverlayWrapper />
-            </DndContext>
-        </div>
+            </div>
+        </DndContext>
     );
 }
 

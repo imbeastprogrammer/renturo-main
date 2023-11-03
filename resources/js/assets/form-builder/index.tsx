@@ -194,7 +194,7 @@ export function NumberLogo() {
     );
 }
 
-export function TextLogo() {
+export function HeadingLogo() {
     return (
         <svg
             width='17'

@@ -1,5 +1,7 @@
+import React from 'react';
 import {
     AttachmentLogo,
+    BodyLogo,
     CheckboxLogo,
     ChecklistLogo,
     DateLogo,
@@ -8,47 +10,50 @@ import {
     NumberLogo,
     RadioLogo,
     TextAreaLogo,
+    HeadingLogo,
     TextfieldLogo,
     TimeLogo,
 } from '@/assets/form-builder';
+import { ElementsType } from './FormElement';
 
-export enum FieldTypes {
-    TEXT_FIELD = 'text-field',
-    TEXT_AREA = 'textarea',
-    NUMBER = 'number',
-    EMAIL = 'email',
-    DATE = 'date',
-    TIME = 'time',
-    DROPDOWN = 'dropdown',
-    CHECKBOX = 'checkbox',
-    RADIO_BUTTON = 'radio-button',
-    CHECKLIST = 'checklist',
-    ATTACHMENT = 'attachment',
-}
+type ToolboxItem = {
+    label: string;
+    items: { title: string; icon: React.FC; type: ElementsType }[];
+};
 
-export const toolboxItems = [
+export const toolboxItems: ToolboxItem[] = [
     {
         label: 'Text',
         items: [
             {
+                title: 'Heading',
+                icon: HeadingLogo,
+                type: 'heading',
+            },
+            {
+                title: 'Body',
+                icon: BodyLogo,
+                type: 'body',
+            },
+            {
                 title: 'Text Field',
                 icon: TextfieldLogo,
-                id: FieldTypes.TEXT_FIELD,
+                type: 'text-field',
             },
             {
                 title: 'Text Area',
                 icon: TextAreaLogo,
-                id: FieldTypes.TEXT_AREA,
+                type: 'textarea',
             },
-            { title: 'Number', icon: NumberLogo, id: FieldTypes.NUMBER },
-            { title: 'Email', icon: EmailLogo, id: FieldTypes.EMAIL },
+            { title: 'Number', icon: NumberLogo, type: 'number' },
+            { title: 'Email', icon: EmailLogo, type: 'email' },
         ],
     },
     {
         label: 'Date',
         items: [
-            { title: 'Date', icon: DateLogo, id: FieldTypes.DATE },
-            { title: 'Time', icon: TimeLogo, id: FieldTypes.TIME },
+            { title: 'Date', icon: DateLogo, type: 'date' },
+            { title: 'Time', icon: TimeLogo, type: 'time' },
         ],
     },
     {
@@ -57,22 +62,22 @@ export const toolboxItems = [
             {
                 title: 'Dropdown',
                 icon: DropdownLogo,
-                id: FieldTypes.DROPDOWN,
+                type: 'dropdown',
             },
             {
                 title: 'Checkbox',
                 icon: CheckboxLogo,
-                id: FieldTypes.CHECKBOX,
+                type: 'checkbox',
             },
             {
                 title: 'Radio',
                 icon: RadioLogo,
-                id: FieldTypes.RADIO_BUTTON,
+                type: 'radio',
             },
             {
                 title: 'Check List',
                 icon: ChecklistLogo,
-                id: FieldTypes.CHECKLIST,
+                type: 'checklist',
             },
         ],
     },
@@ -82,7 +87,7 @@ export const toolboxItems = [
             {
                 title: 'Attachment',
                 icon: AttachmentLogo,
-                id: FieldTypes.ATTACHMENT,
+                type: 'attachment',
             },
         ],
     },
