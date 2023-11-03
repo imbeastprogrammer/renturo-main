@@ -1,14 +1,23 @@
-import { CloudIcon, MenuIcon } from 'lucide-react';
+import { useState } from 'react';
+import { MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 import useMenuToggle from '@/pages/admin/listings/form-builder/hooks/useMenuToggle';
-import { SavingLogo } from '@/assets/form-builder';
+import { SavedLogo, SavingLogo } from '@/assets/form-builder';
 
 function FormBuilderHeader() {
+    const [saving, setSaving] = useState(false);
     const { isOpen, toggleMenu } = useMenuToggle();
 
     const handleMenuToggle = () => toggleMenu(isOpen);
+    const handleSave = () => {
+        setSaving(true);
+
+        setTimeout(() => {
+            setSaving(false);
+        }, 3000);
+    };
 
     return (
         <header className='grid grid-cols-[390px_1fr_auto] items-center shadow-lg'>
@@ -32,10 +41,14 @@ function FormBuilderHeader() {
                     orientation='vertical'
                     className='h-[68px] w-[4px] rounded-lg'
                 />
-                <SavingLogo />
+                {saving ? <SavingLogo /> : <SavedLogo />}
             </div>
             <div className='flex gap-2 p-4'>
-                <Button variant='outline' className='w-36 text-metalic-blue'>
+                <Button
+                    onClick={handleSave}
+                    variant='outline'
+                    className='w-36 text-metalic-blue'
+                >
                     Save
                 </Button>
                 <Button className='w-36 bg-metalic-blue hover:bg-metalic-blue/90'>
