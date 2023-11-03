@@ -3,7 +3,7 @@ import { MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
-import useMenuToggle from '@/pages/admin/listings/form-builder/hooks/useMenuToggle';
+import useMenuToggle from '@/pages/tenants/admin/listings/form-builder/hooks/useMenuToggle';
 import { SavedLogo, SavingLogo } from '@/assets/form-builder';
 
 function FormBuilderHeader() {
