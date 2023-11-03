@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TrashIcon } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
     ElementsType,
     FormElement,
@@ -10,7 +10,6 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Form,
     FormControl,
@@ -25,9 +24,10 @@ import {
 } from '@/components/ui/accordion';
 import { Switch } from '@/components/ui/switch';
 
+import { DeleteIcon } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
 import FieldTypeChanger from '../FieldTypeChanger';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
@@ -72,7 +72,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     };
 
     return (
-        <div className='w-full' onSelect={() => setSelectedField(element)}>
+        <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}
@@ -80,17 +80,18 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <TrashIcon
-                    className='text-red-500'
+                <button
                     onClick={() => removeField(current_page_id, element.id)}
-                />
+                >
+                    <DeleteIcon />
+                </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='time' readOnly />
+                <Input type='time' className='w-max min-w-[200px]' />
             </div>
         </div>
     );

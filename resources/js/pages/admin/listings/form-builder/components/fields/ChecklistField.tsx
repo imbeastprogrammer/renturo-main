@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TrashIcon } from 'lucide-react';
 import {
     ElementsType,
     FormElement,
@@ -28,14 +27,15 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 
+import { DeleteIcon } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please choose your answer',
     options: [],
     multiple_answer_accepted: false,
 };
@@ -79,7 +79,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     };
 
     return (
-        <div className='w-full' onSelect={() => setSelectedField(element)}>
+        <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}
@@ -87,10 +87,12 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <TrashIcon
-                    className='text-red-500'
+
+                <button
                     onClick={() => removeField(current_page_id, element.id)}
-                />
+                >
+                    <DeleteIcon />
+                </button>
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
@@ -100,10 +102,10 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 {elementInstance.extraAttributes.options.map((option) => (
                     <div
                         key={option}
-                        className='flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-2 px-4 text-metalic-blue'
+                        className='pointer-events-none flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-3 px-4 text-metalic-blue'
                     >
                         <Checkbox className='border-metalic-blue' />
-                        <Label>{option}</Label>
+                        <Label className='text-[15px]'>{option}</Label>
                     </div>
                 ))}
             </div>
@@ -258,7 +260,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                                                                                 );
                                                                             }}
                                                                         >
-                                                                            <TrashIcon className='h-4 w-4' />
+                                                                            <DeleteIcon />
                                                                         </button>
                                                                     </div>
                                                                 </div>

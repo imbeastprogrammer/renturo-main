@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { TrashIcon } from 'lucide-react';
 import {
     ElementsType,
     FormElement,
     FormElementInstance,
     FormElements,
 } from '../FormElement';
+import { UploadIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,14 +32,15 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
+import { DeleteIcon } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
 import PropertyEditorHandle from '../PropertyEditorHandle';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Attach File here',
     allow_only_specific_file_types: false,
     maximum_number_of_files: '1',
     maximum_file_size: '10mb',
@@ -85,7 +86,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     };
 
     return (
-        <div className='w-full' onSelect={() => setSelectedField(element)}>
+        <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}
@@ -93,17 +94,20 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <TrashIcon
-                    className='text-red-500'
+                <button
                     onClick={() => removeField(current_page_id, element.id)}
-                />
+                >
+                    <DeleteIcon />
+                </button>
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='file' />
+                <div className='flex w-max gap-8 rounded-lg bg-[#2E3436]/10 p-2 px-4 text-[15px]'>
+                    Attach File <UploadIcon />
+                </div>
             </div>
         </div>
     );

@@ -1,12 +1,12 @@
-import { CSSProperties } from 'react';
+import React, { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
-import { GripVertical, LucideIcon } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 
 type ToolBoxItemProps = {
     title: string;
-    icon: LucideIcon;
+    icon: React.FC;
     id: string;
 };
 
@@ -31,7 +31,7 @@ function ToolboxItem(props: ToolBoxItemProps) {
             )}
         >
             <div className='flex flex-1 items-center gap-2 text-[14px] font-medium'>
-                {props.icon && <props.icon className='text-metalic-blue' />}
+                {props.icon && <props.icon />}
                 {props.title}
             </div>
             <GripVertical

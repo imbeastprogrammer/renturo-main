@@ -1,11 +1,11 @@
-import { LucideIcon } from 'lucide-react';
+import React from 'react';
 import ToolboxItem from './ToolBoxItem';
 
 type ToolboxProps = {
     items: { label: string; items: Item[] }[];
 };
 
-type Item = { title: string; icon: LucideIcon; id: string };
+type Item = { title: string; icon: React.FC; id: string };
 
 function Toolbox({ items }: ToolboxProps) {
     return (

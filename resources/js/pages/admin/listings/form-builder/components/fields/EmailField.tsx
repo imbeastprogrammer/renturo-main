@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TrashIcon } from 'lucide-react';
 import {
     ElementsType,
     FormElement,
@@ -25,14 +24,15 @@ import {
 } from '@/components/ui/accordion';
 import { Switch } from '@/components/ui/switch';
 
+import { DeleteIcon } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
 import PropertyEditorHandle from '../PropertyEditorHandle';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'What is your Email?',
 };
 
 const schema = z.object({ is_required: z.boolean(), label: z.string() });
@@ -69,7 +69,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     };
 
     return (
-        <div className='w-full' onSelect={() => setSelectedField(element)}>
+        <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     data={fieldTypes}
@@ -77,17 +77,18 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     value={currentFieldType?.id}
                     onValueChange={handleValueChange}
                 />
-                <TrashIcon
-                    className='text-red-500'
+                <button
                     onClick={() => removeField(current_page_id, element.id)}
-                />
+                >
+                    <DeleteIcon />
+                </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='email' readOnly />
+                <Input type='email' />
             </div>
         </div>
     );

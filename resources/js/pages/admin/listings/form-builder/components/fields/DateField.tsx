@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { TrashIcon } from 'lucide-react';
 import {
     ElementsType,
     FormElement,
     FormElementInstance,
     FormElements,
 } from '../FormElement';
+import { CalendarIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,14 +25,15 @@ import {
 } from '@/components/ui/accordion';
 import { Switch } from '@/components/ui/switch';
 
+import { DeleteIcon } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
 import FieldTypeChanger from '../FieldTypeChanger';
-import useFieldTypes from '../../useFieldTypes';
+import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please enter date',
 };
 
 const schema = z.object({
@@ -72,7 +73,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     };
 
     return (
-        <div className='w-full' onSelect={() => setSelectedField(element)}>
+        <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}
@@ -80,17 +81,20 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <TrashIcon
-                    className='text-red-500'
+                <button
                     onClick={() => removeField(current_page_id, element.id)}
-                />
+                >
+                    <DeleteIcon />
+                </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='date' readOnly />
+                <div className='flex w-max gap-20 rounded-lg border p-3 px-4 text-[#2E3436]/30'>
+                    mm/dd/yyyy <CalendarIcon />
+                </div>
             </div>
         </div>
     );
