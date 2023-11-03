@@ -4,7 +4,6 @@ import {
     DndContext,
     PointerSensor,
     TouchSensor,
-    closestCenter,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -20,6 +19,7 @@ import PagesSelector from './components/PagesSelector';
 import PageEditors from './components/PageEditors';
 import useMenuToggle from './hooks/useMenuToggle';
 import Sidebar from './components/Sidebar';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -57,8 +57,8 @@ function FormBuilder() {
 
     return (
         <div className='overflow-hidden'>
-            <DndContext collisionDetection={closestCenter} sensors={sensors}>
-                <div className='grid h-full grid-cols-[390px_1fr_300px] overflow-hidden'>
+            <DndContext sensors={sensors}>
+                <div className='grid h-full grid-cols-[390px_1fr_auto_300px] overflow-hidden'>
                     {sidebar.isOpen ? (
                         <Sidebar />
                     ) : (
@@ -93,6 +93,7 @@ function FormBuilder() {
                         </Tabs>
                     )}
                     <Dropzone />
+                    <Separator orientation='vertical' className='w-[2px]' />
                     {active === 'components' ? <Properties /> : <PageEditors />}
                 </div>
                 <OverlayWrapper />

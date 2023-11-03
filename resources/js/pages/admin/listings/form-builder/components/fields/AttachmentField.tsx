@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TrashIcon } from 'lucide-react';
 import {
     ElementsType,
     FormElement,
@@ -36,6 +35,7 @@ import useFormBuilder from '@/hooks/useFormBuilder';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
+import { DeleteIcon } from '@/assets/form-builder';
 
 const extraAttributes = {
     is_required: false,
@@ -93,10 +93,11 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <TrashIcon
-                    className='text-red-500'
+                <button
                     onClick={() => removeField(current_page_id, element.id)}
-                />
+                >
+                    <DeleteIcon />
+                </button>
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>

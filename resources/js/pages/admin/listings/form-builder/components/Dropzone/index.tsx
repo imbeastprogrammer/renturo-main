@@ -7,7 +7,7 @@ import {
 } from '../FormElement';
 import useFormBuilder from '@/hooks/useFormBuilder';
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
-import { GripVerticalIcon } from 'lucide-react';
+import { DesignerGripIcon } from '@/assets/form-builder';
 import EmptyDropzone from './EmptyDropzone';
 
 function Dropzone() {
@@ -99,7 +99,7 @@ function Dropzone() {
 
     return (
         <div ref={setNodeRef} className='relative overflow-hidden'>
-            <div className='hide-scrollbar relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] p-8 shadow-lg'>
+            <div className='hide-scrollbar relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] px-4 py-8 shadow-lg'>
                 <SortableContext items={currentPage?.fields || []}>
                     {currentPage?.fields.map((field) => (
                         <DesignerElementWrapper
@@ -162,12 +162,11 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             <div
                 ref={sortable.setNodeRef}
                 {...sortable.attributes}
-                className='relative flex items-center gap-4 rounded-lg border bg-white p-4'
+                className='relative flex items-center gap-8 rounded-lg border bg-white p-4'
             >
-                <GripVerticalIcon
-                    {...sortable.listeners}
-                    {...sortable.attributes}
-                />
+                <div {...sortable.listeners} {...sortable.attributes}>
+                    <DesignerGripIcon />
+                </div>
                 <div
                     ref={topHalf.setNodeRef}
                     className='pointer-events-none absolute h-1/2 w-full rounded-t-md'

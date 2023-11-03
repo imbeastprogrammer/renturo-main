@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TrashIcon } from 'lucide-react';
 import {
     ElementsType,
     FormElement,
@@ -32,6 +31,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+
+import { DeleteIcon } from '@/assets/form-builder';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 import FieldTypeChanger from '../FieldTypeChanger';
@@ -87,10 +88,11 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <TrashIcon
-                    className='text-red-500'
+                <button
                     onClick={() => removeField(current_page_id, element.id)}
-                />
+                >
+                    <DeleteIcon />
+                </button>
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>

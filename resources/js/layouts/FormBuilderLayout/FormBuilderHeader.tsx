@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 import useMenuToggle from '@/pages/admin/listings/form-builder/hooks/useMenuToggle';
+import { SavingLogo } from '@/assets/form-builder';
 
 function FormBuilderHeader() {
     const { isOpen, toggleMenu } = useMenuToggle();
@@ -26,12 +27,12 @@ function FormBuilderHeader() {
                     </p>
                 </div>
             </div>
-            <div className='flex h-full items-center gap-4 py-4'>
+            <div className='flex h-full items-center gap-8 py-4'>
                 <Separator
                     orientation='vertical'
                     className='h-[68px] w-[4px] rounded-lg'
                 />
-                <CloudIcon className='h-[40px] w-[40px]' />
+                <SavingLogo />
             </div>
             <div className='flex gap-2 p-4'>
                 <Button variant='outline' className='w-36 text-metalic-blue'>

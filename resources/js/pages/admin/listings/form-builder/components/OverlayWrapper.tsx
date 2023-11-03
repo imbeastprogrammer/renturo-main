@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Active, DragOverlay, useDndMonitor } from '@dnd-kit/core';
 import { FormElements } from './FormElement';
-import { GripVerticalIcon } from 'lucide-react';
 import ToolboxItem from './Toolbox/ToolBoxItem';
 import useFormBuilder from '@/hooks/useFormBuilder';
 import { PageItem } from './PagesSelector';
+import { DesignerGripIcon } from '@/assets/form-builder';
 
 function OverlayWrapper() {
     const { pages, current_page_id } = useFormBuilder();
@@ -42,8 +42,8 @@ function OverlayWrapper() {
             const DesignerElementComponent =
                 FormElements[element.type].designerComponent;
             node = (
-                <div className='pointer-events-none relative flex items-center gap-4 rounded-lg border bg-white p-4 opacity-50'>
-                    <GripVerticalIcon />
+                <div className='pointer-events-none relative flex items-center gap-8 rounded-lg border bg-white p-4 opacity-50'>
+                    <DesignerGripIcon />
                     <DesignerElementComponent element={element} />
                 </div>
             );
