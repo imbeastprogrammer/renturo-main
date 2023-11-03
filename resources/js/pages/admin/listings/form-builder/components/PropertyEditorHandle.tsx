@@ -1,14 +1,14 @@
-import { LucideIcon } from 'lucide-react';
+import React from 'react';
 
 type PropertyEditorHandleProps = {
     type: string;
-    icon: LucideIcon;
+    icon: React.FC;
 };
 function PropertyEditorHandle({ icon: Icon, type }: PropertyEditorHandleProps) {
     return (
         <div className='flex items-center gap-4 text-[12px]'>
-            <div className='grid h-[30px] w-[30px] place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                {Icon && <Icon className='h-[19px] w-[19px]' />}
+            <div className='grid h-[35px] w-[35px] place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
+                {Icon && <Icon />}
             </div>
             {type}
         </div>

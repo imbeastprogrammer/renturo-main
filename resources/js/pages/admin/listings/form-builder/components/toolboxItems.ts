@@ -1,16 +1,16 @@
 import {
-    CalendarIcon,
-    CheckSquareIcon,
-    ChevronDownSquareIcon,
-    CircleIcon,
-    ClockIcon,
-    FileCheck,
-    FileDigitIcon,
-    FileTypeIcon,
-    MailIcon,
-    PaperclipIcon,
-    TypeIcon,
-} from 'lucide-react';
+    AttachmentLogo,
+    CheckboxLogo,
+    ChecklistLogo,
+    DateLogo,
+    DropdownLogo,
+    EmailLogo,
+    NumberLogo,
+    RadioLogo,
+    TextAreaLogo,
+    TextfieldLogo,
+    TimeLogo,
+} from '@/assets/form-builder';
 
 export enum FieldTypes {
     TEXT_FIELD = 'text-field',
@@ -30,21 +30,25 @@ export const toolboxItems = [
     {
         label: 'Text',
         items: [
-            { title: 'Text Field', icon: TypeIcon, id: FieldTypes.TEXT_FIELD },
+            {
+                title: 'Text Field',
+                icon: TextfieldLogo,
+                id: FieldTypes.TEXT_FIELD,
+            },
             {
                 title: 'Text Area',
-                icon: FileTypeIcon,
+                icon: TextAreaLogo,
                 id: FieldTypes.TEXT_AREA,
             },
-            { title: 'Number', icon: FileDigitIcon, id: FieldTypes.NUMBER },
-            { title: 'Email', icon: MailIcon, id: FieldTypes.EMAIL },
+            { title: 'Number', icon: NumberLogo, id: FieldTypes.NUMBER },
+            { title: 'Email', icon: EmailLogo, id: FieldTypes.EMAIL },
         ],
     },
     {
         label: 'Date',
         items: [
-            { title: 'Date', icon: CalendarIcon, id: FieldTypes.DATE },
-            { title: 'Time', icon: ClockIcon, id: FieldTypes.TIME },
+            { title: 'Date', icon: DateLogo, id: FieldTypes.DATE },
+            { title: 'Time', icon: TimeLogo, id: FieldTypes.TIME },
         ],
     },
     {
@@ -52,20 +56,24 @@ export const toolboxItems = [
         items: [
             {
                 title: 'Dropdown',
-                icon: ChevronDownSquareIcon,
+                icon: DropdownLogo,
                 id: FieldTypes.DROPDOWN,
             },
             {
                 title: 'Checkbox',
-                icon: CheckSquareIcon,
+                icon: CheckboxLogo,
                 id: FieldTypes.CHECKBOX,
             },
             {
                 title: 'Radio',
-                icon: CircleIcon,
+                icon: RadioLogo,
                 id: FieldTypes.RADIO_BUTTON,
             },
-            { title: 'Check List', icon: FileCheck, id: FieldTypes.CHECKLIST },
+            {
+                title: 'Check List',
+                icon: ChecklistLogo,
+                id: FieldTypes.CHECKLIST,
+            },
         ],
     },
     {
@@ -73,7 +81,7 @@ export const toolboxItems = [
         items: [
             {
                 title: 'Attachment',
-                icon: PaperclipIcon,
+                icon: AttachmentLogo,
                 id: FieldTypes.ATTACHMENT,
             },
         ],

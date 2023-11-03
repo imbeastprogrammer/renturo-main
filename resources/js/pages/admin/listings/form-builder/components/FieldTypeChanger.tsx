@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     Select,
     SelectContent,
@@ -5,14 +6,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { LucideIcon } from 'lucide-react';
 import { ElementsType } from './FormElement';
 
 type FieldTypeProps = {
-    icon?: LucideIcon;
+    icon?: React.FC;
     value?: ElementsType;
     onValueChange: (value: ElementsType) => void;
-    data: { id: ElementsType; title: string; icon: LucideIcon }[];
+    data: { id: ElementsType; title: string; icon: React.FC }[];
 };
 
 function FieldTypeChanger({
@@ -25,8 +25,8 @@ function FieldTypeChanger({
         <Select value={value} onValueChange={onValueChange}>
             <SelectTrigger className='w-max gap-4 border-none text-[12px] ring-transparent focus:ring-transparent'>
                 <div className='flex items-center gap-4'>
-                    <div className='grid h-[30px] w-[30px] place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
-                        {Icon && <Icon className='h-[19px] w-[19px]' />}
+                    <div className='grid h-[35px] w-[35px] place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
+                        {Icon && <Icon />}
                     </div>
                 </div>
                 <SelectValue />
