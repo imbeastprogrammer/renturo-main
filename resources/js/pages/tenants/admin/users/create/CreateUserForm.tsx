@@ -1,8 +1,10 @@
 import * as z from 'zod';
+import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/forms/FormInput';
 import FormSelect from '@/components/forms/FormSelect';
@@ -16,6 +18,11 @@ const formSchema = z.object({
 });
 
 function CreateUserForm() {
+    const [errorMessages, setErrorMessages] = useState<Record<
+        string,
+        string
+    > | null>(null);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -28,7 +35,14 @@ function CreateUserForm() {
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        router.post('/admin/users', { ...values, mobile_no: values.phone });
+        router.post(
+            '/admin/users',
+            { ...values, mobile_no: values.phone },
+            {
+                onSuccess: (e) => router.visit('/admin/users'),
+                onError: (error) => setErrorMessages(error),
+            },
+        );
     };
 
     return (
@@ -79,6 +93,20 @@ function CreateUserForm() {
                             control={form.control}
                         />
                     </div>
+                    {errorMessages && Object.keys(errorMessages).length > 0 && (
+                        <Alert variant='destructive'>
+                            <AlertTitle>Error Occured</AlertTitle>
+                            <AlertDescription>
+                                <ul className='list-disc pl-4'>
+                                    {Object.entries(errorMessages).map(
+                                        ([key, value]) => (
+                                            <li key={key}>{value}</li>
+                                        ),
+                                    )}
+                                </ul>
+                            </AlertDescription>
+                        </Alert>
+                    )}
                 </div>
                 <div className='flex justify-end'>
                     <Button
