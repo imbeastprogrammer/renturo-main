@@ -22,7 +22,7 @@ class UserManagementController extends Controller
     {
         $users = User::all();
 
-        return Inertia::render('admin/users/list/index', [
+        return Inertia::render('tenants/admin/users/list/index', [
             'users' => $users
         ]);
     }
@@ -34,7 +34,7 @@ class UserManagementController extends Controller
      */
     public function create()
     {
-        return Inertia::render('admin/users/create/index');
+        return Inertia::render('tenants/admin/users/create/index');
     }
 
     /**
