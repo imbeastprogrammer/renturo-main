@@ -32,7 +32,7 @@ import FieldTypeChanger from '../FieldTypeChanger';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'What is your Email?',
 };
 
 const schema = z.object({ is_required: z.boolean(), label: z.string() });
@@ -84,11 +84,11 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='email' readOnly />
+                <Input type='email' />
             </div>
         </div>
     );

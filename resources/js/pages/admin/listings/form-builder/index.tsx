@@ -8,6 +8,7 @@ import {
     useSensors,
 } from '@dnd-kit/core';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 
 import { toolboxItems } from './components/toolboxItems';
 import Toolbox from './components/Toolbox';
@@ -19,7 +20,6 @@ import PagesSelector from './components/PagesSelector';
 import PageEditors from './components/PageEditors';
 import useMenuToggle from './hooks/useMenuToggle';
 import Sidebar from './components/Sidebar';
-import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
     custom_fields: z.array(
@@ -56,7 +56,7 @@ function FormBuilder() {
     const sensors = useSensors(mouseSensor, touchSensor);
 
     return (
-        <div className='overflow-hidden'>
+        <div className='select-none overflow-hidden'>
             <DndContext sensors={sensors}>
                 <div className='grid h-full grid-cols-[390px_1fr_auto_300px] overflow-hidden'>
                     {sidebar.isOpen ? (

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
     ElementsType,
     FormElement,
@@ -9,7 +10,6 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Form,
     FormControl,
@@ -87,11 +87,11 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='time' readOnly />
+                <Input type='time' className='w-max min-w-[200px]' />
             </div>
         </div>
     );

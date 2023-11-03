@@ -39,7 +39,7 @@ import FieldTypeChanger from '../FieldTypeChanger';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please enter a number',
     type: 'number_input',
 };
 
@@ -95,7 +95,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>

@@ -5,6 +5,7 @@ import {
     FormElementInstance,
     FormElements,
 } from '../FormElement';
+import { CalendarIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,7 +33,7 @@ import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please enter date',
 };
 
 const schema = z.object({
@@ -87,11 +88,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='date' readOnly />
+                <div className='flex w-max gap-20 rounded-lg border p-3 px-4 text-[#2E3436]/30'>
+                    mm/dd/yyyy <CalendarIcon />
+                </div>
             </div>
         </div>
     );

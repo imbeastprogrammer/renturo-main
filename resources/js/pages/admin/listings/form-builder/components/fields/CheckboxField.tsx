@@ -35,7 +35,7 @@ import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please choose your answer',
     options: [],
     multiple_answer_accepted: false,
 };
@@ -101,9 +101,9 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 {elementInstance.extraAttributes.options.map((option, i) => (
                     <div
                         key={i}
-                        className='flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-2 px-4 text-metalic-blue'
+                        className='pointer-events-none flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-3 px-4 text-metalic-blue'
                     >
-                        <Checkbox className='border-metalic-blue' />
+                        <Checkbox className='border-metalic-blue text-[15px]' />
                         <Label>{option}</Label>
                     </div>
                 ))}

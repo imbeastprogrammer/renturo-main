@@ -33,7 +33,7 @@ import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please enter a text',
 };
 
 const schema = z.object({ is_required: z.boolean(), label: z.string() });
@@ -85,7 +85,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>

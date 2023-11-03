@@ -40,7 +40,7 @@ import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please select your answer',
     options: [],
 };
 
@@ -97,13 +97,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
                 <Select>
-                    <SelectTrigger className='pointer-events-none'>
-                        <SelectValue placeholder='Select a fruit' />
+                    <SelectTrigger>
+                        <SelectValue />
                     </SelectTrigger>
                     <SelectContent></SelectContent>
                 </Select>

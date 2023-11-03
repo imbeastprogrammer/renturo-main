@@ -35,7 +35,7 @@ import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
     is_required: false,
-    label: 'Editable Label',
+    label: 'Please choose your answer',
     options: [],
 };
 
@@ -92,7 +92,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 </button>
             </div>
             <Separator className='my-2' />
-            <div className='space-y-2'>
+            <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
@@ -100,7 +100,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     {elementInstance.extraAttributes.options.map((option) => (
                         <div
                             key={option}
-                            className='flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-2 px-4 text-metalic-blue'
+                            className='flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-3 px-4 text-metalic-blue'
                         >
                             <RadioGroupItem
                                 value={option}
