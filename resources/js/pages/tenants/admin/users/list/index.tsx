@@ -16,7 +16,7 @@ function UsersPage({ users }: UsersPageProps) {
     const handlePageChange = (page: number) => setCurrentPage(page);
 
     return (
-        <div className='grid h-full grid-rows-[auto_auto_1fr_auto] gap-y-4 rounded-lg border p-8 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_auto_1fr_auto] gap-y-4 overflow-hidden rounded-lg border p-8 shadow-lg'>
             <p className='text-[15px] text-gray-500'>
                 Users / User Management / List of Users
             </p>
