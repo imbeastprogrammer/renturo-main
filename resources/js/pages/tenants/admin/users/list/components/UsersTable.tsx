@@ -13,11 +13,6 @@ import { User } from '@/types/users';
 import ActionMenu from './ActionMenu';
 import DeleteUserModal from './DeleteUserModal';
 
-// const statusColor: Record<string, string> = {
-//     active: "#84C58A",
-//     offline: "#EB4F4F",
-// };
-
 type UsersTableProps = {
     users: User[];
 };
@@ -49,8 +44,8 @@ function UsersTable({ users = [] }: UsersTableProps) {
 
     return (
         <>
-            <Table>
-                <TableHeader>
+            <Table className='overflow-auto'>
+                <TableHeader className='sticky top-0 bg-white'>
                     <TableRow>
                         <TableHead className='w-[100px]'>Id</TableHead>
                         <TableHead>Name</TableHead>

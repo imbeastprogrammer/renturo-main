@@ -1,26 +1,28 @@
 import * as z from 'zod';
+import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/forms/FormInput';
+import FormSelect from '@/components/forms/FormSelect';
 
 const formSchema = z.object({
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
     phone: z.string().min(11).max(11),
     email: z.string().email(),
+    role: z.string().nonempty(),
 });
 
 function CreateUserForm() {
+    const [errorMessages, setErrorMessages] = useState<Record<
+        string,
+        string
+    > | null>(null);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -28,11 +30,19 @@ function CreateUserForm() {
             last_name: '',
             phone: '',
             email: '',
+            role: '',
         },
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        //  this handles the user creation
+        router.post(
+            '/admin/users',
+            { ...values, mobile_no: values.phone },
+            {
+                onSuccess: (e) => router.visit('/admin/users'),
+                onError: (error) => setErrorMessages(error),
+            },
+        );
     };
 
     return (
@@ -71,7 +81,32 @@ function CreateUserForm() {
                             label='Email'
                             control={form.control}
                         />
+
+                        <FormSelect
+                            name='role'
+                            label='Role'
+                            data={[
+                                { label: 'ADMIN', value: 'ADMIN' },
+                                { label: 'OWNER', value: 'OWNER' },
+                                { label: 'USER', value: 'USER' },
+                            ]}
+                            control={form.control}
+                        />
                     </div>
+                    {errorMessages && Object.keys(errorMessages).length > 0 && (
+                        <Alert variant='destructive'>
+                            <AlertTitle>Error Occured</AlertTitle>
+                            <AlertDescription>
+                                <ul className='list-disc pl-4'>
+                                    {Object.entries(errorMessages).map(
+                                        ([key, value]) => (
+                                            <li key={key}>{value}</li>
+                                        ),
+                                    )}
+                                </ul>
+                            </AlertDescription>
+                        </Alert>
+                    )}
                 </div>
                 <div className='flex justify-end'>
                     <Button
