@@ -20,6 +20,7 @@ class CreateTenantsTable extends Migration
             $table->string('name');
             $table->enum('status', ['active', 'inactive'])->default('inactive');
             $table->timestamps();
+            $table->softDeletes();
             $table->json('data')->nullable();
         });
     }
