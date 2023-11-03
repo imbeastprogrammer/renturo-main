@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Central\Auth\LoginController;
+use App\Http\Controllers\Central\TenantManagementController;
 use App\Http\Controllers\Central\UserManagementController;
 
 Route::get('/', function () {
@@ -17,6 +18,16 @@ Route::prefix('super-admin')->group(function () {
 
         Route::get('/', function () {
             return 'super-admin dashboard page';
+        });
+
+        Route::controller(TenantManagementController::class)->group(function () {
+            Route::get('tenants', 'index');
+            Route::get('tenants/create', 'create');
+            Route::post('tenants', 'store');
+            Route::get('tenants/{tenant}', 'show');
+            Route::get('tenants/{tenant}/edit', 'edit');
+            Route::put('tenants/{tenant}', 'update');
+            Route::delete('tenants/{tenant}', 'destroy');
         });
 
         Route::controller(UserManagementController::class)->group(function () {

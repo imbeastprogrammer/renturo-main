@@ -1,17 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Tenants\Admin;
+namespace App\Http\Controllers\Central;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\Tenants\Admin\UserManagement\StoreUserRequest;
-use App\Http\Requests\Tenants\Admin\UserManagement\UpdateUserRequest;
 
-use App\Models\User;
-
-use Inertia\Inertia;
-
-class UserManagementController extends Controller
+class TenantManagementController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,11 +14,7 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-
-        return Inertia::render('admin/users/list/index', [
-            'users' => $users
-        ]);
+        //
     }
 
     /**
@@ -34,7 +24,7 @@ class UserManagementController extends Controller
      */
     public function create()
     {
-        return Inertia::render('admin/users/create/index');
+        //
     }
 
     /**
@@ -43,18 +33,9 @@ class UserManagementController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreUserRequest $request)
+    public function store(Request $request)
     {
-        $verificationCode = rand(1000, 9999);
-
-        $user = User::create($request->safe()->except('mobile_no'));
-
-        $user->mobileVerification()->create([
-            'mobile_no' => $request->mobile_no,
-            'code' => $verificationCode
-        ]);
-
-        return back()->with(['success' => 'You have successfully made a new user.']);
+        //
     }
 
     /**
@@ -86,13 +67,9 @@ class UserManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-
-        $user->update($request->validated());
-
-        return back()->with(['success' => 'You have successfully deleted a user.']);
+        //
     }
 
     /**
@@ -103,10 +80,6 @@ class UserManagementController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-
-        $user->delete();
-
-        return back()->with(['success' => 'You have successfully deleted a user.']);
+        //
     }
 }
