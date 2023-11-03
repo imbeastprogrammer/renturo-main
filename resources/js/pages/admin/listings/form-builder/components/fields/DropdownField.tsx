@@ -82,7 +82,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     };
 
     return (
-        <div className='w-full' onSelect={() => setSelectedField(element)}>
+        <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}

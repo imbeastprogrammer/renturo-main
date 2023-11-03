@@ -1,14 +1,20 @@
 import { v4 as uuidv4 } from 'uuid';
-import { DragEndEvent, useDndMonitor, useDroppable } from '@dnd-kit/core';
+import {
+    DragEndEvent,
+    useDndMonitor,
+    useDraggable,
+    useDroppable,
+} from '@dnd-kit/core';
 import {
     ElementsType,
     FormElementInstance,
     FormElements,
 } from '../FormElement';
 import useFormBuilder from '@/hooks/useFormBuilder';
-import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
+import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { DesignerGripIcon } from '@/assets/form-builder';
 import EmptyDropzone from './EmptyDropzone';
+import { cn } from '@/lib/utils';
 
 function Dropzone() {
     const { pages, addField, setFields, current_page_id } = useFormBuilder();
@@ -121,6 +127,8 @@ function Dropzone() {
 }
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
+    const { selectedField, setSelectedField } = useFormBuilder();
+
     const topHalf = useDroppable({
         id: element.id + '-top',
         data: {
@@ -139,7 +147,7 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
         },
     });
 
-    const sortable = useSortable({
+    const sortable = useDraggable({
         id: element.id + '-sortable-handler',
         data: {
             type: element.type,
@@ -147,6 +155,8 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             isDesignerElement: true,
         },
     });
+
+    const isActive = selectedField?.id === element.id;
 
     if (sortable.isDragging) return null;
 
@@ -162,7 +172,10 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
             <div
                 ref={sortable.setNodeRef}
                 {...sortable.attributes}
-                className='relative flex items-center gap-8 rounded-lg border bg-white p-4'
+                className={cn(
+                    'relative flex items-center gap-8 rounded-lg border bg-white p-4',
+                    isActive && 'ring-2',
+                )}
             >
                 <div {...sortable.listeners} {...sortable.attributes}>
                     <DesignerGripIcon />

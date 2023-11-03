@@ -3,17 +3,26 @@ import { FormElements } from './FormElement';
 import useFormBuilder from '@/hooks/useFormBuilder';
 
 function Properties() {
-    const { pages, current_page_id: current_page } = useFormBuilder();
+    const {
+        pages,
+        current_page_id: current_page,
+        selectedField,
+        setSelectedField,
+    } = useFormBuilder();
     const currentPage = pages.find((page) => page.page_id === current_page);
 
     return (
         <div className='space-y-4 bg-[#f4f4f4] p-4 py-8'>
-            <Accordion type='single' collapsible>
+            <Accordion type='single' collapsible value={selectedField?.id}>
                 {currentPage?.fields.map((field) => {
                     const PropertyEditor =
                         FormElements[field.type].propertiesComponent;
 
-                    return <PropertyEditor key={field.id} element={field} />;
+                    return (
+                        <div onClick={() => setSelectedField(field)}>
+                            <PropertyEditor key={field.id} element={field} />
+                        </div>
+                    );
                 })}
             </Accordion>
         </div>
