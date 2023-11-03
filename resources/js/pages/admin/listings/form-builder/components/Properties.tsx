@@ -12,8 +12,13 @@ function Properties() {
     const currentPage = pages.find((page) => page.page_id === current_page);
 
     return (
-        <div className='space-y-4 bg-[#f4f4f4] p-4 py-8'>
-            <Accordion type='single' collapsible value={selectedField?.id}>
+        <div className='overflow-hidden'>
+            <Accordion
+                type='single'
+                collapsible
+                value={selectedField?.id}
+                className='h-full overflow-auto p-4 py-8'
+            >
                 {currentPage?.fields.map((field) => {
                     const PropertyEditor =
                         FormElements[field.type].propertiesComponent;

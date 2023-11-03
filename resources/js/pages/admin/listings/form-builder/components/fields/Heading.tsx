@@ -1,6 +1,5 @@
+import _ from 'lodash';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
     ElementsType,
     FormElement,
@@ -8,8 +7,10 @@ import {
     FormElements,
 } from '../FormElement';
 import { Separator } from '@/components/ui/separator';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Form,
     FormControl,
@@ -22,38 +23,24 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Switch } from '@/components/ui/switch';
-import useFormBuilder from '@/hooks/useFormBuilder';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 
 import { DeleteIcon } from '@/assets/form-builder';
+import useFormBuilder from '@/hooks/useFormBuilder';
 import useFieldTypes from '../../hooks/useFieldTypes';
-import PropertyEditorHandle from '../PropertyEditorHandle';
 import FieldTypeChanger from '../FieldTypeChanger';
+import PropertyEditorHandle from '../PropertyEditorHandle';
 
 const extraAttributes = {
-    is_required: false,
-    label: 'Please enter a number',
-    type: 'number_input',
+    label: 'This is a heading',
 };
 
-const schema = z.object({
-    is_required: z.boolean(),
-    label: z.string(),
-    type: z.string(),
-});
+const schema = z.object({ label: z.string() });
 
-const NumberField: FormElement = {
-    type: 'number',
+const Heading: FormElement = {
+    type: 'heading',
     construct: (id) => ({
         id,
-        type: 'number',
+        type: 'heading',
         extraAttributes,
     }),
     designerComponent: DesignerComponent,
@@ -69,6 +56,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const elementInstance = element as FormElementInstance & {
         extraAttributes: typeof extraAttributes;
     };
+
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
     const handleValueChange = (value: ElementsType) => {
@@ -85,8 +73,8 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}
                     value={currentFieldType?.type}
-                    onValueChange={handleValueChange}
                     data={fieldTypes}
+                    onValueChange={handleValueChange}
                 />
                 <button
                     onClick={() => removeField(current_page_id, element.id)}
@@ -99,7 +87,6 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='number' readOnly />
             </div>
         </div>
     );
@@ -108,6 +95,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
 type PropertiesComponentProps = {
     element: FormElementInstance;
 };
+
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
@@ -129,8 +117,8 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
                 {currentFieldType && (
                     <PropertyEditorHandle
-                        icon={currentFieldType?.icon}
                         type={currentFieldType?.title}
+                        icon={currentFieldType.icon}
                     />
                 )}
             </AccordionTrigger>
@@ -141,50 +129,6 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                         onSubmit={applyChanges}
                         className='space-y-2'
                     >
-                        <FormField
-                            name='is_required'
-                            control={form.control}
-                            render={({ field }) => (
-                                <FormItem className='flex items-center justify-between space-y-0 rounded-lg bg-white px-4 py-3'>
-                                    <FormLabel>Required</FormLabel>
-                                    <FormControl>
-                                        <Switch
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            name='type'
-                            control={form.control}
-                            render={({ field }) => {
-                                return (
-                                    <FormItem className='rounded-lg bg-white px-4 py-3'>
-                                        <FormLabel>Type</FormLabel>
-                                        <FormControl>
-                                            <Select
-                                                {...field}
-                                                onValueChange={field.onChange}
-                                            >
-                                                <SelectTrigger>
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value='number_input'>
-                                                        Number Input
-                                                    </SelectItem>
-                                                    <SelectItem value='mobile_number_input'>
-                                                        Mobile Number
-                                                    </SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </FormControl>
-                                    </FormItem>
-                                );
-                            }}
-                        />
                         <FormField
                             name='label'
                             control={form.control}
@@ -204,4 +148,4 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
     );
 }
 
-export default NumberField;
+export default Heading;

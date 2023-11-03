@@ -12,7 +12,7 @@ type FieldTypeProps = {
     icon?: React.FC;
     value?: ElementsType;
     onValueChange: (value: ElementsType) => void;
-    data: { id: ElementsType; title: string; icon: React.FC }[];
+    data: { type: ElementsType; title: string; icon: React.FC }[];
 };
 
 function FieldTypeChanger({
@@ -33,7 +33,7 @@ function FieldTypeChanger({
             </SelectTrigger>
             <SelectContent>
                 {data.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
+                    <SelectItem key={item.type} value={item.type}>
                         {item.title}
                     </SelectItem>
                 ))}

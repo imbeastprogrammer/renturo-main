@@ -46,10 +46,10 @@ const schema = z.object({
 });
 
 const RadioField: FormElement = {
-    type: 'radio-button',
+    type: 'radio',
     construct: (id) => ({
         id,
-        type: 'radio-button',
+        type: 'radio',
         extraAttributes,
     }),
     designerComponent: DesignerComponent,
@@ -81,7 +81,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}
-                    value={currentFieldType?.id}
+                    value={currentFieldType?.type}
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />

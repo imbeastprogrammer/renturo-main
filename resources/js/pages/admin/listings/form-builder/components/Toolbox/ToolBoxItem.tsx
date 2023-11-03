@@ -1,31 +1,23 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { cn } from '@/lib/utils';
-import { useSortable } from '@dnd-kit/sortable';
 import { GripVertical } from 'lucide-react';
-import { CSS } from '@dnd-kit/utilities';
+import { useDraggable } from '@dnd-kit/core';
 
 type ToolBoxItemProps = {
     title: string;
     icon: React.FC;
-    id: string;
+    type: string;
 };
 
 function ToolboxItem(props: ToolBoxItemProps) {
-    const { setNodeRef, attributes, listeners, transform, transition } =
-        useSortable({
-            id: props.id,
-            data: { type: props.id, toolboxItem: props, isToolboxItem: true },
-        });
-
-    const style: CSSProperties = {
-        transition,
-        transform: CSS.Transform.toString(transform),
-    };
+    const { setNodeRef, attributes, listeners } = useDraggable({
+        id: props.type,
+        data: { type: props.type, toolboxItem: props, isToolboxItem: true },
+    });
 
     return (
         <div
             ref={setNodeRef}
-            style={style}
             className={cn(
                 'flex select-none items-center justify-between gap-2 rounded-lg bg-blue-50 p-2 py-4',
             )}
