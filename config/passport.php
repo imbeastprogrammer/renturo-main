@@ -59,12 +59,6 @@ return [
         'secret' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET'),
     ],
 
-    'storage' => [
-        'database' => [
-            'connection' => null,
-        ],
-    ],
-
     'key_path' => env('OAUTH_KEY_PATH', storage_path(''))
 
 ];

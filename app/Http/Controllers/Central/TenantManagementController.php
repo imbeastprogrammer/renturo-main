@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Central;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Laravel\Passport\ClientRepository;
 use App\Http\Requests\Central\TenantManagement\StoreTenantRequest;
 
 use App\Models\Central\Tenant;
@@ -64,7 +65,9 @@ class TenantManagementController extends Controller
             ]);
 
             //install passport personal access tokens
-            Artisan::call("tenants:run passport:client --option='personal=personal' --option='name={$tenant->id}' --tenants={$tenant->id}");
+            $client = new ClientRepository();
+
+            $client->createPersonalAccessClient(null, 'Default personal access client', config('app.url'));
         });
 
         return back()->with(['success' => 'You have successfully created a new tenant.']);
@@ -101,7 +104,17 @@ class TenantManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $tenant = Tenant::findOrFail($id);
+
+        $tenant->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with(['success' => 'You have successfully updated the tenant.']);
     }
 
     /**
