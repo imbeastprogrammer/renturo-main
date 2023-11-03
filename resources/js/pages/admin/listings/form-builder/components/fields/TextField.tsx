@@ -74,7 +74,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             <div className='flex justify-between'>
                 <FieldTypeChanger
                     icon={currentFieldType?.icon}
-                    value={currentFieldType?.id}
+                    value={currentFieldType?.type}
                     data={fieldTypes}
                     onValueChange={handleValueChange}
                 />

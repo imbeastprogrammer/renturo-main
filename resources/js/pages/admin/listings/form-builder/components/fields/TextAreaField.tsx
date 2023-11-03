@@ -76,7 +76,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <FieldTypeChanger
                     data={fieldTypes}
                     icon={currentFieldType?.icon}
-                    value={currentFieldType?.id}
+                    value={currentFieldType?.type}
                     onValueChange={handleValueChange}
                 />
                 <button

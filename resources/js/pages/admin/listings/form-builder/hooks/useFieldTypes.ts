@@ -6,7 +6,7 @@ const useFieldTypes = (fieldType: ElementsType) => {
     const fieldTypes = _.flatMapDeep(toolboxItems.map(({ items }) => items));
 
     const currentFieldType = fieldTypes.find(
-        (fieldItem) => fieldItem.id === fieldType,
+        (fieldItem) => fieldItem.type === fieldType,
     );
 
     return { fieldTypes, currentFieldType };
