@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { cn } from '@/lib/utils';
 import {
     DragEndEvent,
     useDndMonitor,
@@ -11,13 +12,11 @@ import {
     FormElements,
 } from '../FormElement';
 import useFormBuilder from '@/hooks/useFormBuilder';
-import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { DesignerGripIcon } from '@/assets/form-builder';
 import EmptyDropzone from './EmptyDropzone';
-import { cn } from '@/lib/utils';
 
 function Dropzone() {
-    const { pages, addField, setFields, current_page_id } = useFormBuilder();
+    const { pages, addField, removeField, current_page_id } = useFormBuilder();
     const currentPage = pages.find((page) => page.page_id === current_page_id);
 
     const { setNodeRef, isOver } = useDroppable({
@@ -88,32 +87,46 @@ function Dropzone() {
             const isDraggingDesignerElement =
                 active.data?.current?.isDesignerElement;
 
-            if (isDraggingDesignerElement) {
-                const activeIdx = currentPage.fields.findIndex(
-                    (field) => field.id === active.data.current?.elementId,
+            const draggingDesignerElementOverAnotherDesignerElement =
+                isDroppingOverDesignerElement && isDraggingDesignerElement;
+
+            if (draggingDesignerElementOverAnotherDesignerElement) {
+                const activeId = active.data?.current?.elementId;
+                const overId = over.data?.current?.elementId;
+
+                const activeElementIndex = currentPage.fields.findIndex(
+                    (el) => el.id === activeId,
                 );
-                const overIdx = currentPage.fields.findIndex(
-                    (field) => field.id === over.data.current?.elementId,
+
+                const overElementIndex = currentPage.fields.findIndex(
+                    (el) => el.id === overId,
                 );
-                setFields(
-                    current_page_id,
-                    arrayMove(currentPage.fields, activeIdx, overIdx),
-                );
+
+                if (activeElementIndex === -1 || overElementIndex === -1) {
+                    throw new Error('element not found');
+                }
+
+                const activeElement = {
+                    ...currentPage.fields[activeElementIndex],
+                };
+                removeField(current_page_id, activeId);
+
+                let indexForNewElement = overElementIndex;
+                if (isDroppingOverDesignerElementBottomHalf) {
+                    indexForNewElement = overElementIndex + 1;
+                }
+
+                addField(current_page_id, indexForNewElement, activeElement);
             }
         },
     });
 
     return (
         <div ref={setNodeRef} className='relative overflow-hidden'>
-            <div className='hide-scrollbar relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] px-4 py-8 shadow-lg'>
-                <SortableContext items={currentPage?.fields || []}>
-                    {currentPage?.fields.map((field) => (
-                        <DesignerElementWrapper
-                            key={field.id}
-                            element={field}
-                        />
-                    ))}
-                </SortableContext>
+            <div className='relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] px-4 py-8 shadow-lg'>
+                {currentPage?.fields.map((field) => (
+                    <DesignerElementWrapper key={field.id} element={field} />
+                ))}
                 {!currentPage?.fields.length && !isOver && <EmptyDropzone />}
                 {isOver && (
                     <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
@@ -127,7 +140,7 @@ function Dropzone() {
 }
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
-    const { selectedField, setSelectedField } = useFormBuilder();
+    const { selectedField } = useFormBuilder();
 
     const topHalf = useDroppable({
         id: element.id + '-top',
@@ -148,7 +161,7 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
     });
 
     const sortable = useDraggable({
-        id: element.id + '-sortable-handler',
+        id: element.id + '-draggable-handler',
         data: {
             type: element.type,
             elementId: element.id,

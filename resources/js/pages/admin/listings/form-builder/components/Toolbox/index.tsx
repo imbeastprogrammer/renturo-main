@@ -5,7 +5,7 @@ type ToolboxProps = {
     items: { label: string; items: Item[] }[];
 };
 
-type Item = { title: string; icon: React.FC; id: string };
+type Item = { title: string; icon: React.FC; type: string };
 
 function Toolbox({ items }: ToolboxProps) {
     return (
@@ -15,7 +15,7 @@ function Toolbox({ items }: ToolboxProps) {
                     <h1 className='text-[15px] font-semibold'>{label}</h1>
                     <div className='grid grid-cols-2 gap-4'>
                         {items.map((item) => (
-                            <ToolboxItem key={item.id} {...item} />
+                            <ToolboxItem key={item.type} {...item} />
                         ))}
                     </div>
                 </div>

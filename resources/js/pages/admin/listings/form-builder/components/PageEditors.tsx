@@ -23,8 +23,12 @@ function PageEditors() {
     const { pages } = useFormBuilder();
 
     return (
-        <div className='h-full bg-[#f4f4f4] px-4 py-8'>
-            <Accordion type='single' collapsible className='space-y-2'>
+        <div className='h-full overflow-hidden bg-[#f4f4f4]'>
+            <Accordion
+                type='single'
+                collapsible
+                className='h-full space-y-2 overflow-auto px-4 py-8'
+            >
                 {pages.map((page, i) => (
                     <AccordionItem value={page.page_id} className='border-0'>
                         <AccordionTrigger className='rounded-lg bg-white px-4 py-3'>
