@@ -7,9 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Tenants\Admin\UserManagement\StoreUserRequest;
 use App\Http\Requests\Tenants\Admin\UserManagement\UpdateUserRequest;
 
+use App\Mail\Tenants\UserManagement\UserCreated;
+
 use App\Models\User;
 
 use Inertia\Inertia;
+
+use Mail;
 
 class UserManagementController extends Controller
 {
@@ -53,6 +57,13 @@ class UserManagementController extends Controller
             'mobile_no' => $request->mobile_no,
             'code' => $verificationCode
         ]);
+
+        Mail::to($user->email)->send(new UserCreated([
+            'name' => $user->fullName,
+            'role' => $user->role,
+            'email' => $user->email,
+            'password' => $request->password
+        ]));
 
         return back()->with(['success' => 'You have successfully made a new user.']);
     }

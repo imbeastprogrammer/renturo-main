@@ -10,6 +10,7 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
+use Str;
 
 class User extends Authenticatable
 {
@@ -59,6 +60,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = ['verified_mobile_no'];
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => Str::title($this->first_name . ' ' . $this->last_name)
+        );
+    }
 
     protected function password(): Attribute
     {
