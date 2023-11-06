@@ -4,10 +4,25 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Central\Auth\LoginController;
 use App\Http\Controllers\Central\TenantManagementController;
 use App\Http\Controllers\Central\UserManagementController;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return 'Central Domain';
 });
+
+Route::get('/login/enter-otp', function () {
+    return Inertia::render("central/login-otp/index");
+});
+Route::get('/forgot-password', function () {
+    return Inertia::render("central/forgot-password/index");
+});
+Route::get('/forgot-password/enter-otp', function () {
+    return Inertia::render("central/forgot-password-otp/index");
+});
+Route::get('/create-new-password', function () {
+    return Inertia::render("central/create-new-password/index");
+});
+
 
 Route::middleware(['guest'])->group(function () {
     Route::controller(LoginController::class)->group(function () {
