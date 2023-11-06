@@ -31,7 +31,7 @@ function LoginOtpForm() {
     });
 
     return (
-        <div className='relative p-4 px-20'>
+        <div className='relative grid place-items-center p-4 px-20'>
             <Form {...form}>
                 <img
                     className='absolute right-0 top-0 h-[36px]'
