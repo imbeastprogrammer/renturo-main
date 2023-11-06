@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { EyeIcon, MailIcon } from 'lucide-react';
 
@@ -9,8 +9,8 @@ import FormInput from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/button';
 
 const loginSchema = z.object({
-    email: z.string().nonempty(),
-    password: z.string().nonempty(),
+    email: z.string().email(),
+    password: z.string().min(8).max(16),
 });
 
 type LoginFormFields = z.infer<typeof loginSchema>;
@@ -26,7 +26,9 @@ function LoginForm() {
         resolver: zodResolver(loginSchema),
     });
 
-    const onSubmit = form.handleSubmit(() => {});
+    const onSubmit = form.handleSubmit(() => {
+        router.visit('/login/enter-otp');
+    });
 
     return (
         <Form {...form}>
