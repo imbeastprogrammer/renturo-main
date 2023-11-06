@@ -24,7 +24,10 @@ function Properties() {
                         FormElements[field.type].propertiesComponent;
 
                     return (
-                        <div onClick={() => setSelectedField(field)}>
+                        <div
+                            key={field.id}
+                            onClick={() => setSelectedField(field)}
+                        >
                             <PropertyEditor key={field.id} element={field} />
                         </div>
                     );

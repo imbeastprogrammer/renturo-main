@@ -1,14 +1,24 @@
+import _ from 'lodash';
 import { useState } from 'react';
 import { MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 import useMenuToggle from '@/pages/tenants/admin/listings/form-builder/hooks/useMenuToggle';
-import { SavedLogo, SavingLogo } from '@/assets/form-builder';
+import {
+    RedoIcon,
+    SavedLogo,
+    SavingLogo,
+    UndoIcon,
+} from '@/assets/form-builder';
+import { useFormbuilderWithUndoRedo } from '@/hooks/useFormBuilder';
 
 function FormBuilderHeader() {
     const [saving, setSaving] = useState(false);
     const { isOpen, toggleMenu } = useMenuToggle();
+    const { undo, redo, pastStates, futureStates } = useFormbuilderWithUndoRedo(
+        (state) => state,
+    );
 
     const handleMenuToggle = () => toggleMenu(isOpen);
     const handleSave = () => {
@@ -43,7 +53,21 @@ function FormBuilderHeader() {
                 />
                 {saving ? <SavingLogo /> : <SavedLogo />}
             </div>
-            <div className='flex gap-2 p-4'>
+            <div className='flex items-center gap-4 p-4'>
+                <button
+                    disabled={pastStates.length === 1}
+                    className='grid h-[46px] w-[46px] place-items-center rounded-full transition hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50'
+                    onClick={() => undo()}
+                >
+                    <UndoIcon />
+                </button>
+                <button
+                    disabled={!futureStates.length}
+                    className='grid h-[46px] w-[46px] place-items-center rounded-full transition hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50'
+                    onClick={() => redo()}
+                >
+                    <RedoIcon />
+                </button>
                 <Button
                     onClick={handleSave}
                     variant='outline'
