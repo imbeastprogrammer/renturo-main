@@ -1,8 +1,10 @@
-import { create } from 'zustand';
+import {
+    useStoreWithEqualityFn,
+    createWithEqualityFn,
+} from 'zustand/traditional';
 import { v4 as uuidv4 } from 'uuid';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import { useStore } from 'zustand';
 import type { TemporalState } from 'zundo';
 import { FormElementInstance } from '@/pages/tenants/admin/listings/form-builder/components/FormElement';
 
@@ -42,102 +44,101 @@ const defaultPage: Page = {
     fields: [],
 };
 
-const useFormBuilder = create<FormBuilder>()(
+const useFormBuilder = createWithEqualityFn<FormBuilder>()(
     temporal(
-        persist(
-            (set) => ({
-                pages: [defaultPage],
-                current_page_id: defaultPage.page_id,
-                selectedField: null,
-                setPage: (pageId) => set({ current_page_id: pageId }),
-                setPages: (pages) => set({ pages }),
-                addPage: () =>
-                    set((state) => ({
+        (set) => ({
+            pages: [defaultPage],
+            current_page_id: defaultPage.page_id,
+            selectedField: null,
+            setPage: (pageId) => set({ current_page_id: pageId }),
+            setPages: (pages) => set({ pages }),
+            addPage: () =>
+                set((state) => ({
+                    ...state,
+                    pages: [
+                        ...state.pages,
+                        { page_id: uuidv4(), page_title: '', fields: [] },
+                    ],
+                })),
+            updatePage: (pageId, newPage) =>
+                set((state) => {
+                    const pageUpdated = state.pages.map((page) =>
+                        page.page_id === pageId ? newPage : page,
+                    );
+                    return { ...state, pages: pageUpdated };
+                }),
+            removePage: (pageId) =>
+                set((state) => {
+                    if (state.current_page_id === pageId)
+                        throw new Error('You cannot delete a active page');
+                    const pageRemoved = state.pages.filter(
+                        (page) => page.page_id !== pageId,
+                    );
+                    return {
                         ...state,
-                        pages: [
-                            ...state.pages,
-                            { page_id: uuidv4(), page_title: '', fields: [] },
-                        ],
-                    })),
-                updatePage: (pageId, newPage) =>
-                    set((state) => {
-                        const pageUpdated = state.pages.map((page) =>
-                            page.page_id === pageId ? newPage : page,
-                        );
-                        return { ...state, pages: pageUpdated };
-                    }),
-                removePage: (pageId) =>
-                    set((state) => {
-                        if (state.current_page_id === pageId)
-                            throw new Error('You cannot delete a active page');
-                        const pageRemoved = state.pages.filter(
-                            (page) => page.page_id !== pageId,
-                        );
-                        return {
-                            ...state,
-                            pages: pageRemoved,
-                        };
-                    }),
-                setFields: (pageId, fields) =>
-                    set((state) => {
-                        const pageUpdated = state.pages.map((page) =>
-                            page.page_id === pageId
-                                ? { ...page, fields }
-                                : page,
-                        );
-                        return { ...state, pages: pageUpdated };
-                    }),
-                addField: (pageId, index, field) =>
-                    set((state) => {
-                        const pageUpdated = state.pages.map((page) => {
-                            if (page.page_id === pageId) {
-                                const prevFields = [...page.fields];
-                                prevFields.splice(index, 0, field);
-                                return { ...page, fields: prevFields };
-                            }
-                            return page;
-                        });
-                        return { ...state, pages: pageUpdated };
-                    }),
-                removeField: (pageId, id) =>
-                    set((state) => {
-                        const pageUpdated = state.pages.map((page) => {
-                            if (page.page_id === pageId) {
-                                const fieldRemoved = page.fields.filter(
-                                    (field) => field.id !== id,
-                                );
-                                return { ...page, fields: fieldRemoved };
-                            }
-                            return page;
-                        });
-                        return { ...state, pages: pageUpdated };
-                    }),
-                setSelectedField: (field) => set({ selectedField: field }),
-                updateField: (pageId, id, updatedField) =>
-                    set((state) => {
-                        const pageUpdated = state.pages.map((page) => {
-                            if (page.page_id === pageId) {
-                                const fieldUpdated = page.fields.map((field) =>
-                                    field.id === id ? updatedField : field,
-                                );
-                                return { ...page, fields: fieldUpdated };
-                            }
-                            return page;
-                        });
-                        return { ...state, pages: pageUpdated };
-                    }),
-            }),
-            {
-                name: 'form-builder-storage',
-                storage: createJSONStorage(() => sessionStorage),
-            },
-        ),
+                        pages: pageRemoved,
+                    };
+                }),
+            setFields: (pageId, fields) =>
+                set((state) => {
+                    const pageUpdated = state.pages.map((page) =>
+                        page.page_id === pageId ? { ...page, fields } : page,
+                    );
+                    return { ...state, pages: pageUpdated };
+                }),
+            addField: (pageId, index, field) =>
+                set((state) => {
+                    const pageUpdated = state.pages.map((page) => {
+                        if (page.page_id === pageId) {
+                            const prevFields = [...page.fields];
+                            prevFields.splice(index, 0, field);
+                            return { ...page, fields: prevFields };
+                        }
+                        return page;
+                    });
+                    return { ...state, pages: pageUpdated };
+                }),
+            removeField: (pageId, id) =>
+                set((state) => {
+                    const pageUpdated = state.pages.map((page) => {
+                        if (page.page_id === pageId) {
+                            const fieldRemoved = page.fields.filter(
+                                (field) => field.id !== id,
+                            );
+                            return { ...page, fields: fieldRemoved };
+                        }
+                        return page;
+                    });
+                    return { ...state, pages: pageUpdated };
+                }),
+            setSelectedField: (field) => set({ selectedField: field }),
+            updateField: (pageId, id, updatedField) =>
+                set((state) => {
+                    const pageUpdated = state.pages.map((page) => {
+                        if (page.page_id === pageId) {
+                            const fieldUpdated = page.fields.map((field) =>
+                                field.id === id ? updatedField : field,
+                            );
+                            return { ...page, fields: fieldUpdated };
+                        }
+                        return page;
+                    });
+                    return { ...state, pages: pageUpdated };
+                }),
+        }),
+        {
+            wrapTemporal: (storeInitializer) =>
+                persist(storeInitializer, {
+                    name: 'form-builder-temporal-storage',
+                    storage: createJSONStorage(() => localStorage),
+                }),
+        },
     ),
 );
 
 export const useFormbuilderWithUndoRedo = <T,>(
     selector: (state: TemporalState<FormBuilder>) => T,
     equality?: (a: T, b: T) => boolean,
-) => useStore(useFormBuilder.temporal, selector, equality);
+) => useStoreWithEqualityFn(useFormBuilder.temporal, selector, equality);
 
 export default useFormBuilder;

@@ -55,7 +55,7 @@ function FormBuilderHeader() {
             </div>
             <div className='flex items-center gap-4 p-4'>
                 <button
-                    disabled={pastStates.length === 1}
+                    disabled={!pastStates.length}
                     className='grid h-[46px] w-[46px] place-items-center rounded-full transition hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50'
                     onClick={() => undo()}
                 >
