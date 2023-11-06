@@ -65,9 +65,11 @@ function LoginOtpForm() {
                     )}
                 />
                 <div className='space-y-2'>
-                    <p>Didn’t receive any OTP?</p>
+                    <p className='text-[18px]'>Didn’t receive any OTP?</p>
                     {countdown > 0 ? (
-                        <p>Resend in {countdown}s</p>
+                        <p className='text-[16px] text-black/50'>
+                            Resend in {countdown}s
+                        </p>
                     ) : (
                         <button
                             onClick={() => reset(5)}
