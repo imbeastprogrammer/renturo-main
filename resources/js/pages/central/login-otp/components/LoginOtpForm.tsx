@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import PinInput from '@/components/PinInput';
 import useCountdown from '@/hooks/useCountdown';
+import RenturoLogoBlue from '@/assets/logo/RenturoLogoBlue.png';
 
 const loginOtpSchema = z.object({
     verification_code: z.string().min(4).max(4),
@@ -30,66 +31,75 @@ function LoginOtpForm() {
     });
 
     return (
-        <Form {...form}>
-            <form
-                onSubmit={onSubmit}
-                className='space-y-8 p-4 px-20 text-center'
-            >
-                <div className='space-y-4'>
-                    <h1 className='text-[52px] font-bold  text-metalic-blue'>
-                        Enter OTP
-                    </h1>
-                    <p className='text-[#aaaaaa]'>
-                        We’ve sent a{' '}
-                        <span className='font-medium text-black'>4-digit</span>{' '}
-                        code to you mobile number to verify its you.
-                    </p>
-                </div>
-                <FormField
-                    name='verification_code'
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className='text-[20px] text-[#aaaaaa]'>
-                                Verification Code
-                            </FormLabel>
-                            <PinInput
-                                length={4}
-                                secret={false}
-                                onChange={field.onChange}
-                                onComplete={() => onSubmit()}
-                                value={field.value}
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
+        <div className='relative p-4 px-20'>
+            <Form {...form}>
+                <img
+                    className='absolute right-0 top-0 h-[36px]'
+                    src={RenturoLogoBlue}
+                    alt='logo'
                 />
-                <div className='space-y-2'>
-                    <p className='text-[18px]'>Didn’t receive any OTP?</p>
-                    {countdown > 0 ? (
-                        <p className='text-[16px] text-black/50'>
-                            Resend in {countdown}s
+                <form
+                    onSubmit={onSubmit}
+                    className='mt-10 space-y-6 text-center'
+                >
+                    <div className='space-y-4'>
+                        <h1 className='text-[52px] font-bold  text-metalic-blue'>
+                            Enter OTP
+                        </h1>
+                        <p className='text-[#aaaaaa]'>
+                            We’ve sent a{' '}
+                            <span className='font-medium text-black'>
+                                4-digit
+                            </span>{' '}
+                            code to you mobile number to verify its you.
                         </p>
-                    ) : (
-                        <button
-                            onClick={() => reset(5)}
-                            className='text-metalic-blue hover:underline'
+                    </div>
+                    <FormField
+                        name='verification_code'
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className='text-[20px] text-[#aaaaaa]'>
+                                    Verification Code
+                                </FormLabel>
+                                <PinInput
+                                    length={4}
+                                    secret={false}
+                                    onChange={field.onChange}
+                                    onComplete={() => onSubmit()}
+                                    value={field.value}
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <div className='space-y-2'>
+                        <p className='text-[18px]'>Didn’t receive any OTP?</p>
+                        {countdown > 0 ? (
+                            <p className='text-[16px] text-black/50'>
+                                Resend in {countdown}s
+                            </p>
+                        ) : (
+                            <button
+                                onClick={() => reset(5)}
+                                className='text-metalic-blue hover:underline'
+                            >
+                                Resend
+                            </button>
+                        )}
+                    </div>
+                    <div className='grid place-items-center'>
+                        <Button
+                            type='submit'
+                            disabled={isDisabled}
+                            className='bg-metalic-blue px-24 py-7 uppercase hover:bg-metalic-blue/90'
                         >
-                            Resend
-                        </button>
-                    )}
-                </div>
-                <div className='grid place-items-center'>
-                    <Button
-                        type='submit'
-                        disabled={isDisabled}
-                        className='bg-metalic-blue px-24 py-7 uppercase hover:bg-metalic-blue/90'
-                    >
-                        verify
-                    </Button>
-                </div>
-            </form>
-        </Form>
+                            verify
+                        </Button>
+                    </div>
+                </form>
+            </Form>
+        </div>
     );
 }
 
