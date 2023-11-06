@@ -50,7 +50,7 @@ function ForgotPasswordForm() {
                         />
                     </div>
                     <div>
-                        <p className='text-[18px]'>
+                        <p className='text-center text-[18px]'>
                             Didn’t receive a code?{' '}
                             <button
                                 type='button'
