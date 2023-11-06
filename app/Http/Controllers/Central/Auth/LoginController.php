@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use App\Http\Requests\Auth\LoginRequest;
+use Inertia\Inertia;
 use Auth;
 
 class LoginController extends Controller
@@ -27,7 +28,7 @@ class LoginController extends Controller
      */
     public function create()
     {
-        return 'super-admin login view';
+        return Inertia::render('central/login/index');
     }
 
     /**
