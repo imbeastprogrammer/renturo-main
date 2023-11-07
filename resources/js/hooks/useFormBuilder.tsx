@@ -1,6 +1,11 @@
-import { create } from 'zustand';
+import {
+    useStoreWithEqualityFn,
+    createWithEqualityFn,
+} from 'zustand/traditional';
 import { v4 as uuidv4 } from 'uuid';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { temporal } from 'zundo';
+import type { TemporalState } from 'zundo';
 import { FormElementInstance } from '@/pages/tenants/admin/listings/form-builder/components/FormElement';
 
 type Page = {
@@ -39,8 +44,8 @@ const defaultPage: Page = {
     fields: [],
 };
 
-const useFormBuilder = create<FormBuilder>()(
-    persist(
+const useFormBuilder = createWithEqualityFn<FormBuilder>()(
+    temporal(
         (set) => ({
             pages: [defaultPage],
             current_page_id: defaultPage.page_id,
@@ -122,10 +127,18 @@ const useFormBuilder = create<FormBuilder>()(
                 }),
         }),
         {
-            name: 'form-builder-storage',
-            storage: createJSONStorage(() => sessionStorage),
+            wrapTemporal: (storeInitializer) =>
+                persist(storeInitializer, {
+                    name: 'form-builder-temporal-storage',
+                    storage: createJSONStorage(() => localStorage),
+                }),
         },
     ),
 );
+
+export const useFormbuilderWithUndoRedo = <T,>(
+    selector: (state: TemporalState<FormBuilder>) => T,
+    equality?: (a: T, b: T) => boolean,
+) => useStoreWithEqualityFn(useFormBuilder.temporal, selector, equality);
 
 export default useFormBuilder;

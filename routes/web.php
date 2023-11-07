@@ -37,7 +37,7 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     Route::prefix('super-admin')->group(function () {
         Route::get('/', function () {
-            return 'super-admin dashboard page';
+            return Inertia::render("central/super-admin/index");
         });
 
         Route::controller(TenantManagementController::class)->group(function () {
