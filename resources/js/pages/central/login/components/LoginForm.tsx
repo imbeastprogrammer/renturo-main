@@ -1,12 +1,13 @@
 import { z } from 'zod';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { EyeIcon, MailIcon } from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
-import FormInput from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/button';
+import FormInput from '@/components/forms/FormInput';
 
 const loginSchema = z.object({
     email: z.string().email(),
@@ -21,13 +22,20 @@ const defaultValues: LoginFormFields = {
 };
 
 function LoginForm() {
+    const [errorMessages, setErrorMessages] = useState<Record<
+        string,
+        string
+    > | null>(null);
+
     const form = useForm<LoginFormFields>({
         defaultValues,
         resolver: zodResolver(loginSchema),
     });
 
-    const onSubmit = form.handleSubmit(() => {
-        router.visit('/login/enter-otp');
+    const onSubmit = form.handleSubmit((values) => {
+        router.post('/login', values, {
+            onError: (error) => setErrorMessages(error),
+        });
     });
 
     return (
@@ -35,7 +43,7 @@ function LoginForm() {
             <div className='grid place-items-center'>
                 <form
                     onSubmit={onSubmit}
-                    className='w-full space-y-8 p-10 px-20'
+                    className='w-full space-y-8 p-10 px-28'
                 >
                     <h1 className='text-center text-[52px] font-bold text-metalic-blue'>
                         Log in
@@ -52,14 +60,26 @@ function LoginForm() {
                             placeholder='Password'
                             control={form.control}
                             icon={EyeIcon}
+                            type='password'
                         />
                     </div>
-                    <Link
-                        href='/forgot-password'
-                        className='block text-right text-[18px] font-medium text-jasper-orange'
-                    >
-                        Forgot Password?
-                    </Link>
+                    <div className='flex items-center justify-between text-[18px]'>
+                        {errorMessages && Object.keys(errorMessages).length && (
+                            <div className='text-red-500'>
+                                {Object.entries(errorMessages).map(
+                                    ([key, value]) => (
+                                        <p key={key}>{value}</p>
+                                    ),
+                                )}
+                            </div>
+                        )}
+                        <Link
+                            href='/forgot-password'
+                            className='ml-auto inline-block font-medium text-jasper-orange'
+                        >
+                            Forgot Password?
+                        </Link>
+                    </div>
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
