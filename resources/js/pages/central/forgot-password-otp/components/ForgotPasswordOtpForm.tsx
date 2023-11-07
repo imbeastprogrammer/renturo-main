@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import PinInput from '@/components/PinInput';
 import useCountdown from '@/hooks/useCountdown';
-import RenturoLogoBlue from '@/assets/logo/RenturoLogoBlue.png';
+import KabootekTextLogoBlue from '@/assets/central/auth/kabootek-text-logo-blue.png';
 
 const forgotPasswordOtpSchema = z.object({
     verification_code: z.string().min(4).max(4),
@@ -39,14 +39,14 @@ function ForgotPasswordOtpForm() {
     return (
         <div className='relative grid place-items-center p-4 px-10 text-center'>
             <img
-                src={RenturoLogoBlue}
+                src={KabootekTextLogoBlue}
                 alt='logo'
                 className='absolute right-4 top-4 h-[36px]'
             />
             <Form {...form}>
                 <form onSubmit={onSubmit} className='mt-8 space-y-8'>
                     <div>
-                        <h1 className='text-[52px] font-bold text-metalic-blue'>
+                        <h1 className='text-yinmn-blue text-[52px] font-bold'>
                             Enter OTP
                         </h1>
                         <p className='text-[20px] text-[#aaaaaa]'>
@@ -100,7 +100,7 @@ function ForgotPasswordOtpForm() {
                         <Button
                             type='submit'
                             disabled={isVerifiyButtonDisabled}
-                            className='bg-metalic-blue px-24 py-7 uppercase hover:bg-metalic-blue/90'
+                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
                         >
                             verify
                         </Button>
