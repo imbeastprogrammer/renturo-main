@@ -31,6 +31,9 @@ const config: Config = {
                 'heavy-carbon': '#545557',
                 gunmetal: '#2E3436',
             },
+            fontFamily: {
+                outfit: ['outfit'],
+            },
             fontSize: {
                 'headline-1': [
                     '49px',
