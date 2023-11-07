@@ -5,7 +5,7 @@ import { EyeIcon } from 'lucide-react';
 import { Form } from '@/components/ui/form';
 import FormInput from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/button';
-import RenturoLogoBlue from '@/assets/logo/RenturoLogoBlue.png';
+import KabootekTextLogoBlue from '@/assets/central/auth/kabootek-text-logo-blue.png';
 
 const createNewPasswordSchema = z
     .object({
@@ -38,14 +38,14 @@ function CreateNewPasswordForm() {
     return (
         <div className='relative grid place-items-center p-4 px-8'>
             <img
-                src={RenturoLogoBlue}
+                src={KabootekTextLogoBlue}
                 alt='logo'
                 className='absolute right-0 top-0 h-[36px]'
             />
             <Form {...form}>
                 <form onSubmit={onSubmit} className='space-y-8'>
                     <div className='text-center'>
-                        <h1 className='text-[52px] font-bold text-metalic-blue'>
+                        <h1 className='text-yinmn-blue text-[52px] font-bold'>
                             Create new password
                         </h1>
                         <p className='text-[20px] text-[#aaaaaa]'>
@@ -59,6 +59,7 @@ function CreateNewPasswordForm() {
                             placeholder='Password'
                             label='Password'
                             icon={EyeIcon}
+                            type='password'
                         />
                         <FormInput
                             label='Confirm Password'
@@ -66,12 +67,13 @@ function CreateNewPasswordForm() {
                             name='confirm_password'
                             placeholder='Confirm Password'
                             icon={EyeIcon}
+                            type='password'
                         />
                     </div>
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            className='bg-metalic-blue px-24 py-7 uppercase hover:bg-metalic-blue/90'
+                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
                         >
                             Submit
                         </Button>
