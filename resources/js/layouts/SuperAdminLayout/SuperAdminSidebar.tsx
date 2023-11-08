@@ -29,27 +29,41 @@ function SuperAdminSidebar() {
                 </h1>
                 <div className='relative space-y-2'>
                     <SidebarLink
-                        isActive={pathname === '/super-admin'}
+                        isActive={pathname === '/super-admin/dashboard'}
                         icon={DashboardLogo}
-                        path='/super-admins'
+                        path='/super-admin/dashboard'
                     >
                         Dashboard
                     </SidebarLink>
                     <GroupLinks
-                        isActive={pathname.startsWith('/administration')}
+                        isActive={pathname.includes('/administration')}
                         label='Administration'
                         icon={AdministrationLogo}
                         links={[
-                            { label: 'User Management', path: '/' },
-                            { label: 'Roles', path: '/' },
-                            { label: 'Add User', path: '/' },
+                            {
+                                label: 'User Management',
+                                path: '/super-admin/administration/user-management',
+                            },
+                            {
+                                label: 'Roles',
+                                path: '/super-admin/administration/roles',
+                            },
+                            {
+                                label: 'Add User',
+                                path: '/super-admin/administration/add-user',
+                            },
                         ]}
                     />
                     <GroupLinks
-                        isActive={pathname.startsWith('/site-management')}
+                        isActive={pathname.includes('/site-management')}
                         label='Site Management'
                         icon={SiteManagementLogo}
-                        links={[{ label: 'Tenants and Domains', path: '/' }]}
+                        links={[
+                            {
+                                label: 'Tenants and Domains',
+                                path: '/super-admin/site-management/domains',
+                            },
+                        ]}
                     />
                 </div>
             </div>
@@ -58,19 +72,15 @@ function SuperAdminSidebar() {
             </div>
             <div className='space-y-4 p-4'>
                 <h1 className='text-[15px] uppercase text-white/50'>Other</h1>
-                <div className='space-y-4'>
+                <div className='relative space-y-4'>
                     <SidebarLink
                         path='/super-admin/settings'
-                        isActive={false}
+                        isActive={pathname === '/super-admin/settings'}
                         icon={SettingsLogo}
                     >
                         Settings
                     </SidebarLink>
-                    <SidebarLink
-                        path='/super-admin/logou'
-                        isActive={false}
-                        icon={LogoutLogo}
-                    >
+                    <SidebarLink path='/super-admin/logout' icon={LogoutLogo}>
                         Logout
                     </SidebarLink>
                 </div>

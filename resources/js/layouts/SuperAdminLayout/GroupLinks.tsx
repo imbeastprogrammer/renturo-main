@@ -23,9 +23,12 @@ function GroupLinks({ label, icon, links, isActive }: GroupLinksProps) {
     return (
         <Collapsible open={isOpen} onOpenChange={handleOpenChange}>
             <CollapsibleTrigger className='flex w-full items-center gap-4 text-white'>
-                {isActive && (
-                    <div className='absolute -left-4 h-[40px] w-1 rounded-lg bg-white/50' />
-                )}
+                <div
+                    className={cn(
+                        'absolute -left-4 h-[40px] w-1 rounded-lg bg-white/50 opacity-0',
+                        isActive && 'opacity-100',
+                    )}
+                />
                 <img
                     src={icon}
                     alt='navlink icon'

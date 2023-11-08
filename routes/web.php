@@ -31,14 +31,34 @@ Route::middleware(['guest'])->group(function () {
     });
 });
 
-Route::middleware(['web', 'auth'])->group(function () {
+
+Route::middleware([])->group(function () {
 
     Route::post('logout', [LoginController::class, 'destroy']);
 
     Route::prefix('super-admin')->group(function () {
         Route::get('/', function () {
-            return Inertia::render("central/super-admin/index");
+            return 'super admin dashboard';
         });
+        Route::get('/dashboard', function () {
+            return Inertia::render('central/super-admin/dashboard/index');
+        });
+        Route::get('/administration/user-management', function () {
+            return Inertia::render('central/super-admin/administration/user-management/index');
+        });
+        Route::get('/administration/roles', function () {
+            return Inertia::render('central/super-admin/administration/roles/index');
+        });
+        Route::get('/administration/add-user', function () {
+            return Inertia::render('central/super-admin/administration/add-user/index');
+        });
+        Route::get('/site-management/domains', function () {
+            return Inertia::render('central/super-admin/site-management/domains/index');
+        });
+        Route::get('/settings', function () {
+            return Inertia::render('central/super-admin/settings/index');
+        });
+
 
         Route::controller(TenantManagementController::class)->group(function () {
             Route::get('tenants', 'index');

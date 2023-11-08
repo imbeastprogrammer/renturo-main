@@ -18,7 +18,7 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        return Inertia::render('central/super-admin/users/index');
+        return 'This is the users page';
     }
 
     /**
