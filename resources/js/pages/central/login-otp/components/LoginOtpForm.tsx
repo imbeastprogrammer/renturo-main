@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import PinInput from '@/components/PinInput';
 import useCountdown from '@/hooks/useCountdown';
-import RenturoLogoBlue from '@/assets/logo/RenturoLogoBlue.png';
+import KabootekTextLogoBlue from '@/assets/central/auth/kabootek-text-logo-blue.png';
 
 const loginOtpSchema = z.object({
     verification_code: z.string().min(4).max(4),
@@ -35,7 +35,7 @@ function LoginOtpForm() {
             <Form {...form}>
                 <img
                     className='absolute right-0 top-0 h-[36px]'
-                    src={RenturoLogoBlue}
+                    src={KabootekTextLogoBlue}
                     alt='logo'
                 />
                 <form
@@ -43,10 +43,10 @@ function LoginOtpForm() {
                     className='mt-10 space-y-6 text-center'
                 >
                     <div className='space-y-4'>
-                        <h1 className='text-[52px] font-bold  text-metalic-blue'>
+                        <h1 className='text-yinmn-blue text-[52px]  font-bold'>
                             Enter OTP
                         </h1>
-                        <p className='text-[#aaaaaa]'>
+                        <p className='text-[20px] text-[#aaaaaa]'>
                             We’ve sent a{' '}
                             <span className='font-medium text-black'>
                                 4-digit
@@ -92,7 +92,7 @@ function LoginOtpForm() {
                         <Button
                             type='submit'
                             disabled={isDisabled}
-                            className='bg-metalic-blue px-24 py-7 uppercase hover:bg-metalic-blue/90'
+                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
                         >
                             verify
                         </Button>
