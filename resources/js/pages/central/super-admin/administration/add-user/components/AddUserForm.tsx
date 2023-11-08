@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { useToast } from '@/components/ui/use-toast';
+import { router } from '@inertiajs/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
@@ -28,14 +30,46 @@ const defaultValues: AddUserFormFields = {
 };
 
 function AddUserForm() {
+    const { toast } = useToast();
     const form = useForm<AddUserFormFields>({
         defaultValues,
         resolver: zodResolver(addUserFormSchema),
     });
 
-    const onSubmit = form.handleSubmit((values) => {});
-
-    console.log(form.formState.errors);
+    const onSubmit = form.handleSubmit(({ first_name, last_name, email }) => {
+        router.post(
+            '/super-admin/users',
+            { first_name, last_name, email },
+            {
+                onSuccess: () => {
+                    toast({
+                        title: 'Success',
+                        description:
+                            'The new user has been added to the system.',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                    });
+                    router.visit(
+                        '/super-admin/administration/user-management',
+                        { replace: true },
+                    );
+                },
+                onError: () =>
+                    toast({
+                        title: 'Success',
+                        description:
+                            'The new user has been added to the system.',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                        variant: 'destructive',
+                    }),
+            },
+        );
+    });
 
     return (
         <Form {...form}>
