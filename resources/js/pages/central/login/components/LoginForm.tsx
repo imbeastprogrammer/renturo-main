@@ -45,7 +45,7 @@ function LoginForm() {
                     onSubmit={onSubmit}
                     className='w-full space-y-8 p-10 px-28'
                 >
-                    <h1 className='text-center text-[52px] font-bold text-metalic-blue'>
+                    <h1 className='text-yinmn-blue text-center text-[52px] font-bold'>
                         Log in
                     </h1>
                     <div className='space-y-4'>
@@ -75,7 +75,7 @@ function LoginForm() {
                         )}
                         <Link
                             href='/forgot-password'
-                            className='ml-auto inline-block font-medium text-jasper-orange'
+                            className='text-picton-blue ml-auto inline-block font-medium'
                         >
                             Forgot Password?
                         </Link>
@@ -83,7 +83,7 @@ function LoginForm() {
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            className='bg-metalic-blue px-24 py-7 uppercase hover:bg-metalic-blue/90'
+                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
                         >
                             log in
                         </Button>

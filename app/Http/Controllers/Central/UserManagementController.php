@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Central\UserManagement\StoreUserRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserRequest;
 use App\Models\Central\User;
+use Inertia\Inertia;
 
 class UserManagementController extends Controller
 {
@@ -17,7 +18,7 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        return 'super-admin user management';
+        return 'This is the users page';
     }
 
     /**

@@ -22,6 +22,17 @@ const config: Config = {
                 'metalic-blue': '#185ADC',
                 'arylide-yellow': '#EDCA5E',
                 'jasper-orange': '#DC8A4A',
+                'yinmn-blue': '#314c8b',
+                'picton-blue': '#43B3E5',
+                'ghost-white': '#F9F9F9',
+                'light-carbon': '#F0F0F0',
+                'cloud-gray': '#D2D2D2',
+                'dark-gray': '#999D9E',
+                'heavy-carbon': '#545557',
+                gunmetal: '#2E3436',
+            },
+            fontFamily: {
+                outfit: ['outfit'],
             },
             fontSize: {
                 'headline-1': [
