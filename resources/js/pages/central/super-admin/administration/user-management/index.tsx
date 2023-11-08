@@ -28,7 +28,7 @@ function UserManagement() {
                         </div>
                         <div>
                             <Link href='/super-admin/administration/add-user'>
-                                <Button className='gap-2 bg-[#84C58A] hover:bg-[#84C58A]/90'>
+                                <Button className='gap-2 bg-[#84C58A] text-[15px] font-medium hover:bg-[#84C58A]/90'>
                                     <PlusIcon className='h-4 w-4' /> Create
                                 </Button>
                             </Link>
