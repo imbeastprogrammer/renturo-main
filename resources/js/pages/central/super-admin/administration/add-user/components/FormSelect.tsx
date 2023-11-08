@@ -45,7 +45,7 @@ function FormSelect<T>({
                         >
                             <SelectTrigger
                                 className={cn(
-                                    'w-[180px] focus-visible:ring-picton-blue focus-visible:ring-offset-0 active:ring-picton-blue',
+                                    'h-[30px] w-[180px] focus-visible:ring-picton-blue focus-visible:ring-offset-0 active:ring-picton-blue',
                                     !!fieldState.error?.message &&
                                         'ring-2 ring-red-500 focus-visible:ring-red-500',
                                 )}

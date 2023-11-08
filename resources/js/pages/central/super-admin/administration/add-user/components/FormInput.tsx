@@ -29,7 +29,7 @@ function FormInput<T>({ label, control, name, ...props }: FormInputProps<T>) {
                             {...props}
                             {...field}
                             className={cn(
-                                'text-base placeholder:text-[#2E3436]/20 focus-visible:ring-picton-blue focus-visible:ring-offset-0',
+                                'h-[30px] text-base placeholder:text-[#2E3436]/20 focus-visible:ring-picton-blue focus-visible:ring-offset-0',
                                 !!fieldState.error?.message &&
                                     'ring-2 ring-red-500 focus-visible:ring-red-500',
                             )}

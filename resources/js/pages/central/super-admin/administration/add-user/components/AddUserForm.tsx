@@ -1,11 +1,13 @@
 import { z } from 'zod';
+import { ReactNode } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { router } from '@inertiajs/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+
+import { ErrorIcon } from '@/assets/central';
 import FormInput from './FormInput';
 import FormCheckbox from './FormCheckbox';
 import FormSelect from './FormSelect';
@@ -35,6 +37,8 @@ function AddUserForm() {
         defaultValues,
         resolver: zodResolver(addUserFormSchema),
     });
+
+    const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     const onSubmit = form.handleSubmit(({ first_name, last_name, email }) => {
         router.post(
@@ -127,6 +131,17 @@ function AddUserForm() {
                             ]}
                         />
                     </div>
+                </div>
+                <div className='flex justify-end text-base'>
+                    {hasErrors && (
+                        <div className='flex items-center gap-2'>
+                            <img src={ErrorIcon} />
+                            <p>
+                                Please complete all required fields before
+                                submitting.
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <div className='flex justify-end'>
                     <Button
