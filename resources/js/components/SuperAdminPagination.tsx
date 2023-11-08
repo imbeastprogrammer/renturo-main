@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { usePagination } from '@/hooks/usePagination';
@@ -17,7 +17,7 @@ const DotsMap: Record<string, string> = {
     'left-dots': '...',
 };
 
-function Pagination({
+function SuperAdminPagination({
     numberOfPages,
     currentPage = 1,
     onNextPage,
@@ -30,7 +30,7 @@ function Pagination({
     });
 
     return (
-        <ul className='flex gap-2'>
+        <ul className='flex items-center gap-2'>
             <li>
                 <Button
                     size='icon'
@@ -38,17 +38,19 @@ function Pagination({
                     disabled={currentPage === 1}
                     onClick={() => onPrevPage(currentPage)}
                 >
-                    <ArrowLeftIcon />
+                    <ChevronLeft />
                 </Button>
             </li>
             {pages.map((page) => (
                 <li key={page}>
-                    <Button
-                        className={cn({
-                            'bg-arylide-yellow hover:bg-arylide-yellow/90':
-                                currentPage === page,
-                        })}
-                        variant={currentPage === page ? 'default' : 'outline'}
+                    <button
+                        className={cn(
+                            'w-5 border-b border-transparent text-[15px] font-bold transition',
+                            {
+                                'border-picton-blue text-picton-blue':
+                                    currentPage === page,
+                            },
+                        )}
                         onClick={() => {
                             if (
                                 typeof page === 'string' &&
@@ -64,7 +66,7 @@ function Pagination({
                         }}
                     >
                         {DotsMap[page] || page}
-                    </Button>
+                    </button>
                 </li>
             ))}
             <li>
@@ -74,11 +76,11 @@ function Pagination({
                     disabled={currentPage === numberOfPages}
                     onClick={() => onNextPage(currentPage)}
                 >
-                    <ArrowRightIcon />
+                    <ChevronRight />
                 </Button>
             </li>
         </ul>
     );
 }
 
-export default Pagination;
+export default SuperAdminPagination;
