@@ -25,14 +25,16 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                if ($guard === 'central') {
+                    return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
+                }
+
                 if (Auth::user()->role === User::ROLE_ADMIN) {
                     return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
                 } else if (Auth::user()->role === User::ROLE_OWNER) {
                     return redirect()->intended(RouteServiceProvider::OWNER_HOME);
                 } else if (Auth::user()->role === User::ROLE_USER) {
                     return redirect()->intended(RouteServiceProvider::USER_HOME);
-                } else if (Auth::user()->role === CentralUser::ROLE_SUPER_ADMIN) {
-                    return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
                 }
             }
         }

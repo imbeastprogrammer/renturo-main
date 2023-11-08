@@ -24,14 +24,14 @@ Route::get('/create-new-password', function () {
 });
 
 
-Route::middleware(['guest'])->group(function () {
+Route::middleware('guest:central')->group(function () {
     Route::controller(LoginController::class)->group(function () {
         Route::get('login', 'create');
         Route::post('login', 'store');
     });
 });
 
-Route::middleware(['web', 'auth'])->group(function () {
+Route::middleware('auth:central')->group(function () {
 
     Route::post('logout', [LoginController::class, 'destroy']);
 
