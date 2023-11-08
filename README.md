@@ -56,6 +56,12 @@ composer install
 php artisan migrate --seed
 ```
 
+2. To seed the tenant's database, run the following command:
+
+```bash
+php artisan tenants:seed
+```
+
 ## Runnning the application
 
 1. In your terminal, navigate to the project directory if you're not already there.
