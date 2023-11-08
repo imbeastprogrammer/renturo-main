@@ -68,7 +68,7 @@ function SuperAdminSidebar() {
                 </div>
             </div>
             <div className='p-4'>
-                <Separator />
+                <Separator className='bg-white/50' />
             </div>
             <div className='space-y-4 p-4'>
                 <h1 className='text-[15px] uppercase text-white/50'>Other</h1>
