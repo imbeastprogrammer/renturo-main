@@ -39,7 +39,7 @@ class LoginController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        $request->authenticate('central');
 
         $request->session()->regenerate();
 
@@ -88,7 +88,7 @@ class LoginController extends Controller
      */
     public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::guard('central')->logout();
 
         $request->session()->invalidate();
 
