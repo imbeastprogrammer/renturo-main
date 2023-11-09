@@ -11,6 +11,7 @@ use App\Models\Central\Tenant;
 use App\Models\User;
 
 use Artisan;
+use Inertia\Inertia;
 use Str;
 
 class TenantManagementController extends Controller
@@ -23,8 +24,7 @@ class TenantManagementController extends Controller
     public function index()
     {
         $tenants = Tenant::all();
-
-        return response()->json($tenants);
+        return Inertia::render('central/super-admin/site-management/tenants/index', ['tenants'=>$tenants]);
     }
 
     /**
@@ -34,7 +34,7 @@ class TenantManagementController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('central/super-admin/site-management/tenants/create-tenant/index');
     }
 
     /**
@@ -95,7 +95,8 @@ class TenantManagementController extends Controller
      */
     public function edit($id)
     {
-        //
+        $tenant = Tenant::findOrFail($id);
+        return Inertia::render('central/super-admin/site-management/tenants/update-tenant/index', ['tenant'=>$tenant]);
     }
 
     /**
