@@ -27,7 +27,7 @@ function RolesTable() {
         setDeleteModalState({ id, isOpen: true });
 
     const navigateToEditPage = (id: number) =>
-        router.visit(`/super-admin/administration/edit-user/${id}`);
+        router.visit(`/super-admin/administration/roles/edit/${id}`);
 
     return (
         <>

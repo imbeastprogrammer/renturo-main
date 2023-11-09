@@ -48,7 +48,7 @@ Route::middleware('auth:central')->group(function () {
         Route::get('/administration/roles/add', function () {
             return Inertia::render('central/super-admin/administration/roles/add-role/index');
         });
-        Route::get('/administration/roles/edit', function () {
+        Route::get('/administration/roles/edit/{id}', function () {
             return Inertia::render('central/super-admin/administration/roles/edit-role/index');
         });
         Route::get('/site-management/domains', function () {
