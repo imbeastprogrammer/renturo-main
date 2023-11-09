@@ -34,7 +34,7 @@ class TenantManagementController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('central/super-admin/site-management/tenants/create-tenant/index');
     }
 
     /**

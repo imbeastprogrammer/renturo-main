@@ -33,7 +33,7 @@ function Tenants({ tenants }: TenantsProps) {
                             </span>
                         </div>
                         <div>
-                            <Link href='/super-admin/administration/roles/add'>
+                            <Link href='/super-admin/site-management/tenants/create'>
                                 <Button className='gap-2 bg-[#84C58A] text-[15px] font-medium hover:bg-[#84C58A]/90'>
                                     <PlusIcon className='h-4 w-4' /> Create
                                 </Button>

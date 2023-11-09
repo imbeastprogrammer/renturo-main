@@ -25,7 +25,7 @@ function FormTextArea<T>({
             control={control}
             name={name}
             render={({ field, fieldState }) => (
-                <FormItem className='flex items-center space-y-0'>
+                <FormItem className='flex items-start space-y-0'>
                     <FormLabel className='min-w-[200px] text-base font-medium'>
                         {label}
                     </FormLabel>
