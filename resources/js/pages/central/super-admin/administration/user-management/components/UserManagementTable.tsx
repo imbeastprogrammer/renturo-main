@@ -27,7 +27,7 @@ function UserManagementTable() {
         setDeleteModalState({ id, isOpen: true });
 
     const navigateToEditPage = (id: number) =>
-        router.visit(`/super-admin/administration/edit-user/${id}`);
+        router.visit(`/super-admin/administration/user-management/edit/${id}`);
 
     return (
         <>
