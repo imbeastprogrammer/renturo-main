@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenants\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
+use App\Mail\Tenants\Auth\SendMobileVerificationCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\User;
+use Mail;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -31,9 +33,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $verificationCode = rand(1000, 9999);
+
         $request->authenticate('web');
 
         $request->session()->regenerate();
+
+        $user = $request->user();
+
+        $user->mobileVerification()->create([
+            'mobile_no' => $user->mobileVerification()->mobile_no,
+            'code' => $verificationCode
+        ]);
+
+        Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
         if (Auth::user()->role === User::ROLE_ADMIN) {
             return redirect()->intended(RouteServiceProvider::ADMIN_HOME);

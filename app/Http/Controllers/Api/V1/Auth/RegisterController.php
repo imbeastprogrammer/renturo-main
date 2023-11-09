@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Tenants\Auth\RegisterRequest;
+use App\Mail\Tenants\Auth\SendMobileVerificationCode;
 use App\Models\User;
+use Mail;
 
 class RegisterController extends Controller
 {
@@ -23,6 +25,8 @@ class RegisterController extends Controller
         $accessToken = $user->createToken('personal-access-token')->accessToken;
 
         event(new Registered($user));
+
+        Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
         return response()->json([
             'message' => 'Registration complete!',

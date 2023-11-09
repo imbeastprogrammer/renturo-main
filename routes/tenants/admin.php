@@ -16,6 +16,7 @@ use Inertia\Inertia;
 Route::middleware([
     'web',
     'auth',
+    'verifiedMobileNumber',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
     RedirectIfTenantActivated::class

@@ -10,6 +10,7 @@ use App\Http\Middleware\RedirectIfTenantActivated;
 Route::middleware([
     'web',
     'auth',
+    'verifiedMobileNumber',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
     RedirectIfTenantActivated::class

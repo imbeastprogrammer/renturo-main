@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\VerifyMobileController;
 use App\Http\Controllers\CryptographyController;
 
 use Inertia\Inertia;
@@ -62,6 +63,9 @@ Route::middleware([
     });
 
     Route::middleware('auth')->group(function () {
+        Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);
+        Route::post('/resend/mobile/verification', [VerifyMobileController::class, 'store']);
+
         Route::get('verify-email', EmailVerificationPromptController::class);
 
         Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
