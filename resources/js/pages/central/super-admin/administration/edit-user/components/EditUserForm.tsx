@@ -161,7 +161,7 @@ function EditUserForm() {
                         type='submit'
                         className='bg-[#84C58A] px-8 text-base font-medium hover:bg-[#84C58A]/90'
                     >
-                        Add New Admin
+                        Update Details
                     </Button>
                 </div>
             </form>
