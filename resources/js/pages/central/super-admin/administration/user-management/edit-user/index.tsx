@@ -1,12 +1,15 @@
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import EditUserForm from './components/EditUserForm';
 
-function EditUser() {
+import { User } from '@/types/users';
+
+type EditUserProps = { user: User };
+function EditUser({ user }: EditUserProps) {
     return (
         <div className='grid grid-rows-[80px_1fr] p-4'>
             <div></div>
             <div className='rounded-xl bg-white p-6 shadow-lg'>
-                <EditUserForm />
+                <EditUserForm user={user} />
             </div>
         </div>
     );

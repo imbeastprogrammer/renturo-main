@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { z } from 'zod';
 import { ReactNode } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -54,17 +55,19 @@ function AddUserForm() {
                             marginBottom: '1rem',
                             transform: 'translateX(-1rem)',
                         },
+                        variant: 'default',
                     });
                     router.visit(
                         '/super-admin/administration/user-management',
                         { replace: true },
                     );
                 },
-                onError: () =>
+                onError: (error) =>
                     toast({
-                        title: 'Success',
+                        title: 'Error',
                         description:
-                            'The new user has been added to the system.',
+                            _.valuesIn(error)[0] ||
+                            'Something went wrong, Please try again later.',
                         style: {
                             marginBottom: '1rem',
                             transform: 'translateX(-1rem)',
