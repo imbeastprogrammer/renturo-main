@@ -29,6 +29,7 @@ class StoreTenantRequest extends FormRequest
         return [
             'tenant_id' => 'required|max:6',
             'name' => 'required|string|unique:tenants,name|max:255',
+            'plan_type' => 'required|in:demo,starter_plan,professional_plan,enterprise_plan,custom_plan',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
