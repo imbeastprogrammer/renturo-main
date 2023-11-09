@@ -1,12 +1,16 @@
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { ReactNode } from 'react';
+import { useToast } from '@/components/ui/use-toast';
+import { router } from '@inertiajs/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import FormInput from './FormInput';
-import FormCheckbox from './FormCheckbox';
-import FormSelect from './FormSelect';
+
+import { ErrorIcon } from '@/assets/central';
+import FormInput from '@/components/super-admin-form-elements/FormInput';
+import FormCheckbox from '@/components/super-admin-form-elements/FormCheckbox';
+import FormSelect from '@/components/super-admin-form-elements/FormSelect';
 
 const addUserFormSchema = z.object({
     first_name: z.string().nonempty(),
@@ -28,14 +32,48 @@ const defaultValues: AddUserFormFields = {
 };
 
 function AddUserForm() {
+    const { toast } = useToast();
     const form = useForm<AddUserFormFields>({
         defaultValues,
         resolver: zodResolver(addUserFormSchema),
     });
 
-    const onSubmit = form.handleSubmit((values) => {});
+    const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    console.log(form.formState.errors);
+    const onSubmit = form.handleSubmit(({ first_name, last_name, email }) => {
+        router.post(
+            '/super-admin/users',
+            { first_name, last_name, email },
+            {
+                onSuccess: () => {
+                    toast({
+                        title: 'Success',
+                        description:
+                            'The new user has been added to the system.',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                    });
+                    router.visit(
+                        '/super-admin/administration/user-management',
+                        { replace: true },
+                    );
+                },
+                onError: () =>
+                    toast({
+                        title: 'Success',
+                        description:
+                            'The new user has been added to the system.',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                        variant: 'destructive',
+                    }),
+            },
+        );
+    });
 
     return (
         <Form {...form}>
@@ -94,6 +132,17 @@ function AddUserForm() {
                         />
                     </div>
                 </div>
+                <div className='flex justify-end text-base'>
+                    {hasErrors && (
+                        <div className='flex items-center gap-2'>
+                            <img src={ErrorIcon} />
+                            <p>
+                                Please complete all required fields before
+                                submitting.
+                            </p>
+                        </div>
+                    )}
+                </div>
                 <div className='flex justify-end'>
                     <Button
                         type='submit'
@@ -116,7 +165,5 @@ function SectionTitle({ children }: SectionTitleProps) {
         </div>
     );
 }
-
-type FormControlWrapperProps = { children: ReactNode };
 
 export default AddUserForm;

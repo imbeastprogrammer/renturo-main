@@ -50,7 +50,7 @@ function SuperAdminSidebar() {
                             },
                             {
                                 label: 'Add User',
-                                path: '/super-admin/administration/add-user',
+                                path: '/super-admin/administration/user-management/add',
                             },
                         ]}
                     />

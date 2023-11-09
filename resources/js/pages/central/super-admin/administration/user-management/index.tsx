@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Link } from '@inertiajs/react';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import UserManagementTable from './components/UserManagementTable';
@@ -26,9 +27,11 @@ function UserManagement() {
                             </span>
                         </div>
                         <div>
-                            <Button className='gap-2 bg-[#84C58A] hover:bg-[#84C58A]/90'>
-                                <PlusIcon className='h-4 w-4' /> Create
-                            </Button>
+                            <Link href='/super-admin/administration/user-management/add'>
+                                <Button className='gap-2 bg-[#84C58A] text-[15px] font-medium hover:bg-[#84C58A]/90'>
+                                    <PlusIcon className='h-4 w-4' /> Create
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
