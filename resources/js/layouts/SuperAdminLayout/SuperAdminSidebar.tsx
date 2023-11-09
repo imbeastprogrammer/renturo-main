@@ -61,7 +61,7 @@ function SuperAdminSidebar() {
                         links={[
                             {
                                 label: 'Tenants and Domains',
-                                path: '/super-admin/site-management/domains',
+                                path: '/super-admin/site-management/tenants',
                             },
                         ]}
                     />

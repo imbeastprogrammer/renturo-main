@@ -51,20 +51,17 @@ Route::middleware('auth:central')->group(function () {
         Route::get('/administration/roles/edit/{id}', function () {
             return Inertia::render('central/super-admin/administration/roles/edit-role/index');
         });
-        Route::get('/site-management/domains', function () {
-            return Inertia::render('central/super-admin/site-management/domains/index');
-        });
         Route::get('/settings', function () {
             return Inertia::render('central/super-admin/settings/index');
         });
 
 
         Route::controller(TenantManagementController::class)->group(function () {
-            Route::get('tenants', 'index');
-            Route::get('tenants/create', 'create');
+            Route::get('site-management/tenants', 'index');
+            Route::get('site-management/tenants/create', 'create');
+            Route::get('site-management/tenants/{tenant}', 'show');
+            Route::get('site-management/tenants/edit/{tenant}', 'edit');
             Route::post('tenants', 'store');
-            Route::get('tenants/{tenant}', 'show');
-            Route::get('tenants/{tenant}/edit', 'edit');
             Route::put('tenants/{tenant}', 'update');
             Route::delete('tenants/{tenant}', 'destroy');
         });
