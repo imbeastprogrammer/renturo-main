@@ -98,7 +98,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
 
     return (
         <Form {...form}>
-            <form className='space-y-4' onSubmit={onSubmit}>
+            <form className='flex flex-col gap-2 p-6' onSubmit={onSubmit}>
                 <h1 className='text-base text-[#2E3436]/50'>
                     To register a new organization, please enter your
                     organization's name, contact information, and desired domain
