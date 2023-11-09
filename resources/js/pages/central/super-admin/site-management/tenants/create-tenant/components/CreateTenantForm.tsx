@@ -45,10 +45,10 @@ function CreateTenantForm() {
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(({ domain, ...values }) => {
+    const onSubmit = form.handleSubmit(({ domain, usage_plan, ...values }) => {
         router.post(
             '/super-admin/tenants',
-            { ...values, name: domain },
+            { ...values, name: domain, plan_type: usage_plan },
             {
                 onSuccess: () => {
                     toast({
@@ -120,19 +120,19 @@ function CreateTenantForm() {
                                 },
                                 {
                                     label: 'Starter Plan',
-                                    value: 'starter-plan',
+                                    value: 'starter_plan',
                                 },
                                 {
                                     label: 'Professional Plan',
-                                    value: 'professional-plan',
+                                    value: 'professional_plan',
                                 },
                                 {
                                     label: 'Enterprise Plan',
-                                    value: 'enterprise-plan',
+                                    value: 'enterprise_plan',
                                 },
                                 {
                                     label: 'Custom Plan',
-                                    value: 'custom-plan',
+                                    value: 'custom_plan',
                                 },
                             ]}
                         />

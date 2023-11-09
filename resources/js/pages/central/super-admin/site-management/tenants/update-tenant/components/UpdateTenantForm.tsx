@@ -16,7 +16,7 @@ import { UsagePlansMap } from '../usage-plans';
 
 const updateTenantFormSchema = z.object({
     domain: z.string().nonempty().optional(),
-    usage_plan: z.string().optional(),
+    usage_plan: z.string().nonempty(),
     first_name: z.string().optional(),
     last_name: z.string().optional(),
     username: z.string().optional(),
@@ -51,6 +51,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
             first_name: '',
             last_name: '',
             mobile_no: '',
+            usage_plan: tenant.plan_type,
             status: tenant.status,
         },
         resolver: zodResolver(updateTenantFormSchema),
@@ -60,10 +61,10 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(({ domain, ...values }) => {
+    const onSubmit = form.handleSubmit(({ domain, usage_plan, ...values }) => {
         router.put(
             `/super-admin/tenants/${tenant.id}`,
-            { ...values, name: domain },
+            { ...values, name: domain, plan_type: usage_plan },
             {
                 onSuccess: () => {
                     toast({
@@ -134,19 +135,19 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                                 },
                                 {
                                     label: 'Starter Plan',
-                                    value: 'starter-plan',
+                                    value: 'starter_plan',
                                 },
                                 {
                                     label: 'Professional Plan',
-                                    value: 'professional-plan',
+                                    value: 'professional_plan',
                                 },
                                 {
                                     label: 'Enterprise Plan',
-                                    value: 'enterprise-plan',
+                                    value: 'enterprise_plan',
                                 },
                                 {
                                     label: 'Custom Plan',
-                                    value: 'custom-plan',
+                                    value: 'custom_plan',
                                 },
                             ]}
                         />
