@@ -25,6 +25,7 @@ function DeleteUserModal({ isOpen, onClose, id }: DeleteModalProps) {
                 toast({
                     title: 'Success',
                     description: 'The new user has been deleted to the system.',
+                    variant: 'default',
                 });
             },
             onError: (error) => {
@@ -34,6 +35,7 @@ function DeleteUserModal({ isOpen, onClose, id }: DeleteModalProps) {
                     description:
                         Object.keys(error)[0] ||
                         'Something went wrong, Please try again later.',
+                    variant: 'destructive',
                 });
             },
         });

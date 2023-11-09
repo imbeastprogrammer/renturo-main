@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -7,14 +8,27 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { MoreHorizontalIcon } from 'lucide-react';
 import DeleteUserModal from './DeleteUserModal';
 
 function UserManagementTable() {
     const [deleteModalState, setDeleteModalState] = useState({
         id: 0,
-        isOpen: true,
+        isOpen: false,
     });
+
+    const openDeleteUserModal = (id: number) =>
+        setDeleteModalState({ id, isOpen: true });
+
+    const navigateToEditPage = (id: number) =>
+        router.visit(`/super-admin/administration/edit-user/${id}`);
+
     return (
         <>
             <Table>
@@ -42,31 +56,31 @@ function UserManagementTable() {
                         <TableCell>10-27-23 16:50:32</TableCell>
                         <TableCell>10-27-23 16:50:32</TableCell>
                         <TableCell>
-                            <MoreHorizontalIcon />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow className='text-base text-[#2E3436]/50'>
-                        <TableCell className='font-medium'>INV001</TableCell>
-                        <TableCell>Joshua</TableCell>
-                        <TableCell>Dela Cruz</TableCell>
-                        <TableCell>kamotekiddev@gmail.com</TableCell>
-                        <TableCell>Primary Super Admin</TableCell>
-                        <TableCell>Active</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell>
-                            <MoreHorizontalIcon />
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <MoreHorizontalIcon />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className='font-outfit'>
+                                    <DropdownMenuItem
+                                        onClick={() => navigateToEditPage(1)}
+                                    >
+                                        Edit User
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => openDeleteUserModal(1)}
+                                    >
+                                        Delete User
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
-
             <DeleteUserModal
                 isOpen={deleteModalState.isOpen}
                 id={deleteModalState.id}
-                onClose={() =>
-                    setDeleteModalState((prev) => ({ id: 0, isOpen: false }))
-                }
+                onClose={() => setDeleteModalState({ id: 0, isOpen: false })}
             />
         </>
     );
