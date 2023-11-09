@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { DeleteWarning } from '@/assets/central';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
@@ -18,8 +19,9 @@ type DeleteModalProps = {
 };
 function DeleteTenantsModal({ isOpen, onClose, id }: DeleteModalProps) {
     const { toast } = useToast();
+
     const handleDelete = () => {
-        router.delete(`/super-admin/users/${id}`, {
+        router.delete(`/super-admin/tenants/${id}`, {
             onSuccess: () => {
                 onClose();
                 toast({
@@ -33,7 +35,7 @@ function DeleteTenantsModal({ isOpen, onClose, id }: DeleteModalProps) {
                 toast({
                     title: 'Error',
                     description:
-                        Object.keys(error)[0] ||
+                        _.valuesIn(error)[0] ||
                         'Something went wrong, Please try again later.',
                     variant: 'destructive',
                 });
@@ -54,7 +56,7 @@ function DeleteTenantsModal({ isOpen, onClose, id }: DeleteModalProps) {
                         Are you sure?
                     </DialogTitle>
                     <DialogDescription className='text-center text-base font-thin text-black/50'>
-                        This action will remove the role and all of associated
+                        This action will remove the tenant and all of associated
                         data from the system.
                     </DialogDescription>
                 </DialogHeader>
@@ -65,7 +67,7 @@ function DeleteTenantsModal({ isOpen, onClose, id }: DeleteModalProps) {
                             className='h-[25px] w-[217px]'
                             onClick={handleDelete}
                         >
-                            Delete Role
+                            Delete Tenant
                         </Button>
                         <Button
                             variant='outline'

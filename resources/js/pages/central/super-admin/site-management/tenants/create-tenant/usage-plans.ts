@@ -11,20 +11,20 @@ export const UsagePlansMap: Record<
             '50 Mbps of bandwidth',
         ],
     },
-    'starter-plan': {
+    starter_plan: {
         description:
             'A basic usage plan with more resources than the free tier.',
         inclusion: [],
     },
-    'professional-plan': {
+    professional_plan: {
         description:
             'A usage plan with more resources than the starter plan, and access to advanced features.',
         inclusion: [],
     },
-    'enterprise-plan': {
+    enterprise_plan: {
         description:
             'A usage plan with the most resources of all the usage plans, including the most storage, bandwidth, and advanced features.',
         inclusion: [],
     },
-    'custom-plan': { description: '', inclusion: [] },
+    custom_plan: { description: '', inclusion: [] },
 };

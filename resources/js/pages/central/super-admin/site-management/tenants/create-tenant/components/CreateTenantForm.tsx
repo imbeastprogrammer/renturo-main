@@ -1,4 +1,7 @@
+import _ from 'lodash';
 import { z } from 'zod';
+import { router } from '@inertiajs/react';
+import { useToast } from '@/components/ui/use-toast';
 import { ReactNode } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -12,10 +15,10 @@ import { UsagePlansMap } from '../usage-plans';
 
 const createTenantFormSchema = z.object({
     domain: z.string().nonempty(),
-    usage_plan: z.string().nonempty(),
+    usage_plan: z.string().optional(),
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
-    username: z.string().nonempty(),
+    username: z.string().optional(),
     email: z.string().email().nonempty(),
     mobile_no: z.string().nonempty(),
 });
@@ -32,20 +35,55 @@ const defaultValues: CreateTenantFormFields = {
 };
 
 function CreateTenantForm() {
+    const { toast } = useToast();
     const form = useForm<CreateTenantFormFields>({
         defaultValues,
         resolver: zodResolver(createTenantFormSchema),
     });
 
-    const selectedUsagePlan = UsagePlansMap[form.watch('usage_plan')];
+    const selectedUsagePlan = UsagePlansMap[form.watch('usage_plan') || ''];
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(() => {});
+    const onSubmit = form.handleSubmit(({ domain, usage_plan, ...values }) => {
+        router.post(
+            '/super-admin/tenants',
+            { ...values, name: domain, plan_type: usage_plan },
+            {
+                onSuccess: () => {
+                    toast({
+                        title: 'Success',
+                        description:
+                            'The new tenant has been added to the system.',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                        variant: 'default',
+                    });
+                    router.visit('/super-admin/site-management/tenants', {
+                        replace: true,
+                    });
+                },
+                onError: (error) =>
+                    toast({
+                        title: 'Error',
+                        description:
+                            _.valuesIn(error)[0] ||
+                            'Something went wrong, Please try again later.',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                        variant: 'destructive',
+                    }),
+            },
+        );
+    });
 
     return (
         <Form {...form}>
-            <form className='space-y-4' onSubmit={onSubmit}>
+            <form className='flex flex-col gap-2 p-6' onSubmit={onSubmit}>
                 <h1 className='text-base text-[#2E3436]/50'>
                     To register a new organization, please enter your
                     organization's name, contact information, and desired domain
@@ -82,19 +120,19 @@ function CreateTenantForm() {
                                 },
                                 {
                                     label: 'Starter Plan',
-                                    value: 'starter-plan',
+                                    value: 'starter_plan',
                                 },
                                 {
                                     label: 'Professional Plan',
-                                    value: 'professional-plan',
+                                    value: 'professional_plan',
                                 },
                                 {
                                     label: 'Enterprise Plan',
-                                    value: 'enterprise-plan',
+                                    value: 'enterprise_plan',
                                 },
                                 {
                                     label: 'Custom Plan',
-                                    value: 'custom-plan',
+                                    value: 'custom_plan',
                                 },
                             ]}
                         />
@@ -139,7 +177,7 @@ function CreateTenantForm() {
                 </div>
                 <div className='space-y-4'>
                     <SectionTitle>Contact Details</SectionTitle>
-                    <div className='max-w-[760px]'>
+                    <div className='max-w-[760px] space-y-4'>
                         <FormInput
                             name='email'
                             label='Email Address'
