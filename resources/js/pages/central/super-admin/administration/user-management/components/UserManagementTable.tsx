@@ -15,9 +15,13 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontalIcon } from 'lucide-react';
+
+import { User } from '@/types/users';
 import DeleteUserModal from './DeleteUserModal';
 
-function UserManagementTable() {
+type UserMangementTableProps = { users: User[] };
+
+function UserManagementTable({ users }: UserMangementTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
         id: 0,
         isOpen: false,
@@ -46,35 +50,46 @@ function UserManagementTable() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow className='text-base text-[#2E3436]/50'>
-                        <TableCell className='font-medium'>INV001</TableCell>
-                        <TableCell>Joshua</TableCell>
-                        <TableCell>Dela Cruz</TableCell>
-                        <TableCell>kamotekiddev@gmail.com</TableCell>
-                        <TableCell>Primary Super Admin</TableCell>
-                        <TableCell>Active</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <MoreHorizontalIcon />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className='font-outfit'>
-                                    <DropdownMenuItem
-                                        onClick={() => navigateToEditPage(1)}
-                                    >
-                                        Edit User
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        onClick={() => openDeleteUserModal(1)}
-                                    >
-                                        Delete User
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
+                    {users.map((user) => (
+                        <TableRow
+                            key={user.id}
+                            className='text-base text-[#2E3436]/50'
+                        >
+                            <TableCell className='font-medium'>
+                                {user.id}
+                            </TableCell>
+                            <TableCell>{user.first_name}</TableCell>
+                            <TableCell>{user.last_name}</TableCell>
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>{user.role}</TableCell>
+                            <TableCell>Active (static)</TableCell>
+                            <TableCell>{user.created_at}</TableCell>
+                            <TableCell>10-27-23 16:50:32 (static)</TableCell>
+                            <TableCell>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <MoreHorizontalIcon />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className='font-outfit'>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                navigateToEditPage(user.id)
+                                            }
+                                        >
+                                            Edit User
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                openDeleteUserModal(user.id)
+                                            }
+                                        >
+                                            Delete User
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
             <DeleteUserModal

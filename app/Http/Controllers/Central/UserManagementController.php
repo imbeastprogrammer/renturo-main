@@ -18,7 +18,8 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        return Inertia::render('central/super-admin/administration/user-management/index');
+        $users = User::all();
+        return Inertia::render('central/super-admin/administration/user-management/index', ['users'=> $users]);
     }
 
     /**

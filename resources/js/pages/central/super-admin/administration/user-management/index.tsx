@@ -3,12 +3,17 @@ import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link } from '@inertiajs/react';
+
+import { User } from '@/types/users';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import UserManagementTable from './components/UserManagementTable';
 import SuperAdminPagination from '@/components/SuperAdminPagination';
 
-function UserManagement() {
+type UserManagementProps = {
+    users: User[];
+};
+function UserManagement({ users }: UserManagementProps) {
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
@@ -35,7 +40,7 @@ function UserManagement() {
                         </div>
                     </div>
                 </div>
-                <UserManagementTable />
+                <UserManagementTable users={users} />
                 <div className='flex items-center justify-between'>
                     <div className='text-[15px] font-medium text-black/50'>
                         Showing 1 to 2 of 2 Users
