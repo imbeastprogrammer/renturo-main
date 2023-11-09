@@ -33,7 +33,7 @@ function TenantsTable({ tenants }: TenantsTableProps) {
         setDeleteModalState({ id, isOpen: true });
 
     const navigateToEditPage = (id: string) =>
-        router.visit(`/super-admin/site-mangement/tenants/edit/${id}`);
+        router.visit(`/super-admin/site-management/tenants/edit/${id}`);
 
     return (
         <>

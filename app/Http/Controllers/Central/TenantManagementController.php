@@ -94,7 +94,8 @@ class TenantManagementController extends Controller
      */
     public function edit($id)
     {
-        //
+        $tenant = Tenant::findOrFail($id);
+        return Inertia::render('central/super-admin/site-management/tenants/update-tenant/index', ['tenant'=>$tenant]);
     }
 
     /**
