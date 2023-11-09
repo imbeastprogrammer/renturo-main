@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string('title');
             $table->longText('description');
             $table->longText('address');
+            $table->enum('status', ['approved', 'pending', 'declined'])->default('pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

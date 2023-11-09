@@ -24,7 +24,8 @@ class TenantSeeder extends Seeder
         $tenant = Tenant::create([
             'id' => $tenantId,
             'name' => fake()->company(),
-            'status' => Tenant::ACTIVE_STATUS
+            'status' => Tenant::ACTIVE_STATUS,
+            'plan_type' => Tenant::PLAN_TYPES[0]
         ]);
 
         $tenant->domains()->create([

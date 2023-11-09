@@ -10,11 +10,18 @@ class Post extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const IS_APPROVED = 'approved';
+    const IS_PENDING = 'pending';
+    const IS_DECLINED = 'declined';
+
     protected $fillable = [
         'title',
         'description',
-        'address'
+        'address',
+        'status'
     ];
+
+    protected $with = ['images'];
 
     public function images()
     {

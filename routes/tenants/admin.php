@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Tenants\Admin\PostController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Middleware\RedirectIfTenantActivated;
 
 use App\Http\Controllers\Tenants\Admin\UserManagementController;
+use App\Http\Controllers\Tenants\Admin\PostManagementController;
 
 use Inertia\Inertia;
 
@@ -48,4 +50,6 @@ Route::middleware([
     });
 
     Route::resource('/users', UserManagementController::class);
+
+    Route::resource('/posts', PostManagementController::class);
 });
