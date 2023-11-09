@@ -47,7 +47,8 @@ class TenantManagementController extends Controller
     {
         $tenant = Tenant::create([
             'id' => $request->tenant_id,
-            'name' => $request->name
+            'name' => $request->name,
+            'plan_type' => $request->plan_type
         ]);
 
         $tenantDomain = Str::lower(Str::replace(' ', '-', $request->name)) . '.' . config('tenancy.central_domains')[2];
@@ -108,13 +109,15 @@ class TenantManagementController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
+            'plan_type' => 'required|in:demo,starter_plan,professional_plan,enterprise_plan,custom_plan',
         ]);
 
         $tenant = Tenant::findOrFail($id);
 
         $tenant->update([
-            'status' => $request->status
+            'status' => $request->status,
+            'plan_type' => $request->plan_type
         ]);
 
         return back()->with(['success' => 'You have successfully updated the tenant.']);
