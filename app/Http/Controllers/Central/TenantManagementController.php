@@ -11,6 +11,7 @@ use App\Models\Central\Tenant;
 use App\Models\User;
 
 use Artisan;
+use Inertia\Inertia;
 use Str;
 
 class TenantManagementController extends Controller
@@ -22,7 +23,8 @@ class TenantManagementController extends Controller
      */
     public function index()
     {
-        //
+        $tenants = Tenant::all();
+        return Inertia::render('central/super-admin/site-management/tenants/index', ['tenants'=>$tenants]);
     }
 
     /**
