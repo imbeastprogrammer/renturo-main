@@ -64,7 +64,8 @@ class UserManagementController extends Controller
      */
     public function edit($id)
     {
-        return Inertia::render('central/super-admin/administration/user-management/edit-user/index');
+        $user =User::findOrFail($id);
+        return Inertia::render('central/super-admin/administration/user-management/edit-user/index', ['user'=> $user]);
     }
 
     /**
