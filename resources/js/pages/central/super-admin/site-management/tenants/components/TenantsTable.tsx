@@ -46,8 +46,8 @@ function TenantsTable({ tenants }: TenantsTableProps) {
                         <TableCell className='font-medium'>
                             {tenant.id}
                         </TableCell>
-                        <TableCell>tenant</TableCell>
-                        <TableCell>tenant</TableCell>
+                        <TableCell>Static</TableCell>
+                        <TableCell>Static</TableCell>
                         <TableCell>Static</TableCell>
                         <TableCell>Static</TableCell>
                         <TableCell className='text-right'>
