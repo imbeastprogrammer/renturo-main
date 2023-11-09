@@ -18,7 +18,7 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        return 'This is the users page';
+        return Inertia::render('central/super-admin/administration/user-management/index');
     }
 
     /**
@@ -28,7 +28,7 @@ class UserManagementController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('central/super-admin/administration/add-user/index');
     }
 
     /**
@@ -63,7 +63,7 @@ class UserManagementController extends Controller
      */
     public function edit($id)
     {
-        //
+        return Inertia::render('central/super-admin/administration/edit-user/index');
     }
 
     /**

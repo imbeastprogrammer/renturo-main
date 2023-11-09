@@ -42,14 +42,8 @@ Route::middleware('auth:central')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('central/super-admin/dashboard/index');
         });
-        Route::get('/administration/user-management', function () {
-            return Inertia::render('central/super-admin/administration/user-management/index');
-        });
         Route::get('/administration/roles', function () {
             return Inertia::render('central/super-admin/administration/roles/index');
-        });
-        Route::get('/administration/add-user', function () {
-            return Inertia::render('central/super-admin/administration/add-user/index');
         });
         Route::get('/site-management/domains', function () {
             return Inertia::render('central/super-admin/site-management/domains/index');
@@ -70,11 +64,11 @@ Route::middleware('auth:central')->group(function () {
         });
 
         Route::controller(UserManagementController::class)->group(function () {
-            Route::get('users', 'index');
-            Route::get('users/create', 'create');
+            Route::get('administration/user-management', 'index');
+            Route::get('administration/add-user', 'create');
+            Route::get('administration/show-user/{user}', 'show');
+            Route::get('administration/edit-user/{user}', 'edit');
             Route::post('users', 'store');
-            Route::get('users/{user}', 'show');
-            Route::get('users/{user}/edit', 'edit');
             Route::put('users/{user}', 'update');
             Route::delete('users/{user}', 'destroy');
         });

@@ -9,33 +9,32 @@ import { Form } from '@/components/ui/form';
 
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin-form-elements/FormInput';
-import FormCheckbox from '@/components/super-admin-form-elements/FormCheckbox';
 import FormSelect from '@/components/super-admin-form-elements/FormSelect';
 
-const addUserFormSchema = z.object({
+const editUserFormSchema = z.object({
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
     email: z.string().email().nonempty(),
     mobile_no: z.string().nonempty(),
-    allow_send_notification: z.boolean(),
     role: z.string().nonempty(),
+    status: z.string().nonempty(),
 });
 
-type AddUserFormFields = z.infer<typeof addUserFormSchema>;
-const defaultValues: AddUserFormFields = {
+type EditUserFormFields = z.infer<typeof editUserFormSchema>;
+const defaultValues: EditUserFormFields = {
     first_name: '',
     last_name: '',
     email: '',
     mobile_no: '',
-    allow_send_notification: false,
     role: '',
+    status: '',
 };
 
-function AddUserForm() {
+function EditUserForm() {
     const { toast } = useToast();
-    const form = useForm<AddUserFormFields>({
+    const form = useForm<EditUserFormFields>({
         defaultValues,
-        resolver: zodResolver(addUserFormSchema),
+        resolver: zodResolver(editUserFormSchema),
     });
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
@@ -108,12 +107,6 @@ function AddUserForm() {
                             placeholder='Mobile Number'
                             control={form.control}
                         />
-                        <FormCheckbox
-                            name='allow_send_notification'
-                            label='Send User Notification'
-                            control={form.control}
-                            description='Send the new user a welcome email with their account details.'
-                        />
                     </div>
                 </div>
                 <div className='space-y-4'>
@@ -127,6 +120,26 @@ function AddUserForm() {
                                 {
                                     label: 'Administrator',
                                     value: 'administrator',
+                                },
+                            ]}
+                        />
+                    </div>
+                </div>
+                <div className='space-y-4'>
+                    <SectionTitle>Status</SectionTitle>
+                    <div>
+                        <FormSelect
+                            name='status'
+                            label='Status'
+                            control={form.control}
+                            data={[
+                                {
+                                    label: 'Active',
+                                    value: 'active',
+                                },
+                                {
+                                    label: 'Inactive',
+                                    value: 'inactive',
                                 },
                             ]}
                         />
@@ -166,6 +179,4 @@ function SectionTitle({ children }: SectionTitleProps) {
     );
 }
 
-type FormControlWrapperProps = { children: ReactNode };
-
-export default AddUserForm;
+export default EditUserForm;
