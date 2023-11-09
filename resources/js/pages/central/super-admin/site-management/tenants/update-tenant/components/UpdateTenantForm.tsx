@@ -1,23 +1,28 @@
+import _ from 'lodash';
 import { z } from 'zod';
+import { router } from '@inertiajs/react';
 import { ReactNode } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { useToast } from '@/components/ui/use-toast';
 
+import { Tenant } from '@/types/tenant';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin-form-elements/FormInput';
 import FormSelect from '@/components/super-admin-form-elements/FormSelect';
 import { UsagePlansMap } from '../usage-plans';
 
 const updateTenantFormSchema = z.object({
-    domain: z.string().nonempty(),
+    domain: z.string().nonempty().optional(),
     usage_plan: z.string().nonempty(),
-    first_name: z.string().nonempty(),
-    last_name: z.string().nonempty(),
-    username: z.string().nonempty(),
-    email: z.string().email().nonempty(),
-    mobile_no: z.string().nonempty(),
+    first_name: z.string().optional(),
+    last_name: z.string().optional(),
+    username: z.string().optional(),
+    email: z.union([z.literal(''), z.string().email()]),
+    mobile_no: z.string().optional(),
+    status: z.string().nonempty(),
 });
 
 type UpdateTenantFormFields = z.infer<typeof updateTenantFormSchema>;
@@ -29,23 +34,71 @@ const defaultValues: UpdateTenantFormFields = {
     username: '',
     email: '',
     mobile_no: '',
+    status: '',
 };
 
-function UpdateTeanantForm() {
+type UpdateTenantProps = {
+    tenant: Tenant;
+};
+
+function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
+    const { toast } = useToast();
     const form = useForm<UpdateTenantFormFields>({
         defaultValues,
+        values: {
+            domain: tenant.name,
+            email: '',
+            first_name: '',
+            last_name: '',
+            mobile_no: '',
+            usage_plan: tenant.plan_type,
+            status: tenant.status,
+        },
         resolver: zodResolver(updateTenantFormSchema),
     });
 
-    const selectedUsagePlan = UsagePlansMap[form.watch('usage_plan')];
+    const selectedUsagePlan = UsagePlansMap[form.watch('usage_plan') || ''];
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(() => {});
+    const onSubmit = form.handleSubmit(({ domain, usage_plan, ...values }) => {
+        router.put(
+            `/super-admin/tenants/${tenant.id}`,
+            { ...values, name: domain, plan_type: usage_plan },
+            {
+                onSuccess: () => {
+                    toast({
+                        title: 'Success',
+                        description: 'The tenant has been updated successfully',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                        variant: 'default',
+                    });
+                    router.visit('/super-admin/site-management/tenants', {
+                        replace: true,
+                    });
+                },
+                onError: (error) =>
+                    toast({
+                        title: 'Error',
+                        description:
+                            _.valuesIn(error)[0] ||
+                            'Something went wrong, Please try again later.',
+                        style: {
+                            marginBottom: '1rem',
+                            transform: 'translateX(-1rem)',
+                        },
+                        variant: 'destructive',
+                    }),
+            },
+        );
+    });
 
     return (
         <Form {...form}>
-            <form className='space-y-4' onSubmit={onSubmit}>
+            <form className='flex flex-col gap-2 p-6' onSubmit={onSubmit}>
                 <h1 className='text-base text-[#2E3436]/50'>
                     To register a new organization, please enter your
                     organization's name, contact information, and desired domain
@@ -82,19 +135,19 @@ function UpdateTeanantForm() {
                                 },
                                 {
                                     label: 'Starter Plan',
-                                    value: 'starter-plan',
+                                    value: 'starter_plan',
                                 },
                                 {
                                     label: 'Professional Plan',
-                                    value: 'professional-plan',
+                                    value: 'professional_plan',
                                 },
                                 {
                                     label: 'Enterprise Plan',
-                                    value: 'enterprise-plan',
+                                    value: 'enterprise_plan',
                                 },
                                 {
                                     label: 'Custom Plan',
-                                    value: 'custom-plan',
+                                    value: 'custom_plan',
                                 },
                             ]}
                         />
@@ -139,7 +192,7 @@ function UpdateTeanantForm() {
                 </div>
                 <div className='space-y-4'>
                     <SectionTitle>Contact Details</SectionTitle>
-                    <div className='max-w-[760px]'>
+                    <div className='max-w-[760px] space-y-4'>
                         <FormInput
                             name='email'
                             label='Email Address'
@@ -154,6 +207,27 @@ function UpdateTeanantForm() {
                         />
                     </div>
                 </div>
+                <div className='space-y-4'>
+                    <SectionTitle>Status</SectionTitle>
+                    <div className='max-w-[760px] space-y-4'>
+                        <FormSelect
+                            name='status'
+                            label='Status'
+                            control={form.control}
+                            data={[
+                                {
+                                    label: 'Active',
+                                    value: 'active',
+                                },
+                                {
+                                    label: 'Inactive',
+                                    value: 'inactive',
+                                },
+                            ]}
+                        />
+                    </div>
+                </div>
+
                 <div className='flex justify-end text-base'>
                     {hasErrors && (
                         <div className='flex items-center gap-2'>
@@ -165,6 +239,7 @@ function UpdateTeanantForm() {
                         </div>
                     )}
                 </div>
+
                 <div className='flex justify-end'>
                     <Button
                         type='submit'

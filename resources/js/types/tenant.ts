@@ -6,5 +6,6 @@ export type Tenant = {
     updated_at: string | null;
     deleted_at: string | null;
     data: string | null;
+    plan_type: string;
     tenancy_db_name: string;
 };
