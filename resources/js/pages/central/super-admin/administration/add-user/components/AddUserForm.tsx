@@ -166,6 +166,4 @@ function SectionTitle({ children }: SectionTitleProps) {
     );
 }
 
-type FormControlWrapperProps = { children: ReactNode };
-
 export default AddUserForm;
