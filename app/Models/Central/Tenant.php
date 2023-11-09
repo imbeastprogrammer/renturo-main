@@ -16,10 +16,19 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     const ACTIVE_STATUS = 'active';
     const INACTIVE_STATUS = 'inactive';
 
+    const PLAN_TYPES = [
+        'demo',
+        'starter_plan',
+        'professional_plan',
+        'enterprise_plan',
+        'custom_plan'
+    ];
+
     protected $fillable = [
         'id',
         'name',
-        'status'
+        'status',
+        'plan_type'
     ];
 
     public static function getCustomColumns(): array
@@ -28,6 +37,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'id',
             'name',
             'status',
+            'plan_type'
         ];
     }
 }
