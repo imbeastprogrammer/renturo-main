@@ -139,7 +139,7 @@ function CreateTenantForm() {
                 </div>
                 <div className='space-y-4'>
                     <SectionTitle>Contact Details</SectionTitle>
-                    <div className='max-w-[760px]'>
+                    <div className='max-w-[760px] space-y-4'>
                         <FormInput
                             name='email'
                             label='Email Address'
