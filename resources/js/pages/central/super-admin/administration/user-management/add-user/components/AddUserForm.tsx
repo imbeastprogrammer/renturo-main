@@ -9,9 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
 import { ErrorIcon } from '@/assets/central';
-import FormInput from '@/components/super-admin-form-elements/FormInput';
-import FormCheckbox from '@/components/super-admin-form-elements/FormCheckbox';
-import FormSelect from '@/components/super-admin-form-elements/FormSelect';
+import FormInput from '@/components/super-admin/forms/FormInput';
+import FormCheckbox from '@/components/super-admin/forms/FormCheckbox';
+import FormSelect from '@/components/super-admin/forms/FormSelect';
 
 const addUserFormSchema = z.object({
     first_name: z.string().nonempty(),

@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import { Control, FieldValues, Path } from 'react-hook-form';
-import { Textarea, TextareaProps } from '../ui/textarea';
+import { Textarea, TextareaProps } from '../../ui/textarea';
 
 type FormTextAreaProps<T> = {
     label?: string;

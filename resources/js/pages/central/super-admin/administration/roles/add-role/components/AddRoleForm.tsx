@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
 import { ErrorIcon } from '@/assets/central';
-import FormInput from '@/components/super-admin-form-elements/FormInput';
-import FormSelect from '@/components/super-admin-form-elements/FormSelect';
-import FormTextArea from '@/components/super-admin-form-elements/FormTextArea';
+import FormInput from '@/components/super-admin/forms/FormInput';
+import FormSelect from '@/components/super-admin/forms/FormSelect';
+import FormTextArea from '@/components/super-admin/forms/FormTextArea';
 
 const addFormSchema = z.object({
     name: z.string().nonempty(),

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { usePagination } from '@/hooks/usePagination';
 
@@ -17,7 +17,7 @@ const DotsMap: Record<string, string> = {
     'left-dots': '...',
 };
 
-function SuperAdminPagination({
+function Pagination({
     numberOfPages,
     currentPage = 1,
     onNextPage,
@@ -83,4 +83,4 @@ function SuperAdminPagination({
     );
 }
 
-export default SuperAdminPagination;
+export default Pagination;

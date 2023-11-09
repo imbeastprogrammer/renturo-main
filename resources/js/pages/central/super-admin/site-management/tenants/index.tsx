@@ -8,7 +8,7 @@ import { Tenant } from '@/types/tenant';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import TenantsTable from './components/TenantsTable';
-import SuperAdminPagination from '@/components/SuperAdminPagination';
+import Pagination from '@/components/super-admin/Pagination';
 
 type TenantsProps = {
     tenants: Tenant[];
@@ -46,7 +46,7 @@ function Tenants({ tenants }: TenantsProps) {
                     <div className='text-[15px] font-medium text-black/50'>
                         Showing 1 to 2 of 2 Users
                     </div>
-                    <SuperAdminPagination
+                    <Pagination
                         currentPage={currentPage}
                         numberOfPages={10}
                         onNextPage={(page) => setCurrentPage(page + 1)}

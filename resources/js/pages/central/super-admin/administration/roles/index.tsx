@@ -6,7 +6,7 @@ import { Link } from '@inertiajs/react';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import RolesTable from './components/RolesTable';
-import SuperAdminPagination from '@/components/SuperAdminPagination';
+import Pagination from '@/components/super-admin/Pagination';
 
 function Roles() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -40,7 +40,7 @@ function Roles() {
                     <div className='text-[15px] font-medium text-black/50'>
                         Showing 1 to 2 of 2 Users
                     </div>
-                    <SuperAdminPagination
+                    <Pagination
                         currentPage={currentPage}
                         numberOfPages={10}
                         onNextPage={(page) => setCurrentPage(page + 1)}

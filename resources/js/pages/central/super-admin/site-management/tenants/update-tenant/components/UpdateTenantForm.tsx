@@ -10,8 +10,8 @@ import { useToast } from '@/components/ui/use-toast';
 
 import { Tenant } from '@/types/tenant';
 import { ErrorIcon } from '@/assets/central';
-import FormInput from '@/components/super-admin-form-elements/FormInput';
-import FormSelect from '@/components/super-admin-form-elements/FormSelect';
+import FormInput from '@/components/super-admin/forms/FormInput';
+import FormSelect from '@/components/super-admin/forms/FormSelect';
 import { UsagePlansMap } from '../usage-plans';
 
 const updateTenantFormSchema = z.object({

@@ -9,8 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
 import { ErrorIcon } from '@/assets/central';
-import FormInput from '@/components/super-admin-form-elements/FormInput';
-import FormSelect from '@/components/super-admin-form-elements/FormSelect';
+import FormInput from '@/components/super-admin/forms/FormInput';
+import FormSelect from '@/components/super-admin/forms/FormSelect';
 import { UsagePlansMap } from '../usage-plans';
 
 const createTenantFormSchema = z.object({

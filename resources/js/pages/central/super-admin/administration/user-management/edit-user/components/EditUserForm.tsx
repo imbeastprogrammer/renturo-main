@@ -10,8 +10,8 @@ import { Form } from '@/components/ui/form';
 
 import { User } from '@/types/users';
 import { ErrorIcon } from '@/assets/central';
-import FormInput from '@/components/super-admin-form-elements/FormInput';
-import FormSelect from '@/components/super-admin-form-elements/FormSelect';
+import FormInput from '@/components/super-admin/forms/FormInput';
+import FormSelect from '@/components/super-admin/forms/FormSelect';
 
 const editUserFormSchema = z.object({
     first_name: z.string().nonempty(),
