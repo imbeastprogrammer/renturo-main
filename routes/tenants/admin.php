@@ -46,11 +46,9 @@ Route::middleware([
     Route::get('/settings', function () {
         return Inertia::render('tenants/admin/settings/index');
     });
-    Route::get('/users/view/{userid}', function() {
-        return Inertia::render('tenants/admin/users/view/index');
-    });
 
     Route::resource('/users', UserManagementController::class);
+    Route::get('/users/view/{id}', [UserManagementController::class, 'show']);
 
     Route::resource('/posts', PostManagementController::class);
 });

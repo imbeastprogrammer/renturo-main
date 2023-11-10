@@ -30,15 +30,18 @@ const menuItems = [
 ];
 
 function UsersTable({ users = [] }: UsersTableProps) {
-    const [deleteModalOpen, setDeletModalOpen] = useState(false);
+    const [deleteModalState, setDeleteModalState] = useState({
+        isOpen: false,
+        id: 0,
+    });
 
-    const handleMenuSelection = (value: string) => {
+    const handleMenuSelection = (value: string, id: number) => {
         switch (value) {
             case MenuItems.DELETE:
-                return setDeletModalOpen(true);
+                return setDeleteModalState({ isOpen: true, id });
             case MenuItems.VIEW:
             case MenuItems.UPDATE:
-                return router.visit(`/admin/users/view/${10}?active=Users`);
+                return router.visit(`/admin/users/view/${id}?active=Users`);
         }
     };
 
@@ -83,7 +86,9 @@ function UsersTable({ users = [] }: UsersTableProps) {
                             <TableCell>
                                 <ActionMenu
                                     menuItems={menuItems}
-                                    onSelect={handleMenuSelection}
+                                    onSelect={(value) =>
+                                        handleMenuSelection(value, user.id)
+                                    }
                                 />
                             </TableCell>
                         </TableRow>
@@ -91,9 +96,9 @@ function UsersTable({ users = [] }: UsersTableProps) {
                 </TableBody>
             </Table>
             <DeleteUserModal
-                isOpen={deleteModalOpen}
-                onClose={() => setDeletModalOpen(false)}
-                userToDeleteId={1}
+                isOpen={deleteModalState.isOpen}
+                onClose={() => setDeleteModalState({ isOpen: false, id: 0 })}
+                userToDeleteId={deleteModalState.id}
             />
         </>
     );
