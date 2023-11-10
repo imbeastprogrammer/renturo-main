@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,36 +7,77 @@ import { Switch } from '@/components/ui/switch';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/forms/FormInput';
+import FormSelect from '@/components/forms/FormSelect';
+import { User } from '@/types/users';
+import { useToast } from '@/components/ui/use-toast';
+import _ from 'lodash';
 
 const formSchema = z.object({
-    first_name: z.string(),
-    last_name: z.string(),
-    gender: z.string(),
-    email: z.string(),
-    phone_number: z.string(),
+    first_name: z.string().nonempty(),
+    last_name: z.string().nonempty(),
+    email: z.string().nonempty(),
+    phone_number: z.string().nonempty(),
+    role: z.string().nonempty(),
 });
 
-function PersonalIformation() {
-    const [allowEditing, setAllowEditing] = useState(false);
+type PersonalInformationFormFields = z.infer<typeof formSchema>;
+const defaultValues: PersonalInformationFormFields = {
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    email: '',
+    role: '',
+};
 
-    const form = useForm<z.infer<typeof formSchema>>({
+type PersonalInformationProps = { user: User };
+function PersonalIformation({ user }: PersonalInformationProps) {
+    const [allowEditing, setAllowEditing] = useState(false);
+    const { toast } = useToast();
+
+    const form = useForm<PersonalInformationFormFields>({
+        defaultValues,
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            first_name: '',
-            last_name: '',
-            gender: '',
-            phone_number: '',
-            email: '',
+        values: {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            role: user.role,
+            phone_number: user.verified_mobile_no.mobile_no,
+            email: user.email,
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        // submission here
-    };
+    const onSubmit = form.handleSubmit(({ first_name, last_name, role }) => {
+        router.put(
+            `/admin/users/${user.id}`,
+            { first_name, last_name, role },
+            {
+                onSuccess: () => {
+                    toast({
+                        title: 'Success',
+                        description:
+                            'The user has been successfully updated in the system.',
+                        variant: 'default',
+                    });
+                    router.visit('/admin/users?active=Users', {
+                        replace: true,
+                    });
+                },
+                onError: (error) => {
+                    toast({
+                        title: 'Error',
+                        description:
+                            _.valuesIn(error)[0] ||
+                            'Something went wrong, Please try again later.',
+                        variant: 'destructive',
+                    });
+                },
+            },
+        );
+    });
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={onSubmit}>
                 <div className='grid gap-6'>
                     <div className='space-y-4'>
                         <div className='flex items-center justify-between gap-4'>
@@ -65,12 +107,6 @@ function PersonalIformation() {
                                 disabled={!allowEditing}
                                 control={form.control}
                             />
-                            <FormInput
-                                label='Gender'
-                                name='gender'
-                                disabled={!allowEditing}
-                                control={form.control}
-                            />
                         </div>
                     </div>
                     <div className='space-y-4'>
@@ -81,13 +117,23 @@ function PersonalIformation() {
                             <FormInput
                                 label='Phone Number'
                                 name='phone_number'
-                                disabled={!allowEditing}
+                                disabled
                                 control={form.control}
                             />
                             <FormInput
                                 label='Email Address'
                                 name='email'
-                                disabled={!allowEditing}
+                                disabled
+                                control={form.control}
+                            />
+                            <FormSelect
+                                name='role'
+                                label='Role'
+                                data={[
+                                    { label: 'ADMIN', value: 'ADMIN' },
+                                    { label: 'OWNER', value: 'OWNER' },
+                                    { label: 'USER', value: 'USER' },
+                                ]}
                                 control={form.control}
                             />
                         </div>

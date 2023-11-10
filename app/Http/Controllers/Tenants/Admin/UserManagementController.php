@@ -76,7 +76,8 @@ class UserManagementController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+        return Inertia::render('tenants/admin/users/view/index', ['user'=> $user]);
     }
 
     /**
