@@ -31,7 +31,7 @@ const dashboardLinks = [
         to: '/admin/users',
         icon: UsersIcon,
         links: [
-            { label: 'Admin', to: '/admin/user-management/admin' },
+            { label: 'Admin', to: '/admin/user-management/admins' },
             { label: 'Owners', to: '/admin/user-management/owners' },
             { label: 'Sub Owners', to: '/admin/user-management/sub-owners' },
             { label: 'Users', to: '/admin/user-management/users' },

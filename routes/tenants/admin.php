@@ -58,6 +58,15 @@ Route::middleware([
     Route::get('/user-management/owners/update/{id}', function () {
         return Inertia::render('tenants/admin/user-management/owners/update-owner/index');
     });
+    Route::get('/user-management/admins', function () {
+        return Inertia::render('tenants/admin/user-management/admins/index');
+    });
+    Route::get('/user-management/owners/create', function () {
+        return Inertia::render('tenants/admin/user-management/admins/create-admin/index');
+    });
+    Route::get('/user-management/admins/update/{id}', function () {
+        return Inertia::render('tenants/admin/user-management/admins/update-admin/index');
+    });
 
     Route::resource('/posts', PostManagementController::class);
 });
