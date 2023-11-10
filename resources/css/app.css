@@ -20,7 +20,7 @@ input[type='number'] {
 
 *,
 *::before,
-**:after {
+*:after {
     scroll-behavior: smooth;
 }
 
