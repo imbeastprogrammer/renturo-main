@@ -28,11 +28,13 @@ const dashboardLinks = [
     },
     {
         label: 'Users',
-        to: '/admin/users',
+        to: '/admin/user-management/admins',
         icon: UsersIcon,
         links: [
-            { label: 'List of Users', to: '/admin/users' },
-            { label: 'Add User', to: '/admin/users/create' },
+            { label: 'Admin', to: '/admin/user-management/admins' },
+            { label: 'Owners', to: '/admin/user-management/owners' },
+            { label: 'Sub Owners', to: '/admin/user-management/sub-owners' },
+            { label: 'Users', to: '/admin/user-management/users' },
         ],
     },
     {
@@ -52,6 +54,10 @@ const dashboardLinks = [
         links: [],
     },
 ];
+
+const GroupLinkLabelMap: Record<string, string> = {
+    Users: 'User Management',
+};
 
 type SidebarLinkProps = InertiaLinkProps & {
     icon: LucideIcon;
@@ -107,16 +113,12 @@ function AdminSidebar() {
     const { pathname } = window.location;
     const { searchParams, queryParams } = useSearchParams();
     const activeLink = searchParams.get('active') || 'Dashboard';
-    const toggleChildLinks = searchParams.get('toggle');
 
     const activeLinkChildrenLinks = dashboardLinks.find(
         (link) => link.label === activeLink,
     );
 
-    const displayChildLinks =
-        activeLinkChildrenLinks &&
-        activeLinkChildrenLinks.links.length > 0 &&
-        toggleChildLinks === 'yes';
+    const displaySubLinks = (activeLinkChildrenLinks?.links.length || 0) > 0;
 
     return (
         <aside className='h-full'>
@@ -134,10 +136,7 @@ function AdminSidebar() {
                                         <SidebarLink
                                             icon={link.icon}
                                             href={link.to}
-                                            data={{
-                                                active: link.label,
-                                                toggle: 'yes',
-                                            }}
+                                            data={{ active: link.label }}
                                             label={link.label}
                                             isActive={activeLink === link.label}
                                         />
@@ -148,13 +147,15 @@ function AdminSidebar() {
                     </div>
                     <LogoutButton />
                 </div>
-                {displayChildLinks && (
-                    <nav className='flex w-[200px] flex-col gap-2 border-r p-4'>
-                        <Link
-                            href={`${pathname}?active=${activeLink}&toggle=no`}
-                        >
-                            <XIcon className='mb-4 ml-auto text-metalic-blue' />
-                        </Link>
+                {displaySubLinks && (
+                    <nav className='flex w-[250px] flex-col gap-2 border-r p-4'>
+                        <h1 className='mb-4 px-4 text-[15px] font-semibold text-black/50'>
+                            {(activeLinkChildrenLinks &&
+                                GroupLinkLabelMap[
+                                    activeLinkChildrenLinks?.label
+                                ]) ||
+                                activeLinkChildrenLinks?.label}
+                        </h1>
                         {activeLinkChildrenLinks?.links.map((link) => (
                             <SecondaryLink
                                 isActive={link.to === pathname}

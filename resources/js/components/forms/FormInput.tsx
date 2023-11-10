@@ -29,11 +29,15 @@ function FormInput<T>({
             name={name}
             render={({ field }) => (
                 <FormItem className='w-full'>
-                    {props.label && <FormLabel>{props.label}</FormLabel>}
+                    {props.label && (
+                        <FormLabel className='text-[18px] font-medium'>
+                            {props.label}
+                        </FormLabel>
+                    )}
                     <FormControl>
                         <div className='relative flex items-center gap-2'>
                             <Input
-                                className='rounded-lg bg-[#F3F7FD] p-6 pr-16 placeholder:text-gray-400 focus-visible:ring-transparent'
+                                className='rounded-lg bg-[#F3F7FD] p-6 pr-16 text-base placeholder:text-black/50 placeholder:text-gray-400 focus-visible:ring-transparent'
                                 {...field}
                                 {...props}
                             />

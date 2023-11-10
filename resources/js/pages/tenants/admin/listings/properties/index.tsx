@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import AdminLayout from '@/layouts/AdminLayout';
-import Pagination from '@/components/Pagination';
+import Pagination from '@/components/tenant/Pagination';
 import PropertListingsTable from './components/PropertyListingsTable';
 import dummyProperties from '@/data/dummyProperties';
 
