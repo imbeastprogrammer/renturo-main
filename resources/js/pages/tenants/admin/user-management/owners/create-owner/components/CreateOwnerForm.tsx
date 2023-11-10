@@ -42,7 +42,7 @@ function CreateOwnerForm() {
                         General
                     </h1>
                     <p className='text-base text-[#2E3436]/50'>
-                        Create a new admin user.
+                        Create a new Owner user.
                     </p>
                 </div>
                 <div className='flex items-start gap-4'>
