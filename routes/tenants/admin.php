@@ -52,6 +52,9 @@ Route::middleware([
     Route::get('/user-management/owners', function () {
         return Inertia::render('tenants/admin/user-management/owners/index');
     });
+    Route::get('/user-management/owners/create', function () {
+        return Inertia::render('tenants/admin/user-management/owners/create-owner/index');
+    });
 
     Route::resource('/posts', PostManagementController::class);
 });

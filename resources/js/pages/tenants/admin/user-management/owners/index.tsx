@@ -6,6 +6,7 @@ import TableSearchbar from '@/components/tenant/TableSearchbar';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/tenant/Pagination';
 import { Input } from '@/components/ui/input';
+import { Link } from '@inertiajs/react';
 
 function Owners() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,13 +22,15 @@ function Owners() {
                     </Button>
                 </div>
                 <div>
-                    <Button
-                        variant='outline'
-                        className='h-[40px] w-[100px] border-metalic-blue text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue/90'
-                    >
-                        <PlusIcon className='mr-2 h-4 w-4' />
-                        Create
-                    </Button>
+                    <Link href='/admin/user-management/owners/create?active=Users'>
+                        <Button
+                            variant='outline'
+                            className='h-[40px] w-[100px] border-metalic-blue text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue/90'
+                        >
+                            <PlusIcon className='mr-2 h-4 w-4' />
+                            Create
+                        </Button>
+                    </Link>
                 </div>
             </div>
             <OwnersTable />

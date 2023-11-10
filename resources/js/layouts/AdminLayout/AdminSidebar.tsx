@@ -118,6 +118,8 @@ function AdminSidebar() {
         (link) => link.label === activeLink,
     );
 
+    const displaySubLinks = (activeLinkChildrenLinks?.links.length || 0) > 0;
+
     return (
         <aside className='h-full'>
             <div className='flex h-full'>
@@ -145,25 +147,27 @@ function AdminSidebar() {
                     </div>
                     <LogoutButton />
                 </div>
-                <nav className='flex w-[250px] flex-col gap-2 border-r p-4'>
-                    <h1 className='mb-4 px-4 text-[15px] font-semibold text-black/50'>
-                        {(activeLinkChildrenLinks &&
-                            GroupLinkLabelMap[
-                                activeLinkChildrenLinks?.label
-                            ]) ||
-                            activeLinkChildrenLinks?.label}
-                    </h1>
-                    {activeLinkChildrenLinks?.links.map((link) => (
-                        <SecondaryLink
-                            isActive={link.to === pathname}
-                            key={link.to}
-                            href={link.to}
-                            data={{ ...queryParams }}
-                        >
-                            {link.label}
-                        </SecondaryLink>
-                    ))}
-                </nav>
+                {displaySubLinks && (
+                    <nav className='flex w-[250px] flex-col gap-2 border-r p-4'>
+                        <h1 className='mb-4 px-4 text-[15px] font-semibold text-black/50'>
+                            {(activeLinkChildrenLinks &&
+                                GroupLinkLabelMap[
+                                    activeLinkChildrenLinks?.label
+                                ]) ||
+                                activeLinkChildrenLinks?.label}
+                        </h1>
+                        {activeLinkChildrenLinks?.links.map((link) => (
+                            <SecondaryLink
+                                isActive={link.to === pathname}
+                                key={link.to}
+                                href={link.to}
+                                data={{ ...queryParams }}
+                            >
+                                {link.label}
+                            </SecondaryLink>
+                        ))}
+                    </nav>
+                )}
             </div>
         </aside>
     );
