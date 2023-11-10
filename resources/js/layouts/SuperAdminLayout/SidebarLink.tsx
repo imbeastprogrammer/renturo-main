@@ -1,23 +1,22 @@
 import { ReactNode } from 'react';
-import { Link } from '@inertiajs/react';
+import { InertiaLinkProps, Link } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 
 type SidebarLinkProps = {
     icon: string;
     children: ReactNode;
     isActive?: boolean;
-    path: string;
-};
+} & InertiaLinkProps;
 
 function SidebarLink({
     children,
     icon,
     isActive = false,
-    path,
+    ...props
 }: SidebarLinkProps) {
     return (
         <Link
-            href={path}
+            {...props}
             className='flex items-center gap-4 text-[15px] text-white'
         >
             <div

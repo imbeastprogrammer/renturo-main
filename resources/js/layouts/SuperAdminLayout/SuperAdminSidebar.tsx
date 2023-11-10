@@ -31,7 +31,7 @@ function SuperAdminSidebar() {
                     <SidebarLink
                         isActive={pathname === '/super-admin/dashboard'}
                         icon={DashboardLogo}
-                        path='/super-admin/dashboard'
+                        href='/super-admin/dashboard'
                     >
                         Dashboard
                     </SidebarLink>
@@ -74,13 +74,13 @@ function SuperAdminSidebar() {
                 <h1 className='text-[15px] uppercase text-white/50'>Other</h1>
                 <div className='relative space-y-4'>
                     <SidebarLink
-                        path='/super-admin/settings'
+                        href='/super-admin/settings'
                         isActive={pathname === '/super-admin/settings'}
                         icon={SettingsLogo}
                     >
                         Settings
                     </SidebarLink>
-                    <SidebarLink path='/super-admin/logout' icon={LogoutLogo}>
+                    <SidebarLink method='post' href='/logout' icon={LogoutLogo}>
                         Logout
                     </SidebarLink>
                 </div>
