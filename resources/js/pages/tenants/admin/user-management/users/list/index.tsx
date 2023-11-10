@@ -3,7 +3,7 @@ import { User } from '@/types/users';
 import { Input } from '@/components/ui/input';
 import AdminLayout from '@/layouts/AdminLayout';
 import UsersTable from './components/UsersTable';
-import Pagination from '@/components/Pagination';
+import Pagination from '@/components/tenant/Pagination';
 
 type UsersPageProps = {
     users: User[];

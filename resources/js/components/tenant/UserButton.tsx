@@ -1,7 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import { User } from '@/types/users';
 import { BellIcon, ChevronDownIcon } from 'lucide-react';
-import { Separator } from './ui/separator';
+import { Separator } from '../ui/separator';
 import proflle from '@/assets/profile.png';
 
 function UserButton() {

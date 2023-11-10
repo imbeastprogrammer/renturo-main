@@ -1,4 +1,4 @@
-import UserButton from '@/components/UserButton';
+import UserButton from '@/components/tenant/UserButton';
 
 function AdminLayoutHeader() {
     return (

@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
-import { Button } from './ui/button';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { usePagination } from '@/hooks/usePagination';
 
@@ -38,7 +38,7 @@ function Pagination({
                     disabled={currentPage === 1}
                     onClick={() => onPrevPage(currentPage)}
                 >
-                    <ArrowLeftIcon />
+                    <ChevronLeftIcon />
                 </Button>
             </li>
             {pages.map((page) => (
@@ -74,7 +74,7 @@ function Pagination({
                     disabled={currentPage === numberOfPages}
                     onClick={() => onNextPage(currentPage)}
                 >
-                    <ArrowRightIcon />
+                    <ChevronRightIcon />
                 </Button>
             </li>
         </ul>
