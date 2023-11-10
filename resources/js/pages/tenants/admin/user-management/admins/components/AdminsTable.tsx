@@ -24,7 +24,7 @@ function AdminsTable() {
     });
 
     const navigateToUpdatePage = (id: number) =>
-        router.visit(`/admin/user-management/owners/update/${id}?active=Users`);
+        router.visit(`/admin/user-management/admins/update/${id}?active=Users`);
 
     return (
         <>
