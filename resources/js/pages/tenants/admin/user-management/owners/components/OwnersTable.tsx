@@ -1,15 +1,24 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
 import { MoreHorizontalIcon } from 'lucide-react';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { router } from '@inertiajs/react';
 
 function OwnersTable() {
+    const navigateToUpdatePage = (id: number) =>
+        router.visit(`/admin/user-management/owners/update/${id}?active=Users`);
+
     return (
         <Table>
             <TableHeader>
@@ -34,7 +43,21 @@ function OwnersTable() {
                     <TableCell>10-27-23 16:50:32</TableCell>
                     <TableCell>10-27-23 16:50:32</TableCell>
                     <TableCell className='text-right'>
-                        <MoreHorizontalIcon />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <MoreHorizontalIcon />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className='-translate-x-6'>
+                                <DropdownMenuItem
+                                    onClick={() => navigateToUpdatePage(1)}
+                                >
+                                    Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className='text-red-500'>
+                                    Delete
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </TableCell>
                 </TableRow>
             </TableBody>

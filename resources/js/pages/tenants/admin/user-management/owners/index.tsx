@@ -10,6 +10,7 @@ import { Link } from '@inertiajs/react';
 
 function Owners() {
     const [currentPage, setCurrentPage] = useState(1);
+
     return (
         <div className='grid grid-rows-[auto_1fr_auto] gap-4 rounded-xl border bg-white p-4 shadow-lg'>
             <div className='flex justify-between'>
