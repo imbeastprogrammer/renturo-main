@@ -1,4 +1,6 @@
-import { Button } from "@/components/ui/button";
+import _ from 'lodash';
+import { router } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
 import {
     AlertDialog,
     AlertDialogContent,
@@ -6,7 +8,8 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/components/ui/use-toast';
 
 type DeleteUserModalProps = {
     userToDeleteId: number;
@@ -14,12 +17,40 @@ type DeleteUserModalProps = {
     onClose: () => void;
 };
 
-function DeleteUserModal({ isOpen, onClose }: DeleteUserModalProps) {
-    const handleOpenChange = (open: boolean) => onClose();
+function DeleteUserModal({
+    isOpen,
+    onClose,
+    userToDeleteId,
+}: DeleteUserModalProps) {
+    const { toast } = useToast();
+    const handleOpenChange = () => onClose();
+
+    const handleDelete = () =>
+        router.delete(`/admin/users/${userToDeleteId}`, {
+            onSuccess: () => {
+                onClose();
+                toast({
+                    title: 'Success',
+                    description:
+                        'The user has been successfully deleted to the system.',
+                    variant: 'default',
+                });
+            },
+            onError: (error) => {
+                onClose();
+                toast({
+                    title: 'Error',
+                    description:
+                        _.valuesIn(error)[0] ||
+                        'Something went wrong, Please try again later.',
+                    variant: 'destructive',
+                });
+            },
+        });
 
     return (
         <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
-            <AlertDialogContent className="max-w-md p-8">
+            <AlertDialogContent className='max-w-md p-8'>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
                         Are you sure you want to delete this user?
@@ -32,12 +63,16 @@ function DeleteUserModal({ isOpen, onClose }: DeleteUserModalProps) {
                 <AlertDialogFooter>
                     <Button
                         onClick={onClose}
-                        className="w-full uppercase"
-                        variant="outline"
+                        className='w-full uppercase'
+                        variant='outline'
                     >
                         cancel
                     </Button>
-                    <Button className="w-full uppercase" variant="destructive">
+                    <Button
+                        onClick={handleDelete}
+                        className='w-full uppercase'
+                        variant='destructive'
+                    >
                         yes
                     </Button>
                 </AlertDialogFooter>
