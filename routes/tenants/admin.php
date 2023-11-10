@@ -49,6 +49,9 @@ Route::middleware([
 
     Route::resource('/users', UserManagementController::class);
     Route::get('/users/view/{id}', [UserManagementController::class, 'show']);
+    Route::get('/user-management/owners', function () {
+        return Inertia::render('tenants/admin/user-management/owners/index');
+    });
 
     Route::resource('/posts', PostManagementController::class);
 });
