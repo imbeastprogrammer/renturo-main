@@ -8,26 +8,19 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { EditIcon, EyeIcon, TrashIcon } from 'lucide-react';
+import { MoreHorizontalIcon } from 'lucide-react';
 import { User } from '@/types/users';
-import ActionMenu from './ActionMenu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import DeleteUserModal from './DeleteUserModal';
 
 type UsersTableProps = {
     users: User[];
 };
-
-enum MenuItems {
-    UPDATE = 'Update',
-    VIEW = 'View',
-    DELETE = 'Delete',
-}
-
-const menuItems = [
-    { label: MenuItems.UPDATE, icon: EditIcon },
-    { label: MenuItems.VIEW, icon: EyeIcon },
-    { label: MenuItems.DELETE, icon: TrashIcon },
-];
 
 function UsersTable({ users = [] }: UsersTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
@@ -35,21 +28,15 @@ function UsersTable({ users = [] }: UsersTableProps) {
         id: 0,
     });
 
-    const handleMenuSelection = (value: string, id: number) => {
-        switch (value) {
-            case MenuItems.DELETE:
-                return setDeleteModalState({ isOpen: true, id });
-            case MenuItems.VIEW:
-            case MenuItems.UPDATE:
-                return router.visit(`/admin/users/view/${id}?active=Users`);
-        }
+    const navigateToUpdatePage = (id: number) => {
+        router.visit(`/admin/user-management/users/update/${id}?active=Users`);
     };
 
     return (
         <>
             <Table className='overflow-auto'>
                 <TableHeader className='sticky top-0 bg-white'>
-                    <TableRow>
+                    <TableRow className='text-base font-normal text-[#2E3436]'>
                         <TableHead className='w-[100px]'>Id</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
@@ -61,7 +48,10 @@ function UsersTable({ users = [] }: UsersTableProps) {
                 </TableHeader>
                 <TableBody>
                     {users.map((user) => (
-                        <TableRow key={user.id}>
+                        <TableRow
+                            key={user.id}
+                            className='text-base font-normal text-[#2E3436]/50'
+                        >
                             <TableCell className='font-medium'>
                                 {user.id}
                             </TableCell>
@@ -84,12 +74,31 @@ function UsersTable({ users = [] }: UsersTableProps) {
                                 NA for now
                             </TableCell>
                             <TableCell>
-                                <ActionMenu
-                                    menuItems={menuItems}
-                                    onSelect={(value) =>
-                                        handleMenuSelection(value, user.id)
-                                    }
-                                />
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <MoreHorizontalIcon />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className='-translate-x-6'>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                navigateToUpdatePage(user.id)
+                                            }
+                                        >
+                                            Edit
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            className='text-red-500'
+                                            onClick={() =>
+                                                setDeleteModalState({
+                                                    isOpen: true,
+                                                    id: user.id,
+                                                })
+                                            }
+                                        >
+                                            Delete
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </TableCell>
                         </TableRow>
                     ))}

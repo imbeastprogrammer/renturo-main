@@ -38,15 +38,20 @@ function FormSelect<T>({
             name={name}
             render={({ field }) => (
                 <FormItem className='w-full'>
-                    {props.label && <FormLabel>{props.label}</FormLabel>}
+                    {props.label && (
+                        <FormLabel className='text-[18px] font-medium'>
+                            {props.label}
+                        </FormLabel>
+                    )}
                     <FormControl>
                         <div className='relative flex items-center gap-2'>
                             <Select
                                 value={field.value}
                                 onValueChange={field.onChange}
                             >
-                                <SelectTrigger className='rounded-lg bg-[#F3F7FD] p-6 placeholder:text-gray-400 focus-visible:ring-transparent'>
+                                <SelectTrigger className='rounded-lg bg-[#F3F7FD] p-6 text-base focus-visible:ring-transparent'>
                                     <SelectValue
+                                        className='placeholder:text-black/50'
                                         placeholder={props.placeholder}
                                     />
                                 </SelectTrigger>

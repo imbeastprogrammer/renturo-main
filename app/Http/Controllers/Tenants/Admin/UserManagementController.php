@@ -26,7 +26,7 @@ class UserManagementController extends Controller
     {
         $users = User::all();
 
-        return Inertia::render('tenants/admin/user-management/users/list/index', [
+        return Inertia::render('tenants/admin/user-management/users/index', [
             'users' => $users
         ]);
     }
@@ -38,7 +38,7 @@ class UserManagementController extends Controller
      */
     public function create()
     {
-        return Inertia::render('tenants/admin/user-management/users/create/index');
+        return Inertia::render('tenants/admin/user-management/users/create-user/index');
     }
 
     /**
@@ -76,8 +76,6 @@ class UserManagementController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return Inertia::render('tenants/admin/users/user-management/view/index', ['user'=> $user]);
     }
 
     /**
@@ -88,7 +86,8 @@ class UserManagementController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        return Inertia::render('tenants/admin/user-management/users/update-user/index', ['user'=> $user]);
     }
 
     /**

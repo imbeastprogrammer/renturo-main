@@ -28,7 +28,7 @@ const dashboardLinks = [
     },
     {
         label: 'Users',
-        to: '/admin/users',
+        to: '/admin/user-management/admins',
         icon: UsersIcon,
         links: [
             { label: 'Admin', to: '/admin/user-management/admins' },

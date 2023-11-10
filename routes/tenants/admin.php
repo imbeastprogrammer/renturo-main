@@ -47,8 +47,12 @@ Route::middleware([
         return Inertia::render('tenants/admin/settings/index');
     });
 
-    Route::resource('/users', UserManagementController::class);
-    Route::get('/users/view/{id}', [UserManagementController::class, 'show']);
+    Route::post('/users', [UserManagementController::class, 'store']);
+    Route::put('/users/{id}', [UserManagementController::class, 'update']);
+    Route::delete('/users/{id}', [UserManagementController::class, 'destroy']);
+    Route::get('/user-management/users', [UserManagementController::class, 'index']);
+    Route::get('/user-management/users/create', [UserManagementController::class, 'create']);
+    Route::get('/user-management/users/update/{id}', [UserManagementController::class, 'edit']);
 
     // owners
     Route::get('/user-management/owners', function () {
