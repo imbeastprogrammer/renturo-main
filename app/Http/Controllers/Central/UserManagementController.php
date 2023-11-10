@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Central\UserManagement\StoreUserRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserRequest;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Central\User;
 use Inertia\Inertia;
 
@@ -20,6 +22,7 @@ class UserManagementController extends Controller
     {
         $users = User::all();
         return Inertia::render('central/super-admin/administration/user-management/index', ['users'=> $users]);
+        
     }
 
     /**
@@ -97,5 +100,46 @@ class UserManagementController extends Controller
         $user->delete();
 
         return back()->with(['success' => 'You have successfully deleted a user.']);
+    }
+
+    /**
+     * Show the form for changing the password.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * 
+     * */
+    public function changePassword($id)
+    {
+        $user = User::findOrFail($id);
+        return Inertia::render('central/super-admin/settings/change-password/index', ['user'=> $user]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * 
+     *  * @return \Illuminate\Http\Response
+     * */
+    public function updatePassword(Request $request) {
+        
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|string|min:8',
+            'confirm_password' => 'required|string|same:new_password',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return redirect()->back()->with('error', 'Current password is incorrect.');
+        }
+
+        $user->password = $request->new_password;
+        $user->save();
+
+        return back()->with(['success' => 'You have successfully updated your password.']);
     }
 }
