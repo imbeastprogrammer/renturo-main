@@ -17,7 +17,7 @@ const editUserFormSchema = z.object({
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
     email: z.string().email().nonempty(),
-    mobile_no: z.string().optional(),
+    mobile_number: z.string().optional(),
     role: z.string().optional(),
     status: z.string().optional(),
 });
@@ -27,7 +27,7 @@ const defaultValues: EditUserFormFields = {
     first_name: '',
     last_name: '',
     email: '',
-    mobile_no: '',
+    mobile_number: '',
     role: '',
     status: '',
 };
@@ -103,7 +103,7 @@ function EditUserForm({ user }: EditUserFormProps) {
                             control={form.control}
                         />
                         <FormInput
-                            name='mobile_no'
+                            name='mobile_number'
                             label='Mobile Number'
                             placeholder='Mobile Number'
                             control={form.control}

@@ -17,7 +17,7 @@ const addUserFormSchema = z.object({
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
     email: z.string().email().nonempty(),
-    mobile_no: z.string().nonempty(),
+    mobile_number: z.string().nonempty(),
     allow_send_notification: z.boolean(),
     role: z.string().nonempty(),
 });
@@ -27,7 +27,7 @@ const defaultValues: AddUserFormFields = {
     first_name: '',
     last_name: '',
     email: '',
-    mobile_no: '',
+    mobile_number: '',
     allow_send_notification: false,
     role: '',
 };
@@ -41,10 +41,10 @@ function AddUserForm() {
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(({ first_name, last_name, email }) => {
+    const onSubmit = form.handleSubmit(({ first_name, last_name, email, mobile_number }) => {
         router.post(
             '/super-admin/users',
-            { first_name, last_name, email },
+            { first_name, last_name, email, mobile_number },
             {
                 onSuccess: () => {
                     toast({
@@ -106,7 +106,7 @@ function AddUserForm() {
                             control={form.control}
                         />
                         <FormInput
-                            name='mobile_no'
+                            name='mobile_number'
                             label='Mobile Number'
                             placeholder='Mobile Number'
                             control={form.control}

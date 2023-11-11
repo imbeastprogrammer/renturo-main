@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->enum('role', ['SUPER-ADMIN']);
             $table->string('email')->unique();
+            $table->string('mobile_number')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
