@@ -57,8 +57,12 @@ Route::middleware('auth:central')->group(function () {
         Route::get('/settings/change-password', function () {
             return Inertia::render('central/super-admin/settings/change-password/index');
         });
+        Route::get('/settings/user-profile', function () {
+            return Inertia::render('central/super-admin/settings/user-profile/index');
+        });
 
         Route::post('settings/update-password', [UserManagementController::class, 'updatePassword']);
+        Route::post('settings/update-user-profile', [UserManagementController::class, 'updateUserProfile']);
 
         Route::controller(TenantManagementController::class)->group(function () {
             Route::get('site-management/tenants', 'index');

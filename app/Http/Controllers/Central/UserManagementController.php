@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Central\UserManagement\StoreUserRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserRequest;
+use App\Http\Requests\Central\UserManagement\UpdateUserPasswordRequest;
+use App\Http\Requests\Central\UserManagement\UpdateUserProfileRequest; 
+use App\Http\Controllers\Central\Exception;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Central\User;
 use Inertia\Inertia;
 
@@ -111,7 +113,8 @@ class UserManagementController extends Controller
      * */
     public function changePassword($id)
     {
-        $user = User::findOrFail($id);
+        // Retrieve the currently logged in user
+        $user = auth()->user();
         return Inertia::render('central/super-admin/settings/change-password/index', ['user'=> $user]);
     }
 
@@ -123,23 +126,60 @@ class UserManagementController extends Controller
      * 
      *  * @return \Illuminate\Http\Response
      * */
-    public function updatePassword(Request $request) {
+    public function updatePassword(UpdateUserPasswordRequest $request) {
         
-        $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|string|min:8',
-            'confirm_password' => 'required|string|same:new_password',
-        ]);
+        $user = auth()->user();
 
-        $user = Auth::user();
+        try {
+            if (!Hash::check($request->old_password, $user->password)) {
+                return redirect()->back()->with('error', 'Current password is incorrect.');
+            }
 
-        if (!Hash::check($request->old_password, $user->password)) {
-            return redirect()->back()->with('error', 'Current password is incorrect.');
+            $user->password = $request->new_password;
+            $user->save();
+    
+            return back()->with(['success' => 'You have successfully updated your password.']);
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        $user->password = $request->new_password;
-        $user->save();
-
-        return back()->with(['success' => 'You have successfully updated your password.']);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * */
+    public function userProfile() {
+        // Retrieve the currently logged in user
+        $user = auth()->user();
+        return Inertia::render('central/super-admin/settings/user-profile/index', ['user'=> $user]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * 
+     * * @return \Illuminate\Http\Response
+     *  
+     * */
+     public function updateUserProfile(UpdateUserProfileRequest $request) {
+        // Retrieve the currently logged in user
+        $user = auth()->user();
+
+        try {
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->email = $request->email;
+            $user->mobile_number = $request->mobile_number;
+            $user->save();
+
+            return back()->with(['success' => 'You have successfully updated your profile.']);
+
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+     }
 }
