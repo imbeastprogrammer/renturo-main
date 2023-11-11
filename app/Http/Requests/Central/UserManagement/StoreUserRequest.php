@@ -31,6 +31,7 @@ class StoreUserRequest extends FormRequest
             'mobile_number' => 'required|string|unique:users,mobile_number',
             'password' => 'required',
             'role' => 'required|in:SUPER-ADMIN',
+            'created_by' => 'required|exists:users,id',
         ];
     }
 
@@ -43,7 +44,8 @@ class StoreUserRequest extends FormRequest
     {
         $this->merge([
             'role' => User::ROLE_SUPER_ADMIN,
-            'password' => 'password'
+            'password' => 'password',
+            'created_by' => auth()->user()->id,
         ]);
     }
 }

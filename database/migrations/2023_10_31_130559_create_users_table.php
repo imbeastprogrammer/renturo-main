@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('mobile_number')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->foreignId('created_by')->nullable()->references('id')->on('users')->onDelete('restrict');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

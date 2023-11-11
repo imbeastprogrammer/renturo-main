@@ -22,11 +22,13 @@ class User extends Authenticatable
         'email',
         'mobile_number',
         'password',
+        'created_by'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
         'updated_at',
         'deleted_at'
     ];
@@ -40,5 +42,9 @@ class User extends Authenticatable
         return Attribute::make(
             set: fn (string $value) => Hash::make($value)
         );
+    }
+
+    public function createdByUser() {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }
