@@ -23,6 +23,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->foreignId('created_by')->nullable()->references('id')->on('users')->onDelete('restrict');
+            $table->foreignId('updated_by')->nullable()->references('id')->on('users')->onDelete('restrict');
+            $table->foreignId('deleted_by')->nullable()->references('id')->on('users')->onDelete('restrict');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

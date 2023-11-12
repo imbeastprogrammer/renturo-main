@@ -22,15 +22,14 @@ class User extends Authenticatable
         'email',
         'mobile_number',
         'password',
-        'created_by'
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     protected $hidden = [
         'password',
-        'remember_token',
-        'created_at',
-        'updated_at',
-        'deleted_at'
+        'remember_token'
     ];
 
     protected $casts = [
@@ -46,5 +45,13 @@ class User extends Authenticatable
 
     public function createdByUser() {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedByUser() {
+        return $this->hasMany(User::class, 'id', 'updated_by');
+    }
+
+    public function deletedByUser() {
+        return $this->hasMany(User::class, 'id', 'deleted_by');
     }
 }

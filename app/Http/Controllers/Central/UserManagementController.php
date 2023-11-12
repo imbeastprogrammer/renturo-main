@@ -24,7 +24,9 @@ class UserManagementController extends Controller
     {
         // show users that are not the currently authenticated user:
         $users = User::where('id', '!=', auth()->user()->id)
-            ->with('createdByUser')->get();
+            ->with('createdByUser','updatedByUser')
+            ->get();
+
         return Inertia::render('central/super-admin/administration/user-management/index', ['users'=> $users]);
         
     }
@@ -85,7 +87,6 @@ class UserManagementController extends Controller
     public function update(UpdateUserRequest $request, $id)
     {
         $user = User::findOrFail($id);
-
         $user->update($request->validated());
 
         return back()->with(['success' => 'You have successfully deleted a user.']);
@@ -101,7 +102,9 @@ class UserManagementController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $user->delete();
+        $user->deleted_by = auth()->user()->id;
+        $user->save(); // update the user object to reflect the change in deleted_by.
+        $user->delete(); // once object is updated, soft delete the record.
 
         return back()->with(['success' => 'You have successfully deleted a user.']);
     }
