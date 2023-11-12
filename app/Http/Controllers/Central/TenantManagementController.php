@@ -45,13 +45,14 @@ class TenantManagementController extends Controller
      */
     public function store(StoreTenantRequest $request)
     {
+        
         $tenant = Tenant::create([
             'id' => $request->tenant_id,
-            'name' => $request->name,
+            'company' => $request->company,
             'plan_type' => $request->plan_type
         ]);
 
-        $tenantDomain = Str::lower(Str::replace(' ', '-', $request->name)) . '.' . config('tenancy.central_domains')[2];
+        $tenantDomain = Str::lower(Str::replace(' ', '-', $request->domain)) . '.' . config('tenancy.central_domains')[2];
 
         $tenant->domains()->create([
             'domain' => $tenantDomain

@@ -11,7 +11,7 @@ class MobileVerification extends Model
 
     protected $fillable = [
         'user_id',
-        'mobile_no',
+        'mobile_number',
         'code',
         'verified_at',
         'expires_at'

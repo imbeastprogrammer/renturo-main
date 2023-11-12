@@ -23,7 +23,7 @@ class TenantSeeder extends Seeder
 
         $tenant = Tenant::create([
             'id' => $tenantId,
-            'name' => fake()->company(),
+            'company' => fake()->company(),
             'status' => Tenant::ACTIVE_STATUS,
             'plan_type' => Tenant::PLAN_TYPES[0]
         ]);
@@ -34,36 +34,56 @@ class TenantSeeder extends Seeder
 
         $tenant->run(function () use ($tenant) {
             $admin = User::factory()->create([
+                'username' => 'beastadmin1234',
+                'mobile_number' => fake()->phoneNumber(),
                 'email' => 'admin@main.renturo.test',
                 'role' => User::ROLE_ADMIN
             ]);
 
             $admin->mobileVerification()->create([
-                'mobile_no' => fake()->phoneNumber(),
+                'mobile_number' => fake()->phoneNumber(),
                 'code' => rand(1000, 9999),
                 'verified_at' => Carbon::now(),
                 'expires_at' => Carbon::now()->addSeconds(300),
             ]);
 
             $owner = User::factory()->create([
+                'username' => 'beastowner1234',
+                'mobile_number' => fake()->phoneNumber(),
                 'email' => 'owner@main.renturo.test',
                 'role' => User::ROLE_OWNER
             ]);
 
             $owner->mobileVerification()->create([
-                'mobile_no' => fake()->phoneNumber(),
+                'mobile_number' => fake()->phoneNumber(),
                 'code' => rand(1000, 9999),
                 'verified_at' => Carbon::now(),
                 'expires_at' => Carbon::now()->addSeconds(300)
             ]);
 
             $user = User::factory()->create([
+                'username' => 'beastuser1234',
+                'mobile_number' => fake()->phoneNumber(),
                 'email' => 'user@main.renturo.test',
                 'role' => User::ROLE_USER
             ]);
 
             $user->mobileVerification()->create([
-                'mobile_no' => fake()->phoneNumber(),
+                'mobile_number' => fake()->phoneNumber(),
+                'code' => rand(1000, 9999),
+                'verified_at' => Carbon::now(),
+                'expires_at' => Carbon::now()->addSeconds(300)
+            ]);
+
+            $user = User::factory()->create([
+                'username' => 'beastpartner1234',
+                'mobile_number' => fake()->phoneNumber(),
+                'email' => 'ads-partner@main.renturo.test',
+                'role' => USER::ROLE_PARTNER
+            ]);
+
+            $user->mobileVerification()->create([
+                'mobile_number' => fake()->phoneNumber(),
                 'code' => rand(1000, 9999),
                 'verified_at' => Carbon::now(),
                 'expires_at' => Carbon::now()->addSeconds(300)

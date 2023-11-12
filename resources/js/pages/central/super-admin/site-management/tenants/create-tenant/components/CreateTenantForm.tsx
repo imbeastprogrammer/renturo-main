@@ -14,24 +14,26 @@ import FormSelect from '@/components/super-admin/forms/FormSelect';
 import { UsagePlansMap } from '../usage-plans';
 
 const createTenantFormSchema = z.object({
+    company: z.string().nonempty(),
     domain: z.string().nonempty(),
     usage_plan: z.string().optional(),
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
     username: z.string().optional(),
     email: z.string().email().nonempty(),
-    mobile_no: z.string().nonempty(),
+    mobile_number: z.string().nonempty(),
 });
 
 type CreateTenantFormFields = z.infer<typeof createTenantFormSchema>;
 const defaultValues: CreateTenantFormFields = {
+    company: '',
     domain: '',
     usage_plan: '',
     first_name: '',
     last_name: '',
     username: '',
     email: '',
-    mobile_no: '',
+    mobile_number: '',
 };
 
 function CreateTenantForm() {
@@ -45,10 +47,10 @@ function CreateTenantForm() {
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(({ domain, usage_plan, ...values }) => {
+    const onSubmit = form.handleSubmit(({ company, domain, usage_plan, ...values }) => {
         router.post(
             '/super-admin/tenants',
-            { ...values, name: domain, plan_type: usage_plan },
+            { ...values, company: company, domain: domain, plan_type: usage_plan },
             {
                 onSuccess: () => {
                     toast({
@@ -94,6 +96,17 @@ function CreateTenantForm() {
                     <div className='flex items-center gap-4'>
                         <div className='min-w-[760px] max-w-[760px]'>
                             <FormInput
+                                name='company'
+                                label='Company'
+                                placeholder='Company'
+                                control={form.control}
+                            />
+                        </div>
+                        <div className='text-base text-[#2E3436]/50'></div>
+                    </div>
+                    <div className='flex items-center gap-4'>
+                        <div className='min-w-[760px] max-w-[760px]'>
+                            <FormInput
                                 name='domain'
                                 label='Domain'
                                 placeholder='Domain'
@@ -101,8 +114,8 @@ function CreateTenantForm() {
                             />
                         </div>
                         <div className='text-base text-[#2E3436]/50'>
-                            Register a unique domain name for your organization,
-                            in the format “example.com”.
+                            Register a unique domain name for your organization, 
+                            in the format “<b>renturo</b>.example.com”.
                         </div>
                     </div>
                 </div>
@@ -156,6 +169,12 @@ function CreateTenantForm() {
                     <SectionTitle>Tenant Admin</SectionTitle>
                     <div className='max-w-[760px] space-y-4'>
                         <FormInput
+                            name='username'
+                            label='Username'
+                            placeholder='Username'
+                            control={form.control}
+                        />
+                        <FormInput
                             name='first_name'
                             label='First Name'
                             placeholder='First Name'
@@ -165,12 +184,6 @@ function CreateTenantForm() {
                             name='last_name'
                             label='Last Name'
                             placeholder='Last Name'
-                            control={form.control}
-                        />
-                        <FormInput
-                            name='username'
-                            label='Username'
-                            placeholder='Username'
                             control={form.control}
                         />
                     </div>
@@ -185,7 +198,7 @@ function CreateTenantForm() {
                             control={form.control}
                         />
                         <FormInput
-                            name='mobile_no'
+                            name='mobile_number'
                             label='Mobile Number'
                             placeholder='Mobile Number'
                             control={form.control}
