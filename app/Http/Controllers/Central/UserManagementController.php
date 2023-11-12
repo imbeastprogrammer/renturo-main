@@ -22,7 +22,9 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        // show users that are not the currently authenticated user:
+        $users = User::where('id', '!=', auth()->user()->id)
+            ->with('createdByUser')->get();
         return Inertia::render('central/super-admin/administration/user-management/index', ['users'=> $users]);
         
     }
