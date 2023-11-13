@@ -18,6 +18,7 @@ import {
 } from '@/assets/tenant/list-of-properties';
 import dummyListings from '@/data/dummyListings';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 type ViewListingModalProps = {
     isOpen: boolean;
@@ -46,7 +47,7 @@ function ViewListingModal({ isOpen, id, onClose }: ViewListingModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className='grid h-full max-h-[750px] max-w-[1300px] grid-rows-[auto_auto_1fr] gap-y-0 overflow-hidden'>
+            <DialogContent className='grid h-full max-h-[750px] max-w-[1350px] grid-rows-[auto_auto_1fr] gap-y-0 overflow-hidden'>
                 <DialogHeader className='mb-4'>
                     <div className='flex items-center justify-between'>
                         <DialogTitle className='text-[35px] font-semibold'>
@@ -58,7 +59,7 @@ function ViewListingModal({ isOpen, id, onClose }: ViewListingModalProps) {
                     </div>
                 </DialogHeader>
                 <Separator />
-                <div className='grid h-full grid-cols-[310px_auto_1fr] overflow-hidden'>
+                <div className='grid h-full grid-cols-[250px_auto_1fr] overflow-hidden'>
                     <div className='p-4'>
                         <NavigationSelection
                             value={activeTab}
@@ -93,9 +94,7 @@ function NavigationSelection({
                     <button
                         className={cn(
                             'w-full cursor-pointer rounded-full p-1 px-4 text-left text-[20px] font-semibold',
-                            {
-                                'bg-[#EEF5FF]': currentValue === value,
-                            },
+                            { 'bg-[#EEF5FF]': currentValue === value },
                         )}
                         onClick={() => onValueChange(value)}
                     >
@@ -184,7 +183,92 @@ function OverviewItem({ children, icon }: OverviewItemProps) {
 }
 
 function ReviewDetails() {
-    return <div>Review Details</div>;
+    return (
+        <div className='space-y-6'>
+            <ReviewDetailsItem withUnderline={false} label='Post Id'>
+                U-000-001
+            </ReviewDetailsItem>
+            <div className='grid grid-cols-2 gap-6'>
+                <ReviewDetailsItem label='Post Name'>
+                    Father Blanco’s Garden
+                </ReviewDetailsItem>
+                <ReviewDetialsImages />
+            </div>
+            <ReviewDetailsItem label='About'>
+                Outside the San Agustin Museum is a little garden called Fr.
+                Blanco’s Garden. This garden was named after Fr. Manuel Blanco
+                who is considered the father of Philippine botany.
+            </ReviewDetailsItem>
+            <div className='grid grid-cols-2 gap-6'>
+                <ReviewDetailsItem label='Host'>Jane Doe</ReviewDetailsItem>
+                <ReviewDetailsItem label='Status'>Approved</ReviewDetailsItem>
+            </div>
+            <div className='grid grid-cols-2 gap-6'>
+                <ReviewDetailsItem label='Created At'>
+                    2023-10-20 14:14:00
+                </ReviewDetailsItem>
+                <ReviewDetailsItem label='Last Update'>
+                    2023-10-20 14:14:00
+                </ReviewDetailsItem>
+            </div>
+            <div className='grid grid-cols-2 gap-6'>
+                <ReviewDetailsItem label='Category'>Venue</ReviewDetailsItem>
+                <ReviewDetailsItem label='Subcategory'>
+                    Garden
+                </ReviewDetailsItem>
+            </div>
+            <div className='grid grid-cols-2 gap-6'>
+                <ReviewDetailsItem label='Comments'>123</ReviewDetailsItem>
+                <ReviewDetailsItem label='Views'>1,234</ReviewDetailsItem>
+            </div>
+        </div>
+    );
+}
+
+type ReviewDetialsItem = {
+    label: string;
+    children: ReactNode;
+    withUnderline?: boolean;
+};
+
+function ReviewDetailsItem({
+    children,
+    label,
+    withUnderline = true,
+}: ReviewDetialsItem) {
+    return (
+        <div className='flex w-full flex-1 items-center gap-4'>
+            <span className='min-w-[100px] text-xl font-medium'>{label}</span>
+            <span
+                className={cn(
+                    'block flex-1 p-2 text-black/50',
+                    withUnderline && 'border-b',
+                )}
+            >
+                {children}
+            </span>
+        </div>
+    );
+}
+
+function ReviewDetialsImages() {
+    return (
+        <div className='flex items-center gap-4'>
+            <span className='text-xl font-medium'>Images</span>
+            <div className='flex gap-2'>
+                <div className='h-[70px] w-[70px] bg-blue-500'></div>
+                <div className='h-[70px] w-[70px] bg-blue-500'></div>
+                <div className='h-[70px] w-[70px] bg-blue-500'></div>
+                <div className='h-[70px] w-[70px] bg-blue-500'></div>
+            </div>
+            <Button
+                variant='outline'
+                className='border-metalic-blue text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue/90'
+            >
+                Preview
+            </Button>
+        </div>
+    );
 }
 
 export default ViewListingModal;
