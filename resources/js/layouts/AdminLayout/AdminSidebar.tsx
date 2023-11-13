@@ -1,13 +1,11 @@
 import { Link, InertiaLinkProps } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import {
-    Building2Icon,
     HomeIcon,
     LucideIcon,
     PlusIcon,
     SettingsIcon,
     UsersIcon,
-    XIcon,
 } from 'lucide-react';
 
 import dashboardLogo from '@/assets/dashboard-logo.png';
@@ -18,12 +16,17 @@ const dashboardLinks = [
     { label: 'Dashboard', to: '/admin', icon: HomeIcon, links: [] },
     {
         label: 'Post',
-        to: '/admin/post',
+        to: '/admin/post-management/list-of-properties',
         icon: PlusIcon,
         links: [
-            { label: 'Listings', to: '/admin/post' },
-            { label: 'Bookings', to: '/admin/post/bookings' },
-            { label: 'Categories', to: '/admin/post/categories' },
+            {
+                label: 'List of Properties',
+                to: '/admin/post-management/list-of-properties',
+            },
+            { label: 'Bookings', to: '/admin/post-management/bookings' },
+            { label: 'Categories', to: '/admin/post-management/categories' },
+            { label: 'Promotions', to: '/admin/post-management/promotions' },
+            { label: 'Ads', to: '/admin/post-management/ads' },
         ],
     },
     {
@@ -38,16 +41,6 @@ const dashboardLinks = [
         ],
     },
     {
-        label: 'Listings',
-        to: '/admin/listings',
-        icon: Building2Icon,
-        links: [
-            { label: 'List of Properties', to: '/admin/listings' },
-            { label: 'For Approval', to: '/admin/listings/for-approval' },
-            { label: 'Form Builder', to: '/admin/listings/form-builder' },
-        ],
-    },
-    {
         label: 'Settings',
         to: '/admin/settings',
         icon: SettingsIcon,
@@ -57,6 +50,7 @@ const dashboardLinks = [
 
 const GroupLinkLabelMap: Record<string, string> = {
     Users: 'User Management',
+    Post: 'Post Mangement',
 };
 
 type SidebarLinkProps = InertiaLinkProps & {

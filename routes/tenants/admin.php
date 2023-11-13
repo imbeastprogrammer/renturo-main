@@ -25,15 +25,22 @@ Route::middleware([
     Route::get('/', function () {
         return Inertia::render('tenants/admin/dashboard/index');
     });
-    Route::get('/post', function () {
-        return Inertia::render('tenants/admin/post/listings/index');
+    Route::get('/post-management/list-of-properties', function () {
+        return Inertia::render('tenants/admin/post-management/listings/index');
     });
-    Route::get('/post/bookings', function () {
-        return Inertia::render('tenants/admin/post/bookings/index');
+    Route::get('/post-management/bookings', function () {
+        return Inertia::render('tenants/admin/post-management/bookings/index');
     });
-    Route::get('/post/categories', function () {
-        return Inertia::render('tenants/admin/post/categories/index');
+    Route::get('/post-management/categories', function () {
+        return Inertia::render('tenants/admin/post-management/categories/index');
     });
+    Route::get('/post-management/promotions', function () {
+        return Inertia::render('tenants/admin/post-management/promotions/index');
+    });
+    Route::get('/post-management/ads', function () {
+        return Inertia::render('tenants/admin/post-management/ads/index');
+    });
+
     Route::get('/listings', function () {
         return Inertia::render('tenants/admin/listings/properties/index');
     });
