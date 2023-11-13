@@ -1,3 +1,4 @@
+import { Control, FieldValues, Path } from 'react-hook-form';
 import {
     FormControl,
     FormField,
@@ -6,21 +7,33 @@ import {
 } from '@/components/ui/form';
 import { Input, InputProps } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Control, FieldValues, Path } from 'react-hook-form';
 
 type FormInputProps<T> = {
     label?: string;
     control: Control<FieldValues & T>;
     name: Path<FieldValues & T>;
+    orientation?: 'vertical' | 'horizontal';
 } & InputProps;
 
-function FormInput<T>({ label, control, name, ...props }: FormInputProps<T>) {
+function FormInput<T>({
+    label,
+    control,
+    name,
+    orientation = 'horizontal',
+    ...props
+}: FormInputProps<T>) {
     return (
         <FormField
             control={control}
             name={name}
             render={({ field, fieldState }) => (
-                <FormItem className='flex items-center space-y-0'>
+                <FormItem
+                    className={cn(
+                        orientation === 'horizontal'
+                            ? 'flex items-center space-y-0'
+                            : '',
+                    )}
+                >
                     <FormLabel className='min-w-[200px] text-base font-medium'>
                         {label}
                     </FormLabel>
