@@ -79,6 +79,7 @@ Route::middleware('auth:central')->group(function () {
             Route::get('administration/user-management/add', 'create');
             Route::get('administration/user-management/show/{user}', 'show');
             Route::get('administration/user-management/edit/{user}', 'edit');
+            Route::get('users', 'index');
             Route::post('users', 'store');
             Route::put('users/{user}', 'update');
             Route::delete('users/{user}', 'destroy');

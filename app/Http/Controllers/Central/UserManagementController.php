@@ -20,12 +20,26 @@ class UserManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // show users that are not the currently authenticated user:
-        $users = User::where('id', '!=', auth()->user()->id)
+        // show users that are not the currently authenticated user
+        if ($request->searchTerm == null) {
+            $users = User::where('id', '!=', auth()->user()->id)
             ->with('createdByUser','updatedByUser')
-            ->get();
+            ->paginate(10);
+
+        } else {
+
+            $users = User::where('id', '!=', auth()->user()->id)
+            ->where(function ($query) use ($request) {
+                $query->where('first_name', 'like', "%{$request->searchTerm}%")
+                    ->orWhere('last_name', 'like', "%{$request->searchTerm}%")
+                    ->orWhere('email', 'like', "%{$request->searchTerm}%")
+                    ->orWhere('mobile_number', 'like', "%{$request->searchTerm}%");
+            })
+            ->with('createdByUser', 'updatedByUser')
+            ->paginate(10);
+        }
 
         return Inertia::render('central/super-admin/administration/user-management/index', ['users'=> $users]);
         
