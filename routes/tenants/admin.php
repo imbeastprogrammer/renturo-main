@@ -37,6 +37,9 @@ Route::middleware([
     Route::get('/post-management/promotions', function () {
         return Inertia::render('tenants/admin/post-management/promotions/index');
     });
+    Route::get('/post-management/promotions/{id}', function () {
+        return Inertia::render('tenants/admin/post-management/promotions/view-promotion/index');
+    });
     Route::get('/post-management/ads', function () {
         return Inertia::render('tenants/admin/post-management/ads/index');
     });
