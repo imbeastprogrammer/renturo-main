@@ -21,9 +21,19 @@ class TenantManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tenants = Tenant::all();
+        if ($request->searchTerm == null) {
+
+            $tenants = Tenant::paginate(10);
+        } else {
+
+            $tenants = Tenant::where(function ($query) use ($request) {
+                $query->where('company', 'like', "%{$request->searchTerm}%")
+                    ->orWhere('status', 'like', "%{$request->searchTerm}%")
+                    ->orWhere('plan_type', 'like', "%{$request->searchTerm}%");
+            })->paginate(10);
+        }
         return Inertia::render('central/super-admin/site-management/tenants/index', ['tenants' => $tenants]);
     }
 

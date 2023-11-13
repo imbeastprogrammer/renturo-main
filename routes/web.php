@@ -69,6 +69,7 @@ Route::middleware('auth:central')->group(function () {
             Route::get('site-management/tenants/create', 'create');
             Route::get('site-management/tenants/{tenant}', 'show');
             Route::get('site-management/tenants/edit/{tenant}', 'edit');
+            Route::get('tenants', 'index');
             Route::post('tenants', 'store');
             Route::put('tenants/{tenant}', 'update');
             Route::delete('tenants/{tenant}', 'destroy');
