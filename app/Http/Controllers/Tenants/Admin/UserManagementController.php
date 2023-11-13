@@ -12,6 +12,7 @@ use App\Mail\Tenants\UserManagement\UserCreated;
 use App\Models\User;
 
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 use Mail;
 
@@ -55,7 +56,8 @@ class UserManagementController extends Controller
 
         $user->mobileVerification()->create([
             'mobile_no' => $request->mobile_no,
-            'code' => $verificationCode
+            'code' => $verificationCode,
+            'expires_at' => Carbon::now()->addSeconds(300),
         ]);
 
         Mail::to($user->email)->send(new UserCreated([

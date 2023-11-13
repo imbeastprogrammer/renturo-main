@@ -87,4 +87,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(MobileVerification::class);
     }
+
+    public function dynamicFormPages()
+    {
+        return $this->hasMany(DynamicFormPage::class);
+    }
+
+    public function dynamicFormFields()
+    {
+        return $this->hasMany(dynamicFormFields::class);
+    }
 }

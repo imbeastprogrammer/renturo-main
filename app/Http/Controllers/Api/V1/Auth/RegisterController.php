@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Tenants\Auth\RegisterRequest;
 use App\Mail\Tenants\Auth\SendMobileVerificationCode;
 use App\Models\User;
+use Carbon\Carbon;
 use Mail;
 
 class RegisterController extends Controller
@@ -19,7 +20,8 @@ class RegisterController extends Controller
 
         $user->mobileVerification()->create([
             'mobile_no' => $request->mobile_no,
-            'code' => $verificationCode
+            'code' => $verificationCode,
+            'expires_at' => Carbon::now()->addSeconds(300),
         ]);
 
         $accessToken = $user->createToken('personal-access-token')->accessToken;

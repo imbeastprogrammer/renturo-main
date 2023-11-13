@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use Carbon\Carbon;
 use App\Models\User;
 use Mail;
 
@@ -42,8 +43,9 @@ class AuthenticatedSessionController extends Controller
         $user = $request->user();
 
         $user->mobileVerification()->create([
-            'mobile_no' => $user->mobileVerification()->mobile_no,
-            'code' => $verificationCode
+            'mobile_number' => $user->verified_mobile_no->mobile_number,
+            'code' => $verificationCode,
+            'expires_at' => Carbon::now()->addSeconds(300),
         ]);
 
         Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenants\Auth\LoginRequest;
 use App\Mail\Tenants\Auth\SendMobileVerificationCode;
+use Carbon\Carbon;
 use Mail;
 use Auth;
 
@@ -22,7 +23,8 @@ class LoginController extends Controller
 
         $user->mobileVerification()->create([
             'mobile_no' => $user->mobileVerification()->mobile_no,
-            'code' => $verificationCode
+            'code' => $verificationCode,
+            'expires_at' => Carbon::now()->addSeconds(300),
         ]);
 
         Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));

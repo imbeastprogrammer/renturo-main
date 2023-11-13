@@ -10,6 +10,8 @@ use App\Http\Middleware\RedirectIfTenantActivated;
 
 use App\Http\Controllers\Tenants\Admin\UserManagementController;
 use App\Http\Controllers\Tenants\Admin\PostManagementController;
+use App\Http\Controllers\Tenants\Admin\DynamicFormFieldController;
+use App\Http\Controllers\Tenants\Admin\DynamicFormPageController;
 
 use Inertia\Inertia;
 
@@ -88,4 +90,8 @@ Route::middleware([
     });
 
     Route::resource('/posts', PostManagementController::class);
+
+    Route::resource('/form/pages', DynamicFormPageController::class);
+
+    Route::resource('/form/fields', DynamicFormFieldController::class);
 });

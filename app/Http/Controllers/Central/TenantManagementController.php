@@ -10,7 +10,7 @@ use App\Http\Requests\Central\TenantManagement\StoreTenantRequest;
 use App\Models\Central\Tenant;
 use App\Models\User;
 
-use Artisan;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Str;
 
@@ -24,7 +24,7 @@ class TenantManagementController extends Controller
     public function index()
     {
         $tenants = Tenant::all();
-        return Inertia::render('central/super-admin/site-management/tenants/index', ['tenants'=>$tenants]);
+        return Inertia::render('central/super-admin/site-management/tenants/index', ['tenants' => $tenants]);
     }
 
     /**
@@ -45,7 +45,7 @@ class TenantManagementController extends Controller
      */
     public function store(StoreTenantRequest $request)
     {
-        
+
         $tenant = Tenant::create([
             'id' => $request->tenant_id,
             'company' => $request->company,
@@ -66,6 +66,7 @@ class TenantManagementController extends Controller
             $admin->mobileVerification()->create([
                 'mobile_no' => $request->mobile_no,
                 'code' => $verificationCode,
+                'expires_at' => Carbon::now()->addSeconds(300),
             ]);
 
             //install passport personal access tokens
@@ -97,7 +98,7 @@ class TenantManagementController extends Controller
     public function edit($id)
     {
         $tenant = Tenant::findOrFail($id);
-        return Inertia::render('central/super-admin/site-management/tenants/update-tenant/index', ['tenant'=>$tenant]);
+        return Inertia::render('central/super-admin/site-management/tenants/update-tenant/index', ['tenant' => $tenant]);
     }
 
     /**
