@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -7,7 +7,6 @@ import {
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
 
 import {
     CapacityIcon,
@@ -18,6 +17,7 @@ import {
     VenueIcon,
 } from '@/assets/tenant/list-of-properties';
 import dummyListings from '@/data/dummyListings';
+import { cn } from '@/lib/utils';
 
 type ViewListingModalProps = {
     isOpen: boolean;
@@ -25,13 +25,29 @@ type ViewListingModalProps = {
     onClose: () => void;
 };
 
+const navigationSelection = [
+    { label: 'Overview', value: 'overview' },
+    {
+        label: 'Review Details',
+        value: 'review-details',
+    },
+];
+
+const TabsMap: Record<string, React.FC> = {
+    overview: Overview,
+    'review-details': ReviewDetails,
+};
+
 function ViewListingModal({ isOpen, id, onClose }: ViewListingModalProps) {
+    const [activeTab, setActiveTab] = useState(navigationSelection[0].value);
     const dummyListing = dummyListings.find(({ no }) => no === id);
+
+    const CurrentTab = TabsMap[activeTab];
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className='h-full max-h-[750px] max-w-[1300px] overflow-hidden'>
-                <DialogHeader className='mb-0'>
+            <DialogContent className='grid h-full max-h-[750px] max-w-[1300px] grid-rows-[auto_auto_1fr] gap-y-0 overflow-hidden'>
+                <DialogHeader className='mb-4'>
                     <div className='flex items-center justify-between'>
                         <DialogTitle className='text-[35px] font-semibold'>
                             {dummyListing?.listing_name}
@@ -42,18 +58,52 @@ function ViewListingModal({ isOpen, id, onClose }: ViewListingModalProps) {
                     </div>
                 </DialogHeader>
                 <Separator />
-                <div className='grid h-full grid-cols-[310px_auto_1fr] gap-x-4 overflow-hidden'>
-                    <div>
-                        <h1>Overview</h1>
-                        <h1>Review Details</h1>
+                <div className='grid h-full grid-cols-[310px_auto_1fr] overflow-hidden'>
+                    <div className='p-4'>
+                        <NavigationSelection
+                            value={activeTab}
+                            data={navigationSelection}
+                            onValueChange={setActiveTab}
+                        />
                     </div>
                     <Separator orientation='vertical' />
-                    <ScrollArea className='pr-4'>
-                        <Overview />
+                    <ScrollArea className='p-4'>
+                        <CurrentTab />
                     </ScrollArea>
                 </div>
             </DialogContent>
         </Dialog>
+    );
+}
+
+type NavigationSelectionProps = {
+    value: string;
+    data: { label: string; value: string }[];
+    onValueChange: (value: string) => void;
+};
+function NavigationSelection({
+    data,
+    value: currentValue,
+    onValueChange,
+}: NavigationSelectionProps) {
+    return (
+        <ul className='space-y-2'>
+            {data.map(({ label, value }) => (
+                <li key={value}>
+                    <button
+                        className={cn(
+                            'w-full cursor-pointer rounded-full p-1 px-4 text-left text-[20px] font-semibold',
+                            {
+                                'bg-[#EEF5FF]': currentValue === value,
+                            },
+                        )}
+                        onClick={() => onValueChange(value)}
+                    >
+                        {label}
+                    </button>
+                </li>
+            ))}
+        </ul>
     );
 }
 
@@ -131,6 +181,10 @@ function OverviewItem({ children, icon }: OverviewItemProps) {
             {children}
         </li>
     );
+}
+
+function ReviewDetails() {
+    return <div>Review Details</div>;
 }
 
 export default ViewListingModal;
