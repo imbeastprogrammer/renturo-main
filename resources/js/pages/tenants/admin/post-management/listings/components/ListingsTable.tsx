@@ -76,10 +76,10 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
                                     <DropdownMenuItem>
-                                        Edit User
+                                        Edit Listing
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
-                                        Delete User
+                                        Delete Listing
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
