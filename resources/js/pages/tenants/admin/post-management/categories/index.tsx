@@ -23,7 +23,7 @@ function CategoriesPage() {
     };
 
     return (
-        <div className='grid h-full grid-rows-[auto_auto_1fr] gap-y-4 rounded-lg border p-8 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_auto_1fr] gap-y-4 rounded-lg border p-4 shadow-lg'>
             <h1 className='text-[30px] font-semibold leading-none'>
                 Categories
             </h1>
