@@ -43,7 +43,7 @@ function UsersTable({ users = [] }: UsersTableProps) {
                         <TableHead>Date Joined</TableHead>
                         <TableHead>Account</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead className='w-[50px]'></TableHead>
+                        <TableHead className='w-[50px]'>Action</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

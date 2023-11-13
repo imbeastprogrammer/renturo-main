@@ -21,7 +21,7 @@ function UsersPage({ users }: UsersPageProps) {
     const handlePageChange = (page: number) => setCurrentPage(page);
 
     return (
-        <div className='grid h-full grid-rows-[auto_1fr_auto] gap-y-4 overflow-hidden rounded-lg border p-8 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_1fr_auto] gap-y-4 overflow-hidden rounded-xl border p-4 shadow-lg'>
             <div className='flex justify-between'>
                 <div className='flex gap-4'>
                     <div className='w-[336px]'>
