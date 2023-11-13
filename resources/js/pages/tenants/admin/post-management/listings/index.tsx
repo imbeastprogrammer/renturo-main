@@ -24,7 +24,7 @@ function ListingsPage() {
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
-        <div className='-h-full grid grid-rows-[auto_auto_1fr] gap-y-4 rounded-lg border p-8 shadow-lg'>
+        <div className='-h-full grid grid-rows-[auto_auto_1fr] gap-y-4 rounded-lg border p-4 shadow-lg'>
             <div className='flex items-center gap-2'>
                 <Searchbar placeholder='Search for property, keyword, or owner' />
                 <Searchbar placeholder='Search by category' />
