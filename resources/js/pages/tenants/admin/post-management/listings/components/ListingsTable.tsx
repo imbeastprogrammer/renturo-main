@@ -8,6 +8,13 @@ import {
 } from '@/components/ui/table';
 import { ListingStatusSelector } from './ListingStatusSelector';
 import { Listing } from '@/types/listings';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontalIcon } from 'lucide-react';
 
 const statusColor: Record<string, string> = {
     posted: '#B1EEB7',
@@ -33,21 +40,23 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
     return (
         <Table>
             <TableHeader>
-                <TableRow>
+                <TableRow className='text-base font-semibold text-black/50'>
                     <TableHead className='w-[100px]'>#</TableHead>
                     <TableHead>Id</TableHead>
                     <TableHead>Listing Name</TableHead>
                     <TableHead>Posted By</TableHead>
                     <TableHead>Price Range</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className='text-right'>Action</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {listings.map((listing) => (
-                    <TableRow key={listing.no}>
-                        <TableCell className='font-medium'>
-                            {listing.no}
-                        </TableCell>
+                    <TableRow
+                        key={listing.no}
+                        className='text-sm font-normal text-black/50'
+                    >
+                        <TableCell>{listing.no}</TableCell>
                         <TableCell>{listing.id}</TableCell>
                         <TableCell>{listing.listing_name}</TableCell>
                         <TableCell>{listing.posted_by}</TableCell>
@@ -59,6 +68,21 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                                 color={statusColor[listing.status]}
                                 onChange={handleStatusUpdate}
                             />
+                        </TableCell>
+                        <TableCell className='text-right'>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <MoreHorizontalIcon />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuItem>
+                                        Edit User
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        Delete User
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </TableCell>
                     </TableRow>
                 ))}

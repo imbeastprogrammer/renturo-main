@@ -1,10 +1,15 @@
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useSearchParams } from '@/hooks/useSearchParams';
 
 import AdminLayout from '@/layouts/AdminLayout';
 import ListingsTable from './components/ListingsTable';
 import ListingFilter from './components/ListingFilter';
 import dummyListings from '@/data/dummyListings';
-import { useSearchParams } from '@/hooks/useSearchParams';
+import Searchbar from '@/components/tenant/Searchbar';
+import Pagination from '@/components/tenant/Pagination';
 
 const tabs = [
     { label: 'All Listings', value: 'all' },
@@ -16,27 +21,50 @@ const tabs = [
 function ListingsPage() {
     const { searchParams, queryParams } = useSearchParams();
     const filter = searchParams.get('filter');
+    const [currentPage, setCurrentPage] = useState(1);
 
     return (
-        <div className='-h-full grid grid-rows-[auto_auto_1fr] gap-y-4 rounded-lg border p-8 shadow-lg'>
-            <div className='flex items-end gap-4'>
-                <h1 className='text-[30px] font-semibold leading-none'>
-                    Listings
-                </h1>
-                <span className='text-[15px] font-semibold text-gray-500'>
-                    3 Listings found
-                </span>
+        <div className='-h-full grid grid-rows-[_auto_auto_1fr] gap-y-4 rounded-lg border p-8 shadow-lg'>
+            <div className='flex items-center gap-2'>
+                <Searchbar placeholder='Search for property, keyword, or owner' />
+                <Searchbar placeholder='Search by category' />
+                <Searchbar placeholder='Search by subcategory' />
+                <Button className='w-[107px] bg-metalic-blue text-[15px] font-medium hover:bg-metalic-blue/90'>
+                    Search
+                </Button>
             </div>
             <ListingFilter
                 value={filter || 'all'}
                 data={tabs}
                 onChange={(value) => {
-                    router.visit(`/admin/post`, {
+                    router.visit(`/admin/post-management`, {
                         data: { ...queryParams, filter: value },
                     });
                 }}
             />
             <ListingsTable listings={dummyListings} />
+            <div className='flex items-center justify-between'>
+                <div className='text-sm'>
+                    <span>Showing 1 to 3 of 3 users</span>
+                </div>
+                <Pagination
+                    currentPage={currentPage || 1}
+                    numberOfPages={100}
+                    onNextPage={(page) => setCurrentPage(page + 1)}
+                    onPrevPage={(page) => setCurrentPage(page - 1)}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
+                <div className='flex items-center gap-2 text-sm'>
+                    <span>Page</span>
+                    <Input
+                        value={currentPage}
+                        className='h-8 w-16 text-center'
+                        type='number'
+                        onChange={(e) => setCurrentPage(Number(e.target.value))}
+                    />
+                    <span>of {100}</span>
+                </div>
+            </div>
         </div>
     );
 }
