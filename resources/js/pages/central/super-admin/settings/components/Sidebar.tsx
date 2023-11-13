@@ -1,10 +1,51 @@
+import { Link } from '@inertiajs/react';
+import {
+    AccountIcon,
+    HelpIcon,
+    NotificationsIcon,
+    PasswordIcon,
+} from '@/assets/central/sidebar';
+import { cn } from '@/lib/utils';
+
+const sidebarItems = [
+    {
+        label: 'Account',
+        path: '/super-admin/settings/account',
+        icon: AccountIcon,
+    },
+    {
+        label: 'Password',
+        path: '/super-admin/settings/change-password',
+        icon: PasswordIcon,
+    },
+    {
+        label: 'Notifications',
+        path: '/super-admin/settings/notifications',
+        icon: NotificationsIcon,
+    },
+    { label: 'Help', path: '/super-admin/settings/help', icon: HelpIcon },
+];
+
 function Sidebar() {
+    const { pathname } = window.location;
+
     return (
-        <div>
-            <div>Account</div>
-            <div>Password</div>
-            <div>Notifications</div>
-            <div>Help</div>
+        <div className='flex flex-col gap-2'>
+            {sidebarItems.map(({ label, path, icon: Icon }, i) => (
+                <Link href={path} key={i}>
+                    <div
+                        className={cn(
+                            'flex items-center gap-4 text-[15px] font-light text-black/50',
+                            { 'font-normal text-black': pathname === path },
+                        )}
+                    >
+                        <Icon
+                            color={pathname === path ? '#43B3E5' : '#2E3436'}
+                        />
+                        {label}
+                    </div>
+                </Link>
+            ))}
         </div>
     );
 }
