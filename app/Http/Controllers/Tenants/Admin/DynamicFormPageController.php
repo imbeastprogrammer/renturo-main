@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenants\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Tenants\Admin\FormBuilder\StoreFormPageRequest;
+use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormPageRequest;
 use App\Models\DynamicFormPage;
 
 class DynamicFormPageController extends Controller
@@ -76,9 +77,15 @@ class DynamicFormPageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateFormPageRequest $request, $id)
     {
-        //
+        $formPage = DynamicFormPage::findOrFail($id);
+
+        $formPage->update([
+            'title' => $request->title
+        ]);
+
+        return response()->json($formPage);
     }
 
     /**
@@ -90,5 +97,18 @@ class DynamicFormPageController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function sortFormPages(Request $request)
+    {
+        $request->validate([
+            'form_page_id.*' => 'required'
+        ]);
+
+        foreach ($request->form_page_id as $key => $formPageId) {
+            DynamicFormPage::where('id', $formPageId)->update([
+                'sort_no' => ++$key
+            ]);
+        }
     }
 }
