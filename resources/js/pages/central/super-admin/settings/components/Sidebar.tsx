@@ -30,7 +30,7 @@ function Sidebar() {
     const { pathname } = window.location;
 
     return (
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 p-4'>
             {sidebarItems.map(({ label, path, icon: Icon }, i) => (
                 <Link href={path} key={i}>
                     <div
