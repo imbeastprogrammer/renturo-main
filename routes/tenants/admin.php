@@ -56,6 +56,9 @@ Route::middleware([
     Route::get('/settings/personal-information', function () {
         return Inertia::render('tenants/admin/settings/personal-information/index');
     });
+    Route::get('/settings/change-password', function () {
+        return Inertia::render('tenants/admin/settings/change-password/index');
+    });
 
     Route::post('/users', [UserManagementController::class, 'store']);
     Route::put('/users/{id}', [UserManagementController::class, 'update']);

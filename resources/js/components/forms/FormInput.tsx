@@ -8,26 +8,28 @@ import {
 } from '../ui/form';
 import { Input, InputProps } from '../ui/input';
 import { Control, FieldValues, Path } from 'react-hook-form';
+import { cn } from '@/lib/utils';
 
 type FormInputProps<T> = {
     label?: string;
     control: Control<FieldValues & T>;
     name: Path<FieldValues & T>;
     icon?: LucideIcon;
+    showError?: boolean;
 } & InputProps;
 
-// change the background of this based on the figma
 function FormInput<T>({
     control,
     name,
     icon: Icon,
+    showError = true,
     ...props
 }: FormInputProps<T>) {
     return (
         <FormField
             control={control}
             name={name}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
                 <FormItem className='w-full'>
                     {props.label && (
                         <FormLabel className='text-[18px] font-medium'>
@@ -37,7 +39,13 @@ function FormInput<T>({
                     <FormControl>
                         <div className='relative flex items-center gap-2'>
                             <Input
-                                className='rounded-lg bg-[#F3F7FD] p-6 pr-16 text-base placeholder:text-black/50 placeholder:text-gray-400 focus-visible:ring-transparent'
+                                className={cn(
+                                    'rounded-lg bg-[#F3F7FD] p-6 pr-16 text-base placeholder:text-black/50 placeholder:text-gray-400 focus-visible:ring-transparent',
+                                    {
+                                        'border-red-500 bg-red-500/5 text-red-500':
+                                            !!fieldState.error?.message,
+                                    },
+                                )}
                                 {...field}
                                 {...props}
                             />
@@ -46,7 +54,7 @@ function FormInput<T>({
                             )}
                         </div>
                     </FormControl>
-                    <FormMessage />
+                    {showError && <FormMessage />}
                 </FormItem>
             )}
         />
