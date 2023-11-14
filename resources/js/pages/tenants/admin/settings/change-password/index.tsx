@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import ChangePasswordForm from './components/ChangePasswordForm';
 import SettingsLayout from '../components/SettingsLayout';
+import ChangePasswordForm from './components/ChangePasswordForm';
 
 function ChangePassword() {
     return (
@@ -10,7 +10,6 @@ function ChangePassword() {
         </ScrollArea>
     );
 }
-
 ChangePassword.layout = (page: ReactNode) => (
     <SettingsLayout>{page}</SettingsLayout>
 );

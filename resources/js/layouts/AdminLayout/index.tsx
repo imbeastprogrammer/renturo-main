@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
-import AdminSidebar from "./AdminSidebar";
-import AdminLayoutHeader from "./AdminLayoutHeader";
+import AdminSidebar from './AdminSidebar';
+import AdminLayoutHeader from './AdminLayoutHeader';
 
 type AdminLayoutProps = {
     children: ReactNode;
@@ -9,9 +9,9 @@ type AdminLayoutProps = {
 
 function AdminLayout({ children }: AdminLayoutProps) {
     return (
-        <div className="grid h-screen grid-cols-[auto_1fr] overflow-hidden">
+        <div className='grid h-screen grid-cols-[auto_1fr] overflow-hidden'>
             <AdminSidebar />
-            <main className="overflow-hidden grid grid-rows-[auto_1fr] p-4 gap-4">
+            <main className='grid grid-rows-[auto_1fr] gap-4 overflow-hidden p-4'>
                 <AdminLayoutHeader />
                 {children}
             </main>

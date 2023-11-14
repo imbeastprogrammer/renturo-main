@@ -1,16 +1,16 @@
-import profilePicture from "@/assets/profile.png";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircleIcon } from "lucide-react";
+import profilePicture from '@/assets/profile.png';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircleIcon } from 'lucide-react';
 
 function UserPicture() {
     return (
-        <div className="w-full space-y-4 h-max flex flex-col items-center bg-off-white rounded-lg p-4">
-            <img className="h-[100px] w-[100px]" src={profilePicture} />
-            <div className="flex items-center gap-4 text-[18px] font-semibold">
+        <div className='bg-off-white flex h-max w-full flex-col items-center space-y-4 rounded-lg bg-[#F3F7FD] p-4'>
+            <img className='h-[100px] w-[100px]' src={profilePicture} />
+            <div className='flex items-center gap-4 text-[18px] font-semibold'>
                 <h1>Jane Cooper</h1>
-                <CheckCircleIcon className="text-metalic-blue" />
+                <CheckCircleIcon className='text-metalic-blue' />
             </div>
-            <Badge className="bg-metalic-blue pointer-events-none p-2 uppercase px-8">
+            <Badge className='pointer-events-none bg-metalic-blue p-2 px-8 uppercase'>
                 Admin
             </Badge>
         </div>
