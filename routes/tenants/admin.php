@@ -53,8 +53,8 @@ Route::middleware([
     Route::get('/listings/form-builder', function () {
         return Inertia::render('tenants/admin/listings/form-builder/index');
     });
-    Route::get('/settings', function () {
-        return Inertia::render('tenants/admin/settings/index');
+    Route::get('/settings/personal-information', function () {
+        return Inertia::render('tenants/admin/settings/personal-information/index');
     });
 
     Route::post('/users', [UserManagementController::class, 'store']);
