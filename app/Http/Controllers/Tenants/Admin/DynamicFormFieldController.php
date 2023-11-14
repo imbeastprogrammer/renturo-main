@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Tenants\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Tenants\Admin\FormBuilder\StoreFormFieldRequest;
+use App\Models\DynamicFormField;
+use App\Models\DynamicFormPage;
 
 class DynamicFormFieldController extends Controller
 {
@@ -12,9 +15,11 @@ class DynamicFormFieldController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $formPage = DynamicFormPage::where('id', $request->form_page_id)->first();
+
+        return response()->json(['form_page' => $formPage]);
     }
 
     /**
@@ -33,9 +38,11 @@ class DynamicFormFieldController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreFormFieldRequest $request)
     {
-        //
+        DynamicFormField::create($request->validated());
+
+        return response()->json(['message' => 'Form field created']);
     }
 
     /**

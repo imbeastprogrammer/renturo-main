@@ -10,6 +10,19 @@ class DynamicFormField extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const FIELD_TYPES = [
+        'text',
+        'number',
+        'email',
+        'password',
+        'file',
+        'checkbox',
+        'radio',
+        'date',
+        'time',
+        'datetime-local'
+    ];
+
     protected $fillable = [
         'user_id',
         'dynamic_form_page_id',
@@ -20,6 +33,10 @@ class DynamicFormField extends Model
         'is_multiple',
         'sort_no',
         'data'
+    ];
+
+    protected $casts = [
+        'data' => 'array'
     ];
 
     public function user()

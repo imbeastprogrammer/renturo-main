@@ -8,7 +8,10 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 
 use App\Models\DynamicFormPage;
+use App\Models\DynamicFormField;
+
 use App\Observers\Tenants\DynamicFormPageObserver;
+use App\Observers\Tenants\DynamicFormFieldObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -31,6 +34,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         DynamicFormPage::observe(DynamicFormPageObserver::class);
+        DynamicFormField::observe(DynamicFormFieldObserver::class);
     }
 
     /**
