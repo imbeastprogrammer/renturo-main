@@ -1,9 +1,18 @@
-import SuperAdminLayout from '@/layouts/SuperAdminLayout';
+import { ReactNode } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import ChangePasswordForm from './components/ChangePasswordForm';
+import SettingsLayout from '../components/SettingsLayout';
 
 function ChangePassword() {
-    return <div>Change Password</div>;
+    return (
+        <ScrollArea>
+            <ChangePasswordForm />
+        </ScrollArea>
+    );
 }
 
-ChangePassword.layout = (page: any) => <SuperAdminLayout>{page}</SuperAdminLayout>;
+ChangePassword.layout = (page: ReactNode) => (
+    <SettingsLayout>{page}</SettingsLayout>
+);
 
 export default ChangePassword;

@@ -51,16 +51,10 @@ Route::middleware('auth:central')->group(function () {
         Route::get('/administration/roles/edit/{id}', function () {
             return Inertia::render('central/super-admin/administration/roles/edit-role/index');
         });
-        Route::get('/settings', function () {
-            return Inertia::render('central/super-admin/settings/index');
+        Route::get('/settings/account', function () {
+            return Inertia::render('central/super-admin/settings/account/index');
         });
-        Route::get('/settings/change-password', function () {
-            return Inertia::render('central/super-admin/settings/change-password/index');
-        });
-        Route::get('/settings/user-profile', function () {
-            return Inertia::render('central/super-admin/settings/user-profile/index');
-        });
-
+        Route::get('settings/change-password', [UserManagementController::class, 'changePassword']);
         Route::post('settings/update-password', [UserManagementController::class, 'updatePassword']);
         Route::post('settings/update-user-profile', [UserManagementController::class, 'updateUserProfile']);
 
