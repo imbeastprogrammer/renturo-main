@@ -42,7 +42,7 @@ const dashboardLinks = [
     },
     {
         label: 'Settings',
-        to: '/admin/settings',
+        to: '/admin/settings/personal-information',
         icon: SettingsIcon,
         links: [],
     },

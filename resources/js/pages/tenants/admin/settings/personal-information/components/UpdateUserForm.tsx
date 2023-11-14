@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
 import FormInput from '@/components/forms/FormInput';
+import { Button } from '@/components/ui/button';
 
 const formSchema = z.object({
     first_name: z.string(),
@@ -20,7 +21,7 @@ const formSchema = z.object({
     phone_number: z.string(),
 });
 
-function PersonalIformation() {
+function UpdateUserForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -40,15 +41,15 @@ function PersonalIformation() {
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        router.visit('/admin?active=Dashboard', { replace: true });
+        router.visit('/admin/settings?active=Settings', { replace: true });
     };
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className='grid gap-6'>
+                <div className='grid gap-8 p-6'>
                     <div className='space-y-4'>
-                        <h1 className='text-[22px] text-heavy-carbon'>
+                        <h1 className='text-[22px] text-black/30'>
                             Personal Information
                         </h1>
                         <div className='grid grid-cols-2 gap-4'>
@@ -75,7 +76,7 @@ function PersonalIformation() {
                         </div>
                     </div>
                     <div className='space-y-4'>
-                        <h1 className='text-[22px] text-heavy-carbon'>
+                        <h1 className='text-[22px] text-black/30'>
                             Address Information
                         </h1>
                         <div className='grid grid-cols-2 gap-4'>
@@ -111,9 +112,8 @@ function PersonalIformation() {
                             />
                         </div>
                     </div>
-
                     <div className='space-y-4'>
-                        <h1 className='text-[22px] text-heavy-carbon'>
+                        <h1 className='text-[22px] text-black/30'>
                             Contact Information
                         </h1>
                         <div className='grid grid-cols-2 gap-4'>
@@ -129,10 +129,18 @@ function PersonalIformation() {
                             />
                         </div>
                     </div>
+                    <div className='flex justify-end'>
+                        <Button
+                            type='submit'
+                            className='bg-metalic-blue px-8 text-xl font-bold hover:bg-metalic-blue/90'
+                        >
+                            Save
+                        </Button>
+                    </div>
                 </div>
             </form>
         </Form>
     );
 }
 
-export default PersonalIformation;
+export default UpdateUserForm;
