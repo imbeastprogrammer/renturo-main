@@ -116,7 +116,7 @@ class UserManagementController extends Controller
      * @return \Illuminate\Http\Response
      * 
      * */
-    public function changePassword($id)
+    public function changePassword()
     {
         // Retrieve the currently logged in user
         $user = auth()->user();

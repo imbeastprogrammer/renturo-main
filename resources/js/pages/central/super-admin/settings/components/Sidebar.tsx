@@ -35,12 +35,16 @@ function Sidebar() {
                 <Link href={path} key={i}>
                     <div
                         className={cn(
-                            'flex items-center gap-4 text-[15px] font-light text-black/50',
+                            'flex items-center gap-4 text-[15px] font-light text-black/50 transition',
                             { 'font-normal text-black': pathname === path },
                         )}
                     >
                         <Icon
-                            color={pathname === path ? '#43B3E5' : '#2E3436'}
+                            color={
+                                pathname === path
+                                    ? '#43B3E5'
+                                    : 'rgba(46, 52, 54, 0.50)'
+                            }
                         />
                         {label}
                     </div>
