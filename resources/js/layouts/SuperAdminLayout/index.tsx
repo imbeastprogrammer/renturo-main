@@ -29,7 +29,15 @@ function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
             <main className='grid h-full grid-rows-[auto_1fr] overflow-hidden'>
                 <div className='p-4'>
                     <h1 className='text-[30px] font-semibold'>
-                        {LabelMap[pathname]}
+                        {LabelMap[pathname] ||
+                            (pathname.includes(
+                                '/super-admin/administration/roles/edit/',
+                            ) &&
+                                'Update Roles') ||
+                            (pathname.includes(
+                                '/super-admin/administration/user-management/edit/',
+                            ) &&
+                                'Update User')}
                     </h1>
                     <Breadcrumb />
                 </div>

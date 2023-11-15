@@ -12,6 +12,8 @@ use App\Http\Controllers\Tenants\Admin\UserManagementController;
 use App\Http\Controllers\Tenants\Admin\PostManagementController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormFieldController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormPageController;
+use App\Http\Controllers\Tenants\Admin\CategoryManagementController;
+use App\Http\Controllers\Tenants\Admin\SubCategoryManagementController;
 
 use Inertia\Inertia;
 
@@ -109,4 +111,8 @@ Route::middleware([
 
     Route::put('/sort/form/fields', [DynamicFormFieldController::class, 'sortFormFields']);
     Route::resource('/form/fields', DynamicFormFieldController::class);
+
+    Route::resource('/categories', CategoryManagementController::class);
+
+    Route::resource('/sub-categories', SubCategoryManagementController::class);
 });
