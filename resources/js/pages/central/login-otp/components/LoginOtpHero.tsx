@@ -1,13 +1,17 @@
-import { LoginOtpHeroLogo } from '@/assets/central/auth';
+import KabootekTextLogoWhite from '@/assets/central/auth/kabootek-text-logo-white.png';
 
 function LoginOtpHero() {
     return (
-        <div className='bg-yinmn-blue grid place-items-center rounded-lg p-4'>
-            <div className='space-y-4'>
-                <h1 className='text-center text-[35px] font-bold text-white'>
-                    Welcome Back!
+        <div className='relative grid place-items-center bg-yinmn-blue p-8'>
+            <img
+                className='absolute left-6 top-6 h-[36px]'
+                src={KabootekTextLogoWhite}
+                alt='logo'
+            />
+            <div className='text-white'>
+                <h1 className='text-[52px] font-bold'>
+                    Verify your login with an OTP
                 </h1>
-                <LoginOtpHeroLogo />
             </div>
         </div>
     );
