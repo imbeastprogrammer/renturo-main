@@ -1,11 +1,6 @@
-import {
-    useStoreWithEqualityFn,
-    createWithEqualityFn,
-} from 'zustand/traditional';
+import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { temporal } from 'zundo';
-import type { TemporalState } from 'zundo';
 import { FormElementInstance } from '@/pages/tenants/admin/listings/form-builder/components/FormElement';
 
 type Page = {
@@ -14,9 +9,14 @@ type Page = {
     fields: FormElementInstance[];
 };
 
-type FormBuilder = {
+type FormBuilderState = {
     pages: Page[];
     current_page_id: string;
+    history: Array<Page[]>;
+    future: Array<Page[]>;
+};
+
+type FormBuilderAction = {
     setPage: (pageId: string) => void;
     addPage: () => void;
     setPages: (pages: Page[]) => void;
@@ -36,7 +36,11 @@ type FormBuilder = {
         id: string,
         field: FormElementInstance,
     ) => void;
+    undo: () => void;
+    redo: () => void;
 };
+
+type FormbuilderStore = FormBuilderState & FormBuilderAction;
 
 const defaultPage: Page = {
     page_title: '',
@@ -44,17 +48,20 @@ const defaultPage: Page = {
     fields: [],
 };
 
-const useFormBuilder = createWithEqualityFn<FormBuilder>()(
-    temporal(
+const useFormBuilder = create<FormbuilderStore>()(
+    persist(
         (set) => ({
             pages: [defaultPage],
             current_page_id: defaultPage.page_id,
             selectedField: null,
+            history: [],
+            future: [],
             setPage: (pageId) => set({ current_page_id: pageId }),
             setPages: (pages) => set({ pages }),
             addPage: () =>
                 set((state) => ({
                     ...state,
+                    history: [...state.history, state.pages],
                     pages: [
                         ...state.pages,
                         { page_id: uuidv4(), page_title: '', fields: [] },
@@ -65,7 +72,11 @@ const useFormBuilder = createWithEqualityFn<FormBuilder>()(
                     const pageUpdated = state.pages.map((page) =>
                         page.page_id === pageId ? newPage : page,
                     );
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             removePage: (pageId) =>
                 set((state) => {
@@ -76,6 +87,7 @@ const useFormBuilder = createWithEqualityFn<FormBuilder>()(
                     );
                     return {
                         ...state,
+                        history: [...state.history, state.pages],
                         pages: pageRemoved,
                     };
                 }),
@@ -84,7 +96,11 @@ const useFormBuilder = createWithEqualityFn<FormBuilder>()(
                     const pageUpdated = state.pages.map((page) =>
                         page.page_id === pageId ? { ...page, fields } : page,
                     );
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             addField: (pageId, index, field) =>
                 set((state) => {
@@ -96,7 +112,11 @@ const useFormBuilder = createWithEqualityFn<FormBuilder>()(
                         }
                         return page;
                     });
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             removeField: (pageId, id) =>
                 set((state) => {
@@ -109,7 +129,11 @@ const useFormBuilder = createWithEqualityFn<FormBuilder>()(
                         }
                         return page;
                     });
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             setSelectedField: (field) => set({ selectedField: field }),
             updateField: (pageId, id, updatedField) =>
@@ -123,22 +147,46 @@ const useFormBuilder = createWithEqualityFn<FormBuilder>()(
                         }
                         return page;
                     });
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
+                }),
+            undo: () =>
+                set((state) => {
+                    const { pages: currentPages, history, future } = state;
+                    if (history.length === 0) return state;
+                    const previousState = history[history.length - 1];
+                    const newHistory = [...history.slice(0, -1)];
+
+                    return {
+                        ...state,
+                        pages: previousState,
+                        history: newHistory,
+                        future: [...future, currentPages],
+                    };
+                }),
+            redo: () =>
+                set((state) => {
+                    const { history, pages, future } = state;
+                    if (future.length === 0) return state;
+                    const nextState = future[future.length - 1];
+                    const newFuture = [...future.slice(0, -1)];
+
+                    return {
+                        ...state,
+                        pages: nextState,
+                        future: newFuture,
+                        history: [...history, pages],
+                    };
                 }),
         }),
         {
-            wrapTemporal: (storeInitializer) =>
-                persist(storeInitializer, {
-                    name: 'form-builder-temporal-storage',
-                    storage: createJSONStorage(() => localStorage),
-                }),
+            name: 'form-builder-storage',
+            storage: createJSONStorage(() => localStorage),
         },
     ),
 );
-
-export const useFormbuilderWithUndoRedo = <T,>(
-    selector: (state: TemporalState<FormBuilder>) => T,
-    equality?: (a: T, b: T) => boolean,
-) => useStoreWithEqualityFn(useFormBuilder.temporal, selector, equality);
 
 export default useFormBuilder;
