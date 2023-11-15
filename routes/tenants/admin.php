@@ -104,8 +104,9 @@ Route::middleware([
 
     Route::resource('/posts', PostManagementController::class);
 
-    Route::post('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
+    Route::put('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
     Route::resource('/form/pages', DynamicFormPageController::class);
 
+    Route::put('/sort/form/fields', [DynamicFormFieldController::class, 'sortFormFields']);
     Route::resource('/form/fields', DynamicFormFieldController::class);
 });

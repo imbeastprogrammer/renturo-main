@@ -3,10 +3,17 @@
 namespace App\Observers\Tenants;
 
 use App\Models\DynamicFormField;
+use Illuminate\Http\Request;
 use Auth;
 
 class DynamicFormFieldObserver
 {
+    protected $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
     /**
      * Handle the DynamicFormField "creating" event.
      *
@@ -18,7 +25,8 @@ class DynamicFormFieldObserver
         $dynamicFormField->user_id = Auth::user()->id;
 
         if (!$dynamicFormField->sort_no) {
-            $maxSortNo = DynamicFormField::where('user_id', Auth::user()->id)->max('sort_no') + 1;
+            $maxSortNo = DynamicFormField::where('dynamic_form_page_id', $this->request->dynamic_form_page_id)
+                ->where('user_id', Auth::user()->id)->max('sort_no') + 1;
 
             $dynamicFormField->sort_no = $maxSortNo;
         }
