@@ -2,9 +2,9 @@ import KabootekTextLogoWhite from '@/assets/central/auth/kabootek-text-logo-whit
 
 function LoginOtpHero() {
     return (
-        <div className='relative grid place-items-center bg-yinmn-blue p-8'>
+        <div className='relative grid items-center bg-yinmn-blue p-8'>
             <img
-                className='absolute left-6 top-6 h-[36px]'
+                className='absolute left-8 top-8 h-[36px]'
                 src={KabootekTextLogoWhite}
                 alt='logo'
             />

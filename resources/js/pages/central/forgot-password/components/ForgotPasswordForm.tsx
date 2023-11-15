@@ -2,11 +2,10 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import KabootekTextLogoBlue from '@/assets/central/auth/kabootek-text-logo-blue.png';
 import { Form } from '@/components/ui/form';
 import { MailIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import FormInput from '@/components/forms/FormInput';
+import { FormInput } from '@/components/auth';
 
 const forgotPasswordSchema = z.object({ email: z.string().email() });
 
@@ -24,19 +23,14 @@ function ForgotPasswordForm() {
     const onSubmit = form.handleSubmit(() => {});
 
     return (
-        <div className='relative grid place-items-center p-4 px-20'>
-            <img
-                className='absolute right-4 top-4 h-[36px]'
-                src={KabootekTextLogoBlue}
-                alt='logo'
-            />
+        <div className='mx-auto grid w-full max-w-[530px] place-items-center p-4'>
             <Form {...form}>
                 <form onSubmit={onSubmit} className='space-y-8'>
-                    <div className='text-center'>
-                        <h1 className='text-yinmn-blue text-[52px] font-bold'>
+                    <div className='space-y-8 text-center'>
+                        <h1 className='text-[52px] font-bold text-yinmn-blue'>
                             Forgot Password?
                         </h1>
-                        <p className='text-[20px] text-[#aaaaaa]'>
+                        <p className='text-xl text-[#aaaaaa]'>
                             Don’t worry! Just enter your email address below and
                             we’ll send an instruction to reset your password.
                         </p>
@@ -50,18 +44,18 @@ function ForgotPasswordForm() {
                         />
                     </div>
                     <div>
-                        <p className='text-center text-[18px]'>
+                        <p className='text-center text-lg'>
                             Didn’t receive a code?{' '}
                             <button
                                 type='button'
-                                className='text-metalic-blue hover:underline'
+                                className='text-picton-blue hover:underline'
                             >
                                 Resend
                             </button>{' '}
                             or{' '}
                             <button
                                 type='button'
-                                className='text-metalic-blue hover:underline'
+                                className='text-picton-blue hover:underline'
                             >
                                 Send to my mobile
                             </button>
@@ -71,7 +65,7 @@ function ForgotPasswordForm() {
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
+                            className='h-[73px] w-[283px] bg-yinmn-blue uppercase hover:bg-yinmn-blue/90'
                         >
                             Submit
                         </Button>
