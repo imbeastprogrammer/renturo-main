@@ -11,14 +11,10 @@ import {
     SavingLogo,
     UndoIcon,
 } from '@/assets/form-builder';
-import { useFormbuilderWithUndoRedo } from '@/hooks/useFormBuilder';
 
 function FormBuilderHeader() {
     const [saving, setSaving] = useState(false);
     const { isOpen, toggleMenu } = useMenuToggle();
-    const { undo, redo, pastStates, futureStates } = useFormbuilderWithUndoRedo(
-        (state) => state,
-    );
 
     const handleMenuToggle = () => toggleMenu(isOpen);
     const handleSave = () => {
@@ -54,18 +50,10 @@ function FormBuilderHeader() {
                 {saving ? <SavingLogo /> : <SavedLogo />}
             </div>
             <div className='flex items-center gap-4 p-4'>
-                <button
-                    disabled={!pastStates.length}
-                    className='grid h-[46px] w-[46px] place-items-center rounded-full transition hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50'
-                    onClick={() => undo()}
-                >
+                <button className='grid h-[46px] w-[46px] place-items-center rounded-full transition hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50'>
                     <UndoIcon />
                 </button>
-                <button
-                    disabled={!futureStates.length}
-                    className='grid h-[46px] w-[46px] place-items-center rounded-full transition hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50'
-                    onClick={() => redo()}
-                >
+                <button className='grid h-[46px] w-[46px] place-items-center rounded-full transition hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50'>
                     <RedoIcon />
                 </button>
                 <Button
