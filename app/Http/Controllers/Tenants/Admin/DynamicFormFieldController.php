@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Tenants\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Tenants\Admin\FormBuilder\StoreFormFieldRequest;
+use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormFieldRequest;
+use App\Models\DynamicFormField;
+use App\Models\DynamicFormPage;
+use Auth;
 
 class DynamicFormFieldController extends Controller
 {
@@ -12,9 +17,11 @@ class DynamicFormFieldController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $formPage = DynamicFormPage::where('id', $request->form_page_id)->first();
+
+        return response()->json(['form_page' => $formPage]);
     }
 
     /**
@@ -33,9 +40,11 @@ class DynamicFormFieldController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreFormFieldRequest $request)
     {
-        //
+        DynamicFormField::create($request->validated());
+
+        return response()->json(['message' => 'Form field created']);
     }
 
     /**
@@ -67,9 +76,16 @@ class DynamicFormFieldController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateFormFieldRequest $request, $id)
     {
-        //
+        $formField = DynamicFormField::where('id', $id)
+            ->where('dynamic_form_page_id', $request->dynamic_form_page_id)
+            ->where('user_id', Auth::user()->id)
+            ->firstOrFail();
+
+        $formField->update($request->validated());
+
+        return response()->json($formField);
     }
 
     /**
@@ -80,6 +96,31 @@ class DynamicFormFieldController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $formField = DynamicFormField::where('id', $id)
+            ->where('user_id', Auth::user()->id)
+            ->firstOrFail();
+
+        $formField->delete();
+
+        return response()->json(['message' => 'Form field deleted.']);
+    }
+
+    public function sortFormFields(Request $request)
+    {
+        $request->validate([
+            'form_page_id' => 'required',
+            'form_field_id.*' => 'required'
+        ]);
+
+        foreach ($request->form_field_id as $key => $formFieldId) {
+            DynamicFormField::where('id', $formFieldId)
+                ->where('dynamic_form_page_id', $request->form_page_id)
+                ->where('user_id', Auth::user()->id)
+                ->update([
+                    'sort_no' => ++$key
+                ]);
+        }
+
+        return response()->json(['message' => 'Form fields sorted.']);
     }
 }

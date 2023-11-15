@@ -4,9 +4,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 function CreateTenant() {
     return (
-        <div className='grid h-full grid-rows-[80px_1fr] overflow-hidden p-4'>
-            <div></div>
-            <ScrollArea className='rounded-xl bg-white shadow-lg'>
+        <div className='h-full overflow-hidden p-4'>
+            <ScrollArea className='h-full rounded-xl bg-white shadow-lg'>
                 <CreateTenantForm />
             </ScrollArea>
         </div>

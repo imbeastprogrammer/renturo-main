@@ -13,10 +13,10 @@ export const usePagination = ({
     currentPage,
 }: UsePaginationParams) => {
     const paginationRange = useMemo(() => {
-        const totalPageNumbers = siblingCount + 7;
+        const totalPageNumbers = siblingCount + 5;
 
         if (totalPageNumbers >= numberOfPages) {
-            return _.range(1, totalPageNumbers + 1);
+            return _.range(1, numberOfPages + 1);
         }
 
         const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);

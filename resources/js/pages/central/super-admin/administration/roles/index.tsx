@@ -12,9 +12,8 @@ function Roles() {
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
-        <div className='grid h-full grid-rows-[80px_1fr] overflow-hidden bg-[#f0f0f0] p-4'>
-            <div></div>
-            <div className='grid grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
+        <div className='h-full overflow-hidden bg-[#f0f0f0] p-4'>
+            <div className='grid h-full grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
                 <div className='flex items-center justify-between'>
                     <Searchbar />
                     <div className='flex items-center gap-4'>

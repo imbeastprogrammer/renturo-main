@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Tenants\Admin\FormBuilder\StoreFormPageRequest;
 use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormPageRequest;
 use App\Models\DynamicFormPage;
+use Auth;
 
 class DynamicFormPageController extends Controller
 {
@@ -79,7 +80,9 @@ class DynamicFormPageController extends Controller
      */
     public function update(UpdateFormPageRequest $request, $id)
     {
-        $formPage = DynamicFormPage::findOrFail($id);
+        $formPage = DynamicFormPage::where('id', $id)
+            ->where('user_id', Auth::user()->id)
+            ->firstOrFail();
 
         $formPage->update([
             'title' => $request->title
@@ -96,7 +99,13 @@ class DynamicFormPageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $formPage = DynamicFormPage::where('id', $id)
+            ->where('user_id', Auth::user()->id)
+            ->firstOrFail();
+
+        $formPage->delete();
+
+        return response()->json(['message' => 'Form page deleted.']);
     }
 
     public function sortFormPages(Request $request)
@@ -106,9 +115,13 @@ class DynamicFormPageController extends Controller
         ]);
 
         foreach ($request->form_page_id as $key => $formPageId) {
-            DynamicFormPage::where('id', $formPageId)->update([
-                'sort_no' => ++$key
-            ]);
+            DynamicFormPage::where('id', $formPageId)
+                ->where('user_id', Auth::user()->id)
+                ->update([
+                    'sort_no' => ++$key
+                ]);
         }
+
+        return response()->json(['message' => 'Form pages sorted.']);
     }
 }

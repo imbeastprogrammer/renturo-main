@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import {
     Form,
     FormField,
@@ -9,78 +10,63 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import PinInput from '@/components/PinInput';
+import { FormPinInput } from '@/components/auth';
 import useCountdown from '@/hooks/useCountdown';
-import KabootekTextLogoBlue from '@/assets/central/auth/kabootek-text-logo-blue.png';
 
 const forgotPasswordOtpSchema = z.object({
     verification_code: z.string().min(4).max(4),
 });
 
 type ForgotPasswordOtpFormFields = z.infer<typeof forgotPasswordOtpSchema>;
-
-const defaultValues: ForgotPasswordOtpFormFields = {
-    verification_code: '',
-};
+const defaultValues: ForgotPasswordOtpFormFields = { verification_code: '' };
 
 function ForgotPasswordOtpForm() {
+    const [isDisabled, setDisabled] = useState(true);
     const { countdown, reset } = useCountdown(5);
-    const form = useForm<ForgotPasswordOtpFormFields>({
-        defaultValues,
-        resolver: zodResolver(forgotPasswordOtpSchema),
+    const form = useForm<ForgotPasswordOtpFormFields>({ defaultValues });
+
+    const onSubmit = form.handleSubmit((values) => {
+        setDisabled(false);
     });
 
-    const isVerifiyButtonDisabled = !forgotPasswordOtpSchema.safeParse(
-        form.watch(),
-    ).success;
-
-    const onSubmit = form.handleSubmit(() => {});
-
     return (
-        <div className='relative grid place-items-center p-4 px-10 text-center'>
-            <img
-                src={KabootekTextLogoBlue}
-                alt='logo'
-                className='absolute right-4 top-4 h-[36px]'
-            />
+        <div className='mx-auto grid max-w-[610px] place-items-center p-4'>
             <Form {...form}>
-                <form onSubmit={onSubmit} className='mt-8 space-y-8'>
-                    <div>
-                        <h1 className='text-yinmn-blue text-[52px] font-bold'>
+                <form
+                    onSubmit={onSubmit}
+                    className='mt-10 space-y-6 text-center'
+                >
+                    <div className='space-y-4'>
+                        <h1 className='text-[52px] font-bold  text-yinmn-blue'>
                             Enter OTP
                         </h1>
-                        <p className='text-[20px] text-[#aaaaaa]'>
-                            Please enter the{' '}
+                        <p className='text-xl text-[#aaaaaa]'>
+                            We’ve sent a{' '}
                             <span className='font-medium text-black'>
                                 4-digit
                             </span>{' '}
-                            code sent to{' '}
-                            <span className='font-medium text-black'>
-                                email@email.com
-                            </span>
+                            code to you mobile number to verify its you.
                         </p>
                     </div>
-                    <div>
-                        <FormField
-                            name='verification_code'
-                            control={form.control}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className='text-[20px] text-[#aaaaaa]'>
-                                        Verification Code
-                                    </FormLabel>
-                                    <PinInput
-                                        length={4}
-                                        secret={false}
-                                        onChange={field.onChange}
-                                        onComplete={() => onSubmit()}
-                                        value={field.value}
-                                    />
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
+                    <FormField
+                        name='verification_code'
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem className='mx-auto max-w-[300px]'>
+                                <FormLabel className='text-xl text-[#aaaaaa]'>
+                                    Verification Code
+                                </FormLabel>
+                                <FormPinInput
+                                    length={4}
+                                    secret={false}
+                                    onChange={field.onChange}
+                                    onComplete={() => onSubmit()}
+                                    value={field.value}
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <div className='space-y-2'>
                         <p className='text-[18px]'>Didn’t receive any OTP?</p>
                         {countdown > 0 ? (
@@ -90,7 +76,7 @@ function ForgotPasswordOtpForm() {
                         ) : (
                             <button
                                 onClick={() => reset(5)}
-                                className='text-metalic-blue hover:underline'
+                                className='text-picton-blue hover:underline'
                             >
                                 Resend
                             </button>
@@ -99,8 +85,8 @@ function ForgotPasswordOtpForm() {
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            disabled={isVerifiyButtonDisabled}
-                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
+                            disabled={isDisabled}
+                            className='h-[73px] w-[283px] bg-yinmn-blue uppercase hover:bg-yinmn-blue/90'
                         >
                             verify
                         </Button>

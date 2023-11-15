@@ -3,24 +3,32 @@ import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link } from '@inertiajs/react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { User } from '@/types/users';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import UserManagementTable from './components/UserManagementTable';
 import Pagination from '@/components/super-admin/Pagination';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 type UserManagementProps = {
-    users: User[];
+    users: PaginatedUser;
 };
+
+type PaginatedUser = {
+    current_page: number;
+    data: User[];
+    last_page: number;
+    next_page_url: string | null;
+    prev_page_url: string | null;
+};
+
 function UserManagement({ users }: UserManagementProps) {
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
-        <div className='grid h-full grid-rows-[80px_1fr] bg-[#f0f0f0] p-4'>
-            <div></div>
-            <div className='grid grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
+        <div className='h-full p-4'>
+            <div className='grid h-full grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
                 <div className='flex items-center justify-between'>
                     <Searchbar />
                     <div className='flex items-center gap-4'>
@@ -42,7 +50,7 @@ function UserManagement({ users }: UserManagementProps) {
                     </div>
                 </div>
                 <ScrollArea>
-                    <UserManagementTable users={users} />
+                    <UserManagementTable users={users.data} />
                 </ScrollArea>
                 <div className='flex items-center justify-between'>
                     <div className='text-[15px] font-medium text-black/50'>
@@ -50,7 +58,7 @@ function UserManagement({ users }: UserManagementProps) {
                     </div>
                     <Pagination
                         currentPage={currentPage}
-                        numberOfPages={10}
+                        numberOfPages={users.last_page}
                         onNextPage={(page) => setCurrentPage(page + 1)}
                         onPrevPage={(page) => setCurrentPage(page - 1)}
                         onPageChange={(page) => setCurrentPage(page)}
@@ -65,7 +73,7 @@ function UserManagement({ users }: UserManagementProps) {
                                 setCurrentPage(Number(e.target.value))
                             }
                         />
-                        <span>of {100}</span>
+                        <span>of {users.last_page}</span>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+use App\Models\DynamicFormField;
 return new class extends Migration
 {
     /**
@@ -19,11 +19,11 @@ return new class extends Migration
             $table->foreignId('dynamic_form_page_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('input_field_label');
             $table->string('input_field_name');
-            $table->string('input_field_type');
-            $table->boolean('is_required');
-            $table->boolean('is_multiple');
+            $table->enum('input_field_type', DynamicFormField::FIELD_TYPES);
+            $table->boolean('is_required')->default(false);
+            $table->boolean('is_multiple')->default(false);
             $table->unsignedInteger('sort_no');
-            $table->json('data');
+            $table->json('data')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
