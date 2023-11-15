@@ -1,11 +1,14 @@
-import SuperAdminLayout from '@/layouts/SuperAdminLayout';
+import SuperAdminLayout, { LabelMap } from '@/layouts/SuperAdminLayout';
 import EditRoleForm from './components/EditRoleForm';
+import { User } from '@/types/users';
 
-function EditRole() {
+type EditRoleProps = {
+    user: User;
+};
+function EditRole({ user }: EditRoleProps) {
     return (
-        <div className='grid h-full grid-rows-[80px_1fr] overflow-hidden p-4'>
-            <div></div>
-            <div className='rounded-xl bg-white p-6 shadow-lg'>
+        <div className='h-full overflow-hidden p-4'>
+            <div className='h-full rounded-xl bg-white p-6 shadow-lg'>
                 <EditRoleForm />
             </div>
         </div>

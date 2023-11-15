@@ -10,7 +10,7 @@ type SettingsLayoutProps = {
 function SettingsLayout({ children }: SettingsLayoutProps) {
     return (
         <SuperAdminLayout>
-            <div className='h-full p-4'>
+            <div className='h-full overflow-hidden p-4'>
                 <div className='grid h-full grid-cols-[200px_auto_1fr] overflow-hidden rounded-xl border bg-white shadow-lg'>
                     <Sidebar />
                     <Separator orientation='vertical' />

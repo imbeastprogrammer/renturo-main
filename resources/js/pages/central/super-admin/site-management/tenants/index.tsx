@@ -11,16 +11,23 @@ import TenantsTable from './components/TenantsTable';
 import Pagination from '@/components/super-admin/Pagination';
 
 type TenantsProps = {
-    tenants: Tenant[];
+    tenants: PaginatedTenant;
+};
+
+type PaginatedTenant = {
+    current_page: number;
+    data: Tenant[];
+    last_page: number;
+    next_page_url: string | null;
+    prev_page_url: string | null;
 };
 
 function Tenants({ tenants }: TenantsProps) {
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
-        <div className='grid h-full grid-rows-[80px_1fr] bg-[#f0f0f0] p-4'>
-            <div></div>
-            <div className='grid grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
+        <div className='h-full bg-[#f0f0f0] p-4'>
+            <div className='grid h-full grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
                 <div className='flex items-center justify-between'>
                     <Searchbar />
                     <div className='flex items-center gap-4'>
@@ -41,14 +48,14 @@ function Tenants({ tenants }: TenantsProps) {
                         </div>
                     </div>
                 </div>
-                <TenantsTable tenants={tenants} />
+                <TenantsTable tenants={tenants.data} />
                 <div className='flex items-center justify-between'>
                     <div className='text-[15px] font-medium text-black/50'>
                         Showing 1 to 2 of 2 Users
                     </div>
                     <Pagination
                         currentPage={currentPage}
-                        numberOfPages={10}
+                        numberOfPages={tenants.last_page}
                         onNextPage={(page) => setCurrentPage(page + 1)}
                         onPrevPage={(page) => setCurrentPage(page - 1)}
                         onPageChange={(page) => setCurrentPage(page)}
