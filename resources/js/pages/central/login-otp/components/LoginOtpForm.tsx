@@ -10,9 +10,8 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import PinInput from '@/components/PinInput';
+import { FormPinInput } from '@/components/auth';
 import useCountdown from '@/hooks/useCountdown';
-import KabootekTextLogoBlue from '@/assets/central/auth/kabootek-text-logo-blue.png';
 
 const loginOtpSchema = z.object({
     verification_code: z.string().min(4).max(4),
@@ -31,22 +30,17 @@ function LoginOtpForm() {
     });
 
     return (
-        <div className='relative grid place-items-center p-4 px-20'>
+        <div className='mx-auto grid max-w-[610px] place-items-center p-4'>
             <Form {...form}>
-                <img
-                    className='absolute right-0 top-0 h-[36px]'
-                    src={KabootekTextLogoBlue}
-                    alt='logo'
-                />
                 <form
                     onSubmit={onSubmit}
                     className='mt-10 space-y-6 text-center'
                 >
                     <div className='space-y-4'>
-                        <h1 className='text-yinmn-blue text-[52px]  font-bold'>
+                        <h1 className='text-[52px] font-bold  text-yinmn-blue'>
                             Enter OTP
                         </h1>
-                        <p className='text-[20px] text-[#aaaaaa]'>
+                        <p className='text-xl text-[#aaaaaa]'>
                             We’ve sent a{' '}
                             <span className='font-medium text-black'>
                                 4-digit
@@ -58,11 +52,11 @@ function LoginOtpForm() {
                         name='verification_code'
                         control={form.control}
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className='text-[20px] text-[#aaaaaa]'>
+                            <FormItem className='mx-auto max-w-[300px]'>
+                                <FormLabel className='text-xl text-[#aaaaaa]'>
                                     Verification Code
                                 </FormLabel>
-                                <PinInput
+                                <FormPinInput
                                     length={4}
                                     secret={false}
                                     onChange={field.onChange}
@@ -82,7 +76,7 @@ function LoginOtpForm() {
                         ) : (
                             <button
                                 onClick={() => reset(5)}
-                                className='text-metalic-blue hover:underline'
+                                className='text-picton-blue hover:underline'
                             >
                                 Resend
                             </button>
@@ -92,7 +86,7 @@ function LoginOtpForm() {
                         <Button
                             type='submit'
                             disabled={isDisabled}
-                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
+                            className='h-[73px] w-[283px] bg-yinmn-blue uppercase hover:bg-yinmn-blue/90'
                         >
                             verify
                         </Button>

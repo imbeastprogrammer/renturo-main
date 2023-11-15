@@ -7,7 +7,7 @@ import { EyeIcon, MailIcon } from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import FormInput from '@/components/forms/FormInput';
+import { FormInput } from '@/components/auth';
 
 const loginSchema = z.object({
     email: z.string().email(),
@@ -40,12 +40,9 @@ function LoginForm() {
 
     return (
         <Form {...form}>
-            <div className='grid place-items-center'>
-                <form
-                    onSubmit={onSubmit}
-                    className='w-full space-y-8 p-10 px-28'
-                >
-                    <h1 className='text-yinmn-blue text-center text-[52px] font-bold'>
+            <div className='mx-auto grid w-full max-w-[640px] place-items-center'>
+                <form onSubmit={onSubmit} className='w-full space-y-8 p-10'>
+                    <h1 className='text-center text-[52px] font-bold text-yinmn-blue'>
                         Log in
                     </h1>
                     <div className='space-y-4'>
@@ -75,7 +72,7 @@ function LoginForm() {
                         )}
                         <Link
                             href='/forgot-password'
-                            className='text-picton-blue ml-auto inline-block font-medium'
+                            className='ml-auto inline-block font-medium text-picton-blue'
                         >
                             Forgot Password?
                         </Link>
@@ -83,7 +80,7 @@ function LoginForm() {
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
+                            className='h-[51px] w-[283px] bg-yinmn-blue text-lg font-semibold uppercase hover:bg-yinmn-blue/90'
                         >
                             log in
                         </Button>
