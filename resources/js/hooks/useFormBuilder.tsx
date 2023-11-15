@@ -61,6 +61,7 @@ const useFormBuilder = create<FormbuilderStore>()(
             addPage: () =>
                 set((state) => ({
                     ...state,
+                    history: [...state.history, state.pages],
                     pages: [
                         ...state.pages,
                         { page_id: uuidv4(), page_title: '', fields: [] },
@@ -71,7 +72,11 @@ const useFormBuilder = create<FormbuilderStore>()(
                     const pageUpdated = state.pages.map((page) =>
                         page.page_id === pageId ? newPage : page,
                     );
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             removePage: (pageId) =>
                 set((state) => {
@@ -82,6 +87,7 @@ const useFormBuilder = create<FormbuilderStore>()(
                     );
                     return {
                         ...state,
+                        history: [...state.history, state.pages],
                         pages: pageRemoved,
                     };
                 }),
@@ -90,7 +96,11 @@ const useFormBuilder = create<FormbuilderStore>()(
                     const pageUpdated = state.pages.map((page) =>
                         page.page_id === pageId ? { ...page, fields } : page,
                     );
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             addField: (pageId, index, field) =>
                 set((state) => {
@@ -102,7 +112,11 @@ const useFormBuilder = create<FormbuilderStore>()(
                         }
                         return page;
                     });
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             removeField: (pageId, id) =>
                 set((state) => {
@@ -115,7 +129,11 @@ const useFormBuilder = create<FormbuilderStore>()(
                         }
                         return page;
                     });
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             setSelectedField: (field) => set({ selectedField: field }),
             updateField: (pageId, id, updatedField) =>
@@ -129,14 +147,18 @@ const useFormBuilder = create<FormbuilderStore>()(
                         }
                         return page;
                     });
-                    return { ...state, pages: pageUpdated };
+                    return {
+                        ...state,
+                        history: [...state.history, state.pages],
+                        pages: pageUpdated,
+                    };
                 }),
             undo: () =>
                 set((state) => {
                     const { pages: currentPages, history, future } = state;
                     if (history.length === 0) return state;
                     const previousState = history[history.length - 1];
-                    const newHistory = history.slice(0, -1);
+                    const newHistory = [...history.slice(0, -1)];
 
                     return {
                         ...state,
@@ -148,10 +170,9 @@ const useFormBuilder = create<FormbuilderStore>()(
             redo: () =>
                 set((state) => {
                     const { history, pages, future } = state;
-                    if (history.length === 0) return state;
-
+                    if (future.length === 0) return state;
                     const nextState = future[future.length - 1];
-                    const newFuture = future.slice(0, -1);
+                    const newFuture = [...future.slice(0, -1)];
 
                     return {
                         ...state,
