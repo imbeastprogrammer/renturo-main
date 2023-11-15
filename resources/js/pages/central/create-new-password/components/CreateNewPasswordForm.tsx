@@ -3,9 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeIcon } from 'lucide-react';
 import { Form } from '@/components/ui/form';
-import FormInput from '@/components/forms/FormInput';
+import { FormInput } from '@/components/auth';
 import { Button } from '@/components/ui/button';
-import KabootekTextLogoBlue from '@/assets/central/auth/kabootek-text-logo-blue.png';
 
 const createNewPasswordSchema = z
     .object({
@@ -36,19 +35,14 @@ function CreateNewPasswordForm() {
     const onSubmit = form.handleSubmit(() => {});
 
     return (
-        <div className='relative grid place-items-center p-4 px-8'>
-            <img
-                src={KabootekTextLogoBlue}
-                alt='logo'
-                className='absolute right-0 top-0 h-[36px]'
-            />
+        <div className='mx-auto grid w-full max-w-[520px] place-items-center p-4'>
             <Form {...form}>
-                <form onSubmit={onSubmit} className='space-y-8'>
-                    <div className='text-center'>
-                        <h1 className='text-yinmn-blue text-[52px] font-bold'>
+                <form onSubmit={onSubmit} className='space-y-10'>
+                    <div className='space-y-4 text-center'>
+                        <h1 className='text-[52px] font-bold tracking-tighter text-yinmn-blue'>
                             Create new password
                         </h1>
-                        <p className='text-[20px] text-[#aaaaaa]'>
+                        <p className='text-xl text-[#aaaaaa]'>
                             Your password must be at least 8 characters.
                         </p>
                     </div>
@@ -73,7 +67,7 @@ function CreateNewPasswordForm() {
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            className='bg-yinmn-blue hover:bg-yinmn-blue/90 px-24 py-7 uppercase'
+                            className='h-[73px] w-[283px] bg-yinmn-blue uppercase hover:bg-yinmn-blue/90'
                         >
                             Submit
                         </Button>
