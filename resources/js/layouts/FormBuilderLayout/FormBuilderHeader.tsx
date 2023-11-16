@@ -7,8 +7,8 @@ import { Separator } from '@/components/ui/separator';
 import useMenuToggle from '@/pages/tenants/admin/listings/form-builder/hooks/useMenuToggle';
 import {
     RedoIcon,
-    SavedLogo,
-    SavingLogo,
+    SavedIcon,
+    SavingIcon,
     UndoIcon,
 } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
@@ -49,7 +49,7 @@ function FormBuilderHeader() {
                     orientation='vertical'
                     className='h-[68px] w-[4px] rounded-lg'
                 />
-                {saving ? <SavingLogo /> : <SavedLogo />}
+                {saving ? <SavingIcon /> : <SavedIcon />}
             </div>
             <div className='flex items-center gap-4 p-4'>
                 <button
