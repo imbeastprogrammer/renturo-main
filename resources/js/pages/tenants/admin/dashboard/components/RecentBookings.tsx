@@ -18,20 +18,20 @@ const statusColor: Record<string, string> = {
 
 function RecentBookings() {
     return (
-        <article className='grid h-full grid-rows-[auto_1fr] gap-4 overflow-hidden rounded-lg border p-4 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_1fr] gap-4 overflow-x-auto rounded-lg border p-4 shadow-lg'>
             <h1 className='flex items-center gap-2 text-[22px] font-semibold leading-none'>
                 Recent Bookings <ChevronDown />
             </h1>
             <RecentBookingsTable />
-        </article>
+        </div>
     );
 }
 
 function RecentBookingsTable() {
     return (
-        <Table className='w-max overflow-auto'>
+        <Table className='w-max overflow-x-auto'>
             <TableHeader className='sticky top-0 bg-white'>
-                <TableRow className='text-[14px]'>
+                <TableRow className='text-sm'>
                     <TableHead className='w-[50px]'>Id</TableHead>
                     <TableHead>Listing Name</TableHead>
                     <TableHead>Booked By</TableHead>

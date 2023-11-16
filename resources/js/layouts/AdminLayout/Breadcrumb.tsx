@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment } from 'react';
 import { InertiaLinkProps, Link } from '@inertiajs/react';
 import { ChevronRightIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -45,7 +45,10 @@ type BreadcrumbLinkProps = {
 function BreadcrumbLink({ isActive, ...props }: BreadcrumbLinkProps) {
     return (
         <Link
-            className={cn('capitalize', isActive && 'text-jasper-orange')}
+            className={cn(
+                'capitalize text-black/50',
+                isActive && 'text-jasper-orange',
+            )}
             {...props}
         >
             {props.children}

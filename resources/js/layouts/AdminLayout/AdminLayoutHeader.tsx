@@ -1,5 +1,6 @@
-import UserButton from '@/components/tenant/UserButton';
 import Breadcrumb from './Breadcrumb';
+import UserButton from '@/components/tenant/UserButton';
+
 import { LabelMap } from '.';
 
 function AdminLayoutHeader() {

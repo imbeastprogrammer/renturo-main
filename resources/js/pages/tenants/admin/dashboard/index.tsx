@@ -15,6 +15,7 @@ function Dashboard() {
                 gridTemplateAreas: `"monthly-revenue monthly-revenue monthly-trends overview"
                                     "activities      recent-bookings recent-bookings overview`,
                 gap: '1rem',
+                height: '100%',
                 overflow: 'auto',
             }}
         >
@@ -27,13 +28,10 @@ function Dashboard() {
             <div style={{ gridArea: 'overview' }}>
                 <Overview />
             </div>
-            <div style={{ gridArea: 'activities' }}>
+            <div style={{ gridArea: 'activities', overflow: 'hidden' }}>
                 <Activities />
             </div>
-            <div
-                style={{ gridArea: 'recent-bookings' }}
-                className='overflow-hidden'
-            >
+            <div style={{ gridArea: 'recent-bookings', overflow: 'hidden' }}>
                 <RecentBookings />
             </div>
         </div>

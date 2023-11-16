@@ -1,10 +1,13 @@
 import { FlagIcon } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import profile from '@/assets/profile.png';
 
 function Activities() {
     return (
-        <article className='h-full rounded-lg border p-4 shadow-lg'>
-            <h1 className='text-[22px] font-semibold'>Activities</h1>
+        <ScrollArea className='h-full rounded-lg border p-4 shadow-lg'>
+            <div className='sticky top-0 z-[100] bg-white'>
+                <h1 className='text-[22px] font-semibold'>Activities</h1>
+            </div>
             <ul className='mt-4 space-y-4'>
                 <li>
                     <Activity />
@@ -16,7 +19,7 @@ function Activities() {
                     <Activity />
                 </li>
             </ul>
-        </article>
+        </ScrollArea>
     );
 }
 
