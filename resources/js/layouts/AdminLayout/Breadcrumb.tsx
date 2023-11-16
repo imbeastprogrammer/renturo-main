@@ -1,20 +1,20 @@
-import { Fragment, ReactNode } from 'react';
-import { Link } from '@inertiajs/react';
+import { Fragment } from 'react';
+import { InertiaLinkProps, Link } from '@inertiajs/react';
 import { ChevronRightIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 import { LabelMap } from '.';
+import { useSearchParams } from '@/hooks/useSearchParams';
 
 function Breadcrumb() {
     const { pathname } = window.location;
-    const pathnames = pathname
-        .split('/')
-        .filter((path) => path !== 'super-admin');
+    const pathnames = pathname.split('/').filter((path) => path !== 'admin');
+    const { queryParams } = useSearchParams();
 
     return (
         <div className='flex items-center'>
             {pathnames.map((route, index) => {
-                const routesTo = `/super-admin${pathnames
+                const routesTo = `/admin${pathnames
                     .slice(0, index + 1)
                     .join('/')}`;
                 const notLast = index > 0 && index < pathnames.length - 1;
@@ -22,8 +22,9 @@ function Breadcrumb() {
                 return (
                     <Fragment key={index}>
                         <BreadcrumbLink
-                            path={routesTo}
+                            href={routesTo}
                             isActive={routesTo === pathname}
+                            data={queryParams}
                         >
                             {LabelMap[routesTo] || route}
                         </BreadcrumbLink>
@@ -38,18 +39,19 @@ function Breadcrumb() {
 }
 
 type BreadcrumbLinkProps = {
-    children: ReactNode;
-    path: string;
     isActive: boolean;
-};
+} & InertiaLinkProps;
 
-function BreadcrumbLink({ children, path, isActive }: BreadcrumbLinkProps) {
+function BreadcrumbLink({ isActive, ...props }: BreadcrumbLinkProps) {
     return (
         <Link
-            href={path}
-            className={cn('capitalize', isActive && 'text-picton-blue')}
+            className={cn(
+                'capitalize text-black/50',
+                isActive && 'text-jasper-orange',
+            )}
+            {...props}
         >
-            {children}
+            {props.children}
         </Link>
     );
 }

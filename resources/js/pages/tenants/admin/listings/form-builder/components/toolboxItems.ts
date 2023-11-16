@@ -1,18 +1,18 @@
 import React from 'react';
 import {
-    AttachmentLogo,
-    BodyLogo,
-    CheckboxLogo,
-    ChecklistLogo,
-    DateLogo,
-    DropdownLogo,
-    EmailLogo,
-    NumberLogo,
-    RadioLogo,
-    TextAreaLogo,
-    HeadingLogo,
-    TextfieldLogo,
-    TimeLogo,
+    AttachmentIcon,
+    BodyIcon,
+    CheckboxIcon,
+    ChecklistIcon,
+    DateIcon,
+    DropdownIcon,
+    EmailIcon,
+    NumberIcon,
+    RadioButtonIcon,
+    TextAreaIcon,
+    HeadingIcon,
+    TextFieldIcon,
+    TimeIcon,
 } from '@/assets/form-builder';
 import { ElementsType } from './FormElement';
 
@@ -27,33 +27,33 @@ export const toolboxItems: ToolboxItem[] = [
         items: [
             {
                 title: 'Heading',
-                icon: HeadingLogo,
+                icon: HeadingIcon,
                 type: 'heading',
             },
             {
                 title: 'Body',
-                icon: BodyLogo,
+                icon: BodyIcon,
                 type: 'body',
             },
             {
                 title: 'Text Field',
-                icon: TextfieldLogo,
+                icon: TextFieldIcon,
                 type: 'text-field',
             },
             {
                 title: 'Text Area',
-                icon: TextAreaLogo,
+                icon: TextAreaIcon,
                 type: 'textarea',
             },
-            { title: 'Number', icon: NumberLogo, type: 'number' },
-            { title: 'Email', icon: EmailLogo, type: 'email' },
+            { title: 'Number', icon: NumberIcon, type: 'number' },
+            { title: 'Email', icon: EmailIcon, type: 'email' },
         ],
     },
     {
         label: 'Date',
         items: [
-            { title: 'Date', icon: DateLogo, type: 'date' },
-            { title: 'Time', icon: TimeLogo, type: 'time' },
+            { title: 'Date', icon: DateIcon, type: 'date' },
+            { title: 'Time', icon: TimeIcon, type: 'time' },
         ],
     },
     {
@@ -61,22 +61,22 @@ export const toolboxItems: ToolboxItem[] = [
         items: [
             {
                 title: 'Dropdown',
-                icon: DropdownLogo,
+                icon: DropdownIcon,
                 type: 'dropdown',
             },
             {
                 title: 'Checkbox',
-                icon: CheckboxLogo,
+                icon: CheckboxIcon,
                 type: 'checkbox',
             },
             {
                 title: 'Radio',
-                icon: RadioLogo,
+                icon: RadioButtonIcon,
                 type: 'radio',
             },
             {
                 title: 'Check List',
-                icon: ChecklistLogo,
+                icon: ChecklistIcon,
                 type: 'checklist',
             },
         ],
@@ -86,7 +86,7 @@ export const toolboxItems: ToolboxItem[] = [
         items: [
             {
                 title: 'Attachment',
-                icon: AttachmentLogo,
+                icon: AttachmentIcon,
                 type: 'attachment',
             },
         ],

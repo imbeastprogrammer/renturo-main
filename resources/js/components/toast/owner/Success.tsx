@@ -1,0 +1,24 @@
+import { CheckIcon } from 'lucide-react';
+
+type SuccessProps = { title?: string; description?: string };
+
+function Success({ title, description }: SuccessProps) {
+    return (
+        <div className='flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm'>
+            <div className='grid h-[58px] w-[58px] place-items-center rounded-full bg-metalic-blue text-white'>
+                <CheckIcon className='h-[40px] w-[40px]' />
+            </div>
+            <div>
+                <h1 className='text-base font-semibold'>
+                    {title || 'Success'}
+                </h1>
+                <p className='text-xs text-black/50'>
+                    {description ||
+                        'Your password has been updated successfully.'}
+                </p>
+            </div>
+        </div>
+    );
+}
+
+export default Success;
