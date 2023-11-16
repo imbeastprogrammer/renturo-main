@@ -8,10 +8,13 @@ use App\Http\Requests\Central\UserManagement\StoreUserRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserPasswordRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserProfileRequest; 
+use App\Mail\Central\UserManagement\UserCreated;
 use App\Http\Controllers\Central\Exception;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Central\User;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class UserManagementController extends Controller
 {
@@ -63,7 +66,19 @@ class UserManagementController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        User::create($request->validated());
+        try {
+            User::create($request->validated());
+
+            Mail::to($request->email)->send(new UserCreated([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role,
+                'password' => $request->password
+            ]));
+
+        } catch (\Exception $e) {
+            Log::error('Email sending error: ' . $e->getMessage());
+        }
 
         return back()->with(['success' => 'You have successfully made a new user.']);
     }

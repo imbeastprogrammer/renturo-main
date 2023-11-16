@@ -4,6 +4,7 @@ namespace App\Http\Requests\Central\UserManagement;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Central\User;
+use Illuminate\Support\Str;
 
 class StoreUserRequest extends FormRequest
 {
@@ -42,9 +43,11 @@ class StoreUserRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        $password = Str::random(12);
+
         $this->merge([
             'role' => User::ROLE_SUPER_ADMIN,
-            'password' => 'password',
+            'password' => $password,
             'created_by' => auth()->user()->id,
         ]);
     }
