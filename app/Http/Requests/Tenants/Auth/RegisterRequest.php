@@ -25,13 +25,15 @@ class RegisterRequest extends FormRequest
      */
     public function rules()
     {
+        
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'mobile_no' => 'required|string|max:255',
+            'mobile_number' => 'required|string|max:255',
             'role' => 'required|in:OWNER,USER',
             'email' => 'required|string|email|max:255|unique:' . User::class,
-            'password' => 'required'
+            'password' => 'required',
+            'username' => 'required|string|min:6',
         ];
     }
 
@@ -54,8 +56,10 @@ class RegisterRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        $password = Str::random(16);
+
         $this->merge([
-            'password' => Str::random(16),
+            'password' => $password,
         ]);
     }
 }

@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Tenants\Auth\RegisterRequest;
 use App\Mail\Tenants\Auth\SendMobileVerificationCode;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\User;
 use Carbon\Carbon;
-use Mail;
 
 class RegisterController extends Controller
 {
@@ -16,10 +17,19 @@ class RegisterController extends Controller
     {
         $verificationCode = rand(1000, 9999);
 
-        $user = User::create($request->safe()->except(['mobile_no']));
+        // $user = User::create($request->validate());
+
+        $user = User::create([
+            'first_name' => $request->first_name, 
+            'last_name' => $request->last_name, 
+            'mobile_number' => $request->mobile_number, 
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => $request->role,
+        ]);
 
         $user->mobileVerification()->create([
-            'mobile_no' => $request->mobile_no,
+            'mobile_number' => $request->mobile_number,
             'code' => $verificationCode,
             'expires_at' => Carbon::now()->addSeconds(300),
         ]);
