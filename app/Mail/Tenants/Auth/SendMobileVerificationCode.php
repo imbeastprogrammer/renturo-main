@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendMobileVerificationCode extends Mailable implements ShouldQueue
+class SendMobileVerificationCode extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -33,7 +33,7 @@ class SendMobileVerificationCode extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
-            subject: 'Verify Mobile Number',
+            subject: 'Mobile Verification Code',
         );
     }
 

@@ -32,8 +32,8 @@ class RegisterRequest extends FormRequest
             'mobile_number' => 'required|string|max:255',
             'role' => 'required|in:OWNER,USER',
             'email' => 'required|string|email|max:255|unique:' . User::class,
-            'password' => 'required',
-            'username' => 'required|string|min:6',
+            'username' => 'required|string|min:6|max:20|unique:' . User::class,
+            'password' => 'required'
         ];
     }
 
