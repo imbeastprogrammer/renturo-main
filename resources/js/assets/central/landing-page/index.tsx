@@ -1,0 +1,21 @@
+export { default as HomeHero } from './home-hero.png';
+export { default as HomeHero2 } from './home-hero-2.png';
+export { default as HomeHero3 } from './home-hero-3.png';
+export { default as ListItemIcon } from './list-item.png';
+export { default as BookAndReserveIcon } from './book-and-reserve.png';
+export { default as AnalyticsAndReportingIcon } from './analytics-and-reporting.png';
+export { default as PhoneMockup } from './phone-mockup.png';
+export { default as AppStore } from './app-store.png';
+export { default as GooglePlay } from './google-play.png';
+export { default as Qrcode } from './qrcode.png';
+export { default as Map } from './map.png';
+export { default as FacebookIcon } from './facebook';
+export { default as InstagramIcon } from './instagram';
+export { default as LinkedInIcon } from './linkedin';
+export { default as TwitterIcon } from './twitter';
+export { default as FacebookImg } from './facebook.png';
+export { default as InstagramImg } from './instragram.png';
+export { default as LinkedInImg } from './linkedin.png';
+export { default as TwitterImg } from './twitter.png';
+
+export type IconProps = { color?: string };

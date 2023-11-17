@@ -7,7 +7,7 @@ use App\Http\Controllers\Central\UserManagementController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return 'Central Domain';
+    return Inertia::render('central/landing-page/index');
 });
 
 Route::get('/login/enter-otp', function () {
