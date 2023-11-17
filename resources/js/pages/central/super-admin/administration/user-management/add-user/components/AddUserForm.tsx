@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { z } from 'zod';
 import { ReactNode } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { router } from '@inertiajs/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -12,6 +11,7 @@ import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import FormCheckbox from '@/components/super-admin/forms/FormCheckbox';
 import FormSelect from '@/components/super-admin/forms/FormSelect';
+import useCentralToast from '@/hooks/useCentralToast';
 
 const addUserFormSchema = z.object({
     first_name: z.string().nonempty(),
@@ -33,7 +33,7 @@ const defaultValues: AddUserFormFields = {
 };
 
 function AddUserForm() {
-    const { toast } = useToast();
+    const toast = useCentralToast();
     const form = useForm<AddUserFormFields>({
         defaultValues,
         resolver: zodResolver(addUserFormSchema),
@@ -41,42 +41,34 @@ function AddUserForm() {
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(({ first_name, last_name, email, mobile_number }) => {
-        router.post(
-            '/super-admin/users',
-            { first_name, last_name, email, mobile_number },
-            {
-                onSuccess: () => {
-                    toast({
-                        title: 'Success',
-                        description:
-                            'The new user has been added to the system.',
-                        style: {
-                            marginBottom: '1rem',
-                            transform: 'translateX(-1rem)',
-                        },
-                        variant: 'default',
-                    });
-                    router.visit(
-                        '/super-admin/administration/user-management',
-                        { replace: true },
-                    );
+    const onSubmit = form.handleSubmit(
+        ({ first_name, last_name, email, mobile_number }) => {
+            router.post(
+                '/super-admin/users',
+                { first_name, last_name, email, mobile_number },
+                {
+                    onSuccess: () => {
+                        toast.success({
+                            title: 'Success',
+                            description:
+                                'The new user has been added to the system.',
+                        });
+                        router.visit(
+                            '/super-admin/administration/user-management',
+                            { replace: true },
+                        );
+                    },
+                    onError: (error) =>
+                        toast.error({
+                            title: 'Error',
+                            description:
+                                _.valuesIn(error)[0] ||
+                                'Something went wrong, Please try again later.',
+                        }),
                 },
-                onError: (error) =>
-                    toast({
-                        title: 'Error',
-                        description:
-                            _.valuesIn(error)[0] ||
-                            'Something went wrong, Please try again later.',
-                        style: {
-                            marginBottom: '1rem',
-                            transform: 'translateX(-1rem)',
-                        },
-                        variant: 'destructive',
-                    }),
-            },
-        );
-    });
+            );
+        },
+    );
 
     return (
         <Form {...form}>

@@ -6,13 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { useToast } from '@/components/ui/use-toast';
 
 import { Tenant } from '@/types/tenant';
 import { ErrorIcon } from '@/assets/central';
+import { UsagePlansMap } from '../usage-plans';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import FormSelect from '@/components/super-admin/forms/FormSelect';
-import { UsagePlansMap } from '../usage-plans';
+import useCentralToast from '@/hooks/useCentralToast';
 
 const updateTenantFormSchema = z.object({
     domain: z.string().nonempty().optional(),
@@ -42,7 +42,8 @@ type UpdateTenantProps = {
 };
 
 function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
-    const { toast } = useToast();
+    const toast = useCentralToast();
+
     const form = useForm<UpdateTenantFormFields>({
         defaultValues,
         values: {
@@ -67,30 +68,20 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
             { ...values, name: domain, plan_type: usage_plan },
             {
                 onSuccess: () => {
-                    toast({
+                    toast.success({
                         title: 'Success',
                         description: 'The tenant has been updated successfully',
-                        style: {
-                            marginBottom: '1rem',
-                            transform: 'translateX(-1rem)',
-                        },
-                        variant: 'default',
                     });
                     router.visit('/super-admin/site-management/tenants', {
                         replace: true,
                     });
                 },
                 onError: (error) =>
-                    toast({
+                    toast.error({
                         title: 'Error',
                         description:
                             _.valuesIn(error)[0] ||
                             'Something went wrong, Please try again later.',
-                        style: {
-                            marginBottom: '1rem',
-                            transform: 'translateX(-1rem)',
-                        },
-                        variant: 'destructive',
                     }),
             },
         );
