@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import _ from 'lodash';
 import { ReactNode } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { router } from '@inertiajs/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -12,6 +11,7 @@ import { User } from '@/types/users';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import FormSelect from '@/components/super-admin/forms/FormSelect';
+import useCentralToast from '@/hooks/useCentralToast';
 
 const editUserFormSchema = z.object({
     first_name: z.string().nonempty(),
@@ -35,7 +35,7 @@ const defaultValues: EditUserFormFields = {
 type EditUserFormProps = { user: User };
 
 function EditUserForm({ user }: EditUserFormProps) {
-    const { toast } = useToast();
+    const toast = useCentralToast();
     const form = useForm<EditUserFormFields>({
         defaultValues,
         values: { ...user },
@@ -47,30 +47,20 @@ function EditUserForm({ user }: EditUserFormProps) {
     const onSubmit = form.handleSubmit((values) => {
         router.put(`/super-admin/users/${user.id}`, values, {
             onSuccess: () => {
-                toast({
+                toast.success({
                     title: 'Success',
                     description: 'The user has been updated successfully.',
-                    style: {
-                        marginBottom: '1rem',
-                        transform: 'translateX(-1rem)',
-                    },
-                    variant: 'default',
                 });
                 router.visit('/super-admin/administration/user-management', {
                     replace: true,
                 });
             },
             onError: (error) =>
-                toast({
+                toast.error({
                     title: 'Error',
                     description:
                         _.valuesIn(error)[0] ||
                         'Something went wrong, Please try again later.',
-                    style: {
-                        marginBottom: '1rem',
-                        transform: 'translateX(-1rem)',
-                    },
-                    variant: 'destructive',
                 }),
         });
     });
