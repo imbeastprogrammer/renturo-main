@@ -1,7 +1,6 @@
 import { DeleteWarning } from '@/assets/central';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
-import { useToast } from '@/components/ui/use-toast';
 import {
     Dialog,
     DialogContent,
@@ -11,31 +10,32 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 
+import useCentralToast from '@/hooks/useCentralToast';
+
 type DeleteModalProps = {
     isOpen: boolean;
     onClose: () => void;
     id: number;
 };
 function DeleteUserModal({ isOpen, onClose, id }: DeleteModalProps) {
-    const { toast } = useToast();
+    const toast = useCentralToast();
+
     const handleDelete = () => {
         router.delete(`/super-admin/users/${id}`, {
             onSuccess: () => {
                 onClose();
-                toast({
+                toast.success({
                     title: 'Success',
                     description: 'The new user has been deleted to the system.',
-                    variant: 'default',
                 });
             },
             onError: (error) => {
                 onClose();
-                toast({
+                toast.error({
                     title: 'Error',
                     description:
                         Object.keys(error)[0] ||
                         'Something went wrong, Please try again later.',
-                    variant: 'destructive',
                 });
             },
         });

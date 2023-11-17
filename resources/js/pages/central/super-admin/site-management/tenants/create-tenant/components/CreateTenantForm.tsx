@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { z } from 'zod';
 import { router } from '@inertiajs/react';
-import { useToast } from '@/components/ui/use-toast';
 import { ReactNode } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -9,9 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
 import { ErrorIcon } from '@/assets/central';
+import { UsagePlansMap } from '../usage-plans';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import FormSelect from '@/components/super-admin/forms/FormSelect';
-import { UsagePlansMap } from '../usage-plans';
+import useCentralToast from '@/hooks/useCentralToast';
 
 const createTenantFormSchema = z.object({
     company: z.string().nonempty(),
@@ -37,7 +37,7 @@ const defaultValues: CreateTenantFormFields = {
 };
 
 function CreateTenantForm() {
-    const { toast } = useToast();
+    const toast = useCentralToast();
     const form = useForm<CreateTenantFormFields>({
         defaultValues,
         resolver: zodResolver(createTenantFormSchema),
@@ -47,41 +47,38 @@ function CreateTenantForm() {
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
-    const onSubmit = form.handleSubmit(({ company, domain, usage_plan, ...values }) => {
-        router.post(
-            '/super-admin/tenants',
-            { ...values, company: company, domain: domain, plan_type: usage_plan },
-            {
-                onSuccess: () => {
-                    toast({
-                        title: 'Success',
-                        description:
-                            'The new tenant has been added to the system.',
-                        style: {
-                            marginBottom: '1rem',
-                            transform: 'translateX(-1rem)',
-                        },
-                        variant: 'default',
-                    });
-                    router.visit('/super-admin/site-management/tenants', {
-                        replace: true,
-                    });
+    const onSubmit = form.handleSubmit(
+        ({ company, domain, usage_plan, ...values }) => {
+            router.post(
+                '/super-admin/tenants',
+                {
+                    ...values,
+                    company: company,
+                    domain: domain,
+                    plan_type: usage_plan,
                 },
-                onError: (error) =>
-                    toast({
-                        title: 'Error',
-                        description:
-                            _.valuesIn(error)[0] ||
-                            'Something went wrong, Please try again later.',
-                        style: {
-                            marginBottom: '1rem',
-                            transform: 'translateX(-1rem)',
-                        },
-                        variant: 'destructive',
-                    }),
-            },
-        );
-    });
+                {
+                    onSuccess: () => {
+                        toast.success({
+                            title: 'Success',
+                            description:
+                                'The new tenant has been added to the system.',
+                        });
+                        router.visit('/super-admin/site-management/tenants', {
+                            replace: true,
+                        });
+                    },
+                    onError: (error) =>
+                        toast.error({
+                            title: 'Error',
+                            description:
+                                _.valuesIn(error)[0] ||
+                                'Something went wrong, Please try again later.',
+                        }),
+                },
+            );
+        },
+    );
 
     return (
         <Form {...form}>
@@ -114,7 +111,7 @@ function CreateTenantForm() {
                             />
                         </div>
                         <div className='text-base text-[#2E3436]/50'>
-                            Register a unique domain name for your organization, 
+                            Register a unique domain name for your organization,
                             in the format “<b>renturo</b>.example.com”.
                         </div>
                     </div>
