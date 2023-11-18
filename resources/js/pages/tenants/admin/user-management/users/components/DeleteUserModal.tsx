@@ -10,7 +10,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { useToast } from '@/components/ui/use-toast';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 type DeleteUserModalProps = {
     userToDeleteId: number;
@@ -23,27 +23,25 @@ function DeleteUserModal({
     onClose,
     userToDeleteId,
 }: DeleteUserModalProps) {
-    const { toast } = useToast();
+    const toast = useOwnerToast();
 
     const handleDelete = () =>
         router.delete(`/admin/users/${userToDeleteId}`, {
             onSuccess: () => {
                 onClose();
-                toast({
+                toast.success({
                     title: 'Success',
                     description:
                         'The user has been successfully deleted to the system.',
-                    variant: 'default',
                 });
             },
             onError: (error) => {
                 onClose();
-                toast({
+                toast.error({
                     title: 'Error',
                     description:
                         _.valuesIn(error)[0] ||
                         'Something went wrong, Please try again later.',
-                    variant: 'destructive',
                 });
             },
         });

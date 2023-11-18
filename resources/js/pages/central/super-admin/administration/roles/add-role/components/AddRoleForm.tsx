@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { ReactNode } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -25,7 +24,6 @@ const defaultValues: AddRoleFormFields = {
 };
 
 function AddRoleForm() {
-    const { toast } = useToast();
     const form = useForm<AddRoleFormFields>({
         defaultValues,
         resolver: zodResolver(addFormSchema),
