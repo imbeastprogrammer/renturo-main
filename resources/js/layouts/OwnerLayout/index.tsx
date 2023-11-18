@@ -1,7 +1,13 @@
 import { PropsWithChildren } from 'react';
+import OwnerSidebar from './OwnerSidebar';
 
 function OwnerLayout(props: PropsWithChildren) {
-    return <div>this is the owner layout {props.children}</div>;
+    return (
+        <div className='grid h-screen grid-cols-[auto_1fr]'>
+            <OwnerSidebar />
+            <main>{props.children}</main>
+        </div>
+    );
 }
 
 export default OwnerLayout;

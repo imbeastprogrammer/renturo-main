@@ -1,15 +1,21 @@
+import { IconType } from 'react-icons';
+import { BiMessageSquareAdd } from 'react-icons/bi';
+import { AiFillHome } from 'react-icons/ai';
+import { FaUsers } from 'react-icons/fa';
+import { FiUser } from 'react-icons/fi';
+
 type GroupLink = {
     label: string;
-    icon: string;
+    icon: IconType;
     path: string;
     sublinks?: Omit<GroupLink, 'icon'>[];
 };
 
 export const sidebarItems: GroupLink[] = [
-    { label: 'Dashboard', icon: 'this is icon', path: '/' },
+    { label: 'Dashboard', icon: AiFillHome, path: '/' },
     {
         label: 'Post',
-        icon: 'this is icon',
+        icon: BiMessageSquareAdd,
         path: '/post-management',
         sublinks: [
             { label: 'List of Properties', path: '/' },
@@ -25,4 +31,6 @@ export const sidebarItems: GroupLink[] = [
             { label: 'Calendar', path: '/calendar' },
         ],
     },
+    { label: 'Users', path: '/user-management', icon: FaUsers },
+    { label: 'Settings', path: '/settings', icon: FiUser },
 ];

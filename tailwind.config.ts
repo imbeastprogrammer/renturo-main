@@ -29,7 +29,7 @@ const config: Config = {
                 'cloud-gray': '#D2D2D2',
                 'dark-gray': '#999D9E',
                 'heavy-carbon': '#545557',
-                gunmetal: '#2E3436',
+                black: '#2E3436',
             },
             fontFamily: {
                 outfit: ['outfit'],
