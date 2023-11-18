@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { DeleteWarning } from '@/assets/central';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
-import { useToast } from '@/components/ui/use-toast';
 import {
     Dialog,
     DialogContent,
@@ -12,32 +11,32 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 
+import useOwnerToast from '@/hooks/useOwnerToast';
+
 type DeleteModalProps = {
     isOpen: boolean;
     onClose: () => void;
     id: string;
 };
 function DeleteTenantsModal({ isOpen, onClose, id }: DeleteModalProps) {
-    const { toast } = useToast();
+    const toast = useOwnerToast();
 
     const handleDelete = () => {
         router.delete(`/super-admin/tenants/${id}`, {
             onSuccess: () => {
                 onClose();
-                toast({
+                toast.success({
                     title: 'Success',
                     description: 'The new user has been deleted to the system.',
-                    variant: 'default',
                 });
             },
             onError: (error) => {
                 onClose();
-                toast({
+                toast.error({
                     title: 'Error',
                     description:
                         _.valuesIn(error)[0] ||
                         'Something went wrong, Please try again later.',
-                    variant: 'destructive',
                 });
             },
         });

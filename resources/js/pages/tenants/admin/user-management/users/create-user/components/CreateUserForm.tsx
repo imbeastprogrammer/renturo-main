@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
 import FormSelect from '@/components/forms/FormSelect';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const formSchema = z.object({
     first_name: z.string().nonempty(),
@@ -20,7 +20,7 @@ const formSchema = z.object({
 });
 
 function CreateUserForm() {
-    const { toast } = useToast();
+    const toast = useOwnerToast();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -38,23 +38,21 @@ function CreateUserForm() {
             { ...values, mobile_no: values.phone },
             {
                 onSuccess: (e) => {
-                    toast({
+                    toast.success({
                         title: 'Success',
                         description:
                             'The new user has been added to the system.',
-                        variant: 'default',
                     });
                     router.visit('/admin/user-management/users?active=Users', {
                         replace: true,
                     });
                 },
                 onError: (error) => {
-                    toast({
+                    toast.error({
                         title: 'Error',
                         description:
                             _.valuesIn(error)[0] ||
                             'Something went wrong, Please try again later.',
-                        variant: 'destructive',
                     });
                 },
             },

@@ -5,12 +5,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 
+import { User } from '@/types/users';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
 import FormSelect from '@/components/forms/FormSelect';
-import { User } from '@/types/users';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const formSchema = z.object({
     first_name: z.string().nonempty(),
@@ -35,7 +35,7 @@ type UpdateUserFormProps = {
 };
 
 function UpdateUserForm({ user }: UpdateUserFormProps) {
-    const { toast } = useToast();
+    const toast = useOwnerToast();
     const form = useForm<z.infer<typeof formSchema>>({
         defaultValues,
         resolver: zodResolver(formSchema),
@@ -54,22 +54,20 @@ function UpdateUserForm({ user }: UpdateUserFormProps) {
             { first_name, last_name, role },
             {
                 onSuccess: () => {
-                    toast({
+                    toast.success({
                         title: 'Success',
                         description: 'The user has been updated to the system.',
-                        variant: 'default',
                     });
                     router.visit('/admin/user-management/users?active=Users', {
                         replace: true,
                     });
                 },
                 onError: (error) => {
-                    toast({
+                    toast.error({
                         title: 'Error',
                         description:
                             _.valuesIn(error)[0] ||
                             'Something went wrong, Please try again later.',
-                        variant: 'destructive',
                     });
                 },
             },
