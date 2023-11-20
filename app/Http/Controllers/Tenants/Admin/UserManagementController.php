@@ -122,8 +122,8 @@ class UserManagementController extends Controller
 
     public function editOwner($id)
     {
-        $user = User::findOrFail($id);
-        return Inertia::render('tenants/admin/user-management/owners/update-owner/index', ['user'=> $user]);
+        $owner = User::findOrFail($id);
+        return Inertia::render('tenants/admin/user-management/owners/update-owner/index', ['owner'=> $owner]);
     }
 
     public function editUser($id)
