@@ -15,7 +15,7 @@ const updateAdminSchema = z.object({
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
     email: z.string().nonempty(),
-    mobile_no: z.string().nonempty(),
+    mobile_number: z.string().nonempty(),
     role: z.string().nonempty(),
 });
 
@@ -24,7 +24,7 @@ const defaultValues: UpdateAdminFormFields = {
     first_name: '',
     last_name: '',
     email: '',
-    mobile_no: '',
+    mobile_number: '',
     role: 'ADMIN',
 };
 
@@ -41,7 +41,7 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
             first_name: admin.first_name,
             last_name: admin.last_name,
             email: admin.email,
-            mobile_no: admin.mobile_number,
+            mobile_number: admin.mobile_number,
             role: admin.role,
         },
     });
@@ -94,7 +94,7 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
                         label='Mobile Number'
                         placeholder='Mobile Number'
                         control={form.control}
-                        name='mobile_no'
+                        name='mobile_number'
                     />
                 </div>
                 {/* <div>

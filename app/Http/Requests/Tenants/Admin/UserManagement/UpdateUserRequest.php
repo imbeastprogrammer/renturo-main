@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Tenants\Admin\UserManagement;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -23,10 +24,22 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->route('id');
+
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'role' => 'required|in:ADMIN,OWNER,USER',
+            'mobile_number' => 'required|string|max:255|unique:users,mobile_number, '. $id,
+            'email' => 'required|string|email|max:255|unique:users,email, '. $id,
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
     }
 }

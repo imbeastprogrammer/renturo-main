@@ -18,6 +18,9 @@ use Mail;
 
 class UserManagementController extends Controller
 {
+    #TODO: Add validation columns created_by, updated_by, deleted_by
+
+    
     /**
      * Display a listing of the resource.
      *
@@ -88,15 +91,17 @@ class UserManagementController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $verificationCode = rand(1000, 9999);
+        // $verificationCode = rand(1000, 9999);
 
-        $user = User::create($request->safe()->except('mobile_no'));
+        $user = User::create($request->validated());
 
-        $user->mobileVerification()->create([
-            'mobile_no' => $request->mobile_no,
-            'code' => $verificationCode,
-            'expires_at' => Carbon::now()->addSeconds(300),
-        ]);
+        // When the user is created by an admin, the credentials will be sent to the user email address.
+        // No need to send the verification code to the user email address. Since it will be verified when the user logs in.
+        // $user->mobileVerification()->create([
+        //     'mobile_number' => $request->mobile_number,
+        //     'code' => $verificationCode,
+        //     'expires_at' => Carbon::now()->addSeconds(300),
+        // ]);
 
         Mail::to($user->email)->send(new UserCreated([
             'name' => $user->fullName,
@@ -160,7 +165,7 @@ class UserManagementController extends Controller
 
         $user->update($request->validated());
 
-        return back()->with(['success' => 'You have successfully deleted a user.']);
+        return back()->with(['success' => 'You have successfully updated a user.']);
     }
 
     /**
