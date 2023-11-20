@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import { z } from 'zod';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const createOwnerSchema = z.object({
     first_name: z.string().nonempty(),
@@ -22,16 +24,28 @@ const defaultValues: CreateOwnerFormFields = {
     last_name: '',
     email: '',
     mobile_no: '',
-    role: '',
+    role: 'OWNER',
 };
 
 function CreateOwnerForm() {
+    const toast = useOwnerToast();
+
     const form = useForm<CreateOwnerFormFields>({
         defaultValues,
         resolver: zodResolver(createOwnerSchema),
     });
 
-    const onSubmit = form.handleSubmit((values) => {});
+    const onSubmit = form.handleSubmit((values) => {
+        router.post('/admin/users', values, {
+            onSuccess: () => {
+                toast.success({ description: 'New user has been added.' });
+                router.visit('/admin/user-management/owners');
+            },
+            onError: (errors) =>
+                toast.error({ description: _.valuesIn(errors)[0] }),
+        });
+    });
+
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     return (
@@ -73,7 +87,7 @@ function CreateOwnerForm() {
                         name='mobile_no'
                     />
                 </div>
-                <div>
+                {/* <div>
                     <h1 className='text-[24px] font-semibold leading-none'>
                         Role
                     </h1>
@@ -88,7 +102,7 @@ function CreateOwnerForm() {
                         control={form.control}
                         name='role'
                     />
-                </div>
+                </div> */}
                 <div className='flex justify-end text-base'>
                     {hasErrors && (
                         <div className='flex items-center gap-2'>
@@ -102,7 +116,11 @@ function CreateOwnerForm() {
                 </div>
                 <div className='flex justify-end gap-4'>
                     <Link href='/admin/user-management/owners?active=Users'>
-                        <Button variant='outline' className='text-base'>
+                        <Button
+                            type='button'
+                            variant='outline'
+                            className='text-base'
+                        >
                             Cancel
                         </Button>
                     </Link>

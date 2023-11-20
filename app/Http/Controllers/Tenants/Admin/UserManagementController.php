@@ -23,9 +23,27 @@ class UserManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getAdmins()
     {
-        $users = User::all();
+        $admins = User::where('role', '=', 'ADMIN')->get();
+
+        return Inertia::render('tenants/admin/user-management/admins/index', [
+            'admins' => $admins
+        ]);
+    }
+
+    public function getOwners()
+    {
+        $owners = User::where('role', '=', 'OWNER')->get();
+
+        return Inertia::render('tenants/admin/user-management/owners/index', [
+            'owners' => $owners
+        ]);
+    }
+    
+    public function getUsers()
+    {
+        $users = User::where('role', '=', 'USER')->get();
 
         return Inertia::render('tenants/admin/user-management/users/index', [
             'users' => $users
@@ -37,9 +55,19 @@ class UserManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function createUser()
     {
         return Inertia::render('tenants/admin/user-management/users/create-user/index');
+    }
+
+    public function createOwner()
+    {
+        return Inertia::render('tenants/admin/user-management/owners/create-owner/index');
+    }
+
+    public function createAdmin()
+    {
+        return Inertia::render('tenants/admin/user-management/admins/create-admin/index');
     }
 
     /**
@@ -86,7 +114,19 @@ class UserManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editAdmin($id)
+    {
+        $admin = User::findOrFail($id);
+        return Inertia::render('tenants/admin/user-management/admins/update-admin/index', ['admin'=> $admin]);
+    }
+
+    public function editOwner($id)
+    {
+        $owner = User::findOrFail($id);
+        return Inertia::render('tenants/admin/user-management/owners/update-owner/index', ['owner'=> $owner]);
+    }
+
+    public function editUser($id)
     {
         $user = User::findOrFail($id);
         return Inertia::render('tenants/admin/user-management/users/update-user/index', ['user'=> $user]);

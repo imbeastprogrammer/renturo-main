@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import { z } from 'zod';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const createAdminSchema = z.object({
     first_name: z.string().nonempty(),
@@ -22,16 +24,28 @@ const defaultValues: CreateAdminFormFields = {
     last_name: '',
     email: '',
     mobile_no: '',
-    role: '',
+    role: 'ADMIN',
 };
 
 function CreateAdminForm() {
+    const toast = useOwnerToast();
     const form = useForm<CreateAdminFormFields>({
         defaultValues,
         resolver: zodResolver(createAdminSchema),
     });
 
-    const onSubmit = form.handleSubmit((values) => {});
+    const onSubmit = form.handleSubmit(({ ...values }) => {
+        router.post('/admin/users', values, {
+            onSuccess: () => {
+                toast.success({
+                    description: 'New user has been added to the system.',
+                });
+                router.visit('/admin/user-management/admins?active=Users');
+            },
+            onError: (errors) =>
+                toast.error({ description: _.valuesIn(errors)[0] }),
+        });
+    });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     return (
@@ -73,7 +87,7 @@ function CreateAdminForm() {
                         name='mobile_no'
                     />
                 </div>
-                <div>
+                {/* <div>
                     <h1 className='text-[24px] font-semibold leading-none'>
                         Role
                     </h1>
@@ -88,7 +102,7 @@ function CreateAdminForm() {
                         control={form.control}
                         name='role'
                     />
-                </div>
+                </div> */}
                 <div className='flex justify-end text-base'>
                     {hasErrors && (
                         <div className='flex items-center gap-2'>
@@ -101,8 +115,12 @@ function CreateAdminForm() {
                     )}
                 </div>
                 <div className='flex justify-end gap-4'>
-                    <Link href='/admin/user-management/owners?active=Users'>
-                        <Button variant='outline' className='text-base'>
+                    <Link href='/admin/user-management/admins?active=Users'>
+                        <Button
+                            type='button'
+                            variant='outline'
+                            className='text-base'
+                        >
                             Cancel
                         </Button>
                     </Link>

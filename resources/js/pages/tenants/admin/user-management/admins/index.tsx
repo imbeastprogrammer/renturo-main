@@ -3,12 +3,17 @@ import { ReactNode, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+
+import { User } from '@/types/users';
 import AdminLayout from '@/layouts/AdminLayout';
 import AdminsTable from './components/AdminsTable';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
 import Pagination from '@/components/tenant/Pagination';
 
-function Admins() {
+type AdminsProps = {
+    admins: User[];
+};
+function Admins({ admins }: AdminsProps) {
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
@@ -34,7 +39,7 @@ function Admins() {
                     </Link>
                 </div>
             </div>
-            <AdminsTable />
+            <AdminsTable admins={admins} />
             <div className='flex items-center justify-between'>
                 <div className='text-sm'>
                     <span>Showing 1 to 3 of 3 users</span>

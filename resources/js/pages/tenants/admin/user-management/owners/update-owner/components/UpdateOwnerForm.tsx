@@ -1,12 +1,15 @@
+import _ from 'lodash';
 import { z } from 'zod';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 
+import { User } from '@/types/users';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const updateOwnerSchema = z.object({
     first_name: z.string().nonempty(),
@@ -22,16 +25,40 @@ const defaultValues: UpdateOwnerFormFields = {
     last_name: '',
     email: '',
     mobile_no: '',
-    role: '',
+    role: 'OWNER',
 };
 
-function UpdateOwnerFOrm() {
+type UpdateOwnerFormProps = {
+    owner: User;
+};
+
+function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
+    const toast = useOwnerToast();
+
     const form = useForm<UpdateOwnerFormFields>({
         defaultValues,
         resolver: zodResolver(updateOwnerSchema),
+        values: {
+            first_name: owner.first_name,
+            last_name: owner.last_name,
+            email: owner.email,
+            mobile_no: owner.mobile_number,
+            role: owner.role,
+        },
     });
 
-    const onSubmit = form.handleSubmit((values) => {});
+    const onSubmit = form.handleSubmit((values) => {
+        router.put(`/admin/users/${owner.id}`, values, {
+            onSuccess: () => {
+                toast.success({
+                    description: 'Owner has been updated from the system',
+                });
+                router.visit('/admin/user-management/owners?active=Users');
+            },
+            onError: (errors) =>
+                toast.error({ description: _.valuesIn(errors)[0] }),
+        });
+    });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     return (
@@ -42,7 +69,7 @@ function UpdateOwnerFOrm() {
                         General
                     </h1>
                     <p className='text-base text-[#2E3436]/50'>
-                        Update a admin user.
+                        Update a Owner user.
                     </p>
                 </div>
                 <div className='flex items-start gap-4'>
@@ -73,7 +100,7 @@ function UpdateOwnerFOrm() {
                         name='mobile_no'
                     />
                 </div>
-                <div>
+                {/* <div>
                     <h1 className='text-[24px] font-semibold leading-none'>
                         Role
                     </h1>
@@ -88,7 +115,7 @@ function UpdateOwnerFOrm() {
                         control={form.control}
                         name='role'
                     />
-                </div>
+                </div> */}
                 <div className='flex justify-end text-base'>
                     {hasErrors && (
                         <div className='flex items-center gap-2'>
@@ -102,7 +129,11 @@ function UpdateOwnerFOrm() {
                 </div>
                 <div className='flex justify-end gap-4'>
                     <Link href='/admin/user-management/owners?active=Users'>
-                        <Button variant='outline' className='text-base'>
+                        <Button
+                            type='button'
+                            variant='outline'
+                            className='text-base'
+                        >
                             Cancel
                         </Button>
                     </Link>
@@ -118,4 +149,4 @@ function UpdateOwnerFOrm() {
     );
 }
 
-export default UpdateOwnerFOrm;
+export default UpdateOwnerForm;

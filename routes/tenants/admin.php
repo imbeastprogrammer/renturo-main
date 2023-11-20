@@ -30,15 +30,6 @@ Route::middleware([
         return Inertia::render('tenants/admin/dashboard/index');
     });
 
-    Route::get('/listings', function () {
-        return Inertia::render('tenants/admin/listings/properties/index');
-    });
-    Route::get('/listings/for-approval', function () {
-        return Inertia::render('tenants/admin/listings/for-approval/index');
-    });
-    Route::get('/listings/form-builder', function () {
-        return Inertia::render('tenants/admin/listings/form-builder/index');
-    });
     Route::get('/settings/personal-information', function () {
         return Inertia::render('tenants/admin/settings/personal-information/index');
     });
@@ -46,34 +37,21 @@ Route::middleware([
         return Inertia::render('tenants/admin/settings/change-password/index');
     });
 
+    // user management
     Route::post('/users', [UserManagementController::class, 'store']);
     Route::put('/users/{id}', [UserManagementController::class, 'update']);
     Route::delete('/users/{id}', [UserManagementController::class, 'destroy']);
-    Route::get('/user-management/users', [UserManagementController::class, 'index']);
-    Route::get('/user-management/users/create', [UserManagementController::class, 'create']);
-    Route::get('/user-management/users/update/{id}', [UserManagementController::class, 'edit']);
+    Route::get('/user-management/users', [UserManagementController::class, 'getUsers']);
+    Route::get('/user-management/users/create', [UserManagementController::class, 'createUser']);
+    Route::get('/user-management/users/update/{id}', [UserManagementController::class, 'editUser']);
 
-    // owners
-    Route::get('/user-management/owners', function () {
-        return Inertia::render('tenants/admin/user-management/owners/index');
-    });
-    Route::get('/user-management/owners/create', function () {
-        return Inertia::render('tenants/admin/user-management/owners/create-owner/index');
-    });
-    Route::get('/user-management/owners/update/{id}', function () {
-        return Inertia::render('tenants/admin/user-management/owners/update-owner/index');
-    });
+    Route::get('/user-management/admins', [UserManagementController::class, 'getAdmins']);
+    Route::get('/user-management/admins/create', [UserManagementController::class, 'createAdmin']);
+    Route::get('/user-management/admins/update/{id}', [UserManagementController::class, 'editAdmin']);
 
-    // admins
-    Route::get('/user-management/admins', function () {
-        return Inertia::render('tenants/admin/user-management/admins/index');
-    });
-    Route::get('/user-management/admins/create', function () {
-        return Inertia::render('tenants/admin/user-management/admins/create-admin/index');
-    });
-    Route::get('/user-management/admins/update/{id}', function () {
-        return Inertia::render('tenants/admin/user-management/admins/update-admin/index');
-    });
+    Route::get('/user-management/owners', [UserManagementController::class, 'getOwners']);
+    Route::get('/user-management/owners/create', [UserManagementController::class, 'createOwner']);
+    Route::get('/user-management/owners/update/{id}', [UserManagementController::class, 'editOwner']);
 
     // sub owners
     Route::get('/user-management/sub-owners', function () {

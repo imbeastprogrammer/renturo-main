@@ -1,12 +1,17 @@
 import { ReactNode } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
-import UpdateOwnerFOrm from './components/UpdateOwnerForm';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-function UpdateOwner() {
+import { User } from '@/types/users';
+import AdminLayout from '@/layouts/AdminLayout';
+import UpdateOwnerForm from './components/UpdateOwnerForm';
+
+type UpdateOwnerProps = {
+    owner: User;
+};
+function UpdateOwner({ owner }: UpdateOwnerProps) {
     return (
         <ScrollArea className='rounded-xl border bg-white shadow-lg'>
-            <UpdateOwnerFOrm />
+            <UpdateOwnerForm owner={owner} />
         </ScrollArea>
     );
 }
