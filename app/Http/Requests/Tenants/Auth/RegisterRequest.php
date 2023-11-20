@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Tenants\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 use App\Models\User;
 
 class RegisterRequest extends FormRequest
@@ -56,10 +55,5 @@ class RegisterRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $password = Str::random(16);
-
-        $this->merge([
-            'password' => $password,
-        ]);
     }
 }

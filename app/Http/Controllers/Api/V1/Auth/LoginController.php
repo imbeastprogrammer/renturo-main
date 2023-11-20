@@ -22,7 +22,7 @@ class LoginController extends Controller
         $accessToken = $user->createToken('personal-access-token')->accessToken;
 
         $user->mobileVerification()->create([
-            'mobile_no' => $user->mobileVerification()->mobile_no,
+            'mobile_number' => $user->mobileVerification()->mobile_number,
             'code' => $verificationCode,
             'expires_at' => Carbon::now()->addSeconds(300),
         ]);
