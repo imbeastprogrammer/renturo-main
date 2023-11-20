@@ -17,7 +17,7 @@ class PostManagementController extends Controller
     public function index()
     {
         $posts = Post::all();
-        return Inertia::render('tenants/admin/post-management/listings/index', ['posts'=> $posts]);
+        return Inertia::render('tenants/admin/post-management/listings/index', ['posts' => $posts]);
     }
 
     /**

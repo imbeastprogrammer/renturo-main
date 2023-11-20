@@ -40,7 +40,7 @@ class UserManagementController extends Controller
             'owners' => $owners
         ]);
     }
-    
+
     public function getUsers()
     {
         $users = User::where('role', '=', 'USER')->get();
@@ -48,6 +48,11 @@ class UserManagementController extends Controller
         return Inertia::render('tenants/admin/user-management/users/index', [
             'users' => $users
         ]);
+    }
+
+    public function getSubOwners()
+    {
+        return Inertia::render('tenants/admin/user-management/sub-owners/index');
     }
 
     /**
@@ -68,6 +73,11 @@ class UserManagementController extends Controller
     public function createAdmin()
     {
         return Inertia::render('tenants/admin/user-management/admins/create-admin/index');
+    }
+
+    public function createSubOwner()
+    {
+        return Inertia::render('tenants/admin/user-management/sub-owners/create-sub-owner/index');
     }
 
     /**
@@ -117,19 +127,24 @@ class UserManagementController extends Controller
     public function editAdmin($id)
     {
         $admin = User::findOrFail($id);
-        return Inertia::render('tenants/admin/user-management/admins/update-admin/index', ['admin'=> $admin]);
+        return Inertia::render('tenants/admin/user-management/admins/update-admin/index', ['admin' => $admin]);
     }
 
     public function editOwner($id)
     {
         $owner = User::findOrFail($id);
-        return Inertia::render('tenants/admin/user-management/owners/update-owner/index', ['owner'=> $owner]);
+        return Inertia::render('tenants/admin/user-management/owners/update-owner/index', ['owner' => $owner]);
     }
 
     public function editUser($id)
     {
         $user = User::findOrFail($id);
-        return Inertia::render('tenants/admin/user-management/users/update-user/index', ['user'=> $user]);
+        return Inertia::render('tenants/admin/user-management/users/update-user/index', ['user' => $user]);
+    }
+
+    public function editSubOwner($id)
+    {
+        return Inertia::render('tenants/admin/user-management/sub-owners/update-sub-owner/index');
     }
 
     /**

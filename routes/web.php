@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Central\Auth\LoginController;
+use App\Http\Controllers\Central\RolesManagementController;
 use App\Http\Controllers\Central\TenantManagementController;
 use App\Http\Controllers\Central\UserManagementController;
 use Inertia\Inertia;
@@ -13,12 +14,15 @@ Route::get('/', function () {
 Route::get('/login/enter-otp', function () {
     return Inertia::render("central/login-otp/index");
 });
+
 Route::get('/forgot-password', function () {
     return Inertia::render("central/forgot-password/index");
 });
+
 Route::get('/forgot-password/enter-otp', function () {
     return Inertia::render("central/forgot-password-otp/index");
 });
+
 Route::get('/create-new-password', function () {
     return Inertia::render("central/create-new-password/index");
 });
@@ -42,15 +46,9 @@ Route::middleware('auth:central')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('central/super-admin/dashboard/index');
         });
-        Route::get('/administration/roles', function () {
-            return Inertia::render('central/super-admin/administration/roles/index');
-        });
-        Route::get('/administration/roles/add', function () {
-            return Inertia::render('central/super-admin/administration/roles/add-role/index');
-        });
-        Route::get('/administration/roles/edit/{id}', function () {
-            return Inertia::render('central/super-admin/administration/roles/edit-role/index');
-        });
+        Route::get('/administration/roles', [RolesManagementController::class, 'index']);
+        Route::get('/administration/roles/add', [RolesManagementController::class, 'create']);
+        Route::get('/administration/roles/edit/{id}', [RolesManagementController::class, 'edit']);
 
         Route::get('settings/change-password', [UserManagementController::class, 'changePassword']);
         Route::get('settings/account', [UserManagementController::class, 'userProfile']);

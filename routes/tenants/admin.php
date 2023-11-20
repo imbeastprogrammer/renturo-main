@@ -13,6 +13,12 @@ use App\Http\Controllers\Tenants\Admin\PostManagementController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormFieldController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormPageController;
 use App\Http\Controllers\Tenants\Admin\CategoryManagementController;
+use App\Http\Controllers\Tenants\Admin\PostManagementAdsController;
+use App\Http\Controllers\Tenants\Admin\PostManagementBookingsController;
+use App\Http\Controllers\Tenants\Admin\PostManagementCategoriesController;
+use App\Http\Controllers\Tenants\Admin\PostManagementPromotionsController;
+use App\Http\Controllers\Tenants\Admin\PostManagementPropertiesController;
+use App\Http\Controllers\Tenants\Admin\SettingsManagementController;
 use App\Http\Controllers\Tenants\Admin\SubCategoryManagementController;
 
 use Inertia\Inertia;
@@ -30,12 +36,8 @@ Route::middleware([
         return Inertia::render('tenants/admin/dashboard/index');
     });
 
-    Route::get('/settings/personal-information', function () {
-        return Inertia::render('tenants/admin/settings/personal-information/index');
-    });
-    Route::get('/settings/change-password', function () {
-        return Inertia::render('tenants/admin/settings/change-password/index');
-    });
+    Route::get('/settings/personal-information', [SettingsManagementController::class, 'personalInformation']);
+    Route::get('/settings/change-password', [SettingsManagementController::class, 'changePassword']);
 
     // user management
     Route::post('/users', [UserManagementController::class, 'store']);
@@ -54,34 +56,20 @@ Route::middleware([
     Route::get('/user-management/owners/update/{id}', [UserManagementController::class, 'editOwner']);
 
     // sub owners
-    Route::get('/user-management/sub-owners', function () {
-        return Inertia::render('tenants/admin/user-management/sub-owners/index');
-    });
-    Route::get('/user-management/sub-owners/create', function () {
-        return Inertia::render('tenants/admin/user-management/sub-owners/create-sub-owner/index');
-    });
-    Route::get('/user-management/sub-owners/update/{id}', function () {
-        return Inertia::render('tenants/admin/user-management/sub-owners/update-sub-owner/index');
-    });
+    Route::get('/user-management/sub-owners', [UserManagementController::class, 'getSubOwners']);
+    Route::get('/user-management/sub-owners/create', [UserManagementController::class, 'createSubOwner']);
+    Route::get('/user-management/sub-owners/update/{id}', [UserManagementController::class, 'editSubOwner']);
 
     // post management
     Route::resource('/posts', PostManagementController::class);
-    Route::get('/post-management/list-of-properties', [PostManagementController::class, 'index']);
-    Route::get('/post-management/bookings', function () {
-        return Inertia::render('tenants/admin/post-management/bookings/index');
-    });
-    Route::get('/post-management/categories', function () {
-        return Inertia::render('tenants/admin/post-management/categories/index');
-    });
-    Route::get('/post-management/promotions', function () {
-        return Inertia::render('tenants/admin/post-management/promotions/index');
-    });
-    Route::get('/post-management/promotions/{id}', function () {
-        return Inertia::render('tenants/admin/post-management/promotions/view-promotion/index');
-    });
-    Route::get('/post-management/ads', function () {
-        return Inertia::render('tenants/admin/post-management/ads/index');
-    });
+
+    Route::get('/post-management/list-of-properties', [PostManagementPropertiesController::class, 'index']);
+    Route::get('/post-management/bookings', [PostManagementBookingsController::class, 'index']);
+    Route::get('/post-management/categories', [PostManagementCategoriesController::class, 'index']);
+
+    Route::get('/post-management/promotions', [PostManagementPromotionsController::class, 'index']);
+    Route::get('/post-management/promotions/{id}', [PostManagementPromotionsController::class, 'edit']);
+    Route::get('/post-management/ads', [PostManagementAdsController::class, 'index']);
 
     Route::put('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
     Route::resource('/form/pages', DynamicFormPageController::class);
@@ -90,6 +78,5 @@ Route::middleware([
     Route::resource('/form/fields', DynamicFormFieldController::class);
 
     Route::resource('/categories', CategoryManagementController::class);
-
     Route::resource('/sub-categories', SubCategoryManagementController::class);
 });
