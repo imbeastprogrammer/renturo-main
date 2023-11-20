@@ -34,7 +34,6 @@ class VerifyMobileController extends Controller
 
         return response()->json([
             'message' => 'The verification code for your mobile has been sent to the number ' . $mobileNumber . '.',
-            'verification_code' => $verificationCode // return temporary in response
         ], 201);
     }
 
