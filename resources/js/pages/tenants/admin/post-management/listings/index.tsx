@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSearchParams } from '@/hooks/useSearchParams';
 
+import { Listing } from '@/types/listings';
 import AdminLayout from '@/layouts/AdminLayout';
 import ListingsTable from './components/ListingsTable';
 import ListingFilter from './components/ListingFilter';
 import dummyListings from '@/data/dummyListings';
 import Searchbar from '@/components/tenant/Searchbar';
 import Pagination from '@/components/tenant/Pagination';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const tabs = [
     { label: 'All Listings', value: 'all' },
@@ -18,13 +20,16 @@ const tabs = [
     { label: 'Declined', value: 'declined' },
 ];
 
-function ListingsPage() {
+type ListingsPageProps = {
+    posts: Listing[];
+};
+function ListingsPage({ posts }: ListingsPageProps) {
     const { searchParams, queryParams } = useSearchParams();
     const filter = searchParams.get('filter');
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
-        <div className='-h-full grid grid-rows-[auto_auto_1fr] gap-y-4 rounded-lg border p-4 shadow-lg'>
+        <div className='-h-full grid grid-rows-[auto_auto_1fr] gap-y-4 overflow-hidden rounded-lg border p-4 shadow-lg'>
             <div className='flex items-center gap-2'>
                 <Searchbar placeholder='Search for property, keyword, or owner' />
                 <Searchbar placeholder='Search by category' />
@@ -42,7 +47,7 @@ function ListingsPage() {
                     })
                 }
             />
-            <ListingsTable listings={dummyListings} />
+            <ListingsTable listings={posts} />
             <div className='flex items-center justify-between'>
                 <div className='text-sm'>
                     <span>Showing 1 to 3 of 3 users</span>

@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -7,7 +9,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { ListingStatusSelector } from './ListingStatusSelector';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,18 +16,21 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontalIcon } from 'lucide-react';
+
 import { Listing } from '@/types/listings';
+import { ListingStatusSelector } from './ListingStatusSelector';
 import ViewListingModal from './ViewListingModal';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const statusColor: Record<string, string> = {
-    posted: '#B1EEB7',
-    'to review': '#FBDF88',
+    approved: '#B1EEB7',
+    pending: '#FFD555',
     declined: '#FFA1A1',
 };
 
 const statuses = [
-    { label: 'Posted', value: 'posted' },
-    { label: 'To Review', value: 'to review' },
+    { label: 'Approved', value: 'approved' },
+    { label: 'Pending', value: 'pending' },
     { label: 'Declined', value: 'declined' },
 ];
 
@@ -35,46 +39,54 @@ type ListingTableProps = {
 };
 
 function ListingsTable({ listings = [] }: ListingTableProps) {
+    const toast = useOwnerToast();
     const [viewModalState, setViewModalState] = useState({
         isOpen: false,
         id: 0,
     });
 
-    const handleStatusUpdate = (value: string) => {
-        // update status here
+    const handleStatusUpdate = (value: string, id: number) => {
+        router.put(
+            `/admin/posts/${id}`,
+            { status: value },
+            {
+                onSuccess: () =>
+                    toast.success({ description: 'Listing status updated' }),
+                onError: (errors) =>
+                    toast.error({ description: _.valuesIn(errors)[0] }),
+            },
+        );
     };
 
     return (
         <>
-            <Table>
-                <TableHeader>
+            <Table className='overflow-auto'>
+                <TableHeader className='sticky top-0 bg-white'>
                     <TableRow className='text-base font-semibold text-black/50'>
-                        <TableHead className='w-[100px]'>#</TableHead>
                         <TableHead>Id</TableHead>
-                        <TableHead>Listing Name</TableHead>
-                        <TableHead>Posted By</TableHead>
-                        <TableHead>Price Range</TableHead>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Description</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Action</TableHead>
+                        <TableHead className='text-center'>Action</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {listings.map((listing) => (
                         <TableRow
-                            key={listing.no}
+                            key={listing.id}
                             className='text-sm font-normal text-black/50'
                         >
-                            <TableCell>{listing.no}</TableCell>
                             <TableCell>{listing.id}</TableCell>
-                            <TableCell>{listing.listing_name}</TableCell>
-                            <TableCell>{listing.posted_by}</TableCell>
-                            <TableCell>{listing.price_range}</TableCell>
+                            <TableCell>{listing.title}</TableCell>
+                            <TableCell>{listing.description}</TableCell>
                             <TableCell>
                                 <ListingStatusSelector
                                     value={listing.status}
                                     data={statuses}
                                     color={statusColor[listing.status]}
-                                    onChange={handleStatusUpdate}
+                                    onChange={(value) =>
+                                        handleStatusUpdate(value, listing.id)
+                                    }
                                 />
                             </TableCell>
                             <TableCell className='text-center'>
@@ -87,7 +99,7 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                                             onClick={() =>
                                                 setViewModalState({
                                                     isOpen: true,
-                                                    id: listing.no,
+                                                    id: listing.id,
                                                 })
                                             }
                                         >
@@ -104,6 +116,7 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                 </TableBody>
             </Table>
             <ViewListingModal
+                listings={listings}
                 isOpen={viewModalState.isOpen}
                 id={viewModalState.id}
                 onClose={() => setViewModalState({ isOpen: false, id: 0 })}

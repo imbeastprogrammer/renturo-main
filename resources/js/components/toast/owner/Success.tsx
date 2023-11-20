@@ -4,7 +4,7 @@ type SuccessProps = { title?: string; description?: string };
 
 function Success({ title, description }: SuccessProps) {
     return (
-        <div className='flex -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
+        <div className='flex min-w-[350px] -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
             <div className='grid h-[58px] w-[58px] place-items-center rounded-full bg-metalic-blue text-white'>
                 <CheckIcon className='h-[40px] w-[40px]' />
             </div>

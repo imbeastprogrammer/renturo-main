@@ -5,7 +5,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 type ListingStatusSelectorProps = {
     value: string;
@@ -24,9 +24,9 @@ export function ListingStatusSelector({
         <Select value={value} onValueChange={onChange}>
             <SelectTrigger
                 style={{ background: color }}
-                className="w-[180px] px-4 h-6 ring-0 rounded-xl focus:ring-0"
+                className='h-6 w-[180px] rounded-xl px-4 ring-0 focus-visible:ring-transparent'
             >
-                <SelectValue placeholder="Select Status" />
+                <SelectValue placeholder='Select Status' />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>

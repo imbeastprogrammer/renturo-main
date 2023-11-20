@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenants\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Inertia\Inertia;
 
 class PostManagementController extends Controller
 {
@@ -16,8 +17,7 @@ class PostManagementController extends Controller
     public function index()
     {
         $posts = Post::all();
-
-        return response()->json($posts);
+        return Inertia::render('tenants/admin/post-management/listings/index', ['posts'=> $posts]);
     }
 
     /**

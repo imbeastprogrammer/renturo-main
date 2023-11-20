@@ -29,24 +29,6 @@ Route::middleware([
     Route::get('/', function () {
         return Inertia::render('tenants/admin/dashboard/index');
     });
-    Route::get('/post-management/list-of-properties', function () {
-        return Inertia::render('tenants/admin/post-management/listings/index');
-    });
-    Route::get('/post-management/bookings', function () {
-        return Inertia::render('tenants/admin/post-management/bookings/index');
-    });
-    Route::get('/post-management/categories', function () {
-        return Inertia::render('tenants/admin/post-management/categories/index');
-    });
-    Route::get('/post-management/promotions', function () {
-        return Inertia::render('tenants/admin/post-management/promotions/index');
-    });
-    Route::get('/post-management/promotions/{id}', function () {
-        return Inertia::render('tenants/admin/post-management/promotions/view-promotion/index');
-    });
-    Route::get('/post-management/ads', function () {
-        return Inertia::render('tenants/admin/post-management/ads/index');
-    });
 
     Route::get('/listings', function () {
         return Inertia::render('tenants/admin/listings/properties/index');
@@ -104,7 +86,24 @@ Route::middleware([
         return Inertia::render('tenants/admin/user-management/sub-owners/update-sub-owner/index');
     });
 
+    // post management
     Route::resource('/posts', PostManagementController::class);
+    Route::get('/post-management/list-of-properties', [PostManagementController::class, 'index']);
+    Route::get('/post-management/bookings', function () {
+        return Inertia::render('tenants/admin/post-management/bookings/index');
+    });
+    Route::get('/post-management/categories', function () {
+        return Inertia::render('tenants/admin/post-management/categories/index');
+    });
+    Route::get('/post-management/promotions', function () {
+        return Inertia::render('tenants/admin/post-management/promotions/index');
+    });
+    Route::get('/post-management/promotions/{id}', function () {
+        return Inertia::render('tenants/admin/post-management/promotions/view-promotion/index');
+    });
+    Route::get('/post-management/ads', function () {
+        return Inertia::render('tenants/admin/post-management/ads/index');
+    });
 
     Route::put('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
     Route::resource('/form/pages', DynamicFormPageController::class);

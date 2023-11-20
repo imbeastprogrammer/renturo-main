@@ -16,11 +16,12 @@ import {
     TimeIcon,
     VenueIcon,
 } from '@/assets/tenant/list-of-properties';
-import dummyListings from '@/data/dummyListings';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Listing } from '@/types/listings';
 
 type ViewListingModalProps = {
+    listings: Listing[];
     isOpen: boolean;
     id: number;
     onClose: () => void;
@@ -34,16 +35,22 @@ const navigationSelection = [
     },
 ];
 
-const TabsMap: Record<string, React.FC> = {
+const TabsMap: Record<string, React.FC<{ listing: Listing }>> = {
     overview: Overview,
     'review-details': ReviewDetails,
 };
 
-function ViewListingModal({ isOpen, id, onClose }: ViewListingModalProps) {
+function ViewListingModal({
+    isOpen,
+    id,
+    onClose,
+    listings,
+}: ViewListingModalProps) {
     const [activeTab, setActiveTab] = useState(navigationSelection[0].value);
-    const dummyListing = dummyListings.find(({ no }) => no === id);
+    const listing = listings.find((listing) => listing.id === id);
 
     const CurrentTab = TabsMap[activeTab];
+    if (!listing) return null;
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -51,7 +58,7 @@ function ViewListingModal({ isOpen, id, onClose }: ViewListingModalProps) {
                 <DialogHeader className='mb-4'>
                     <div className='flex items-center justify-between'>
                         <DialogTitle className='text-[35px] font-semibold'>
-                            {dummyListing?.listing_name}
+                            {listing?.title}
                         </DialogTitle>
                         <button onClick={onClose}>
                             <img src={CloseIcon} alt='close button icon' />
@@ -69,7 +76,7 @@ function ViewListingModal({ isOpen, id, onClose }: ViewListingModalProps) {
                     </div>
                     <Separator orientation='vertical' />
                     <ScrollArea className='p-4'>
-                        <CurrentTab />
+                        <CurrentTab listing={listing!} />
                     </ScrollArea>
                 </div>
             </DialogContent>
@@ -82,6 +89,7 @@ type NavigationSelectionProps = {
     data: { label: string; value: string }[];
     onValueChange: (value: string) => void;
 };
+
 function NavigationSelection({
     data,
     value: currentValue,
@@ -106,12 +114,13 @@ function NavigationSelection({
     );
 }
 
-function Overview() {
+type OverviewProps = { listing: Listing };
+function Overview({ listing }: OverviewProps) {
     return (
         <div className='space-y-4'>
-            <ImagesGrid />
+            <ImagesGrid listing_images={listing.images.map(({ url }) => url)} />
             <div>
-                <h1 className='text-[22px]'>Father Blanco's Garden</h1>
+                <h1 className='text-[22px]'>{listing.title}</h1>
                 <span className='textb-base font-bold'>PHP 15,000</span>
             </div>
             <Separator />
@@ -152,14 +161,21 @@ function Overview() {
     );
 }
 
-function ImagesGrid() {
+type ImagesGridProps = { listing_images: string[] };
+function ImagesGrid({ listing_images }: ImagesGridProps) {
     return (
         <div className='grid h-[300px] grid-cols-4 grid-rows-2 gap-4'>
-            <div className='col-span-2 row-span-2 rounded-lg bg-blue-500'></div>
-            <div className='rounded-lg bg-blue-500'></div>
-            <div className='rounded-lg bg-blue-500'></div>
-            <div className='rounded-lg bg-blue-500'></div>
-            <div className='rounded-lg bg-blue-500'></div>
+            {listing_images.slice(0, 5).map((listing_image, idx) => (
+                <img
+                    key={idx}
+                    src={listing_image}
+                    alt='listing image'
+                    className={cn(
+                        'h-full w-full object-cover',
+                        idx === 0 && 'col-span-2 row-span-2',
+                    )}
+                />
+            ))}
         </div>
     );
 }
@@ -182,7 +198,8 @@ function OverviewItem({ children, icon }: OverviewItemProps) {
     );
 }
 
-function ReviewDetails() {
+type ReviewDetailsProps = { listing: Listing };
+function ReviewDetails({ listing }: ReviewDetailsProps) {
     return (
         <div className='space-y-6'>
             <ReviewDetailsItem withUnderline={false} label='Post Id'>
