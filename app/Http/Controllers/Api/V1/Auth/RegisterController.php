@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Tenants\Auth\RegisterRequest;
 use App\Mail\Tenants\Auth\SendMobileVerificationCode;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
+use Mail;
+use Log;
 use App\Models\User;
 use Carbon\Carbon;
 
