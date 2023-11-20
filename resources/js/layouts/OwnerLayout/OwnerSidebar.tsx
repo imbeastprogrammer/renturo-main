@@ -1,11 +1,18 @@
 import { ReactNode } from 'react';
 import { InertiaLinkProps, Link } from '@inertiajs/react';
+import { GoTriangleDown } from 'react-icons/go';
+
 import { sidebarItems } from './sidebar-items';
 import dashboardLogo from '@/assets/dashboard-logo.png';
 
 import { cn } from '@/lib/utils';
 import { IconType } from 'react-icons';
 import { IoLogOut } from 'react-icons/io5';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 const SublinkLabelMap: Record<string, string> = {
     Post: 'Post Management',
@@ -54,11 +61,43 @@ function OwnerSidebar() {
                             activeSidebarItem.label}
                     </h1>
                     {subLinks.map((sublink) => {
-                        const path = `${activeSidebarItem.path}${sublink.path}`;
+                        const path = `/owner${activeSidebarItem.path}${sublink.path}`;
+
+                        if (!sublink.sublinks)
+                            return (
+                                <SubLink
+                                    href={path}
+                                    isActive={path === pathname}
+                                >
+                                    {sublink.label}
+                                </SubLink>
+                            );
+
                         return (
-                            <SubLink href={path} isActive={true}>
-                                {sublink.label}
-                            </SubLink>
+                            <Collapsible>
+                                <CollapsibleTrigger className='flex w-full  items-center justify-between rounded-full p-1 px-4 text-xl font-semibold transition data-[state=open]:bg-[#EEF5FF]'>
+                                    {sublink.label} <GoTriangleDown />
+                                </CollapsibleTrigger>
+                                <CollapsibleContent className='hidden gap-2 py-2 pl-6 data-[state=open]:grid'>
+                                    {sublink.sublinks.map((childSubLink) => {
+                                        const path = `/owner${activeSidebarItem.path}${sublink.path}${childSubLink.path}`;
+                                        return (
+                                            <Link
+                                                href={path}
+                                                className={cn(
+                                                    'block rounded-full px-4 py-1 text-lg font-medium',
+                                                    {
+                                                        'bg-[#EEF5FF]':
+                                                            path === pathname,
+                                                    },
+                                                )}
+                                            >
+                                                {childSubLink.label}
+                                            </Link>
+                                        );
+                                    })}
+                                </CollapsibleContent>
+                            </Collapsible>
                         );
                     })}
                 </nav>

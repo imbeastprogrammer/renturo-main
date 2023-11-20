@@ -8,10 +8,8 @@ import { Listing } from '@/types/listings';
 import AdminLayout from '@/layouts/AdminLayout';
 import ListingsTable from './components/ListingsTable';
 import ListingFilter from './components/ListingFilter';
-import dummyListings from '@/data/dummyListings';
 import Searchbar from '@/components/tenant/Searchbar';
 import Pagination from '@/components/tenant/Pagination';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 const tabs = [
     { label: 'All Listings', value: 'all' },
@@ -20,10 +18,10 @@ const tabs = [
     { label: 'Declined', value: 'declined' },
 ];
 
-type ListingsPageProps = {
+type PropertiesProps = {
     posts: Listing[];
 };
-function ListingsPage({ posts }: ListingsPageProps) {
+function Properties({ posts }: PropertiesProps) {
     const { searchParams, queryParams } = useSearchParams();
     const filter = searchParams.get('filter');
     const [currentPage, setCurrentPage] = useState(1);
@@ -74,6 +72,6 @@ function ListingsPage({ posts }: ListingsPageProps) {
     );
 }
 
-ListingsPage.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
+Properties.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
 
-export default ListingsPage;
+export default Properties;

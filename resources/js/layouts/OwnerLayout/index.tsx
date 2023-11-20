@@ -5,7 +5,7 @@ function OwnerLayout(props: PropsWithChildren) {
     return (
         <div className='grid h-screen grid-cols-[auto_1fr]'>
             <OwnerSidebar />
-            <main>{props.children}</main>
+            <main className='p-4'>{props.children}</main>
         </div>
     );
 }

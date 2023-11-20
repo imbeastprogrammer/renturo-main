@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react';
 import AdminLayout from '@/layouts/AdminLayout';
-import ListingFilter from '../listings/components/ListingFilter';
+import ListingFilter from '../properties/components/ListingFilter';
 import BookingsTable from './components/BookingsTable';
 import dummyBookings from '@/data/dummyBookings';
 import { useSearchParams } from '@/hooks/useSearchParams';
