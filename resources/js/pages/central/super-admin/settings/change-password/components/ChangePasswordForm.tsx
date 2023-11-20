@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin/forms/FormInput';
+import { router } from '@inertiajs/react';
+import useCentralToast from '@/hooks/useCentralToast';
 
 const changePasswordSchema = z
     .object({
@@ -40,12 +42,35 @@ const defaultValues: ChangePasswordFormFields = {
 };
 
 function ChangePasswordForm() {
+    const toast = useCentralToast();
     const form = useForm<ChangePasswordFormFields>({
         defaultValues,
         resolver: zodResolver(changePasswordSchema),
     });
 
-    const onSubmit = form.handleSubmit(() => {});
+    const onSubmit = form.handleSubmit(
+        ({ confirm_new_password, new_password, old_password }) => {
+            router.post(
+                '/super-admin/settings/update-password',
+                {
+                    old_password,
+                    new_password,
+                    confirm_password: confirm_new_password,
+                },
+                {
+                    onSuccess: () => {
+                        toast.success({
+                            description:
+                                'The password has been changed successfully.',
+                        });
+                        router.post('/logout');
+                    },
+                    onError: (error) =>
+                        toast.error({ description: _.valuesIn(error)[0] }),
+                },
+            );
+        },
+    );
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     return (
