@@ -18,7 +18,7 @@ export const sidebarItems: GroupLink[] = [
         icon: BiMessageSquareAdd,
         path: '/post-management',
         sublinks: [
-            { label: 'List of Properties', path: '/' },
+            { label: 'List of Properties', path: '' },
             {
                 label: 'Analytics',
                 path: '/analytics',
