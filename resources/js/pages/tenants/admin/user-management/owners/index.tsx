@@ -1,14 +1,19 @@
+import { Link } from '@inertiajs/react';
 import { ReactNode, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+import { User } from '@/types/users';
 import AdminLayout from '@/layouts/AdminLayout';
 import OwnersTable from './components/OwnersTable';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
-import { Button } from '@/components/ui/button';
 import Pagination from '@/components/tenant/Pagination';
-import { Input } from '@/components/ui/input';
-import { Link } from '@inertiajs/react';
 
-function Owners() {
+type OwnersProps = {
+    owners: User[];
+};
+function Owners({ owners }: OwnersProps) {
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
@@ -34,7 +39,7 @@ function Owners() {
                     </Link>
                 </div>
             </div>
-            <OwnersTable />
+            <OwnersTable owners={owners} />
             <div className='flex items-center justify-between'>
                 <div className='text-sm'>
                     <span>Showing 1 to 3 of 3 users</span>

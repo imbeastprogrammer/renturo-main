@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -14,10 +15,15 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { router } from '@inertiajs/react';
+
+import { User } from '@/types/users';
 import DeleteOwnerModal from './DeleteOwnerModal';
 
-function OwnersTable() {
+type OwnerTableProps = {
+    owners: User[];
+};
+
+function OwnersTable({ owners }: OwnerTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
         isOpen: false,
         id: 0,
@@ -42,40 +48,49 @@ function OwnersTable() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow className='text-base font-normal text-[#2E3436]/50'>
-                        <TableCell className='font-medium'>1</TableCell>
-                        <TableCell>Joshua</TableCell>
-                        <TableCell>Dela Cruz</TableCell>
-                        <TableCell>kamotekid.dev@gmail.com</TableCell>
-                        <TableCell>Active</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell className='text-right'>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <MoreHorizontalIcon />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className='-translate-x-6'>
-                                    <DropdownMenuItem
-                                        onClick={() => navigateToUpdatePage(1)}
-                                    >
-                                        Edit
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        className='text-red-500'
-                                        onClick={() =>
-                                            setDeleteModalState({
-                                                isOpen: true,
-                                                id: 1,
-                                            })
-                                        }
-                                    >
-                                        Delete
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
+                    {owners.map((owner) => (
+                        <TableRow
+                            key={owner.id}
+                            className='text-base font-normal text-[#2E3436]/50'
+                        >
+                            <TableCell className='font-medium'>
+                                {owner.id}
+                            </TableCell>
+                            <TableCell>{owner.first_name}</TableCell>
+                            <TableCell>{owner.last_name}</TableCell>
+                            <TableCell>{owner.email}</TableCell>
+                            <TableCell>Static</TableCell>
+                            <TableCell>{owner.created_at}</TableCell>
+                            <TableCell>Static</TableCell>
+                            <TableCell className='text-right'>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <MoreHorizontalIcon />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className='-translate-x-6'>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                navigateToUpdatePage(owner.id)
+                                            }
+                                        >
+                                            Edit
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            className='text-red-500'
+                                            onClick={() =>
+                                                setDeleteModalState({
+                                                    isOpen: true,
+                                                    id: owner.id,
+                                                })
+                                            }
+                                        >
+                                            Delete
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
             <DeleteOwnerModal
