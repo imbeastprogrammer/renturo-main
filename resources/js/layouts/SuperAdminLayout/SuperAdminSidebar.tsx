@@ -74,10 +74,8 @@ function SuperAdminSidebar() {
                 <h1 className='text-[15px] uppercase text-white/50'>Other</h1>
                 <div className='relative space-y-4'>
                     <SidebarLink
-                        href='/super-admin/settings/change-password'
-                        isActive={
-                            pathname === '/super-admin/settings/change-password'
-                        }
+                        href='/super-admin/settings/account'
+                        isActive={pathname === '/super-admin/settings/account'}
                         icon={SettingsLogo}
                     >
                         Settings
