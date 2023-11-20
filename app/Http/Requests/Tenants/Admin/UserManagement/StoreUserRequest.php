@@ -28,9 +28,21 @@ class StoreUserRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
-            'mobile_no' => 'required',
+            'mobile_number' => 'required|string|min:11|max:13|unique:users,mobile_number',
             'password' => 'required',
-            'role' => 'required|in:ADMIN,OWNER,USER',
+            'role' => 'required|in:ADMIN',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'role.in' => 'The role field is invalid. Please choose (ADMIN)',
         ];
     }
 
@@ -42,6 +54,7 @@ class StoreUserRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
+            'role' => User::ROLE_ADMIN,
             'password' => 'password'
         ]);
     }
