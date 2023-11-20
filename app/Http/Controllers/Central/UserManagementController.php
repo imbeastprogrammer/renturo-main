@@ -187,7 +187,7 @@ class UserManagementController extends Controller
     public function userProfile() {
         // Retrieve the currently logged in user
         $user = auth()->user();
-        return Inertia::render('central/super-admin/settings/user-profile/index', ['user'=> $user]);
+        return Inertia::render('central/super-admin/settings/account/index', ['user'=> $user]);
     }
 
     /**
