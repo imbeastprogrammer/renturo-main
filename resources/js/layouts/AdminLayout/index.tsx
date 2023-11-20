@@ -16,6 +16,7 @@ export const LabelMap: Record<string, any> = {
     '/admin/post-management/ads': 'Ads',
     '/admin/user-management': 'User Management',
     '/admin/user-management/admins': 'Admins',
+    '/admin/user-management/admins/create': 'Create Admin',
     '/admin/user-management/owners': 'Owners',
     '/admin/user-management/sub-owners': 'Sub Owners',
     '/admin/user-management/users': 'Users',
