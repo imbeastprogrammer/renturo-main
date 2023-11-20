@@ -1,7 +1,7 @@
 import { DeleteWarning } from '@/assets/central';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
-import { useToast } from '@/components/ui/use-toast';
+import useCentralToast from '@/hooks/useCentralToast';
 import {
     Dialog,
     DialogContent,
@@ -17,25 +17,23 @@ type DeleteModalProps = {
     id: number;
 };
 function DeleteRolesModal({ isOpen, onClose, id }: DeleteModalProps) {
-    const { toast } = useToast();
+    const toast = useCentralToast();
     const handleDelete = () => {
         router.delete(`/super-admin/users/${id}`, {
             onSuccess: () => {
                 onClose();
-                toast({
+                toast.success({
                     title: 'Success',
                     description: 'The new user has been deleted to the system.',
-                    variant: 'default',
                 });
             },
             onError: (error) => {
                 onClose();
-                toast({
+                toast.error({
                     title: 'Error',
                     description:
                         Object.keys(error)[0] ||
                         'Something went wrong, Please try again later.',
-                    variant: 'destructive',
                 });
             },
         });

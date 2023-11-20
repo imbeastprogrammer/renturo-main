@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Middleware\RedirectIfTenantActivated;
+use Inertia\Inertia;
 
 Route::middleware([
     'web',
@@ -15,4 +16,17 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
     RedirectIfTenantActivated::class
 ])->group(function () {
+
+    Route::get('/', function () {
+        return Inertia::render('tenants/owner/dashboard/index');
+    });
+    Route::get('/post-management', function () {
+        return Inertia::render('tenants/owner/post-management/index');
+    });
+    Route::get('/user-management', function () {
+        return Inertia::render('tenants/owner/user-management/index');
+    });
+    Route::get('/settings', function () {
+        return Inertia::render('tenants/owner/settings/index');
+    });
 });
