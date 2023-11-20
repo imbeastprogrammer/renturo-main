@@ -1,5 +1,5 @@
-import { DeleteWarningIcon } from '@/assets/tenant';
-import { Button } from '@/components/ui/button';
+import _ from 'lodash';
+import { router } from '@inertiajs/react';
 import {
     Dialog,
     DialogContent,
@@ -8,6 +8,9 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { DeleteWarningIcon } from '@/assets/tenant';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 type DeleteModalProps = {
     isOpen: boolean;
@@ -15,7 +18,19 @@ type DeleteModalProps = {
     id: number;
 };
 function DeleteAdminModal({ isOpen, onClose, id }: DeleteModalProps) {
-    const handleDelete = () => {};
+    const toast = useOwnerToast();
+    const handleDelete = () => {
+        router.delete(`/admin/users/${id}`, {
+            onSuccess: () => {
+                toast.success({
+                    description: 'Admin has been removed from the system.',
+                });
+                onClose();
+            },
+            onError: (errors) =>
+                toast.error({ description: _.valuesIn(errors)[0] }),
+        });
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={() => onClose()}>
