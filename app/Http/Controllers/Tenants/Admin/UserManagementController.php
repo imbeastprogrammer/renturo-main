@@ -55,9 +55,19 @@ class UserManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function createUser()
     {
         return Inertia::render('tenants/admin/user-management/users/create-user/index');
+    }
+
+    public function createOwner()
+    {
+        return Inertia::render('tenants/admin/user-management/owners/create-owner/index');
+    }
+
+    public function createAdmin()
+    {
+        return Inertia::render('tenants/admin/user-management/admins/create-admin/index');
     }
 
     /**
