@@ -53,7 +53,7 @@ function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
                 toast.success({
                     description: 'Owner has been updated from the system',
                 });
-                router.visit('/admin/user-management/owners?active=User');
+                router.visit('/admin/user-management/owners?active=Users');
             },
             onError: (errors) =>
                 toast.error({ description: _.valuesIn(errors)[0] }),
