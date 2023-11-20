@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\Auth\VerifyMobileController;
+
+use App\Http\Controllers\Api\V1\Tenants\StoreController;
+
 use Illuminate\Support\Facades\Password;
 
 Route::middleware([
@@ -29,13 +32,20 @@ Route::middleware([
         Route::middleware('auth:api')->group(function () {
             Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);
             Route::post('/resend/mobile/verification', [VerifyMobileController::class, 'store']);
-        });
 
+
+        });
+              
         Route::middleware(['auth:api', 'verifiedMobileNumber'])->group(function () {
-            Route::get('/user', function (Request $request) {
-                return $request->user();
-            });
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
             Route::put('/password', [PasswordController::class, 'update']);
             Route::delete('logout', [LoginController::class, 'logout']);
+
+            Route::get('/store', [StoreController::class, 'index']);
+            Route::post('/store', [StoreController::class, 'store']);
+            Route::put('/store/{id}', [StoreController::class, 'update']);
+            Route::get('/store/{id}', [StoreController::class, 'show']);
         });
     });
