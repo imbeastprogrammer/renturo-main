@@ -17,7 +17,7 @@ function ProfilePicturePicker({ value, onChange }: ProfilePicturePickerProps) {
 
     return (
         <div className='flex gap-6'>
-            <div className='h-[100px] w-[100px] rounded-full border'>
+            <div className='h-[100px] w-[100px] flex-shrink-0 rounded-full border'>
                 <img
                     src={currentValue || ProfilePicturePlaceholder}
                     alt='profile picture'

@@ -1,12 +1,16 @@
 import _ from 'lodash';
 import { z } from 'zod';
+import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormField } from '@/components/ui/form';
-import FormInput from '@/components/super-admin/forms/FormInput';
 import { Button } from '@/components/ui/button';
+
 import { ErrorIcon } from '@/assets/central';
+import { User } from '@/types/users';
+import FormInput from '@/components/super-admin/forms/FormInput';
 import ProfilePicturePicker from './ProfilePicturePicker';
+import useCentralToast from '@/hooks/useCentralToast';
 
 const updateAccountSchema = z.object({
     profile_picture: z
@@ -36,10 +40,10 @@ const updateAccountSchema = z.object({
     email: z.string().nonempty(),
     contact_no: z.string().nonempty().length(11),
     address: z.string().optional(),
-    city: z.string().nonempty(),
-    province: z.string().nonempty(),
-    country: z.string().nonempty(),
-    zipcode: z.string().nonempty(),
+    city: z.string().optional(),
+    province: z.string().optional(),
+    country: z.string().optional(),
+    zipcode: z.string().optional(),
 });
 
 type UpdateAccountFormFields = z.infer<typeof updateAccountSchema>;
@@ -57,13 +61,37 @@ const defaultValues: UpdateAccountFormFields = {
     zipcode: '',
 };
 
-function UpdateAccountForm() {
+type UpdateAccountForm = { user: User };
+
+function UpdateAccountForm({ user }: UpdateAccountForm) {
+    const toast = useCentralToast();
     const form = useForm<UpdateAccountFormFields>({
         defaultValues,
         resolver: zodResolver(updateAccountSchema),
+        values: {
+            ...defaultValues,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            contact_no: user.mobile_number,
+        },
     });
 
-    const onSubmit = form.handleSubmit(() => {});
+    const onSubmit = form.handleSubmit(({ contact_no, ...values }) => {
+        router.post(
+            '/super-admin/settings/update-user-profile',
+            { mobile_number: contact_no, ...values },
+            {
+                onSuccess: () =>
+                    toast.success({
+                        description: 'Your profile has been updated.',
+                    }),
+                onError: (errors) =>
+                    toast.error({ description: _.valuesIn(errors)[0] }),
+            },
+        );
+    });
+
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     return (

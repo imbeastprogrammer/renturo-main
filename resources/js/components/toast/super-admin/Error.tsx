@@ -7,7 +7,7 @@ type ErrorProps = {
 
 function Error({ title, description }: ErrorProps) {
     return (
-        <div className='flex -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
+        <div className='flex min-w-[350px] -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
             <XIcon className='h-[40px] w-[40px] text-red-500' />
             <div>
                 <h1 className='text-base font-semibold'>{title || 'Error'}</h1>
