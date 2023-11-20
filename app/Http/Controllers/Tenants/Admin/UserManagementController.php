@@ -23,9 +23,27 @@ class UserManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getAdmins()
     {
-        $users = User::all();
+        $admins = User::where('role', '=', 'ADMIN')->get();
+
+        return Inertia::render('tenants/admin/user-management/admins/index', [
+            'admins' => $admins
+        ]);
+    }
+
+    public function getOwners()
+    {
+        $owners = User::where('role', '=', 'OWNER')->get();
+
+        return Inertia::render('tenants/admin/user-management/owners/index', [
+            'owners' => $owners
+        ]);
+    }
+    
+    public function getUsers()
+    {
+        $users = User::where('role', '=', 'USER')->get();
 
         return Inertia::render('tenants/admin/user-management/users/index', [
             'users' => $users

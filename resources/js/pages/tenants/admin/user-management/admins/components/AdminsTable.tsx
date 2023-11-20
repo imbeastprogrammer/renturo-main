@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -14,10 +15,15 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { router } from '@inertiajs/react';
+
+import { User } from '@/types/users';
 import DeleteAdminModal from './DeleteAdminModal';
 
-function AdminsTable() {
+type AdminsTableProps = {
+    admins: User[];
+};
+
+function AdminsTable({ admins }: AdminsTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
         isOpen: false,
         id: 0,
@@ -42,40 +48,49 @@ function AdminsTable() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow className='text-base font-normal text-[#2E3436]/50'>
-                        <TableCell className='font-medium'>1</TableCell>
-                        <TableCell>Joshua</TableCell>
-                        <TableCell>Dela Cruz</TableCell>
-                        <TableCell>kamotekid.dev@gmail.com</TableCell>
-                        <TableCell>Active</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell>10-27-23 16:50:32</TableCell>
-                        <TableCell className='text-right'>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <MoreHorizontalIcon />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className='-translate-x-6'>
-                                    <DropdownMenuItem
-                                        onClick={() => navigateToUpdatePage(1)}
-                                    >
-                                        Edit
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        className='text-red-500'
-                                        onClick={() =>
-                                            setDeleteModalState({
-                                                isOpen: true,
-                                                id: 1,
-                                            })
-                                        }
-                                    >
-                                        Delete
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
+                    {admins.map((admin) => (
+                        <TableRow
+                            key={admin.id}
+                            className='text-base font-normal text-[#2E3436]/50'
+                        >
+                            <TableCell className='font-medium'>
+                                {admin.id}
+                            </TableCell>
+                            <TableCell>{admin.first_name}</TableCell>
+                            <TableCell>{admin.last_name}</TableCell>
+                            <TableCell>{admin.email}</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>{admin.created_at}</TableCell>
+                            <TableCell>Static</TableCell>
+                            <TableCell className='text-right'>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <MoreHorizontalIcon />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className='-translate-x-6'>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                navigateToUpdatePage(admin.id)
+                                            }
+                                        >
+                                            Edit
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            className='text-red-500'
+                                            onClick={() =>
+                                                setDeleteModalState({
+                                                    isOpen: true,
+                                                    id: admin.id,
+                                                })
+                                            }
+                                        >
+                                            Delete
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
             <DeleteAdminModal
