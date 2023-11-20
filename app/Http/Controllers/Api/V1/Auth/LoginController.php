@@ -22,11 +22,13 @@ class LoginController extends Controller
         $accessToken = $user->createToken('personal-access-token')->accessToken;
 
         $user->mobileVerification()->create([
-            'mobile_number' => $user->mobileVerification()->mobile_number,
+            // 'mobile_no' => $user->mobileVerification()->mobile_no,
+            'mobile_number' => $user->mobile_number,
             'code' => $verificationCode,
             'expires_at' => Carbon::now()->addSeconds(300),
         ]);
 
+        // TO DO: replace this email sending to mobile sending, temporary medium for sending verification code
         Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
         return response()->json([
