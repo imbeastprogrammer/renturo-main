@@ -61,7 +61,7 @@ function OwnerSidebar() {
                             activeSidebarItem.label}
                     </h1>
                     {subLinks.map((sublink) => {
-                        const path = `${activeSidebarItem.path}${sublink.path}`;
+                        const path = `/owner${activeSidebarItem.path}${sublink.path}`;
 
                         if (!sublink.sublinks)
                             return (
@@ -80,7 +80,7 @@ function OwnerSidebar() {
                                 </CollapsibleTrigger>
                                 <CollapsibleContent className='hidden gap-2 py-2 pl-6 data-[state=open]:grid'>
                                     {sublink.sublinks.map((childSubLink) => {
-                                        const path = `${activeSidebarItem.path}${sublink.path}${childSubLink.path}`;
+                                        const path = `/owner${activeSidebarItem.path}${sublink.path}${childSubLink.path}`;
                                         return (
                                             <Link
                                                 href={path}

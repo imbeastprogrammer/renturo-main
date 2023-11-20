@@ -12,7 +12,7 @@ type GroupLink = {
 };
 
 export const sidebarItems: GroupLink[] = [
-    { label: 'Dashboard', icon: AiFillHome, path: '/' },
+    { label: 'Dashboard', icon: AiFillHome, path: '' },
     {
         label: 'Post',
         icon: BiMessageSquareAdd,
