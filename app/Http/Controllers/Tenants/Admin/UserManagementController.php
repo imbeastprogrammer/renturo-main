@@ -104,7 +104,19 @@ class UserManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editAdmin($id)
+    {
+        $admin = User::findOrFail($id);
+        return Inertia::render('tenants/admin/user-management/admins/update-admin/index', ['admin'=> $admin]);
+    }
+
+    public function editOwner($id)
+    {
+        $user = User::findOrFail($id);
+        return Inertia::render('tenants/admin/user-management/owners/update-owner/index', ['user'=> $user]);
+    }
+
+    public function editUser($id)
     {
         $user = User::findOrFail($id);
         return Inertia::render('tenants/admin/user-management/users/update-user/index', ['user'=> $user]);

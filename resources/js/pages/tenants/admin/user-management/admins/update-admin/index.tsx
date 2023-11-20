@@ -1,12 +1,17 @@
 import { ReactNode } from 'react';
-import AdminLayout from '@/layouts/AdminLayout';
-import UpdateAdminForm from './components/UpdateAdminForm';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-function UpdateAdmin() {
+import { User } from '@/types/users';
+import AdminLayout from '@/layouts/AdminLayout';
+import UpdateAdminForm from './components/UpdateAdminForm';
+
+type UpdateadminProps = {
+    admin: User;
+};
+function UpdateAdmin({ admin }: UpdateadminProps) {
     return (
         <ScrollArea className='rounded-xl border bg-white shadow-lg'>
-            <UpdateAdminForm />
+            <UpdateAdminForm admin={admin} />
         </ScrollArea>
     );
 }

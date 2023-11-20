@@ -1,12 +1,15 @@
 import { z } from 'zod';
-import { Link } from '@inertiajs/react';
+import _ from 'lodash';
+import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 
+import { User } from '@/types/users';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const updateAdminSchema = z.object({
     first_name: z.string().nonempty(),
@@ -22,16 +25,37 @@ const defaultValues: UpdateAdminFormFields = {
     last_name: '',
     email: '',
     mobile_no: '',
-    role: '',
+    role: 'ADMIN',
 };
 
-function UpdateAdminForm() {
+type UpdateAdminFormProps = {
+    admin: User;
+};
+function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
+    const toast = useOwnerToast();
+
     const form = useForm<UpdateAdminFormFields>({
         defaultValues,
         resolver: zodResolver(updateAdminSchema),
+        values: {
+            first_name: admin.first_name,
+            last_name: admin.last_name,
+            email: admin.email,
+            mobile_no: admin.mobile_number,
+            role: admin.role,
+        },
     });
 
-    const onSubmit = form.handleSubmit((values) => {});
+    const onSubmit = form.handleSubmit((values) => {
+        router.put(`/admin/users/${admin.id}`, values, {
+            onSuccess: () => {
+                toast.success({ description: 'The admin has been updated.' });
+                router.visit('/admin/user-management/admins');
+            },
+            onError: (errors) =>
+                toast.error({ description: _.valuesIn(errors)[0] }),
+        });
+    });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     return (
@@ -73,7 +97,7 @@ function UpdateAdminForm() {
                         name='mobile_no'
                     />
                 </div>
-                <div>
+                {/* <div>
                     <h1 className='text-[24px] font-semibold leading-none'>
                         Role
                     </h1>
@@ -88,7 +112,7 @@ function UpdateAdminForm() {
                         control={form.control}
                         name='role'
                     />
-                </div>
+                </div> */}
                 <div className='flex justify-end text-base'>
                     {hasErrors && (
                         <div className='flex items-center gap-2'>
@@ -101,8 +125,12 @@ function UpdateAdminForm() {
                     )}
                 </div>
                 <div className='flex justify-end gap-4'>
-                    <Link href='/admin/user-management/owners?active=Users'>
-                        <Button variant='outline' className='text-base'>
+                    <Link href='/admin/user-management/admins?active=Users'>
+                        <Button
+                            type='button'
+                            variant='outline'
+                            className='text-base'
+                        >
                             Cancel
                         </Button>
                     </Link>
