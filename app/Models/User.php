@@ -97,4 +97,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(dynamicFormFields::class);
     }
+
+    public function store() {
+        return $this->hasMany(Store::class);
+    }
 }
