@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
 import FormInput from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/button';
+import FormPhoneNumberInput from '@/components/forms/FormPhoneNumberInput';
 
 const formSchema = z.object({
     first_name: z.string(),
@@ -41,8 +42,10 @@ function UpdateUserForm() {
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        router.visit('/admin/settings?active=Settings', { replace: true });
+        router.visit('/admin/settings/personal-information', { replace: true });
     };
+
+    console.log(form.watch('phone_number'));
 
     return (
         <Form {...form}>
@@ -117,7 +120,7 @@ function UpdateUserForm() {
                             Contact Information
                         </h1>
                         <div className='grid grid-cols-2 gap-4'>
-                            <FormInput
+                            <FormPhoneNumberInput
                                 label='Phone Number'
                                 name='phone_number'
                                 control={form.control}

@@ -49,7 +49,7 @@ function FormSelect<T>({
                                 value={field.value}
                                 onValueChange={field.onChange}
                             >
-                                <SelectTrigger className='rounded-lg bg-[#F3F7FD] p-6 text-base focus-visible:ring-transparent'>
+                                <SelectTrigger className='h-[60px] rounded-lg bg-[#F3F7FD] p-6 text-base focus-visible:ring-transparent'>
                                     <SelectValue
                                         className='placeholder:text-black/50'
                                         placeholder={props.placeholder}
