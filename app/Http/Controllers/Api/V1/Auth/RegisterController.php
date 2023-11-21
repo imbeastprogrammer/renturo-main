@@ -17,16 +17,7 @@ class RegisterController extends Controller
     {
         $verificationCode = rand(1000, 9999);
 
-        // $user = User::create($request->validate());
-        $user = User::create([
-            'first_name' => $request->first_name, 
-            'last_name' => $request->last_name, 
-            'mobile_number' => $request->mobile_number, 
-            'email' => $request->email,
-            'password' => $request->password,
-            'role' => $request->role,
-            'username' => $request->username
-        ]);
+        $user = User::create($request->validated());
 
         $user->mobileVerification()->create([
             'mobile_number' => $request->mobile_number,
