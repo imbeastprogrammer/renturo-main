@@ -28,7 +28,7 @@ function Admins({ admins }: AdminsProps) {
                     </Button>
                 </div>
                 <div>
-                    <Link href='/admin/user-management/admins/create?active=Users'>
+                    <Link href='/admin/user-management/admins/create'>
                         <Button
                             variant='outline'
                             className='h-[40px] w-[100px] border-metalic-blue text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue/90'

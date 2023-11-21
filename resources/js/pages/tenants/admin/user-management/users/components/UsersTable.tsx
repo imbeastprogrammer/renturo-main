@@ -29,7 +29,7 @@ function UsersTable({ users = [] }: UsersTableProps) {
     });
 
     const navigateToUpdatePage = (id: number) => {
-        router.visit(`/admin/user-management/users/update/${id}?active=Users`);
+        router.visit(`/admin/user-management/users/update/${id}`);
     };
 
     return (

@@ -112,7 +112,11 @@ type SidebarLinkProps = InertiaLinkProps & {
     isActive?: boolean;
 };
 
-function SidebarLink({ isActive = false, ...props }: SidebarLinkProps) {
+function SidebarLink({
+    isActive = false,
+    icon: Icon,
+    ...props
+}: SidebarLinkProps) {
     return (
         <Link
             {...props}
@@ -126,7 +130,7 @@ function SidebarLink({ isActive = false, ...props }: SidebarLinkProps) {
                     <div className='absolute inset-0 rounded-br-full bg-metalic-blue'></div>
                 </span>
             )}
-            <props.icon className='h-[43px] w-[43px]' />
+            {Icon && <Icon className='h-[43px] w-[43px]' />}
             {props.children}
             {isActive && (
                 <span className='absolute -bottom-5 left-0 h-5 w-full bg-white'>

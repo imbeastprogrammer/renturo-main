@@ -101,7 +101,7 @@ function UpdateSubOwnerForm() {
                     )}
                 </div>
                 <div className='flex justify-end gap-4'>
-                    <Link href='/admin/user-management/owners?active=Users'>
+                    <Link href='/admin/user-management/owners'>
                         <Button variant='outline' className='text-base'>
                             Cancel
                         </Button>

@@ -1,52 +1,11 @@
+import { ReactNode } from 'react';
 import { Link, InertiaLinkProps } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
-import {
-    HomeIcon,
-    LucideIcon,
-    PlusIcon,
-    SettingsIcon,
-    UsersIcon,
-} from 'lucide-react';
+import { IconType } from 'react-icons';
+import { IoLogOut } from 'react-icons/io5';
 
+import { sidebarItems } from './sidebar-items';
 import dashboardLogo from '@/assets/dashboard-logo.png';
-import LogoutButton from './LogoutButton';
-import { useSearchParams } from '@/hooks/useSearchParams';
-
-const dashboardLinks = [
-    { label: 'Dashboard', to: '/admin', icon: HomeIcon, links: [] },
-    {
-        label: 'Post',
-        to: '/admin/post-management/list-of-properties',
-        icon: PlusIcon,
-        links: [
-            {
-                label: 'List of Properties',
-                to: '/admin/post-management/list-of-properties',
-            },
-            { label: 'Bookings', to: '/admin/post-management/bookings' },
-            { label: 'Categories', to: '/admin/post-management/categories' },
-            { label: 'Promotions', to: '/admin/post-management/promotions' },
-            { label: 'Ads', to: '/admin/post-management/ads' },
-        ],
-    },
-    {
-        label: 'Users',
-        to: '/admin/user-management/admins',
-        icon: UsersIcon,
-        links: [
-            { label: 'Admin', to: '/admin/user-management/admins' },
-            { label: 'Owners', to: '/admin/user-management/owners' },
-            { label: 'Sub Owners', to: '/admin/user-management/sub-owners' },
-            { label: 'Users', to: '/admin/user-management/users' },
-        ],
-    },
-    {
-        label: 'Settings',
-        to: '/admin/settings/personal-information',
-        icon: SettingsIcon,
-        links: [],
-    },
-];
 
 const GroupLinkLabelMap: Record<string, string> = {
     Users: 'User Management',
@@ -54,17 +13,17 @@ const GroupLinkLabelMap: Record<string, string> = {
 };
 
 type SidebarLinkProps = InertiaLinkProps & {
-    icon: LucideIcon;
-    label: string;
+    icon: IconType;
+    children?: ReactNode;
     isActive: boolean;
 };
 
-function SidebarLink({ isActive, ...props }: SidebarLinkProps) {
+function SidebarLink({ isActive, icon: Icon, ...props }: SidebarLinkProps) {
     return (
         <Link
             {...props}
             className={cn(
-                'relative inline-grid w-full place-items-center gap-2 rounded-l-full p-2 text-[15px] transition',
+                'relative inline-grid w-full place-items-center gap-2 rounded-l-full px-4 py-2 text-lg font-medium text-white transition',
                 { 'bg-white text-metalic-blue': isActive },
             )}
         >
@@ -73,8 +32,8 @@ function SidebarLink({ isActive, ...props }: SidebarLinkProps) {
                     <div className='absolute inset-0 rounded-br-full bg-metalic-blue'></div>
                 </span>
             )}
-            <props.icon className='h-[43px] w-[43px]' />
-            {props.label}
+            {Icon && <Icon className='h-[43px] w-[43px]' />}
+            {props.children}
             {isActive && (
                 <span className='absolute -bottom-5 left-0 h-5 w-full bg-white'>
                     <div className='absolute inset-0 rounded-tr-full bg-metalic-blue'></div>
@@ -105,61 +64,74 @@ function SecondaryLink({
 
 function AdminSidebar() {
     const { pathname } = window.location;
-    const { searchParams, queryParams } = useSearchParams();
-    const activeLink = searchParams.get('active') || 'Dashboard';
 
-    const activeLinkChildrenLinks = dashboardLinks.find(
-        (link) => link.label === activeLink,
+    const activeSidebarItem = sidebarItems.find((item) =>
+        item.sublinks ? pathname.includes(item.path) : pathname === item.path,
     );
-
-    const displaySubLinks = (activeLinkChildrenLinks?.links.length || 0) > 0;
+    const subLinks = activeSidebarItem?.sublinks;
 
     return (
         <aside className='h-full'>
-            <div className='flex h-full'>
-                <div className='grid h-full w-[130px] grid-rows-[1fr_auto] bg-metalic-blue px-4 py-8 pr-0 text-white'>
+            <div className='grid h-full grid-cols-[144px_1fr]'>
+                <div className='grid h-full grid-rows-[1fr_auto] bg-metalic-blue px-4 py-8 pr-0 text-white'>
                     <div>
                         <img
-                            className='h-[80px]a mx-auto w-[80px] object-contain'
+                            className='mx-auto h-[80px] w-[80px] object-contain'
                             src={dashboardLogo}
                         />
                         <nav>
                             <ul className='mt-6 space-y-4'>
-                                {dashboardLinks.map((link, i) => (
-                                    <li key={i}>
-                                        <SidebarLink
-                                            icon={link.icon}
-                                            href={link.to}
-                                            data={{ active: link.label }}
-                                            label={link.label}
-                                            isActive={activeLink === link.label}
-                                        />
-                                    </li>
-                                ))}
+                                {sidebarItems.map((sidebarItem, i) => {
+                                    const path = sidebarItem.sublinks
+                                        ? `/admin${sidebarItem.path}${sidebarItem.sublinks[0].path}`
+                                        : `/admin${sidebarItem.path}`;
+
+                                    const isActive = sidebarItem.sublinks
+                                        ? pathname.includes(sidebarItem.path)
+                                        : pathname ===
+                                          `/admin${sidebarItem.path}`;
+
+                                    return (
+                                        <li key={i}>
+                                            <SidebarLink
+                                                icon={sidebarItem.icon}
+                                                href={path}
+                                                isActive={isActive}
+                                            >
+                                                {sidebarItem.label}
+                                            </SidebarLink>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         </nav>
                     </div>
-                    <LogoutButton />
+                    <SidebarLink
+                        href='/logout'
+                        method='post'
+                        icon={IoLogOut}
+                        isActive={false}
+                    />
                 </div>
-                {displaySubLinks && (
+                {activeSidebarItem?.sublinks && (
                     <nav className='flex w-[250px] flex-col gap-2 border-r p-4'>
                         <h1 className='mb-4 px-4 text-[15px] font-semibold text-black/50'>
-                            {(activeLinkChildrenLinks &&
-                                GroupLinkLabelMap[
-                                    activeLinkChildrenLinks?.label
-                                ]) ||
-                                activeLinkChildrenLinks?.label}
+                            {GroupLinkLabelMap[activeSidebarItem?.label] ||
+                                activeSidebarItem?.label}
                         </h1>
-                        {activeLinkChildrenLinks?.links.map((link) => (
-                            <SecondaryLink
-                                isActive={link.to === pathname}
-                                key={link.to}
-                                href={link.to}
-                                data={{ ...queryParams }}
-                            >
-                                {link.label}
-                            </SecondaryLink>
-                        ))}
+                        {subLinks?.map((link, idx) => {
+                            const path = `/admin${activeSidebarItem.path}${link.path}`;
+
+                            return (
+                                <SecondaryLink
+                                    isActive={pathname.includes(link.path)}
+                                    key={idx}
+                                    href={path}
+                                >
+                                    {link.label}
+                                </SecondaryLink>
+                            );
+                        })}
                     </nav>
                 )}
             </div>

@@ -30,7 +30,7 @@ function AdminsTable({ admins }: AdminsTableProps) {
     });
 
     const navigateToUpdatePage = (id: number) =>
-        router.visit(`/admin/user-management/admins/update/${id}?active=Users`);
+        router.visit(`/admin/user-management/admins/update/${id}`);
 
     return (
         <>
