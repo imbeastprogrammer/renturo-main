@@ -34,6 +34,7 @@ class LoginController extends Controller
 
             // TODO: replace this email sending to mobile sending, temporary medium for sending verification code
             // TODO: remove the verification code from the response. 
+            // TODO: when user is not authenticated, the user model should be removed. 
 
             Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
