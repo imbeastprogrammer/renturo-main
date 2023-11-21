@@ -30,7 +30,7 @@ function OwnersTable({ owners }: OwnerTableProps) {
     });
 
     const navigateToUpdatePage = (id: number) =>
-        router.visit(`/admin/user-management/owners/update/${id}?active=Users`);
+        router.visit(`/admin/user-management/owners/update/${id}`);
 
     return (
         <>

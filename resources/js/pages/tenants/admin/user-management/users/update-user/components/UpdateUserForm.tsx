@@ -58,7 +58,7 @@ function UpdateUserForm({ user }: UpdateUserFormProps) {
                         title: 'Success',
                         description: 'The user has been updated to the system.',
                     });
-                    router.visit('/admin/user-management/users?active=Users', {
+                    router.visit('/admin/user-management/users', {
                         replace: true,
                     });
                 },
@@ -150,7 +150,7 @@ function UpdateUserForm({ user }: UpdateUserFormProps) {
                     )}
                 </div>
                 <div className='flex justify-end gap-4'>
-                    <Link href='/admin/user-management/users?active=Users'>
+                    <Link href='/admin/user-management/users'>
                         <Button variant='outline' className='text-base'>
                             Cancel
                         </Button>

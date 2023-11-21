@@ -63,7 +63,7 @@ Route::middleware([
     // post management
     Route::resource('/posts', PostManagementController::class);
 
-    Route::get('/post-management/list-of-properties', [PostManagementPropertiesController::class, 'index']);
+    Route::get('/post-management/properties', [PostManagementPropertiesController::class, 'index']);
     Route::get('/post-management/bookings', [PostManagementBookingsController::class, 'index']);
     Route::get('/post-management/categories', [PostManagementCategoriesController::class, 'index']);
 

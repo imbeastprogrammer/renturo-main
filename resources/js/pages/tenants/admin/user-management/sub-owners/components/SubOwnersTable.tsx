@@ -24,9 +24,7 @@ function SubOwnersTable() {
     });
 
     const navigateToUpdatePage = (id: number) =>
-        router.visit(
-            `/admin/user-management/sub-owners/update/${id}?active=Users`,
-        );
+        router.visit(`/admin/user-management/sub-owners/update/${id}`);
 
     return (
         <>

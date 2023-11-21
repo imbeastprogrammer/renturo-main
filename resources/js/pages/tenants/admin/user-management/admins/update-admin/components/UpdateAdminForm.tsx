@@ -125,7 +125,7 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
                     )}
                 </div>
                 <div className='flex justify-end gap-4'>
-                    <Link href='/admin/user-management/admins?active=Users'>
+                    <Link href='/admin/user-management/admins'>
                         <Button
                             type='button'
                             variant='outline'

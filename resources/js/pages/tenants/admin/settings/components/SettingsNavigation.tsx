@@ -58,9 +58,7 @@ function SettingsNavigation() {
                                     },
                                 )}
                             >
-                                <Link href={`${subLink.path}?active=Settings`}>
-                                    {subLink.label}
-                                </Link>
+                                <Link href={subLink.path}>{subLink.label}</Link>
                             </li>
                         ))}
                     </ul>

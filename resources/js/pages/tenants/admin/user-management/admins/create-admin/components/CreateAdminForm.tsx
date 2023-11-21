@@ -40,7 +40,7 @@ function CreateAdminForm() {
                 toast.success({
                     description: 'New user has been added to the system.',
                 });
-                router.visit('/admin/user-management/admins?active=Users');
+                router.visit('/admin/user-management/admins');
             },
             onError: (errors) =>
                 toast.error({ description: _.valuesIn(errors)[0] }),
@@ -115,7 +115,7 @@ function CreateAdminForm() {
                     )}
                 </div>
                 <div className='flex justify-end gap-4'>
-                    <Link href='/admin/user-management/admins?active=Users'>
+                    <Link href='/admin/user-management/admins'>
                         <Button
                             type='button'
                             variant='outline'
