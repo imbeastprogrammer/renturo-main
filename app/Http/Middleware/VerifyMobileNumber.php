@@ -19,7 +19,10 @@ class VerifyMobileNumber
     {
         if (!Auth::user()->verified_mobile_no->verified_at) {
             return response()->json([
-                'message' => 'The mobile number is still pending confirmation.'
+                'message' => 'failed',
+                'body' => [
+                    'message' => 'The mobile number has not been verified yet. Please check your mobile for the verification code.'
+                ]
             ], 403);
         }
 

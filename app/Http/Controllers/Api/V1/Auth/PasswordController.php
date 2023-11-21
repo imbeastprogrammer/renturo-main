@@ -4,17 +4,26 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenants\Auth\PasswordRequest;
+use Illuminate\Support\Facades\Log;
 
 class PasswordController extends Controller
 {
     public function update(PasswordRequest $request)
     {
-        $request->user()->update([
-            'password' => $request->password,
-        ]);
+        try {
+            $request->user()->update([
+                'password' => $request->password,
+            ]);
 
-        return response()->json([
-            'message' => 'Password updated!'
-        ], 200);
+            return response()->json([
+                'message' => 'success',
+                'body' => [
+                  'message' => 'Password updated!'
+                ]
+            ], 200);
+
+        } catch (\Exception $e) { 
+            Log::error($e->getMessage());
+        }
     }
 }

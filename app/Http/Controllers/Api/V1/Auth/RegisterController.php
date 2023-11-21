@@ -15,28 +15,47 @@ class RegisterController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        $verificationCode = rand(1000, 9999);
+        try {
 
-        $user = User::create($request->validated());
+            $verificationCode = rand(1000, 9999);
 
-        $user->mobileVerification()->create([
-            'mobile_number' => $request->mobile_number,
-            'code' => $verificationCode,
-            'expires_at' => Carbon::now()->addSeconds(300),
-        ]);
+            $user = User::create($request->validated());
 
-        $accessToken = $user->createToken('personal-access-token')->accessToken;
+            if (!$user) { 
+                return response()->json([
+                  'message' => 'failed',
+                  'data' => [
+                    'message' => 'Failed to create user. Please try again after few minutes.'
+                  ]
+                ], 400);
+            }
 
-        event(new Registered($user));
+            $user->mobileVerification()->create([
+                'mobile_number' => $request->mobile_number,
+                'code' => $verificationCode,
+                'expires_at' => Carbon::now()->addSeconds(300),
+            ]);
 
-        Mail::to($user->email)->send(new SendMobileVerificationCode([
-            'code' => $verificationCode
-        ]));
+            $accessToken = $user->createToken('personal-access-token')->accessToken;
 
-        return response()->json([
-            'message' => 'Registration complete!',
-            'verification_code' => $verificationCode, // return temporary in response
-            'access_token' => $accessToken
-        ], 201);
+            event(new Registered($user));
+
+            Mail::to($user->email)->send(new SendMobileVerificationCode([
+                'code' => $verificationCode
+            ]));
+
+            #TODO: Remove verification code and access token for security 
+            return response()->json([
+                'message' => 'success',
+                'body' => [
+                    'message' => 'Registration is successful!',
+                    'verification_code' => $verificationCode,
+                    'access_token' => $accessToken
+                ]
+            ], 201);
+
+        } catch (\Exception $e) { 
+            Log::error($e->getMessage());
+        }
     }
 }
