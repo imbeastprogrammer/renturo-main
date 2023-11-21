@@ -33,7 +33,6 @@ class RegisterController extends Controller
             'code' => $verificationCode
         ]));
 
-        
         return response()->json([
             'message' => 'Registration complete!',
             'verification_code' => $verificationCode, // return temporary in response
