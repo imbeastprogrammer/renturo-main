@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Central\UserManagement\StoreUserRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserRequest;
 use App\Http\Requests\Central\UserManagement\UpdateUserPasswordRequest;
-use App\Http\Requests\Central\UserManagement\UpdateUserProfileRequest; 
+use App\Http\Requests\Central\UserManagement\UpdateUserProfileRequest;
 use App\Mail\Central\UserManagement\UserCreated;
 use App\Http\Controllers\Central\Exception;
 use Illuminate\Support\Facades\Hash;
@@ -28,24 +28,22 @@ class UserManagementController extends Controller
         // show users that are not the currently authenticated user
         if ($request->searchTerm == null) {
             $users = User::where('id', '!=', auth()->user()->id)
-            ->with('createdByUser','updatedByUser')
-            ->paginate(10);
-
+                ->with('createdByUser', 'updatedByUser')
+                ->paginate(10);
         } else {
 
             $users = User::where('id', '!=', auth()->user()->id)
-            ->where(function ($query) use ($request) {
-                $query->where('first_name', 'like', "%{$request->searchTerm}%")
-                    ->orWhere('last_name', 'like', "%{$request->searchTerm}%")
-                    ->orWhere('email', 'like', "%{$request->searchTerm}%")
-                    ->orWhere('mobile_number', 'like', "%{$request->searchTerm}%");
-            })
-            ->with('createdByUser', 'updatedByUser')
-            ->paginate(10);
+                ->where(function ($query) use ($request) {
+                    $query->where('first_name', 'like', "%{$request->searchTerm}%")
+                        ->orWhere('last_name', 'like', "%{$request->searchTerm}%")
+                        ->orWhere('email', 'like', "%{$request->searchTerm}%")
+                        ->orWhere('mobile_number', 'like', "%{$request->searchTerm}%");
+                })
+                ->with('createdByUser', 'updatedByUser')
+                ->paginate(10);
         }
 
-        return Inertia::render('central/super-admin/administration/user-management/index', ['users'=> $users]);
-        
+        return Inertia::render('central/super-admin/administration/user-management/index', ['users' => $users]);
     }
 
     /**
@@ -75,7 +73,6 @@ class UserManagementController extends Controller
                 'role' => $request->role,
                 'password' => $request->password
             ]));
-
         } catch (\Exception $e) {
             Log::error('Email sending error: ' . $e->getMessage());
         }
@@ -102,8 +99,8 @@ class UserManagementController extends Controller
      */
     public function edit($id)
     {
-        $user =User::findOrFail($id);
-        return Inertia::render('central/super-admin/administration/user-management/edit-user/index', ['user'=> $user]);
+        $user = User::findOrFail($id);
+        return Inertia::render('central/super-admin/administration/user-management/edit-user/index', ['user' => $user]);
     }
 
     /**
@@ -149,7 +146,7 @@ class UserManagementController extends Controller
     {
         // Retrieve the currently logged in user
         $user = auth()->user();
-        return Inertia::render('central/super-admin/settings/change-password/index', ['user'=> $user]);
+        return Inertia::render('central/super-admin/settings/change-password/index', ['user' => $user]);
     }
 
     /**
@@ -160,8 +157,9 @@ class UserManagementController extends Controller
      * 
      *  * @return \Illuminate\Http\Response
      * */
-    public function updatePassword(UpdateUserPasswordRequest $request) {
-        
+    public function updatePassword(UpdateUserPasswordRequest $request)
+    {
+
         $user = auth()->user();
 
         try {
@@ -171,7 +169,7 @@ class UserManagementController extends Controller
 
             $user->password = $request->new_password;
             $user->save();
-    
+
             return back()->with(['success' => 'You have successfully updated your password.']);
         } catch (Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
@@ -184,10 +182,11 @@ class UserManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * */
-    public function userProfile() {
+    public function userProfile()
+    {
         // Retrieve the currently logged in user
         $user = auth()->user();
-        return Inertia::render('central/super-admin/settings/account/index', ['user'=> $user]);
+        return Inertia::render('central/super-admin/settings/account/index', ['user' => $user]);
     }
 
     /**
@@ -199,7 +198,8 @@ class UserManagementController extends Controller
      * * @return \Illuminate\Http\Response
      *  
      * */
-     public function updateUserProfile(UpdateUserProfileRequest $request) {
+    public function updateUserProfile(UpdateUserProfileRequest $request)
+    {
         // Retrieve the currently logged in user
         $user = auth()->user();
 
@@ -211,9 +211,8 @@ class UserManagementController extends Controller
             $user->save();
 
             return back()->with(['success' => 'You have successfully updated your profile.']);
-
         } catch (Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }
-     }
+    }
 }
