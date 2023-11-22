@@ -21,6 +21,7 @@ import { Listing } from '@/types/listings';
 import { ListingStatusSelector } from './ListingStatusSelector';
 import ViewListingModal from './ViewListingModal';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import DeleteListingModal from './DeleteListingModal';
 
 const statusColor: Record<string, string> = {
     approved: '#B1EEB7',
@@ -41,6 +42,10 @@ type ListingTableProps = {
 function ListingsTable({ listings = [] }: ListingTableProps) {
     const toast = useOwnerToast();
     const [viewModalState, setViewModalState] = useState({
+        isOpen: false,
+        id: 0,
+    });
+    const [deleteModalState, setDeleteModalState] = useState({
         isOpen: false,
         id: 0,
     });
@@ -105,7 +110,15 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                                         >
                                             View Listing
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem className='text-red-500'>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                setDeleteModalState({
+                                                    isOpen: true,
+                                                    id: listing.id,
+                                                })
+                                            }
+                                            className='text-red-500'
+                                        >
                                             Delete Listing
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
@@ -120,6 +133,11 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                 isOpen={viewModalState.isOpen}
                 id={viewModalState.id}
                 onClose={() => setViewModalState({ isOpen: false, id: 0 })}
+            />
+            <DeleteListingModal
+                isOpen={deleteModalState.isOpen}
+                id={deleteModalState.id}
+                onClose={() => setDeleteModalState({ isOpen: false, id: 0 })}
             />
         </>
     );
