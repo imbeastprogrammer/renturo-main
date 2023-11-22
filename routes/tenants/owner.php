@@ -35,6 +35,9 @@ Route::middleware([
     Route::get('/post-management/analytics/promotions', function () {
         return Inertia::render('tenants/owner/post-management/analytics/promotions/index');
     });
+    Route::get('/post-management/analytics/promotions/create', function () {
+        return Inertia::render('tenants/owner/post-management/analytics/promotions/create/index');
+    });
     Route::get('/post-management/calendar', function () {
         return Inertia::render('tenants/owner/post-management/calendar/index');
     });
