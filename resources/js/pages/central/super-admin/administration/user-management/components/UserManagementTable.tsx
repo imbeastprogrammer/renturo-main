@@ -35,8 +35,8 @@ function UserManagementTable({ users }: UserMangementTableProps) {
 
     return (
         <>
-            <Table>
-                <TableHeader>
+            <Table className='overflow-auto'>
+                <TableHeader className='sticky top-0 bg-white'>
                     <TableRow className='text-base text-[#2E3436]'>
                         <TableHead className='w-[100px]'>ID</TableHead>
                         <TableHead>First Name</TableHead>

@@ -1,16 +1,14 @@
-import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link, router } from '@inertiajs/react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { User } from '@/types/users';
+import { useSearchParams } from '@/hooks/useSearchParams';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import UserManagementTable from './components/UserManagementTable';
 import Pagination from '@/components/super-admin/Pagination';
-import { useSearchParams } from '@/hooks/useSearchParams';
 
 type UserManagementProps = {
     users: PaginatedUser;
@@ -26,24 +24,27 @@ type PaginatedUser = {
 
 function UserManagement({ users }: UserManagementProps) {
     const { pathname } = window.location;
-    const [currentPage, setCurrentPage] = useState(1);
-    const { searchParams } = useSearchParams();
+    const { searchParams, queryParams } = useSearchParams();
     const searchTerm = searchParams.get('searchTerm') || '';
 
     const recordsCount = users.data.length;
 
-    const handleNextPage = (page: number) => {
-        if (page < users.last_page) setCurrentPage(page + 1);
+    const handleNextPage = () => {
+        if (users.next_page_url)
+            router.replace(users.next_page_url, { data: { searchTerm } });
     };
-    const handlePrevPage = (page: number) => {
-        if (page > 1) setCurrentPage(page - 1);
+    const handlePrevPage = () => {
+        if (users.prev_page_url)
+            router.replace(users.prev_page_url, { data: { searchTerm } });
     };
 
-    const handlePageChange = (page: number) => setCurrentPage(page);
+    const handlePageChange = (page: number) => {
+        router.replace(pathname, { data: { ...queryParams, page } });
+    };
 
     return (
-        <div className='h-full p-4'>
-            <div className='grid h-full grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
+        <div className='h-full overflow-hidden p-4'>
+            <div className='grid h-full grid-rows-[auto_1fr_auto] gap-4 overflow-hidden rounded-xl bg-white p-4 shadow-lg'>
                 <div className='flex items-center justify-between'>
                     <Searchbar
                         value={searchTerm}
@@ -52,6 +53,7 @@ function UserManagement({ users }: UserManagementProps) {
                                 `${pathname}?searchTerm=${e.target.value}`,
                             )
                         }
+                        onSearchClicked={() => router.reload()}
                     />
                     <div className='flex items-center gap-4'>
                         <div>
@@ -71,15 +73,14 @@ function UserManagement({ users }: UserManagementProps) {
                         </div>
                     </div>
                 </div>
-                <ScrollArea>
-                    <UserManagementTable users={users.data} />
-                </ScrollArea>
+                <UserManagementTable users={users.data} />
                 <div className='flex items-center justify-between'>
                     <div className='text-[15px] font-medium text-black/50'>
-                        Showing {recordsCount} record(s) of page {currentPage}
+                        Showing {recordsCount} record(s) of page{' '}
+                        {users.current_page}
                     </div>
                     <Pagination
-                        currentPage={currentPage}
+                        currentPage={users.current_page}
                         numberOfPages={users.last_page}
                         onNextPage={handleNextPage}
                         onPrevPage={handlePrevPage}
@@ -88,12 +89,10 @@ function UserManagement({ users }: UserManagementProps) {
                     <div className='flex items-center gap-2 text-[15px] font-medium text-black/50'>
                         <span>Page</span>
                         <Input
-                            value={currentPage}
+                            value={users.current_page}
                             className='h-8 w-16 text-center'
                             type='number'
-                            onChange={(e) =>
-                                setCurrentPage(Number(e.target.value))
-                            }
+                            readOnly
                         />
                         <span>of {users.last_page}</span>
                     </div>
