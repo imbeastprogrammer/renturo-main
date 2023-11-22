@@ -45,8 +45,6 @@ function UpdateUserForm() {
         router.visit('/admin/settings/personal-information', { replace: true });
     };
 
-    console.log(form.watch('phone_number'));
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
