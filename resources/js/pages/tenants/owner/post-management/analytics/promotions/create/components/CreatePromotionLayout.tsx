@@ -5,7 +5,7 @@ function CreatePromotionLayout({ children }: PropsWithChildren) {
     return (
         <div className='grid h-screen grid-rows-[114px_1fr] overflow-hidden bg-[#F9F9F9]'>
             <Header />
-            <main className='grid grid-cols-[1.5fr_1fr] overflow-hidden'>
+            <main className='grid grid-cols-[1.2fr_1fr] overflow-hidden'>
                 {children}
             </main>
         </div>
