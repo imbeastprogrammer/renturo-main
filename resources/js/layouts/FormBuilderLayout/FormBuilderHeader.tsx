@@ -4,7 +4,7 @@ import { MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
-import useMenuToggle from '@/pages/tenants/admin/listings/form-builder/hooks/useMenuToggle';
+import useMenuToggle from '@/pages/tenants/admin/post-management/form-builder/hooks/useMenuToggle';
 import {
     RedoIcon,
     SavedIcon,

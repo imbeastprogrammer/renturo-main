@@ -13,6 +13,7 @@ use App\Http\Controllers\Tenants\Admin\PostManagementController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormFieldController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormPageController;
 use App\Http\Controllers\Tenants\Admin\CategoryManagementController;
+use App\Http\Controllers\Tenants\Admin\FormBuilderController;
 use App\Http\Controllers\Tenants\Admin\PostManagementAdsController;
 use App\Http\Controllers\Tenants\Admin\PostManagementBookingsController;
 use App\Http\Controllers\Tenants\Admin\PostManagementCategoriesController;
@@ -70,6 +71,7 @@ Route::middleware([
     Route::get('/post-management/promotions', [PostManagementPromotionsController::class, 'index']);
     Route::get('/post-management/promotions/{id}', [PostManagementPromotionsController::class, 'edit']);
     Route::get('/post-management/ads', [PostManagementAdsController::class, 'index']);
+    Route::get('/post-management/form-builder', [FormBuilderController::class, 'index']);
 
     Route::put('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
     Route::resource('/form/pages', DynamicFormPageController::class);
