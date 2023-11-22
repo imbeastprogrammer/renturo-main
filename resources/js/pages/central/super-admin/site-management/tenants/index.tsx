@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 
 import { Tenant } from '@/types/tenant';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import TenantsTable from './components/TenantsTable';
 import Pagination from '@/components/super-admin/Pagination';
+import { useSearchParams } from '@/hooks/useSearchParams';
 
 type TenantsProps = {
     tenants: PaginatedTenant;
@@ -23,13 +24,26 @@ type PaginatedTenant = {
 };
 
 function Tenants({ tenants }: TenantsProps) {
+    const { pathname } = window.location;
     const [currentPage, setCurrentPage] = useState(1);
+    const { searchParams, queryParams } = useSearchParams();
+    const searchTerm = searchParams.get('searchTerm') || '';
 
     return (
         <div className='h-full bg-[#f0f0f0] p-4'>
             <div className='grid h-full grid-rows-[auto_1fr_auto] gap-4 rounded-xl bg-white p-4 shadow-lg'>
                 <div className='flex items-center justify-between'>
-                    <Searchbar />
+                    <Searchbar
+                        value={searchTerm}
+                        onChange={(e) =>
+                            router.replace(pathname, {
+                                data: {
+                                    ...queryParams,
+                                    searchTerm: e.target.value,
+                                },
+                            })
+                        }
+                    />
                     <div className='flex items-center gap-4'>
                         <div>
                             <span className='text-[20px] font-semibold text-[#2E3436]/80'>
