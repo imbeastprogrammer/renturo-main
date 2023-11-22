@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { cn } from '@/lib/utils';
+import { TiPlus } from 'react-icons/ti';
+import { Separator } from '@/components/ui/separator';
 import {
     DragEndEvent,
     useDndMonitor,
@@ -11,8 +12,10 @@ import {
     FormElementInstance,
     FormElements,
 } from '../FormElement';
-import useFormBuilder from '@/hooks/useFormBuilder';
+import { cn } from '@/lib/utils';
+
 import { DesignerGripIcon } from '@/assets/form-builder';
+import useFormBuilder from '@/hooks/useFormBuilder';
 import EmptyDropzone from './EmptyDropzone';
 
 function Dropzone() {
@@ -48,59 +51,35 @@ function Dropzone() {
                 );
             }
 
-            const isDroppingOverDesignerElementBottomHalf =
-                over.data?.current?.isBottomHalfDesignerElement;
-            const isDroppingOverDesignerElementTopHalf =
-                over.data?.current?.isTopHalfDesignerElement;
+            const isDroppablePlaceholder =
+                over.data.current?.isDroppablePlaceholder;
 
-            const isDroppingOverDesignerElement =
-                isDroppingOverDesignerElementBottomHalf ||
-                isDroppingOverDesignerElementTopHalf;
-
-            if (isToolboxItem && isDroppingOverDesignerElement) {
+            if (isToolboxItem && isDroppablePlaceholder) {
                 const type = active.data?.current?.type;
                 const newElement = FormElements[type as ElementsType].construct(
                     uuidv4(),
                 );
 
-                const overId = over.data?.current?.elementId;
+                const overElementIndex = over.data?.current?.index + 1;
 
-                const overElementIndex = currentPage.fields.findIndex(
-                    (el) => el.id === overId,
-                );
                 if (overElementIndex === -1) {
                     throw new Error('element not found');
                 }
 
-                let indexForNewElement = overElementIndex; // i assume i'm on top-half
-                if (isDroppingOverDesignerElementBottomHalf) {
-                    indexForNewElement = overElementIndex + 1;
-                }
-
-                return addField(
-                    current_page_id,
-                    indexForNewElement,
-                    newElement,
-                );
+                return addField(current_page_id, overElementIndex, newElement);
             }
 
             const isDraggingDesignerElement =
                 active.data?.current?.isDesignerElement;
 
-            const draggingDesignerElementOverAnotherDesignerElement =
-                isDroppingOverDesignerElement && isDraggingDesignerElement;
-
-            if (draggingDesignerElementOverAnotherDesignerElement) {
+            if (isDraggingDesignerElement && isDroppablePlaceholder) {
                 const activeId = active.data?.current?.elementId;
-                const overId = over.data?.current?.elementId;
 
                 const activeElementIndex = currentPage.fields.findIndex(
                     (el) => el.id === activeId,
                 );
 
-                const overElementIndex = currentPage.fields.findIndex(
-                    (el) => el.id === overId,
-                );
+                let overElementIndex = over.data?.current?.index;
 
                 if (activeElementIndex === -1 || overElementIndex === -1) {
                     throw new Error('element not found');
@@ -109,27 +88,31 @@ function Dropzone() {
                 const activeElement = {
                     ...currentPage.fields[activeElementIndex],
                 };
+
                 removeField(current_page_id, activeId);
 
-                let indexForNewElement = overElementIndex;
-                if (isDroppingOverDesignerElementBottomHalf) {
-                    indexForNewElement = overElementIndex + 1;
-                }
-
-                addField(current_page_id, indexForNewElement, activeElement);
+                return addField(
+                    current_page_id,
+                    overElementIndex,
+                    activeElement,
+                );
             }
         },
     });
 
     return (
         <div ref={setNodeRef} className='relative overflow-hidden'>
-            <div className='relative h-full space-y-2 overflow-y-auto overflow-x-hidden bg-[#f4f4f4] px-4 py-8 shadow-lg'>
-                {currentPage?.fields.map((field) => (
-                    <DesignerElementWrapper key={field.id} element={field} />
+            <div className='relative h-full overflow-x-hidden overflow-y-scroll bg-[#f4f4f4] px-4 py-8 shadow-lg'>
+                {currentPage?.fields.map((field, idx) => (
+                    <DesignerElementWrapper
+                        key={field.id}
+                        index={idx}
+                        element={field}
+                    />
                 ))}
                 {!currentPage?.fields.length && !isOver && <EmptyDropzone />}
                 {isOver && (
-                    <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
+                    <div className='grid h-[143px] place-items-center rounded-lg border-2 border-dashed border-metalic-blue bg-metalic-blue/5 text-[15px] font-medium text-metalic-blue'>
                         Drag and drop elements from the left to add a new
                         component
                     </div>
@@ -139,28 +122,45 @@ function Dropzone() {
     );
 }
 
-function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
+type DropppablePlaceholderProps = {
+    index: number;
+};
+function DroppablePlaceholder({ index }: DropppablePlaceholderProps) {
+    const { setNodeRef, isOver } = useDroppable({
+        id: 'droppable-placeholder' + index,
+        data: { index, isDroppablePlaceholder: true },
+    });
+
+    return (
+        <div className='relative grid gap-2 py-2' ref={setNodeRef}>
+            <div className='flex items-center'>
+                <Separator className='h-[2px] flex-1' />
+                <div className='grid h-[20px] w-[20px] place-items-center rounded-full bg-[#E1E1E1] text-[#2E3436]'>
+                    <TiPlus />
+                </div>
+                <Separator className='h-[2px] flex-1' />
+            </div>
+            {isOver && (
+                <div className='grid h-[143px] place-items-center rounded-lg border-2 border-dashed border-metalic-blue bg-metalic-blue/5 text-[15px] font-medium text-metalic-blue'>
+                    Drag and drop elements from the left to add a new component
+                </div>
+            )}
+        </div>
+    );
+}
+
+type DesignerElementWrapperProps = {
+    element: FormElementInstance;
+    index: number;
+};
+
+function DesignerElementWrapper({
+    element,
+    index,
+}: DesignerElementWrapperProps) {
     const { selectedField } = useFormBuilder();
 
-    const topHalf = useDroppable({
-        id: element.id + '-top',
-        data: {
-            type: element.type,
-            elementId: element.id,
-            isTopHalfDesignerElement: true,
-        },
-    });
-
-    const bottomHalf = useDroppable({
-        id: element.id + '-bottom',
-        data: {
-            type: element.type,
-            elementId: element.id,
-            isBottomHalfDesignerElement: true,
-        },
-    });
-
-    const sortable = useDraggable({
+    const draggable = useDraggable({
         id: element.id + '-draggable-handler',
         data: {
             type: element.type,
@@ -171,43 +171,26 @@ function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 
     const isActive = selectedField?.id === element.id;
 
-    if (sortable.isDragging) return null;
+    if (draggable.isDragging) return null;
 
     const DesignerElement = FormElements[element.type].designerComponent;
 
     return (
         <>
-            {topHalf.isOver && (
-                <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
-                    Drag and drop elements from the left to add a new component
-                </div>
-            )}
             <div
-                ref={sortable.setNodeRef}
-                {...sortable.attributes}
+                ref={draggable.setNodeRef}
+                {...draggable.attributes}
                 className={cn(
                     'relative flex items-center gap-8 rounded-lg border bg-white p-4',
                     isActive && 'ring-2',
                 )}
             >
-                <div {...sortable.listeners} {...sortable.attributes}>
+                <div {...draggable.listeners} {...draggable.attributes}>
                     <DesignerGripIcon />
                 </div>
-                <div
-                    ref={topHalf.setNodeRef}
-                    className='pointer-events-none absolute h-1/2 w-full rounded-t-md'
-                />
-                <div
-                    ref={bottomHalf.setNodeRef}
-                    className='pointer-events-none  absolute bottom-0 h-1/2 w-full rounded-b-md'
-                />
                 <DesignerElement element={element} />
             </div>
-            {bottomHalf.isOver && (
-                <div className='grid h-32 place-items-center rounded-lg border-2 border-dashed border-metalic-blue text-metalic-blue'>
-                    Drag and drop elements from the left to add a new component
-                </div>
-            )}
+            <DroppablePlaceholder index={index} />
         </>
     );
 }
