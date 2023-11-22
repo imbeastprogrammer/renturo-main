@@ -60,12 +60,13 @@ function OwnerSidebar() {
                         {SublinkLabelMap[activeSidebarItem.label] ||
                             activeSidebarItem.label}
                     </h1>
-                    {subLinks.map((sublink) => {
+                    {subLinks.map((sublink, idx) => {
                         const path = `/owner${activeSidebarItem.path}${sublink.path}`;
 
                         if (!sublink.sublinks)
                             return (
                                 <SubLink
+                                    key={idx}
                                     href={path}
                                     isActive={path === pathname}
                                 >
@@ -74,28 +75,32 @@ function OwnerSidebar() {
                             );
 
                         return (
-                            <Collapsible>
+                            <Collapsible key={idx}>
                                 <CollapsibleTrigger className='flex w-full  items-center justify-between rounded-full p-1 px-4 text-xl font-semibold transition data-[state=open]:bg-[#EEF5FF]'>
                                     {sublink.label} <GoTriangleDown />
                                 </CollapsibleTrigger>
                                 <CollapsibleContent className='hidden gap-2 py-2 pl-6 data-[state=open]:grid'>
-                                    {sublink.sublinks.map((childSubLink) => {
-                                        const path = `/owner${activeSidebarItem.path}${sublink.path}${childSubLink.path}`;
-                                        return (
-                                            <Link
-                                                href={path}
-                                                className={cn(
-                                                    'block rounded-full px-4 py-1 text-lg font-medium',
-                                                    {
-                                                        'bg-[#EEF5FF]':
-                                                            path === pathname,
-                                                    },
-                                                )}
-                                            >
-                                                {childSubLink.label}
-                                            </Link>
-                                        );
-                                    })}
+                                    {sublink.sublinks.map(
+                                        (childSubLink, idx) => {
+                                            const path = `/owner${activeSidebarItem.path}${sublink.path}${childSubLink.path}`;
+                                            return (
+                                                <Link
+                                                    key={idx}
+                                                    href={path}
+                                                    className={cn(
+                                                        'block rounded-full px-4 py-1 text-lg font-medium',
+                                                        {
+                                                            'bg-[#EEF5FF]':
+                                                                path ===
+                                                                pathname,
+                                                        },
+                                                    )}
+                                                >
+                                                    {childSubLink.label}
+                                                </Link>
+                                            );
+                                        },
+                                    )}
                                 </CollapsibleContent>
                             </Collapsible>
                         );

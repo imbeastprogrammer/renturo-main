@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { ReactNode } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,13 +19,16 @@ function Promotions() {
                         Search
                     </Button>
                 </div>
-                <Button
-                    variant='outline'
-                    className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
-                >
-                    <PlusIcon className='h-4 w-4' />
-                    Create
-                </Button>
+                <Link href='/owner/post-management/analytics/promotions/create'>
+                    <Button
+                        type='button'
+                        variant='outline'
+                        className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
+                    >
+                        <PlusIcon className='h-4 w-4' />
+                        Create
+                    </Button>
+                </Link>
             </div>
             <PromotionsTable />
         </div>
