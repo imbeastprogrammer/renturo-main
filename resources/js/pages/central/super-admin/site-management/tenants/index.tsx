@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link, router } from '@inertiajs/react';
 
+import { useSearchParams } from '@/hooks/useSearchParams';
 import { Tenant } from '@/types/tenant';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import Searchbar from './components/Searchbar';
 import TenantsTable from './components/TenantsTable';
 import Pagination from '@/components/super-admin/Pagination';
-import { useSearchParams } from '@/hooks/useSearchParams';
 
 type TenantsProps = {
     tenants: PaginatedTenant;
@@ -28,6 +28,21 @@ function Tenants({ tenants }: TenantsProps) {
     const [currentPage, setCurrentPage] = useState(1);
     const { searchParams, queryParams } = useSearchParams();
     const searchTerm = searchParams.get('searchTerm') || '';
+    const recordsCount = tenants.data.length;
+
+    const handleNextPage = () => {
+        if (tenants.next_page_url)
+            router.replace(tenants.next_page_url, { data: { searchTerm } });
+    };
+
+    const handlePrevPage = () => {
+        if (tenants.prev_page_url)
+            router.replace(tenants.prev_page_url, { data: { searchTerm } });
+    };
+
+    const handlePageChange = (page: number) => {
+        router.replace(pathname, { data: { searchTerm, page } });
+    };
 
     return (
         <div className='h-full bg-[#f0f0f0] p-4'>
@@ -65,14 +80,15 @@ function Tenants({ tenants }: TenantsProps) {
                 <TenantsTable tenants={tenants.data} />
                 <div className='flex items-center justify-between'>
                     <div className='text-[15px] font-medium text-black/50'>
-                        Showing 1 to 2 of 2 Users
+                        Showing {recordsCount} record(s) of page{' '}
+                        {tenants.current_page}
                     </div>
                     <Pagination
                         currentPage={currentPage}
                         numberOfPages={tenants.last_page}
-                        onNextPage={(page) => setCurrentPage(page + 1)}
-                        onPrevPage={(page) => setCurrentPage(page - 1)}
-                        onPageChange={(page) => setCurrentPage(page)}
+                        onNextPage={handleNextPage}
+                        onPrevPage={handlePrevPage}
+                        onPageChange={handlePageChange}
                     />
                     <div className='flex items-center gap-2 text-[15px] font-medium text-black/50'>
                         <span>Page</span>
