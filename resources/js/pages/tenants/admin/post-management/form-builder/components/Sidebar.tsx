@@ -1,13 +1,11 @@
 import { ReactNode } from 'react';
-import { InertiaLinkProps, Link, router, usePage } from '@inertiajs/react';
-import {
-    HomeIcon,
-    LogOutIcon,
-    LucideIcon,
-    PlusIcon,
-    SettingsIcon,
-    UsersIcon,
-} from 'lucide-react';
+import { IconType } from 'react-icons';
+import { InertiaLinkProps, Link, usePage } from '@inertiajs/react';
+import { BiMessageSquareAdd } from 'react-icons/bi';
+import { AiFillHome } from 'react-icons/ai';
+import { FaUsers } from 'react-icons/fa';
+import { FiUser } from 'react-icons/fi';
+import { IoLogOut } from 'react-icons/io5';
 
 import { User } from '@/types/users';
 import useMenuToggle from '../hooks/useMenuToggle';
@@ -15,10 +13,18 @@ import RenturoLogoWhite from '@/assets/logo/RenturoLogoWhite.png';
 import AlluraAvatar from '@/assets/avatars/allura_avatar.png';
 
 const sidebarItems = [
-    { icon: HomeIcon, label: 'Dashboard', path: '/admin' },
-    { icon: PlusIcon, label: 'Post', path: '/admin/post' },
-    { icon: UsersIcon, label: 'Users', path: '/admin/users' },
-    { icon: SettingsIcon, label: 'Settings', path: '/admin/settings' },
+    { icon: AiFillHome, label: 'Dashboard', path: '/admin' },
+    {
+        icon: BiMessageSquareAdd,
+        label: 'Post',
+        path: '/admin/post-management/properties',
+    },
+    { icon: FaUsers, label: 'Users', path: '/admin/user-management/users' },
+    {
+        icon: FiUser,
+        label: 'Settings',
+        path: '/admin/settings/personal-information',
+    },
 ];
 
 function Sidebar() {
@@ -34,7 +40,6 @@ function Sidebar() {
                         icon={sidebarItem.icon}
                         key={sidebarItem.path}
                         href={sidebarItem.path}
-                        data={{ active: sidebarItem.label }}
                         onClick={() => toggleMenu(isOpen)}
                     >
                         {sidebarItem.label}
@@ -42,7 +47,14 @@ function Sidebar() {
                 ))}
             </div>
             <div className='p-8'>
-                <LogoutButton />
+                <SidebarItem
+                    icon={IoLogOut}
+                    href='/logout'
+                    method='post'
+                    onClick={() => toggleMenu(isOpen)}
+                >
+                    Logout
+                </SidebarItem>
             </div>
         </div>
     );
@@ -73,36 +85,18 @@ function LogoSection() {
 }
 
 type SidebarItemProps = {
-    icon: LucideIcon;
+    icon: IconType;
     children: ReactNode;
 } & InertiaLinkProps;
 
-function SidebarItem({ children, ...props }: SidebarItemProps) {
+function SidebarItem({ children, icon: Icon, ...props }: SidebarItemProps) {
     return (
         <Link className='block' {...props}>
-            <div className='flex items-center gap-4 text-[18px] font-semibold text-white'>
-                {props.icon && <props.icon />}
+            <div className='flex items-center gap-4 text-lg font-semibold text-white'>
+                {Icon && <Icon className='h-[30px] w-[30px]' />}
                 {children}
             </div>
         </Link>
-    );
-}
-
-function LogoutButton() {
-    const { isOpen, toggleMenu } = useMenuToggle();
-    const handleLogout = () => {
-        toggleMenu(isOpen);
-        router.post('/logout');
-    };
-
-    return (
-        <button
-            onClick={handleLogout}
-            className='flex items-center gap-4 text-[18px] font-semibold text-white'
-        >
-            <LogOutIcon />
-            Logout
-        </button>
     );
 }
 
