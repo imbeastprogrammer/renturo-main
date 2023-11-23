@@ -3,9 +3,10 @@ import { XIcon } from 'lucide-react';
 type ErrorProps = {
     title?: string;
     description?: string;
+    onClose: () => void;
 };
 
-function Error({ title, description }: ErrorProps) {
+function Error({ title, description, onClose }: ErrorProps) {
     return (
         <div className='flex min-w-[350px] -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
             <XIcon className='h-[40px] w-[40px] text-red-500' />
@@ -16,6 +17,12 @@ function Error({ title, description }: ErrorProps) {
                         'Something went wrong, Please try again later'}
                 </p>
             </div>
+            <button
+                className='absolute right-2 top-2 text-[#D2D2D2]'
+                onClick={onClose}
+            >
+                <XIcon />
+            </button>
         </div>
     );
 }

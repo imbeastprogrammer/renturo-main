@@ -4,11 +4,21 @@ import Error from '../components/toast/owner/Error';
 
 type Params = { title?: string; description?: string };
 
-function useOwnerToast() {
-    const success = (params?: Params) => toast.custom(<Success {...params} />);
-    const error = (params?: Params) => toast.custom(<Error {...params} />);
+function useCentralToast() {
+    const success = (params?: Params) =>
+        toast.custom((t) =>
+            t.visible ? (
+                <Success {...params} onClose={() => toast.dismiss(t.id)} />
+            ) : null,
+        );
+    const error = (params?: Params) =>
+        toast.custom((t) =>
+            t.visible ? (
+                <Error {...params} onClose={() => toast.dismiss(t.id)} />
+            ) : null,
+        );
 
     return { success, error };
 }
 
-export default useOwnerToast;
+export default useCentralToast;
