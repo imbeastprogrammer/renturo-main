@@ -12,11 +12,13 @@ import {
     UndoIcon,
 } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
+import useUndoAndRedoFormbuilderByKeyPress from '@/hooks/useUndoAndRedoFormbuilderByKeyPress';
 
 function FormBuilderHeader() {
     const [saving, setSaving] = useState(false);
     const { isOpen, toggleMenu } = useMenuToggle();
     const { history, future, undo, redo } = useFormBuilder();
+    useUndoAndRedoFormbuilderByKeyPress({ undo, redo });
 
     const handleMenuToggle = () => toggleMenu(isOpen);
     const handleSave = () => {
