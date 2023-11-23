@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import SuperAdminSidebar from './SuperAdminSidebar';
 import Breadcrumb from './Breadcrumb';
+import UserButton from './UserButton';
 
 type SuperAdminLayoutProps = {
     children: ReactNode;
@@ -20,6 +21,8 @@ export const LabelMap: Record<string, any> = {
     '/super-admin/site-management/tenants/edit/:id': 'Update Tenant',
 };
 
+const hideBreadcrumbsRoutes = ['/super-admin'];
+
 function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
     const { pathname } = window.location;
 
@@ -27,19 +30,26 @@ function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
         <div className='grid h-screen grid-cols-[355px_1fr] overflow-hidden bg-[#F0F0F0] font-outfit'>
             <SuperAdminSidebar />
             <main className='grid h-full grid-rows-[auto_1fr] overflow-hidden'>
-                <div className='p-4'>
-                    <h1 className='text-[30px] font-semibold'>
-                        {LabelMap[pathname] ||
-                            (pathname.includes(
-                                '/super-admin/administration/roles/edit/',
-                            ) &&
-                                'Update Roles') ||
-                            (pathname.includes(
-                                '/super-admin/administration/user-management/edit/',
-                            ) &&
-                                'Update User')}
-                    </h1>
-                    <Breadcrumb />
+                <div className='flex items-center justify-between gap-4 p-4'>
+                    {hideBreadcrumbsRoutes.includes(pathname) ? (
+                        <div></div>
+                    ) : (
+                        <div>
+                            <h1 className='text-[30px] font-semibold'>
+                                {LabelMap[pathname] ||
+                                    (pathname.includes(
+                                        '/super-admin/administration/roles/edit/',
+                                    ) &&
+                                        'Update Roles') ||
+                                    (pathname.includes(
+                                        '/super-admin/administration/user-management/edit/',
+                                    ) &&
+                                        'Update User')}
+                            </h1>
+                            <Breadcrumb />
+                        </div>
+                    )}
+                    <UserButton />
                 </div>
                 {children}
             </main>

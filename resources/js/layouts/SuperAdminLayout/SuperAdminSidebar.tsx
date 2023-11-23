@@ -29,9 +29,9 @@ function SuperAdminSidebar() {
                 </h1>
                 <div className='relative space-y-2'>
                     <SidebarLink
-                        isActive={pathname === '/super-admin/dashboard'}
+                        isActive={pathname === '/super-admin'}
                         icon={DashboardLogo}
-                        href='/super-admin/dashboard'
+                        href='/super-admin'
                     >
                         Dashboard
                     </SidebarLink>
