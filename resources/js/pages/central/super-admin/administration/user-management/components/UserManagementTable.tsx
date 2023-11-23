@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { RxTrash } from 'react-icons/rx';
+import { FiEdit3 } from 'react-icons/fi';
 import {
     Table,
     TableBody,
@@ -72,17 +74,21 @@ function UserManagementTable({ users }: UserMangementTableProps) {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className='font-outfit'>
                                         <DropdownMenuItem
+                                            className='gap-2'
                                             onClick={() =>
                                                 navigateToEditPage(user.id)
                                             }
                                         >
+                                            <FiEdit3 className='h-[22px] w-[22px] text-base' />
                                             Edit User
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
+                                            className='gap-2 text-red-500 focus:text-red-500'
                                             onClick={() =>
                                                 openDeleteUserModal(user.id)
                                             }
                                         >
+                                            <RxTrash className='h-[22px] w-[22px] text-base' />{' '}
                                             Delete User
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>

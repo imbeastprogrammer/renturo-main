@@ -68,6 +68,7 @@ function DeleteRolesModal({ isOpen, onClose, id }: DeleteModalProps) {
                         <Button
                             variant='outline'
                             className='h-[25px] w-[217px]'
+                            onClick={onClose}
                         >
                             Cancel
                         </Button>
