@@ -1,15 +1,13 @@
+import { RiDatabase2Fill } from 'react-icons/ri';
+import { BiSolidLayout } from 'react-icons/bi';
+import { FaUsers } from 'react-icons/fa';
+import { IoSettingsSharp } from 'react-icons/io5';
+import { IoLogOut } from 'react-icons/io5';
 import { Separator } from '@/components/ui/separator';
+
 import KabootekTextLogoWhite from '@/assets/central/auth/kabootek-text-logo-white.png';
 import GroupLinks from './GroupLinks';
 import SidebarLink from './SidebarLink';
-
-import {
-    AdministrationLogo,
-    DashboardLogo,
-    SiteManagementLogo,
-    SettingsLogo,
-    LogoutLogo,
-} from '@/assets/central/sidebar';
 
 function SuperAdminSidebar() {
     const { pathname } = window.location;
@@ -30,7 +28,7 @@ function SuperAdminSidebar() {
                 <div className='relative space-y-2'>
                     <SidebarLink
                         isActive={pathname === '/super-admin'}
-                        icon={DashboardLogo}
+                        icon={BiSolidLayout}
                         href='/super-admin'
                     >
                         Dashboard
@@ -38,7 +36,7 @@ function SuperAdminSidebar() {
                     <GroupLinks
                         isActive={pathname.includes('/administration')}
                         label='Administration'
-                        icon={AdministrationLogo}
+                        icon={FaUsers}
                         links={[
                             {
                                 label: 'User Management',
@@ -57,7 +55,7 @@ function SuperAdminSidebar() {
                     <GroupLinks
                         isActive={pathname.includes('/site-management')}
                         label='Site Management'
-                        icon={SiteManagementLogo}
+                        icon={RiDatabase2Fill}
                         links={[
                             {
                                 label: 'Tenants and Domains',
@@ -76,11 +74,11 @@ function SuperAdminSidebar() {
                     <SidebarLink
                         href='/super-admin/settings/account'
                         isActive={pathname === '/super-admin/settings/account'}
-                        icon={SettingsLogo}
+                        icon={IoSettingsSharp}
                     >
                         Settings
                     </SidebarLink>
-                    <SidebarLink method='post' href='/logout' icon={LogoutLogo}>
+                    <SidebarLink method='post' href='/logout' icon={IoLogOut}>
                         Logout
                     </SidebarLink>
                 </div>

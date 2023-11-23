@@ -1,21 +1,18 @@
 import { ReactNode } from 'react';
 import { Separator } from '@/components/ui/separator';
-import {
-    NextIcon,
-    NotificationIcon,
-    NotificationItemIcon,
-} from '@/assets/central/dashboard';
-import { Link } from '@inertiajs/react';
+import { BiSolidNotification } from 'react-icons/bi';
+import { HiBell } from 'react-icons/hi';
+import { FaArrowRight } from 'react-icons/fa';
 
 function Notifications() {
     return (
         <div className='h-full w-full rounded-lg bg-white p-4'>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-4'>
-                    <img src={NotificationIcon} alt='User Icon' />
+                    <HiBell className='h-[30px] w-[30px] text-black/80' />
                     <h1 className='text-lg text-black/80'>Notifications</h1>
                 </div>
-                <img src={NextIcon} alt='Next Icon' />
+                <FaArrowRight className='h-[30px] w-[30px] text-black/80' />
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
@@ -57,10 +54,9 @@ type NotificationItemProps = { children: ReactNode };
 function NotificationItem({ children }: NotificationItemProps) {
     return (
         <div className='flex items-center gap-4 text-[15px] text-black/50'>
-            <img
-                src={NotificationItemIcon}
+            <BiSolidNotification
                 alt='Notification icon item'
-                className='h-[20px] w-[20px] object-contain'
+                className='h-[25px] w-[25px] flex-shrink-0'
             />
             {children}
         </div>

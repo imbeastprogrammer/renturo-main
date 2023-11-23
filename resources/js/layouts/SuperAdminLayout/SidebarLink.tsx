@@ -1,16 +1,17 @@
 import { ReactNode } from 'react';
+import { IconType } from 'react-icons';
 import { InertiaLinkProps, Link } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 
 type SidebarLinkProps = {
-    icon: string;
+    icon: IconType;
     children: ReactNode;
     isActive?: boolean;
 } & InertiaLinkProps;
 
 function SidebarLink({
     children,
-    icon,
+    icon: Icon,
     isActive = false,
     ...props
 }: SidebarLinkProps) {
@@ -25,11 +26,7 @@ function SidebarLink({
                     isActive && 'opacity-100',
                 )}
             />
-            <img
-                src={icon}
-                alt='navlink icon'
-                className='h-[30px] w-[30px] object-contain'
-            />
+            <Icon className='h-[30px] w-[30px]' />
             {children}
         </Link>
     );

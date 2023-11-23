@@ -1,29 +1,28 @@
+import { IconType } from 'react-icons';
 import { Link } from '@inertiajs/react';
-import {
-    AccountIcon,
-    HelpIcon,
-    NotificationsIcon,
-    PasswordIcon,
-} from '@/assets/central/sidebar';
+import { FaUser, FaKey } from 'react-icons/fa6';
+import { HiBell } from 'react-icons/hi';
+import { IoHelpBuoy } from 'react-icons/io5';
 import { cn } from '@/lib/utils';
 
-const sidebarItems = [
+type SidebarItem = { label: string; path: string; icon: IconType };
+const sidebarItems: SidebarItem[] = [
     {
         label: 'Account',
         path: '/super-admin/settings/account',
-        icon: AccountIcon,
+        icon: FaUser,
     },
     {
         label: 'Password',
         path: '/super-admin/settings/change-password',
-        icon: PasswordIcon,
+        icon: FaKey,
     },
     {
         label: 'Notifications',
         path: '/super-admin/settings/notifications',
-        icon: NotificationsIcon,
+        icon: HiBell,
     },
-    { label: 'Help', path: '/super-admin/settings/help', icon: HelpIcon },
+    { label: 'Help', path: '/super-admin/settings/help', icon: IoHelpBuoy },
 ];
 
 function Sidebar() {
@@ -40,6 +39,7 @@ function Sidebar() {
                         )}
                     >
                         <Icon
+                            className='h-[25px] w-[25px]'
                             color={
                                 pathname === path
                                     ? '#43B3E5'

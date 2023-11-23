@@ -4,18 +4,19 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import { GoTriangleDown } from 'react-icons/go';
 import { cn } from '@/lib/utils';
-import { ChevronLogo } from '@/assets/central/sidebar';
 import { Link } from '@inertiajs/react';
+import { IconType } from 'react-icons';
 
 type GroupLinksProps = {
     label: string;
-    icon: string;
+    icon: IconType;
     links: { label: string; path: string }[];
     isActive: boolean;
 };
 
-function GroupLinks({ label, icon, links, isActive }: GroupLinksProps) {
+function GroupLinks({ label, icon: Icon, links, isActive }: GroupLinksProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOpenChange = (open: boolean) => setIsOpen(open);
@@ -29,11 +30,7 @@ function GroupLinks({ label, icon, links, isActive }: GroupLinksProps) {
                         isActive && 'opacity-100',
                     )}
                 />
-                <img
-                    src={icon}
-                    alt='navlink icon'
-                    className='h-[30px] w-[30px] object-contain'
-                />
+                <Icon className='h-[30px] w-[30px]' />
                 <h1
                     className={cn(
                         'text-[15px] transition',
@@ -42,9 +39,7 @@ function GroupLinks({ label, icon, links, isActive }: GroupLinksProps) {
                 >
                     {label}
                 </h1>
-                <img
-                    src={ChevronLogo}
-                    alt='navlink icon'
+                <GoTriangleDown
                     className={cn(
                         'ml-auto -rotate-90 object-contain transition',
                         isOpen && 'rotate-0',
