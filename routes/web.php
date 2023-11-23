@@ -7,7 +7,7 @@ use App\Http\Controllers\Central\TenantManagementController;
 use App\Http\Controllers\Central\UserManagementController;
 use Inertia\Inertia;
 
-Route::get('/', function () {
+Route::get('/landing-page', function () {
     return Inertia::render('central/landing-page/index');
 });
 
@@ -41,9 +41,6 @@ Route::middleware('auth:central')->group(function () {
 
     Route::prefix('super-admin')->group(function () {
         Route::get('/', function () {
-            return 'super admin dashboard';
-        });
-        Route::get('/dashboard', function () {
             return Inertia::render('central/super-admin/dashboard/index');
         });
         Route::get('/administration/roles', [RolesManagementController::class, 'index']);
