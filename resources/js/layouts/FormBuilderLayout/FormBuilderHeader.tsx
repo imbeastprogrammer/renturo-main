@@ -4,7 +4,7 @@ import { MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
-import useMenuToggle from '@/pages/tenants/admin/listings/form-builder/hooks/useMenuToggle';
+import useMenuToggle from '@/pages/tenants/admin/post-management/form-builder/hooks/useMenuToggle';
 import {
     RedoIcon,
     SavedIcon,
@@ -12,11 +12,13 @@ import {
     UndoIcon,
 } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
+import useUndoAndRedoFormbuilderByKeyPress from '@/hooks/useUndoAndRedoFormbuilderByKeyPress';
 
 function FormBuilderHeader() {
     const [saving, setSaving] = useState(false);
     const { isOpen, toggleMenu } = useMenuToggle();
     const { history, future, undo, redo } = useFormBuilder();
+    useUndoAndRedoFormbuilderByKeyPress({ undo, redo });
 
     const handleMenuToggle = () => toggleMenu(isOpen);
     const handleSave = () => {

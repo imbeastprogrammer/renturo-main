@@ -22,6 +22,7 @@ export const sidebarItems: GroupLink[] = [
             { label: 'Bookings', path: '/bookings' },
             { label: 'Promotions', path: '/promotions' },
             { label: 'Ads', path: '/ads' },
+            { label: 'Form Builder', path: '/form-builder' },
         ],
     },
     {

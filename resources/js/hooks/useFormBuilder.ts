@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { FormElementInstance } from '@/pages/tenants/admin/listings/form-builder/components/FormElement';
+import { FormElementInstance } from '@/pages/tenants/admin/post-management/form-builder/components/FormElement';
 
 type Page = {
     page_title: string;
@@ -48,6 +48,8 @@ const defaultPage: Page = {
     fields: [],
 };
 
+const HISTORY_LIMIT = 20;
+
 const useFormBuilder = create<FormbuilderStore>()(
     persist(
         (set) => ({
@@ -59,22 +61,35 @@ const useFormBuilder = create<FormbuilderStore>()(
             setPage: (pageId) => set({ current_page_id: pageId }),
             setPages: (pages) => set({ pages }),
             addPage: () =>
-                set((state) => ({
-                    ...state,
-                    history: [...state.history, state.pages],
-                    pages: [
-                        ...state.pages,
-                        { page_id: uuidv4(), page_title: '', fields: [] },
-                    ],
-                })),
+                set((state) => {
+                    const history =
+                        state.history.length >= HISTORY_LIMIT
+                            ? [...state.history.slice(1, 50), state.pages]
+                            : [...state.history, state.pages];
+
+                    return {
+                        ...state,
+                        history,
+                        pages: [
+                            ...state.pages,
+                            { page_id: uuidv4(), page_title: '', fields: [] },
+                        ],
+                    };
+                }),
             updatePage: (pageId, newPage) =>
                 set((state) => {
                     const pageUpdated = state.pages.map((page) =>
                         page.page_id === pageId ? newPage : page,
                     );
+
+                    const history =
+                        state.history.length >= HISTORY_LIMIT
+                            ? [...state.history.slice(1, 50), state.pages]
+                            : [...state.history, state.pages];
+
                     return {
                         ...state,
-                        history: [...state.history, state.pages],
+                        history,
                         pages: pageUpdated,
                     };
                 }),
@@ -85,9 +100,15 @@ const useFormBuilder = create<FormbuilderStore>()(
                     const pageRemoved = state.pages.filter(
                         (page) => page.page_id !== pageId,
                     );
+
+                    const history =
+                        state.history.length >= HISTORY_LIMIT
+                            ? [...state.history.slice(1, 50), state.pages]
+                            : [...state.history, state.pages];
+
                     return {
                         ...state,
-                        history: [...state.history, state.pages],
+                        history,
                         pages: pageRemoved,
                     };
                 }),
@@ -96,9 +117,15 @@ const useFormBuilder = create<FormbuilderStore>()(
                     const pageUpdated = state.pages.map((page) =>
                         page.page_id === pageId ? { ...page, fields } : page,
                     );
+
+                    const history =
+                        state.history.length >= HISTORY_LIMIT
+                            ? [...state.history.slice(1, 50), state.pages]
+                            : [...state.history, state.pages];
+
                     return {
                         ...state,
-                        history: [...state.history, state.pages],
+                        history,
                         pages: pageUpdated,
                     };
                 }),
@@ -112,9 +139,15 @@ const useFormBuilder = create<FormbuilderStore>()(
                         }
                         return page;
                     });
+
+                    const history =
+                        state.history.length >= HISTORY_LIMIT
+                            ? [...state.history.slice(1, 50), state.pages]
+                            : [...state.history, state.pages];
+
                     return {
                         ...state,
-                        history: [...state.history, state.pages],
+                        history,
                         pages: pageUpdated,
                     };
                 }),
@@ -129,9 +162,15 @@ const useFormBuilder = create<FormbuilderStore>()(
                         }
                         return page;
                     });
+
+                    const history =
+                        state.history.length >= HISTORY_LIMIT
+                            ? [...state.history.slice(1, 50), state.pages]
+                            : [...state.history, state.pages];
+
                     return {
                         ...state,
-                        history: [...state.history, state.pages],
+                        history,
                         pages: pageUpdated,
                     };
                 }),
@@ -147,9 +186,15 @@ const useFormBuilder = create<FormbuilderStore>()(
                         }
                         return page;
                     });
+
+                    const history =
+                        state.history.length >= HISTORY_LIMIT
+                            ? [...state.history.slice(1, 50), state.pages]
+                            : [...state.history, state.pages];
+
                     return {
                         ...state,
-                        history: [...state.history, state.pages],
+                        history,
                         pages: pageUpdated,
                     };
                 }),

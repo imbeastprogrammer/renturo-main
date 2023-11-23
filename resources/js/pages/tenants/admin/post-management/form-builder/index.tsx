@@ -4,6 +4,7 @@ import {
     DndContext,
     PointerSensor,
     TouchSensor,
+    closestCorners,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -56,7 +57,7 @@ function FormBuilder() {
     const sensors = useSensors(mouseSensor, touchSensor);
 
     return (
-        <DndContext sensors={sensors}>
+        <DndContext collisionDetection={closestCorners} sensors={sensors}>
             <div className='select-none overflow-hidden bg-[#f4f4f4]'>
                 <div className='grid h-full grid-cols-[390px_1fr_auto_300px] gap-x-4 overflow-hidden'>
                     {sidebar.isOpen ? (
