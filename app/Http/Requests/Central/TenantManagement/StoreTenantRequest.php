@@ -34,6 +34,7 @@ class StoreTenantRequest extends FormRequest
             'plan_type' => 'required|in:demo,starter_plan,professional_plan,enterprise_plan,custom_plan',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
             'mobile_number' => 'required|string',
             'password' => 'required',
@@ -47,10 +48,12 @@ class StoreTenantRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $password = Str::random(12);
+
         $this->merge([
             'tenant_id' => Str::lower(Str::random(6)),
             'status' => Tenant::ACTIVE_STATUS,
-            'password' => 'password',
+            'password' => $password,
             'role' => User::ROLE_ADMIN,
             'created_by' => auth()->user()->id,
         ]);

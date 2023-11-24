@@ -3,10 +3,6 @@
 namespace App\Http\Requests\Central\TenantManagement;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Central\Tenant;
-use App\Models\User;
-
-use Str;
 
 class UpdateTenantRequest extends FormRequest
 {

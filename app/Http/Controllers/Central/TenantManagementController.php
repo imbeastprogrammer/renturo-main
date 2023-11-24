@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Laravel\Passport\ClientRepository;
 use App\Http\Requests\Central\TenantManagement\StoreTenantRequest;
 use App\Http\Requests\Central\TenantManagement\UpdateTenantRequest;
-
+use App\Mail\Central\UserManagement\UserCreated;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Models\Central\Tenant;
 use App\Models\User;
 
@@ -73,7 +75,6 @@ class TenantManagementController extends Controller
             
             // $verificationCode = rand(1000, 9999);
 
-            #TODO: debug why username is not saving in the database
             $admin = User::create($request->safe()->except(['tenant_id', 'name']));
 
             // Commenting out the below line because it's the super admin user who creates the tenant admin account.
@@ -85,6 +86,15 @@ class TenantManagementController extends Controller
             //     'code' => $verificationCode,
             //     'expires_at' => Carbon::now()->addSeconds(300),
             // ]);
+            
+            // TODO: $request->name is not populating any data or empty / blank.
+            // Send email notification to tenant admin account
+            Mail::to($request->email)->send(new UserCreated([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role,
+                'password' => $request->password
+            ]));
 
             //install passport personal access tokens
             $client = new ClientRepository();
