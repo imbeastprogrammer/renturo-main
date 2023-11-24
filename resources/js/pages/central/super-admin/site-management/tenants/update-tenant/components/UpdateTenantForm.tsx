@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
-import { Tenant, TenantWithDomains } from '@/types/tenant';
+import { TenantWithDomains } from '@/types/tenant';
 import { ErrorIcon } from '@/assets/central';
 import { UsagePlansMap } from '../usage-plans';
 import FormInput from '@/components/super-admin/forms/FormInput';
@@ -158,7 +158,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                         )}
                     </div>
                 </div>
-                <div className='space-y-4'>
+                <div className='hidden space-y-4'>
                     <SectionTitle>Tenant Admin</SectionTitle>
                     <div className='max-w-[760px] space-y-4'>
                         <FormInput
@@ -181,7 +181,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                         />
                     </div>
                 </div>
-                <div className='space-y-4'>
+                <div className='hidden space-y-4'>
                     <SectionTitle>Contact Details</SectionTitle>
                     <div className='max-w-[760px] space-y-4'>
                         <FormInput
