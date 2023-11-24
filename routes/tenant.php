@@ -86,13 +86,13 @@ Route::middleware([
     Route::get('/encrypt', [CryptographyController::class, 'encrypt']);
     Route::get('/decrypt', [CryptographyController::class, 'decrypt']);
 
-    Route::get('/login/enter-pin', function () {
-        return Inertia::render('tenants/login/EnterPin');
+    Route::get('/login/otp', function () {
+        return Inertia::render('tenants/login/otp/index');
     });
     Route::get('/forgot-password', function () {
         return Inertia::render('tenants/forgot-password/index');
     });
-    Route::get('/forgot-password/enter-otp', function () {
-        return Inertia::render('tenants/forgot-password/EnterOtp');
+    Route::get('/register', function () {
+        return Inertia::render('tenants/register/index');
     });
 });
