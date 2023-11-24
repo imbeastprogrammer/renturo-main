@@ -30,6 +30,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'status',
         'plan_type',
         'created_by',
+        'updated_by',
     ];
 
     public static function getCustomColumns(): array
@@ -39,7 +40,17 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'company',
             'status',
             'plan_type',
-            'created_by'
+            'created_by',
+            'updated_by'
         ];
     }
+
+    public function createdByUser() {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedByUser() {
+        return $this->hasMany(User::class, 'id', 'updated_by');
+    }
 }
+

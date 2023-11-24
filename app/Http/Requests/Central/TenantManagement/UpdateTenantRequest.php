@@ -30,10 +30,6 @@ class UpdateTenantRequest extends FormRequest
         return [
             'status' => 'required|string',
             'plan_type' => 'required|in:demo,starter_plan,professional_plan,enterprise_plan,custom_plan',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:' . User::class,
-            'mobile_number' => 'required|string',
             'updated_by' => 'required|exists:users,id',
         ];
     }

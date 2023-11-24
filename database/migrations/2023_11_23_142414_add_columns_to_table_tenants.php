@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::table('tenants', function (Blueprint $table) {
             $table->foreignId('created_by')->nullable()->references('id')->on('users')->onDelete('no action');
             $table->foreignId('updated_by')->nullable()->references('id')->on('users')->onDelete('no action');
-            $table->foreignId('deleted_by')->nullable()->references('id')->on('users')->onDelete('no action');
         });
     }
 
