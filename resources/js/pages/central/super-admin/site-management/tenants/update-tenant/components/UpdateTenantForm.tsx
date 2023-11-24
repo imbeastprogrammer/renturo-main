@@ -104,6 +104,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                                 label='Domain'
                                 placeholder='Domain'
                                 control={form.control}
+                                disabled
                             />
                         </div>
                         <div className='text-base text-[#2E3436]/50'>
