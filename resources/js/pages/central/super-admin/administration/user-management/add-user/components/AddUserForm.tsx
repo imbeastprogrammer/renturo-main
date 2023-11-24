@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { z } from 'zod';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { router } from '@inertiajs/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -34,6 +34,8 @@ const defaultValues: AddUserFormFields = {
 
 function AddUserForm() {
     const toast = useCentralToast();
+    const [isSubmitting, setSubmitting] = useState(false);
+
     const form = useForm<AddUserFormFields>({
         defaultValues,
         resolver: zodResolver(addUserFormSchema),
@@ -47,15 +49,15 @@ function AddUserForm() {
                 '/super-admin/users',
                 { first_name, last_name, email, mobile_number },
                 {
+                    onBefore: () => setSubmitting(true),
                     onSuccess: () => {
                         toast.success({
                             title: 'Success',
                             description:
                                 'The new user has been added to the system.',
                         });
-                        router.visit(
+                        router.replace(
                             '/super-admin/administration/user-management',
-                            { replace: true },
                         );
                     },
                     onError: (error) =>
@@ -65,6 +67,7 @@ function AddUserForm() {
                                 _.valuesIn(error)[0] ||
                                 'Something went wrong, Please try again later.',
                         }),
+                    onFinish: () => setSubmitting(false),
                 },
             );
         },
@@ -142,6 +145,7 @@ function AddUserForm() {
                     <Button
                         type='submit'
                         className='bg-[#84C58A] px-8 text-base font-medium hover:bg-[#84C58A]/90'
+                        disabled={isSubmitting}
                     >
                         Add New Admin
                     </Button>
