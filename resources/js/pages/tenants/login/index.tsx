@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import loginLogo from '@/assets/login-logo.png';
 import loginHero from '@/assets/login-hero.png';
 import FormInput from '@/components/forms/FormInput';
+import { useState } from 'react';
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -19,6 +20,8 @@ type LoginPageProps = {
     errors: { email: string };
 };
 function LoginPage({ errors }: LoginPageProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -28,7 +31,10 @@ function LoginPage({ errors }: LoginPageProps) {
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        router.post('/login', values);
+        router.post('/login', values, {
+            onBefore: () => setIsSubmitting(true),
+            onFinish: () => setIsSubmitting(false),
+        });
     };
 
     return (
@@ -82,6 +88,7 @@ function LoginPage({ errors }: LoginPageProps) {
                     <div className='grid place-items-center gap-4'>
                         <Button
                             type='submit'
+                            disabled={isSubmitting}
                             className='bg-metalic-blue px-20 py-6 uppercase hover:bg-metalic-blue/90'
                         >
                             log in
