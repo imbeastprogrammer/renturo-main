@@ -92,7 +92,4 @@ Route::middleware([
     Route::get('/forgot-password', function () {
         return Inertia::render('tenants/forgot-password/index');
     });
-    Route::get('/forgot-password/enter-otp', function () {
-        return Inertia::render('tenants/forgot-password/EnterOtp');
-    });
 });
