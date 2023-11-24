@@ -23,6 +23,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
+        #TODO: check why the mobile number and email are not included in update?
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',

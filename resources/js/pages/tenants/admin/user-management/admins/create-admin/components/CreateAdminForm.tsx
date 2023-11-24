@@ -14,7 +14,7 @@ const createAdminSchema = z.object({
     first_name: z.string().nonempty(),
     last_name: z.string().nonempty(),
     email: z.string().nonempty(),
-    mobile_no: z.string().nonempty(),
+    mobile_number: z.string().nonempty(),
     role: z.string().nonempty(),
 });
 
@@ -23,7 +23,7 @@ const defaultValues: CreateAdminFormFields = {
     first_name: '',
     last_name: '',
     email: '',
-    mobile_no: '',
+    mobile_number: '',
     role: 'ADMIN',
 };
 
@@ -84,7 +84,7 @@ function CreateAdminForm() {
                         label='Mobile Number'
                         placeholder='Mobile Number'
                         control={form.control}
-                        name='mobile_no'
+                        name='mobile_number'
                     />
                 </div>
                 {/* <div>

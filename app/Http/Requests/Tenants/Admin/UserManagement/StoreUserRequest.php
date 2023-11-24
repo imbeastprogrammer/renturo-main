@@ -4,6 +4,7 @@ namespace App\Http\Requests\Tenants\Admin\UserManagement;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class StoreUserRequest extends FormRequest
 {
@@ -31,6 +32,7 @@ class StoreUserRequest extends FormRequest
             'mobile_number' => 'required|string|min:11|max:13|unique:users,mobile_number',
             'password' => 'required',
             'role' => 'required|in:ADMIN',
+            'created_by' => 'required|exists:users,id',
         ];
     }
 
@@ -53,9 +55,12 @@ class StoreUserRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        $password = Str::random(12);
+
         $this->merge([
             'role' => User::ROLE_ADMIN,
-            'password' => 'password'
+            'password' => $password,
+            'created_by' => auth()->user()->id,
         ]);
     }
 }

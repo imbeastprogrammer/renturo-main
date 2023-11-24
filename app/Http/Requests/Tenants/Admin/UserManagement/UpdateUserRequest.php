@@ -31,6 +31,7 @@ class UpdateUserRequest extends FormRequest
             'last_name' => 'required|string|max:255',
             'mobile_number' => 'required|string|max:255|unique:users,mobile_number, '. $id,
             'email' => 'required|string|email|max:255|unique:users,email, '. $id,
+            'updated_by' => 'required|exists:users,id',
         ];
     }
 
@@ -41,5 +42,8 @@ class UpdateUserRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        $this->merge([
+            'updated_by' => auth()->user()->id,
+        ]);
     }
 }

@@ -26,9 +26,27 @@ class UserManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAdmins()
+    public function getAdmins(Request $request)
     {
-        $admins = User::where('role', '=', 'ADMIN')->get();
+         // show users that are not the currently authenticated user
+         if ($request->searchTerm == null) {
+            $admins = User::where('id', '!=', auth()->user()->id)
+                ->with('createdByUser', 'updatedByUser')
+                ->where('role', '=', User::ROLE_ADMIN)
+                ->paginate(10);
+        } else {
+
+            $admins = User::where('id', '!=', auth()->user()->id)
+                ->where(function ($query) use ($request) {
+                    $query->where('first_name', 'like', "%{$request->searchTerm}%")
+                        ->orWhere('last_name', 'like', "%{$request->searchTerm}%")
+                        ->orWhere('email', 'like', "%{$request->searchTerm}%")
+                        ->orWhere('mobile_number', 'like', "%{$request->searchTerm}%");
+                })
+                ->with('createdByUser', 'updatedByUser')
+                ->where('role', '=', User::ROLE_ADMIN)
+                ->paginate(10);
+        }
 
         return Inertia::render('tenants/admin/user-management/admins/index', [
             'admins' => $admins
@@ -164,6 +182,7 @@ class UserManagementController extends Controller
         $user = User::findOrFail($id);
 
         $user->update($request->validated());
+        #TODO: Send email notification to user for the changes made to his account.
 
         return back()->with(['success' => 'You have successfully updated a user.']);
     }
@@ -178,7 +197,9 @@ class UserManagementController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $user->delete();
+        $user->deleted_by = auth()->user()->id;
+        $user->save(); // update the user object to reflect the change in deleted_by.
+        $user->delete(); // once object is updated, soft delete the record.
 
         return back()->with(['success' => 'You have successfully deleted a user.']);
     }
