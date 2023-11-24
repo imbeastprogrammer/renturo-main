@@ -1,9 +1,9 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tenant } from '@/types/tenant';
+import { TenantWithDomains } from '@/types/tenant';
 import SuperAdminLayout from '@/layouts/SuperAdminLayout';
 import UpdateTeanantForm from './components/UpdateTenantForm';
 
-type UpdateTenantProps = { tenant: Tenant };
+type UpdateTenantProps = { tenant: TenantWithDomains };
 function UpdateTenant({ tenant }: UpdateTenantProps) {
     return (
         <div className='h-full overflow-hidden p-4'>

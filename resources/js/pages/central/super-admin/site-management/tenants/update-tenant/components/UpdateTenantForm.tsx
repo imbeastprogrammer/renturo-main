@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
-import { Tenant } from '@/types/tenant';
+import { Tenant, TenantWithDomains } from '@/types/tenant';
 import { ErrorIcon } from '@/assets/central';
 import { UsagePlansMap } from '../usage-plans';
 import FormInput from '@/components/super-admin/forms/FormInput';
@@ -15,7 +15,7 @@ import FormSelect from '@/components/super-admin/forms/FormSelect';
 import useCentralToast from '@/hooks/useCentralToast';
 
 const updateTenantFormSchema = z.object({
-    domain: z.string().nonempty().optional(),
+    domain: z.string().optional(),
     usage_plan: z.string().nonempty(),
     first_name: z.string().optional(),
     last_name: z.string().optional(),
@@ -38,7 +38,7 @@ const defaultValues: UpdateTenantFormFields = {
 };
 
 type UpdateTenantProps = {
-    tenant: Tenant;
+    tenant: TenantWithDomains;
 };
 
 function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
@@ -47,7 +47,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
     const form = useForm<UpdateTenantFormFields>({
         defaultValues,
         values: {
-            domain: tenant.name,
+            domain: tenant.domains[0].domain,
             email: '',
             first_name: '',
             last_name: '',

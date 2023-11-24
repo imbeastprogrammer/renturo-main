@@ -17,7 +17,6 @@ import {
 
 import { Tenant } from '@/types/tenant';
 import { FiEdit3 } from 'react-icons/fi';
-import { RxTrash } from 'react-icons/rx';
 
 type TenantsTableProps = {
     tenants: Tenant[];
@@ -32,10 +31,12 @@ function TenantsTable({ tenants }: TenantsTableProps) {
             <TableHeader>
                 <TableRow className='text-base text-[#2E3436]'>
                     <TableHead>ID</TableHead>
-                    <TableHead>First Name</TableHead>
-                    <TableHead>Last Name</TableHead>
-                    <TableHead>Email</TableHead>
+                    <TableHead>Company</TableHead>
+                    <TableHead>Plan Type</TableHead>
                     <TableHead>Domain</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead>Updated At</TableHead>
                     <TableHead className='text-right'>Action</TableHead>
                 </TableRow>
             </TableHeader>
@@ -48,10 +49,12 @@ function TenantsTable({ tenants }: TenantsTableProps) {
                         <TableCell className='font-medium'>
                             {tenant.id}
                         </TableCell>
-                        <TableCell>Static</TableCell>
-                        <TableCell>Static</TableCell>
-                        <TableCell>Static</TableCell>
-                        <TableCell>Static</TableCell>
+                        <TableCell>{tenant.company}</TableCell>
+                        <TableCell>{tenant.plan_type}</TableCell>
+                        <TableCell>static</TableCell>
+                        <TableCell>{tenant.status}</TableCell>
+                        <TableCell>{tenant.created_at}</TableCell>
+                        <TableCell>{tenant.updated_at || 'NA'}</TableCell>
                         <TableCell className='text-right'>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
@@ -65,7 +68,7 @@ function TenantsTable({ tenants }: TenantsTableProps) {
                                         }
                                     >
                                         <FiEdit3 className='h-[22px] w-[22px] text-base' />
-                                        Edit User
+                                        Edit Tenant
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

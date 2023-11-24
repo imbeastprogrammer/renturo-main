@@ -44,7 +44,11 @@ function SuperAdminLayout({ children }: SuperAdminLayoutProps) {
                                     (pathname.includes(
                                         '/super-admin/administration/user-management/edit/',
                                     ) &&
-                                        'Update User')}
+                                        'Update User') ||
+                                    (pathname.includes(
+                                        '/super-admin/site-management/tenants/edit/',
+                                    ) &&
+                                        'Update Tenant')}
                             </h1>
                             <Breadcrumb />
                         </div>
