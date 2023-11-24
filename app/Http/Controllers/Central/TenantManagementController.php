@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Laravel\Passport\ClientRepository;
 use App\Http\Requests\Central\TenantManagement\StoreTenantRequest;
+use App\Http\Requests\Central\TenantManagement\UpdateTenantRequest;
 
 use App\Models\Central\Tenant;
 use App\Models\User;
@@ -124,19 +125,11 @@ class TenantManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateTenantRequest $request, $id)
     {
-        $request->validate([
-            'status' => 'required|in:active,inactive',
-            'plan_type' => 'required|in:demo,starter_plan,professional_plan,enterprise_plan,custom_plan',
-        ]);
-
         $tenant = Tenant::findOrFail($id);
 
-        $tenant->update([
-            'status' => $request->status,
-            'plan_type' => $request->plan_type
-        ]);
+        $tenant->update($request->validated());
 
         return back()->with(['success' => 'You have successfully updated the tenant.']);
     }
