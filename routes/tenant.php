@@ -92,4 +92,7 @@ Route::middleware([
     Route::get('/forgot-password', function () {
         return Inertia::render('tenants/forgot-password/index');
     });
+    Route::get('/register', function () {
+        return Inertia::render('tenants/register/index');
+    });
 });
