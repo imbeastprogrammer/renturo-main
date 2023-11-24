@@ -28,7 +28,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'id',
         'company',
         'status',
-        'plan_type'
+        'plan_type',
+        'created_by',
     ];
 
     public static function getCustomColumns(): array
@@ -37,7 +38,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'id',
             'company',
             'status',
-            'plan_type'
+            'plan_type',
+            'created_by'
         ];
     }
 }

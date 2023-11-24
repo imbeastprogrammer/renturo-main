@@ -54,4 +54,8 @@ class User extends Authenticatable
     public function deletedByUser() {
         return $this->hasMany(User::class, 'id', 'deleted_by');
     }
+
+    public function tenants() {
+        return $this->hasMany(Tenants::class, 'id', 'created_by');
+    }
 }

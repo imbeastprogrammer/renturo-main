@@ -55,11 +55,11 @@ class TenantManagementController extends Controller
      */
     public function store(StoreTenantRequest $request)
     {
-
         $tenant = Tenant::create([
             'id' => $request->tenant_id,
             'company' => $request->company,
-            'plan_type' => $request->plan_type
+            'plan_type' => $request->plan_type,
+            'created_by' => auth()->user()->id,
         ]);
 
         $tenantDomain = Str::lower(Str::replace(' ', '-', $request->domain)) . '.' . config('tenancy.central_domains')[2];
@@ -69,15 +69,21 @@ class TenantManagementController extends Controller
         ]);
 
         $tenant->run(function () use ($tenant, $request) {
-            $verificationCode = rand(1000, 9999);
+            
+            // $verificationCode = rand(1000, 9999);
 
+            #TODO: debug why username is not saving in the database
             $admin = User::create($request->safe()->except(['tenant_id', 'name']));
 
-            $admin->mobileVerification()->create([
-                'mobile_no' => $request->mobile_no,
-                'code' => $verificationCode,
-                'expires_at' => Carbon::now()->addSeconds(300),
-            ]);
+            // Commenting out the below line because it's the super admin user who creates the tenant admin account.
+            // It should not send the verification code to the tenant admin account to verify the mobile number. 
+            // The verification code should only be sent to the tenant admin account everytime the tenant will log in.
+
+            // $admin->mobileVerification()->create([
+            //     'mobile_number' => $request->mobile_number,
+            //     'code' => $verificationCode,
+            //     'expires_at' => Carbon::now()->addSeconds(300),
+            // ]);
 
             //install passport personal access tokens
             $client = new ClientRepository();
@@ -107,7 +113,7 @@ class TenantManagementController extends Controller
      */
     public function edit($id)
     {
-        $tenant = Tenant::findOrFail($id);
+        $tenant = Tenant::with(['domains'])->findOrFail($id);
         return Inertia::render('central/super-admin/site-management/tenants/update-tenant/index', ['tenant' => $tenant]);
     }
 
