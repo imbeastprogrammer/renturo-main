@@ -1,6 +1,7 @@
 import { LoginHero } from '@/assets/tenant/auth';
 import RenturoTextLogoBlue from '@/assets/logo/RenturoLogoWhite.png';
 import LoginForm from './components/LoginForm';
+import { Link } from '@inertiajs/react';
 
 function RegisterPage() {
     return (
@@ -18,7 +19,18 @@ function RegisterPage() {
                     </h1>
                 </div>
             </div>
-            <LoginForm />
+            <div className='grid grid-rows-[auto_1fr]'>
+                <div className='flex items-center justify-end gap-4 p-8 text-lg text-black/40'>
+                    Already have an account? Login your account here
+                    <Link
+                        href='/login'
+                        className='grid h-[37px] w-[77px] place-items-center rounded-sm border border-metalic-blue text-sm font-semibold uppercase text-metalic-blue'
+                    >
+                        Login
+                    </Link>
+                </div>
+                <LoginForm />
+            </div>
         </div>
     );
 }
