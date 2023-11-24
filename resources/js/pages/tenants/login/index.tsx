@@ -6,13 +6,13 @@ import LoginForm from './components/LoginForm';
 function LoginPage() {
     return (
         <div className='grid h-screen grid-cols-[610px_1fr] gap-8'>
-            <div className='relative grid bg-metalic-blue p-8'>
+            <div className='relative grid place-items-center bg-metalic-blue p-8'>
                 <img
                     src={RenturoTextLogoBlue}
                     alt='app logo'
                     className='absolute left-8 top-8 h-[45px] object-contain'
                 />
-                <div className='grid place-items-center gap-8'>
+                <div className='grid place-items-center'>
                     <img src={LoginHero} alt='login hero' />
                     <h1 className='text-[52px] font-bold text-white'>
                         Login your account

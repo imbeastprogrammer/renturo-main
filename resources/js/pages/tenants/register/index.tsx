@@ -12,7 +12,7 @@ function RegisterPage() {
                     alt='app logo'
                     className='absolute left-8 top-8 h-[45px] object-contain'
                 />
-                <div className='grid place-items-center gap-8'>
+                <div className='grid place-items-center gap-4'>
                     <img src={LoginHero} alt='login hero' />
                     <h1 className='text-center text-[52px] font-bold leading-none text-white'>
                         Register a new account
