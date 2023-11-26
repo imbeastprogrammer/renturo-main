@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Central\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use App\Mail\Tenants\Auth\SendMobileVerificationCode;
 use Illuminate\Http\Request;
 use App\Http\Requests\Auth\LoginRequest;
 use Inertia\Inertia;
+use Carbon\Carbon;
+use App\Models\User;
+use Mail;
 use Auth;
 
 class LoginController extends Controller
@@ -39,11 +43,29 @@ class LoginController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate('central');
+        $verificationCode = rand(1000, 9999);
+
+        $request->authenticate('central'); 
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
+        $user = $request->user();
+
+        // get authenticated user details
+        $user = Auth::guard('central')->user();
+
+        $user->mobileVerification()->create([
+            'mobile_number' => $user->verified_mobile_no->mobile_number,
+            'mobile_number' => $user->mobile_number,
+            'code' => $verificationCode,
+            'expires_at' => Carbon::now()->addSeconds(300),
+        ]);
+
+        Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
+
+        return redirect('/login/enter-otp');
+
+        // return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
     }
 
     /**
