@@ -30,7 +30,11 @@ function PageEditors() {
                 className='h-full space-y-2 overflow-auto px-4 py-8'
             >
                 {pages.map((page, i) => (
-                    <AccordionItem value={page.page_id} className='border-0'>
+                    <AccordionItem
+                        key={page.page_id}
+                        value={page.page_id}
+                        className='border-0'
+                    >
                         <AccordionTrigger className='rounded-lg bg-white px-4 py-3'>
                             <div className='flex items-center gap-4 text-[12px]'>
                                 <div className='grid h-[30px] w-[30px] place-items-center rounded-lg bg-metalic-blue/10 text-metalic-blue'>
