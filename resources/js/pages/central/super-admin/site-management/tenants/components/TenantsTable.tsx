@@ -17,6 +17,7 @@ import {
 
 import { Tenant } from '@/types/tenant';
 import { FiEdit3 } from 'react-icons/fi';
+import formatDate from '@/lib/formatDate';
 
 type TenantsTableProps = {
     tenants: Tenant[];
@@ -53,8 +54,8 @@ function TenantsTable({ tenants }: TenantsTableProps) {
                         <TableCell>{tenant.plan_type}</TableCell>
                         <TableCell>static</TableCell>
                         <TableCell>{tenant.status}</TableCell>
-                        <TableCell>{tenant.created_at}</TableCell>
-                        <TableCell>{tenant.updated_at || 'NA'}</TableCell>
+                        <TableCell>{formatDate(tenant.created_at)}</TableCell>
+                        <TableCell>{formatDate(tenant.updated_at)}</TableCell>
                         <TableCell className='text-right'>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>

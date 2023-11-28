@@ -20,6 +20,7 @@ import { MoreHorizontalIcon } from 'lucide-react';
 
 import { User } from '@/types/users';
 import DeleteUserModal from './DeleteUserModal';
+import formatDate from '@/lib/formatDate';
 
 type UserMangementTableProps = { users: User[] };
 
@@ -65,8 +66,8 @@ function UserManagementTable({ users }: UserMangementTableProps) {
                             <TableCell>{user.email}</TableCell>
                             <TableCell>{user.role}</TableCell>
                             <TableCell>Active (static)</TableCell>
-                            <TableCell>{user.created_at}</TableCell>
-                            <TableCell>10-27-23 16:50:32 (static)</TableCell>
+                            <TableCell>{formatDate(user.created_at)}</TableCell>
+                            <TableCell>(static)</TableCell>
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>

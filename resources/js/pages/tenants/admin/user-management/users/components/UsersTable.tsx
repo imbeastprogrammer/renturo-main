@@ -17,6 +17,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import DeleteUserModal from './DeleteUserModal';
+import formatDate from '@/lib/formatDate';
 
 type UsersTableProps = {
     users: User[];
@@ -59,9 +60,7 @@ function UsersTable({ users = [] }: UsersTableProps) {
                                 {[user.first_name, user.last_name].join(' ')}
                             </TableCell>
                             <TableCell>{user.email}</TableCell>
-                            <TableCell>
-                                {new Date(user.created_at).toDateString()}
-                            </TableCell>
+                            <TableCell>{formatDate(user.created_at)}</TableCell>
                             <TableCell>{user.role}</TableCell>
                             <TableCell>
                                 {/* <span

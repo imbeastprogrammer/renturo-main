@@ -18,6 +18,7 @@ import {
 
 import { User } from '@/types/users';
 import DeleteAdminModal from './DeleteAdminModal';
+import formatDate from '@/lib/formatDate';
 
 type AdminsTableProps = {
     admins: User[];
@@ -60,7 +61,9 @@ function AdminsTable({ admins }: AdminsTableProps) {
                             <TableCell>{admin.last_name}</TableCell>
                             <TableCell>{admin.email}</TableCell>
                             <TableCell>Status</TableCell>
-                            <TableCell>{admin.created_at}</TableCell>
+                            <TableCell>
+                                {formatDate(admin.created_at)}
+                            </TableCell>
                             <TableCell>Static</TableCell>
                             <TableCell className='text-right'>
                                 <DropdownMenu>

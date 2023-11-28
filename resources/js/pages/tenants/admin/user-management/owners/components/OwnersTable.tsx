@@ -18,6 +18,7 @@ import {
 
 import { User } from '@/types/users';
 import DeleteOwnerModal from './DeleteOwnerModal';
+import formatDate from '@/lib/formatDate';
 
 type OwnerTableProps = {
     owners: User[];
@@ -60,7 +61,10 @@ function OwnersTable({ owners }: OwnerTableProps) {
                             <TableCell>{owner.last_name}</TableCell>
                             <TableCell>{owner.email}</TableCell>
                             <TableCell>Static</TableCell>
-                            <TableCell>{owner.created_at}</TableCell>
+                            <TableCell>
+                                {formatDate(owner.created_at)}
+                            </TableCell>
+
                             <TableCell>Static</TableCell>
                             <TableCell className='text-right'>
                                 <DropdownMenu>
