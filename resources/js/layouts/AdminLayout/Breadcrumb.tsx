@@ -1,15 +1,13 @@
 import { Fragment } from 'react';
 import { InertiaLinkProps, Link } from '@inertiajs/react';
-import { ChevronRightIcon } from 'lucide-react';
+import { ChevronRightIcon, Router } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 import { LabelMap } from '.';
-import { useSearchParams } from '@/hooks/useSearchParams';
 
 function Breadcrumb() {
     const { pathname } = window.location;
     const pathnames = pathname.split('/').filter((path) => path !== 'admin');
-    const { queryParams } = useSearchParams();
 
     return (
         <div className='flex items-center'>
@@ -24,7 +22,6 @@ function Breadcrumb() {
                         <BreadcrumbLink
                             href={routesTo}
                             isActive={routesTo === pathname}
-                            data={queryParams}
                         >
                             {LabelMap[routesTo] || route}
                         </BreadcrumbLink>
