@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 import { User } from '@/types/users';
+import { useSearchParams } from '@/hooks/useSearchParams';
 import AdminLayout from '@/layouts/AdminLayout';
 import AdminsTable from './components/AdminsTable';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
@@ -24,6 +25,10 @@ type PaginatedAdmin = {
 
 function Admins({ admins }: AdminsProps) {
     const { pathname } = window.location;
+    const { searchParams } = useSearchParams();
+
+    const searchTerm = searchParams.get('searchTerm') || '';
+
     const recordsCount = admins.data.length;
 
     const handleNextPage = () => {
@@ -38,14 +43,25 @@ function Admins({ admins }: AdminsProps) {
         router.replace(pathname, { data: { page } });
     };
 
+    const onSearch = (searchText: string) => {
+        router.replace(pathname, { data: { searchTerm: searchText } });
+    };
+
     return (
         <div className='grid grid-rows-[auto_1fr_auto] gap-4 rounded-xl border bg-white p-4 shadow-lg'>
             <div className='flex justify-between'>
                 <div className='flex gap-4'>
                     <div className='w-[336px]'>
-                        <TableSearchbar placeholder='Search' />
+                        <TableSearchbar
+                            value={searchTerm}
+                            placeholder='Search'
+                            onChange={(e) => onSearch(e.target.value)}
+                        />
                     </div>
-                    <Button className='h-[40px] w-[100px] bg-metalic-blue hover:bg-metalic-blue/90'>
+                    <Button
+                        onClick={() => router.reload()}
+                        className='h-[40px] w-[100px] bg-metalic-blue hover:bg-metalic-blue/90'
+                    >
                         Search
                     </Button>
                 </div>
