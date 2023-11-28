@@ -28,8 +28,8 @@ function ReportsTable({ reports }: ReportsTableProps) {
         id: 0,
     });
 
-    const navigateToUpdatePage = (id: number) =>
-        router.visit(`/admin/user-management/admins/update/${id}`);
+    const navigateToViewPage = (id: number) =>
+        router.visit(`/admin/user-management/reports/${id}`);
 
     return (
         <>
@@ -56,9 +56,9 @@ function ReportsTable({ reports }: ReportsTableProps) {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className='-translate-x-6'>
                                     <DropdownMenuItem
-                                        onClick={() => navigateToUpdatePage(1)}
+                                        onClick={() => navigateToViewPage(1)}
                                     >
-                                        Edit
+                                        View
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         className='text-red-500'
