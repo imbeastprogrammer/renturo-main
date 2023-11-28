@@ -10,6 +10,7 @@ class ReportsController extends Controller
 {
     public function index()
     {
-        return Inertia::render('tenants/admin/user-management/reports/index');
+        $reports = [];
+        return Inertia::render('tenants/admin/user-management/reports/index', ['reports' => $reports]);
     }
 }

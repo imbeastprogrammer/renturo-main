@@ -34,6 +34,7 @@ export const sidebarItems: GroupLink[] = [
             { label: 'Owners', path: '/owners' },
             { label: 'Sub Owners', path: '/sub-owners' },
             { label: 'Users', path: '/users' },
+            { label: 'Reports', path: '/reports' },
         ],
     },
     { label: 'Settings', path: '/settings/personal-information', icon: FiUser },

@@ -22,6 +22,7 @@ export const LabelMap: Record<string, any> = {
     '/admin/user-management/owners': 'Owners',
     '/admin/user-management/owners/create': 'Create Owner',
     '/admin/user-management/sub-owners': 'Sub Owners',
+    '/admin/user-management/reports': 'Reports',
     '/admin/settings': 'Settings',
     '/admin/settings/personal-information': 'Personal Information',
     '/admin/settings/change-password': 'Change Password',
