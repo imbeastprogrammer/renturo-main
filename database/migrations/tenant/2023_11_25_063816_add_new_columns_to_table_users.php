@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('tenants', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->foreignId('created_by')->nullable()->references('id')->on('users')->onDelete('no action');
             $table->foreignId('updated_by')->nullable()->references('id')->on('users')->onDelete('no action');
+            $table->foreignId('deleted_by')->nullable()->references('id')->on('users')->onDelete('no action');
         });
     }
 
@@ -26,9 +27,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('tenants', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('created_by');
             $table->dropColumn('updated_by');
+            $table->dropColumn('deleted_by');
         });
     }
 };

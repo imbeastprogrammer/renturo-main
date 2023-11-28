@@ -33,7 +33,10 @@ class User extends Authenticatable
         'email',
         'username',
         'mobile_number',
-        'password'
+        'password',
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**
@@ -100,5 +103,17 @@ class User extends Authenticatable
 
     public function store() {
         return $this->hasMany(Store::class);
+    }
+
+    public function createdByUser() {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedByUser() {
+        return $this->hasMany(User::class, 'id', 'updated_by');
+    }
+
+    public function deletedByUser() {
+        return $this->hasMany(User::class, 'id', 'deleted_by');
     }
 }

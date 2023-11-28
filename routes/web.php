@@ -11,10 +11,6 @@ Route::get('/landing-page', function () {
     return Inertia::render('central/landing-page/index');
 });
 
-Route::get('/login/enter-otp', function () {
-    return Inertia::render("central/login-otp/index");
-});
-
 Route::get('/forgot-password', function () {
     return Inertia::render("central/forgot-password/index");
 });
@@ -27,7 +23,6 @@ Route::get('/create-new-password', function () {
     return Inertia::render("central/create-new-password/index");
 });
 
-
 Route::middleware('guest:central')->group(function () {
     Route::controller(LoginController::class)->group(function () {
         Route::get('login', 'create');
@@ -36,6 +31,12 @@ Route::middleware('guest:central')->group(function () {
 });
 
 Route::middleware('auth:central')->group(function () {
+    Route::get('/login/enter-otp', function () {
+        return Inertia::render("central/login-otp/index");
+    });
+});
+
+Route::middleware('auth:central', 'verifiedMobileNumber')->group(function () {
 
     Route::post('logout', [LoginController::class, 'destroy']);
 
