@@ -19,6 +19,7 @@ use App\Http\Controllers\Tenants\Admin\PostManagementBookingsController;
 use App\Http\Controllers\Tenants\Admin\PostManagementCategoriesController;
 use App\Http\Controllers\Tenants\Admin\PostManagementPromotionsController;
 use App\Http\Controllers\Tenants\Admin\PostManagementPropertiesController;
+use App\Http\Controllers\Tenants\Admin\ReportsController;
 use App\Http\Controllers\Tenants\Admin\SettingsManagementController;
 use App\Http\Controllers\Tenants\Admin\SubCategoryManagementController;
 
@@ -56,14 +57,13 @@ Route::middleware([
     Route::get('/user-management/owners/create', [UserManagementController::class, 'createOwner']);
     Route::get('/user-management/owners/update/{id}', [UserManagementController::class, 'editOwner']);
 
-    // sub owners
     Route::get('/user-management/sub-owners', [UserManagementController::class, 'getSubOwners']);
     Route::get('/user-management/sub-owners/create', [UserManagementController::class, 'createSubOwner']);
     Route::get('/user-management/sub-owners/update/{id}', [UserManagementController::class, 'editSubOwner']);
 
-    // post management
-    Route::resource('/posts', PostManagementController::class);
+    Route::get('/user-management/reports', [ReportsController::class, 'index']);
 
+    Route::resource('/posts', PostManagementController::class);
     Route::get('/post-management/properties', [PostManagementPropertiesController::class, 'index']);
     Route::get('/post-management/bookings', [PostManagementBookingsController::class, 'index']);
     Route::get('/post-management/categories', [PostManagementCategoriesController::class, 'index']);
