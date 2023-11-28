@@ -62,6 +62,7 @@ Route::middleware([
     Route::get('/user-management/sub-owners/update/{id}', [UserManagementController::class, 'editSubOwner']);
 
     Route::get('/user-management/reports', [ReportsController::class, 'index']);
+    Route::get('/user-management/reports/{id}', [ReportsController::class, 'show']);
 
     Route::resource('/posts', PostManagementController::class);
     Route::get('/post-management/properties', [PostManagementPropertiesController::class, 'index']);
