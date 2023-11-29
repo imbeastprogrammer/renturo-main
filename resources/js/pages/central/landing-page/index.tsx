@@ -8,8 +8,8 @@ import Home from './components/Home';
 function LandingPage() {
     return (
         <div className='grid grid-rows-[auto_1fr] gap-y-4'>
-            <Header />
-            <main className='space-y-96'>
+            {/* <Header /> */}
+            <main className='space-y-20 xl:space-y-96'>
                 <Home />
                 <About />
                 <Download />

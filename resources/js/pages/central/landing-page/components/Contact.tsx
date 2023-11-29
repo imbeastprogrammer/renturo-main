@@ -10,35 +10,35 @@ import {
 
 function Contact() {
     return (
-        <div className='mx-auto max-w-[1556px] space-y-20 p-4'>
-            <section className='grid grid-cols-2 items-center gap-20'>
+        <div className='mx-auto w-full max-w-[1556px] space-y-10'>
+            <section className='grid items-center gap-20 p-4 xl:grid-cols-2'>
                 <div>
-                    <h1 className='text-[64px] font-bold text-black/90'>
+                    <h1 className='text-[32px] font-bold text-black/90 xl:text-[64px]'>
                         Our <span className='text-metalic-blue'>Partners</span>
                     </h1>
-                    <p className='text-left text-[32px] text-black/90'>
+                    <p className='text-left text-[15px] text-black/90 xl:text-[32px]'>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor incididunt ut labore et dolore
                         magna aliqua.
                     </p>
                 </div>
-                <div className='grid grid-cols-3 gap-4'>
+                {/* <div className='flex gap-4'>
                     <div className='h-[200px] w-[200px] rounded-lg bg-metalic-blue'></div>
                     <div className='h-[200px] w-[200px] rounded-lg bg-metalic-blue'></div>
                     <div className='h-[200px] w-[200px] rounded-lg bg-metalic-blue'></div>
                     <div className='h-[200px] w-[200px] rounded-lg bg-metalic-blue'></div>
                     <div className='h-[200px] w-[200px] rounded-lg bg-metalic-blue'></div>
                     <div className='h-[200px] w-[200px] rounded-lg bg-metalic-blue'></div>
-                </div>
+                </div> */}
             </section>
-            <section className='grid grid-cols-[1fr_671px_150px] items-center'>
+            <section className='grid w-full items-center xl:grid-cols-[1fr_671px_150px]'>
                 <img
                     src={Map}
                     alt='map logo'
-                    className='h-[699px] w-full rounded-s-lg object-cover object-right-top'
+                    className='hidden h-[699px] w-full rounded-s-lg object-cover object-right-top'
                 />
                 <ContactForm />
-                <div className='grid justify-items-center gap-8'>
+                <div className='hidden justify-items-center gap-8 xl:grid'>
                     <IconLink icon={FacebookIcon} href='#' />
                     <IconLink icon={InstagramIcon} href='#' />
                     <IconLink icon={LinkedInIcon} href='#' />
@@ -70,10 +70,12 @@ function IconLink(props: IconLinkProps) {
 
 function ContactForm() {
     return (
-        <form className='grid h-[1043px] gap-y-8 rounded-2xl bg-metalic-blue p-8'>
+        <form className='grid h-max gap-4 bg-metalic-blue p-8 xl:h-[1043px] xl:gap-y-4 xl:rounded-2xl xl:p-8'>
             <div className='text-white'>
-                <h2 className='text-[46px] font-bold'>Get in touch</h2>
-                <p className='text-[24px] font-medium'>
+                <h2 className='text-[32px] font-bold xl:text-[46px]'>
+                    Get in touch
+                </h2>
+                <p className='text-sm font-medium xl:text-[24px]'>
                     Have a question? Send us a message below.
                 </p>
             </div>
@@ -85,19 +87,24 @@ function ContactForm() {
                 <FormInfo title='Phone' description='(044) 123 4567' />
                 <FormInfo title='Email' description='info@email.com' />
             </div>
-            <div className='space-y-8'>
+            <div className='space-y-4 xl:space-y-8'>
                 <FormInput placeholder='Name' />
                 <FormInput placeholder='Email' />
                 <FormInput placeholder='Phone Number' />
                 <FormTextArea placeholder='Message' rows={5} />
             </div>
-            <div>
+            <div className='space-y-4'>
                 <button
                     type='button'
-                    className='h-[66px] w-full rounded-lg bg-white text-[22px] font-semibold text-metalic-blue'
+                    className='h-[43px] w-full rounded-lg bg-white text-sm font-semibold text-metalic-blue xl:h-[66px] xl:text-[22px]'
                 >
                     Send Message
                 </button>
+                <img
+                    src={Map}
+                    alt='map logo'
+                    className='h-[130px] w-full rounded-lg object-cover xl:hidden'
+                />
             </div>
         </form>
     );
@@ -111,8 +118,8 @@ type FormInfoProps = {
 function FormInfo({ title, description }: FormInfoProps) {
     return (
         <div className='text-white'>
-            <h3 className='text-xl font-bold uppercase'>{title}</h3>
-            <p className='text-xl'>{description}</p>
+            <h3 className='text-sm font-bold uppercase'>{title}</h3>
+            <p className='text-sm'>{description}</p>
         </div>
     );
 }
@@ -120,7 +127,7 @@ function FormInfo({ title, description }: FormInfoProps) {
 function FormInput(props: ComponentPropsWithoutRef<'input'>) {
     return (
         <input
-            className='w-full border-b border-white bg-transparent p-4 text-2xl text-white outline-none placeholder:text-white'
+            className='w-full border-b border-white bg-transparent p-4 text-sm text-white outline-none placeholder:text-white xl:text-2xl'
             {...props}
         />
     );
@@ -129,7 +136,7 @@ function FormInput(props: ComponentPropsWithoutRef<'input'>) {
 function FormTextArea(props: ComponentPropsWithoutRef<'textarea'>) {
     return (
         <textarea
-            className='w-full border-b border-white bg-transparent p-4 text-2xl text-white outline-none placeholder:text-white'
+            className='w-full border-b border-white bg-transparent p-4 text-sm text-white outline-none placeholder:text-white xl:text-2xl'
             {...props}
         />
     );
