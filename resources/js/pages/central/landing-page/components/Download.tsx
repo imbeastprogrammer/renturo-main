@@ -8,7 +8,7 @@ import {
 function Download() {
     return (
         <div className='p-4 py-20 pl-0 md:pl-4'>
-            <section className='mx-auto flex max-h-[200px] w-full max-w-[1556px] items-center justify-center gap-4 rounded-br-3xl rounded-tr-3xl bg-metalic-blue p-8 md:max-h-[260px] md:gap-8 md:rounded-3xl'>
+            <section className='3xl:max-w-[1556px] mx-auto flex max-h-[200px] w-full items-center justify-center gap-4 rounded-br-3xl rounded-tr-3xl bg-metalic-blue p-8 md:max-h-[260px] md:gap-8 md:rounded-3xl xl:max-w-[1024px]'>
                 <div>
                     <img
                         src={PhoneMockup}
@@ -17,7 +17,7 @@ function Download() {
                     />
                 </div>
                 <div className='space-y-8'>
-                    <h1 className='max-w-[10ch] text-[22px] font-semibold leading-none text-white xl:text-[46px]'>
+                    <h1 className='3xl:text-[46px] max-w-[10ch] text-[22px] font-semibold leading-none text-white'>
                         Download our Mobile App
                     </h1>
                     <div className='flex flex-col gap-2'>
