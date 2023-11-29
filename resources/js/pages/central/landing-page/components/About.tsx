@@ -9,16 +9,16 @@ function About() {
         <div className='bg-metalic-blue/10'>
             <article className='mx-auto w-full max-w-[1556px] space-y-10 p-8'>
                 <div className='text-center'>
-                    <h1 className='text-[32px] font-bold text-black/90 xl:text-[64px]'>
+                    <h1 className='text-[32px] font-bold text-black/90 md:text-[35px] xl:text-[64px]'>
                         Why <span className='text-metalic-blue'>Renturo?</span>
                     </h1>
-                    <p className='mx-auto max-w-[50ch] text-[15px] xl:text-[32px]'>
+                    <p className='mx-auto max-w-[50ch] text-[15px] md:max-w-[40ch] md:text-[22px] xl:text-[32px]'>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor incididunt ut labore et dolore
                         magna aliqua.
                     </p>
                 </div>
-                <div className='flex flex-col justify-center gap-8'>
+                <div className='flex flex-col justify-center gap-8 md:flex-row'>
                     <ServiceCard
                         title='List Items'
                         description='Lorem ipsum dolor sit amet, consectetur adipiscing elit'

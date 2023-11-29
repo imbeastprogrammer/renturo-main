@@ -7,13 +7,13 @@ import {
 
 function Download() {
     return (
-        <div className='p-4 pl-0'>
-            <section className='mx-auto flex h-[200px] w-full max-w-[1556px] items-center justify-center gap-4 rounded-br-3xl rounded-tr-3xl bg-metalic-blue p-8'>
+        <div className='p-4 py-20 pl-0 md:pl-4'>
+            <section className='mx-auto flex max-h-[200px] w-full max-w-[1556px] items-center justify-center gap-4 rounded-br-3xl rounded-tr-3xl bg-metalic-blue p-8 md:max-h-[260px] md:gap-8 md:rounded-3xl'>
                 <div>
                     <img
                         src={PhoneMockup}
                         alt='phone mockup'
-                        className='h-full max-h-[260px] w-full max-w-[130px] object-contain'
+                        className='h-full max-h-[260px] w-full max-w-[130px] object-contain md:max-h-[473px] md:max-w-[236px]'
                     />
                 </div>
                 <div className='space-y-8'>
@@ -37,7 +37,7 @@ function Download() {
                         </a>
                     </div>
                 </div>
-                <div className='hidden space-y-4'>
+                <div className='hidden space-y-4 md:block'>
                     <p className='text-lg font-medium text-white'>
                         Scan QR to download
                     </p>
