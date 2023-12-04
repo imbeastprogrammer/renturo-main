@@ -18,6 +18,13 @@ const config: Config = {
             },
         },
         extend: {
+            screens: {
+                '3xl': '1920px',
+            },
+            maxWidth: {
+                'max-w-screen-2xl': '1536px',
+                'max-w-screen-3xl': '1920px',
+            },
             colors: {
                 'metalic-blue': '#185ADC',
                 'arylide-yellow': '#EDCA5E',
