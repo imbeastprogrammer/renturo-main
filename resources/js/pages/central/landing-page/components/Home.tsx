@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 
 function Home() {
     return (
-        <div className='3xl:max-w-screen-2xl mx-auto my-10 w-full max-w-screen-lg space-y-10 2xl:max-w-screen-xl'>
-            <section className='grid grid-rows-[1fr_1fr] gap-10 p-4 md:grid-cols-2 md:grid-rows-1 xl:grid-rows-1'>
+        <div className='3xl:max-w-screen-2xl mx-auto my-10 w-full max-w-screen-lg space-y-10 xl:space-y-20 2xl:max-w-screen-xl'>
+            <section className='grid grid-rows-[1fr_1fr] items-center gap-4 p-4 md:grid-cols-2 md:grid-rows-1 xl:grid-rows-1 2xl:gap-20'>
                 <div className='space-y-8'>
                     <h1 className='text-[32px] font-semibold leading-none md:text-[40px] 2xl:text-[94px]'>
                         Welcome to your{' '}
@@ -22,9 +22,13 @@ function Home() {
                         , we're here to make your life easier and more
                         enjoyable.
                     </p>
-                    <Button className='gap-4 bg-metalic-blue text-sm font-semibold hover:bg-metalic-blue/90 md:text-[24px]'>
+                    <Button className='gap-4 bg-metalic-blue text-sm font-semibold hover:bg-metalic-blue/90 md:text-[24px] 2xl:hidden'>
                         Sign Up
                         <ArrowRightIcon />
+                    </Button>
+                    <Button className='hidden h-[68px] w-[648px] items-center gap-4 rounded-xl bg-metalic-blue text-[30px] font-medium hover:bg-metalic-blue/90 2xl:flex'>
+                        Sign Up for a Hassle-Free Experience
+                        <ArrowRightIcon className='h-[28px] w-[28px]' />
                     </Button>
                 </div>
                 <div>
@@ -58,28 +62,28 @@ function Home() {
                             description='Total Business Owners'
                         />
                         <HomeStat
-                            title='100k%'
+                            title='100k+'
                             description='Customer Satisfaction'
                         />
                     </div>
-                    <button className='flex h-[43px] w-full items-center justify-center gap-2 rounded-lg border border-metalic-blue text-[26px] text-lg font-medium leading-none text-metalic-blue md:w-[250px] xl:w-[274px] 2xl:h-[81px]'>
+                    <Button className='h-[43px] w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-metalic-blue bg-transparent text-lg font-medium leading-none text-metalic-blue transition hover:bg-metalic-blue hover:text-white md:w-[250px] xl:w-[274px] 2xl:h-[81px] 2xl:text-[26px]'>
                         More About Us
                         <ArrowRightIcon />
-                    </button>
+                    </Button>
                 </article>
             </section>
             <section className='grid grid-rows-[auto_auto] gap-10 p-4 md:grid-cols-[2fr_1fr] md:grid-rows-1 2xl:grid-rows-1'>
-                <div className='flex items-start rounded-xl bg-arylide-yellow/10 p-4'>
-                    <h2 className='text-[36px] font-bold leading-none 2xl:text-[64px]'>
+                <div className='relative flex h-[280px] items-start rounded-xl bg-arylide-yellow/10 p-4 md:items-center 2xl:h-[324px] 2xl:p-8'>
+                    <h2 className='3xl:max-w-[15ch] max-w-[10ch] text-[36px] font-semibold leading-none md:max-w-[12ch] 2xl:text-[64px]'>
                         Start your business account today!
                     </h2>
                     <img
                         src={HomeHero3}
                         alt='hero img'
-                        className='w-full max-w-[180px] translate-y-[100px] self-end object-cover'
+                        className='absolute right-6 top-[90px] h-[279px] w-[208px] object-contain xl:right-8 2xl:top-7 2xl:h-auto 2xl:w-auto'
                     />
                 </div>
-                <div className='flex flex-col justify-center gap-y-4 rounded-xl bg-jasper-orange/10 p-8'>
+                <div className='flex flex-col justify-center gap-y-4 rounded-xl bg-jasper-orange/10 p-8 2xl:gap-y-8'>
                     <p className='max-w-[18ch] text-xl xl:text-[25px]'>
                         Don't miss out on the opportunity to connect with
                         potential customers.
