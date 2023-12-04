@@ -3,6 +3,7 @@ import { Link, InertiaLinkProps } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import { IconType } from 'react-icons';
 import { IoLogOut } from 'react-icons/io5';
+import { FiUser } from 'react-icons/fi';
 
 import { sidebarItems } from './sidebar-items';
 import dashboardLogo from '@/assets/dashboard-logo.png';
@@ -103,6 +104,15 @@ function AdminSidebar() {
                                         </li>
                                     );
                                 })}
+                                <li>
+                                    <SidebarLink
+                                        icon={FiUser}
+                                        href='/admin/settings/personal-infomration'
+                                        isActive={pathname.includes('settings')}
+                                    >
+                                        Settings
+                                    </SidebarLink>
+                                </li>
                             </ul>
                         </nav>
                     </div>

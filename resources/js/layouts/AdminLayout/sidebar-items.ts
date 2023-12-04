@@ -2,7 +2,6 @@ import { IconType } from 'react-icons';
 import { BiMessageSquareAdd } from 'react-icons/bi';
 import { AiFillHome } from 'react-icons/ai';
 import { FaUsers } from 'react-icons/fa';
-import { FiUser } from 'react-icons/fi';
 
 type GroupLink = {
     label: string;
@@ -37,5 +36,5 @@ export const sidebarItems: GroupLink[] = [
             { label: 'Reports', path: '/reports' },
         ],
     },
-    { label: 'Settings', path: '/settings/personal-information', icon: FiUser },
+    // { label: 'Settings', path: '/settings/personal-information', icon: FiUser },
 ];
