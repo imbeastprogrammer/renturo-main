@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import * as z from 'zod';
+import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,7 +28,7 @@ const defaultValues: UpdateUserFormFields = {
     last_name: '',
     phone: '',
     email: '',
-    role: '',
+    role: 'USER',
 };
 
 type UpdateUserFormProps = {
@@ -35,32 +36,36 @@ type UpdateUserFormProps = {
 };
 
 function UpdateUserForm({ user }: UpdateUserFormProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useOwnerToast();
+
     const form = useForm<z.infer<typeof formSchema>>({
         defaultValues,
         resolver: zodResolver(formSchema),
         values: {
             first_name: user.first_name,
             last_name: user.last_name,
-            phone: user.verified_mobile_no.mobile_no,
+            phone: user.mobile_number,
             email: user.email,
             role: user.role,
         },
     });
 
-    const onSubmit = form.handleSubmit(({ first_name, last_name, role }) => {
+    const onSubmit = form.handleSubmit(({ phone, ...values }) => {
         router.put(
             `/admin/users/${user.id}`,
-            { first_name, last_name, role },
             {
+                ...values,
+                mobile_number: phone,
+            },
+            {
+                onBefore: () => setIsSubmitting(true),
                 onSuccess: () => {
                     toast.success({
                         title: 'Success',
                         description: 'The user has been updated to the system.',
                     });
-                    router.visit('/admin/user-management/users', {
-                        replace: true,
-                    });
+                    router.replace('/admin/user-management/users');
                 },
                 onError: (error) => {
                     toast.error({
@@ -70,6 +75,7 @@ function UpdateUserForm({ user }: UpdateUserFormProps) {
                             'Something went wrong, Please try again later.',
                     });
                 },
+                onFinish: () => setIsSubmitting(false),
             },
         );
     });
@@ -93,12 +99,14 @@ function UpdateUserForm({ user }: UpdateUserFormProps) {
                         placeholder='First Name'
                         control={form.control}
                         name='first_name'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Last Name'
                         placeholder='Last Name'
                         control={form.control}
                         name='last_name'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className='flex items-start gap-4'>
@@ -136,6 +144,7 @@ function UpdateUserForm({ user }: UpdateUserFormProps) {
                             { label: 'USER', value: 'USER' },
                         ]}
                         control={form.control}
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className='flex justify-end text-base'>
@@ -158,6 +167,7 @@ function UpdateUserForm({ user }: UpdateUserFormProps) {
                     <Button
                         type='submit'
                         className='bg-metalic-blue text-base hover:bg-metalic-blue/90'
+                        disabled={isSubmitting}
                     >
                         Update Details
                     </Button>

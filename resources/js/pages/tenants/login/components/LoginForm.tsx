@@ -51,6 +51,7 @@ function LoginPage() {
                             placeholder='Email'
                             control={form.control}
                             icon={MailIcon}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='password'
@@ -58,6 +59,7 @@ function LoginPage() {
                             placeholder='Password'
                             control={form.control}
                             icon={EyeIcon}
+                            disabled={isSubmitting}
                         />
                     </div>
                     <div className='flex items-center justify-between gap-4'>

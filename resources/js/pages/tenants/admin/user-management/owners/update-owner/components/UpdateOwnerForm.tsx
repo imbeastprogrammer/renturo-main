@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { z } from 'zod';
+import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,6 +34,7 @@ type UpdateOwnerFormProps = {
 };
 
 function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useOwnerToast();
 
     const form = useForm<UpdateOwnerFormFields>({
@@ -49,6 +51,7 @@ function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
 
     const onSubmit = form.handleSubmit((values) => {
         router.put(`/admin/users/${owner.id}`, values, {
+            onBefore: () => setIsSubmitting(true),
             onSuccess: () => {
                 toast.success({
                     description: 'Owner has been updated from the system',
@@ -57,6 +60,7 @@ function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
             },
             onError: (errors) =>
                 toast.error({ description: _.valuesIn(errors)[0] }),
+            onFinish: () => setIsSubmitting(false),
         });
     });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
@@ -78,12 +82,14 @@ function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
                         placeholder='First Name'
                         control={form.control}
                         name='first_name'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Last Name'
                         placeholder='Last Name'
                         control={form.control}
                         name='last_name'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className='flex items-start gap-4'>
@@ -92,12 +98,14 @@ function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
                         placeholder='Email Address'
                         control={form.control}
                         name='email'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Mobile Number'
                         placeholder='Mobile Number'
                         control={form.control}
                         name='mobile_no'
+                        disabled={isSubmitting}
                     />
                 </div>
                 {/* <div>
@@ -140,6 +148,7 @@ function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
                     <Button
                         type='submit'
                         className='bg-metalic-blue text-base hover:bg-metalic-blue/90'
+                        disabled={isSubmitting}
                     >
                         Update Owner
                     </Button>

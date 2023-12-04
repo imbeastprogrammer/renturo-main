@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import AdminLayout from '@/layouts/AdminLayout';
 import CreateOwnerForm from './components/CreateOwnerForm';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 function CreateOwner() {
     return (

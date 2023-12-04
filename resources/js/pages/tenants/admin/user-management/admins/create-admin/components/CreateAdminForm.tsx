@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { z } from 'zod';
+import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,6 +29,7 @@ const defaultValues: CreateAdminFormFields = {
 };
 
 function CreateAdminForm() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useOwnerToast();
     const form = useForm<CreateAdminFormFields>({
         defaultValues,
@@ -36,6 +38,7 @@ function CreateAdminForm() {
 
     const onSubmit = form.handleSubmit(({ ...values }) => {
         router.post('/admin/users', values, {
+            onBefore: () => setIsSubmitting(true),
             onSuccess: () => {
                 toast.success({
                     description: 'New user has been added to the system.',
@@ -44,6 +47,7 @@ function CreateAdminForm() {
             },
             onError: (errors) =>
                 toast.error({ description: _.valuesIn(errors)[0] }),
+            onFinish: () => setIsSubmitting(false),
         });
     });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
@@ -65,12 +69,14 @@ function CreateAdminForm() {
                         placeholder='First Name'
                         control={form.control}
                         name='first_name'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Last Name'
                         placeholder='Last Name'
                         control={form.control}
                         name='last_name'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className='flex items-start gap-4'>
@@ -79,12 +85,14 @@ function CreateAdminForm() {
                         placeholder='Email Address'
                         control={form.control}
                         name='email'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Mobile Number'
                         placeholder='Mobile Number'
                         control={form.control}
                         name='mobile_number'
+                        disabled={isSubmitting}
                     />
                 </div>
                 {/* <div>
@@ -127,6 +135,7 @@ function CreateAdminForm() {
                     <Button
                         type='submit'
                         className='bg-metalic-blue text-base hover:bg-metalic-blue/90'
+                        disabled={isSubmitting}
                     >
                         Add New Admin
                     </Button>

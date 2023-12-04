@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import * as z from 'zod';
+import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,7 +21,9 @@ const formSchema = z.object({
 });
 
 function CreateUserForm() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useOwnerToast();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -28,15 +31,16 @@ function CreateUserForm() {
             last_name: '',
             phone: '',
             email: '',
-            role: '',
+            role: 'USER',
         },
     });
 
     const onSubmit = form.handleSubmit((values: z.infer<typeof formSchema>) => {
         router.post(
             '/admin/users',
-            { ...values, mobile_no: values.phone },
+            { ...values, mobile_number: values.phone },
             {
+                onBefore: () => setIsSubmitting(true),
                 onSuccess: (e) => {
                     toast.success({
                         title: 'Success',
@@ -55,6 +59,7 @@ function CreateUserForm() {
                             'Something went wrong, Please try again later.',
                     });
                 },
+                onFinish: () => setIsSubmitting(false),
             },
         );
     });
@@ -78,12 +83,14 @@ function CreateUserForm() {
                         placeholder='First Name'
                         control={form.control}
                         name='first_name'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Last Name'
                         placeholder='Last Name'
                         control={form.control}
                         name='last_name'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className='flex items-start gap-4'>
@@ -92,12 +99,14 @@ function CreateUserForm() {
                         placeholder='Email Address'
                         control={form.control}
                         name='email'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Mobile Number'
                         placeholder='Mobile Number'
                         control={form.control}
                         name='phone'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div>
@@ -119,6 +128,7 @@ function CreateUserForm() {
                             { label: 'USER', value: 'USER' },
                         ]}
                         control={form.control}
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className='flex justify-end text-base'>
@@ -140,6 +150,7 @@ function CreateUserForm() {
                     </Link>
                     <Button
                         type='submit'
+                        disabled={isSubmitting}
                         className='bg-metalic-blue text-base hover:bg-metalic-blue/90'
                     >
                         Add New User

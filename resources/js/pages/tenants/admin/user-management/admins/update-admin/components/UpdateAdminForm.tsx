@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import _ from 'lodash';
+import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,6 +33,7 @@ type UpdateAdminFormProps = {
     admin: User;
 };
 function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useOwnerToast();
 
     const form = useForm<UpdateAdminFormFields>({
@@ -48,12 +50,14 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
 
     const onSubmit = form.handleSubmit((values) => {
         router.put(`/admin/users/${admin.id}`, values, {
+            onBefore: () => setIsSubmitting(true),
             onSuccess: () => {
                 toast.success({ description: 'The admin has been updated.' });
                 router.visit('/admin/user-management/admins');
             },
             onError: (errors) =>
                 toast.error({ description: _.valuesIn(errors)[0] }),
+            onFinish: () => setIsSubmitting(false),
         });
     });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
@@ -75,12 +79,14 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
                         placeholder='First Name'
                         control={form.control}
                         name='first_name'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Last Name'
                         placeholder='Last Name'
                         control={form.control}
                         name='last_name'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div className='flex items-start gap-4'>
@@ -89,12 +95,14 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
                         placeholder='Email Address'
                         control={form.control}
                         name='email'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Mobile Number'
                         placeholder='Mobile Number'
                         control={form.control}
                         name='mobile_number'
+                        disabled={isSubmitting}
                     />
                 </div>
                 {/* <div>
@@ -137,6 +145,7 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
                     <Button
                         type='submit'
                         className='bg-metalic-blue text-base hover:bg-metalic-blue/90'
+                        disabled={isSubmitting}
                     >
                         Update Admin
                     </Button>

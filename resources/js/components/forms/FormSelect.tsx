@@ -1,4 +1,5 @@
 import { LucideIcon } from 'lucide-react';
+import { Control, FieldValues, Path } from 'react-hook-form';
 import {
     FormControl,
     FormField,
@@ -13,7 +14,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Control, FieldValues, Path } from 'react-hook-form';
 
 type FormInputProps<T> = {
     label?: string;
@@ -22,6 +22,7 @@ type FormInputProps<T> = {
     icon?: LucideIcon;
     data: { label: string; value: string }[];
     placeholder?: string;
+    disabled?: boolean;
 };
 
 // change the background of this based on the figma
@@ -30,7 +31,9 @@ function FormSelect<T>({
     name,
     icon: Icon,
     data,
-    ...props
+    label,
+    disabled,
+    placeholder,
 }: FormInputProps<T>) {
     return (
         <FormField
@@ -38,9 +41,9 @@ function FormSelect<T>({
             name={name}
             render={({ field }) => (
                 <FormItem className='w-full'>
-                    {props.label && (
+                    {label && (
                         <FormLabel className='text-[18px] font-medium'>
-                            {props.label}
+                            {label}
                         </FormLabel>
                     )}
                     <FormControl>
@@ -48,11 +51,12 @@ function FormSelect<T>({
                             <Select
                                 value={field.value}
                                 onValueChange={field.onChange}
+                                disabled={disabled}
                             >
                                 <SelectTrigger className='h-[60px] rounded-lg bg-[#F3F7FD] p-6 text-base focus-visible:ring-transparent'>
                                     <SelectValue
                                         className='placeholder:text-black/50'
-                                        placeholder={props.placeholder}
+                                        placeholder={placeholder}
                                     />
                                 </SelectTrigger>
                                 <SelectContent>
