@@ -17,5 +17,6 @@ export { default as FacebookImg } from './facebook.png';
 export { default as InstagramImg } from './instragram.png';
 export { default as LinkedInImg } from './linkedin.png';
 export { default as TwitterImg } from './twitter.png';
+export { default as PartnerPlaceholder } from './partner-placeholer.png';
 
 export type IconProps = { color?: string };

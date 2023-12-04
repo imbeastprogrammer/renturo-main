@@ -1,3 +1,4 @@
+import { ComponentPropsWithoutRef } from 'react';
 import {
     FacebookImg,
     InstagramImg,
@@ -5,15 +6,26 @@ import {
     TwitterImg,
 } from '@/assets/central/landing-page';
 import RenturoTextLogoWhite from '@/assets/logo/RenturoLogoWhite.png';
-import { ComponentPropsWithoutRef } from 'react';
 
 function Footer() {
     return (
-        <footer className='mt-40 rounded-tl-[150px] rounded-tr-[150px] bg-metalic-blue p-8 text-white'>
-            <div className='mx-auto grid max-w-[1556px] grid-cols-4 justify-items-center gap-8 px-20'>
+        <footer className='rounded-tl-3xl rounded-tr-3xl bg-metalic-blue p-8 text-white xl:rounded-tl-[150px] xl:rounded-tr-[150px]'>
+            <div className='3xl:max-w-screen-2xl mx-auto grid gap-8 md:grid-cols-4 md:grid-rows-1 md:justify-items-center xl:max-w-screen-lg 2xl:max-w-screen-xl'>
                 <div className='space-y-8'>
-                    <img src={RenturoTextLogoWhite} alt='app logo' />
-                    <div className='space-y-4'>
+                    <div className='flex items-center justify-between gap-4'>
+                        <img
+                            src={RenturoTextLogoWhite}
+                            alt='app logo'
+                            className='h-[33px] md:h-auto'
+                        />
+                        <div className='flex gap-2 md:hidden'>
+                            <SocialIconLink icon={FacebookImg} href='#' />
+                            <SocialIconLink icon={InstagramImg} href='#' />
+                            <SocialIconLink icon={LinkedInImg} href='#' />
+                            <SocialIconLink icon={TwitterImg} href='#' />
+                        </div>
+                    </div>
+                    <div className='hidden space-y-4 md:block'>
                         <div>
                             © 2023 KabootekPh Inc. <br /> All Rights Reserved
                         </div>
@@ -33,7 +45,7 @@ function Footer() {
                         <div>Contact Us</div>
                     </div>
                 </div>
-                <div className='space-y-4'>
+                <div className='hidden space-y-4 md:block'>
                     <h4 className='text-xl font-bold'>Get in Touch</h4>
                     <div className='grid gap-2'>
                         <div>
