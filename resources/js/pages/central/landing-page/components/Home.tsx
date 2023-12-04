@@ -4,17 +4,17 @@ import { Button } from '@/components/ui/button';
 
 function Home() {
     return (
-        <div className='3xl:max-w-[1556px] mx-auto my-10 w-full space-y-10 xl:max-w-[1024px]'>
-            <section className='grid grid-rows-[1fr_1fr] gap-8 p-4 md:grid-cols-2 md:grid-rows-1 xl:grid-rows-1'>
+        <div className='3xl:max-w-screen-2xl mx-auto my-10 w-full max-w-screen-lg space-y-10 2xl:max-w-screen-xl'>
+            <section className='grid grid-rows-[1fr_1fr] gap-10 p-4 md:grid-cols-2 md:grid-rows-1 xl:grid-rows-1'>
                 <div className='space-y-8'>
-                    <h1 className='3xl:text-[94px] text-[32px] font-semibold leading-none md:text-[35px]'>
+                    <h1 className='text-[32px] font-semibold leading-none md:text-[40px] 2xl:text-[94px]'>
                         Welcome to your{' '}
                         <span className='text-arylide-yellow'>
                             one-stop shop
                         </span>{' '}
                         for all your needs.
                     </h1>
-                    <p className='3xl:text-[34px] text-[15px] md:text-[22px]'>
+                    <p className='text-[15px] md:text-[24px] 2xl:text-[34px]'>
                         With a vast selection and a{' '}
                         <span className='font-semibold text-metalic-blue'>
                             hassle-free experience with Renturo
@@ -40,18 +40,18 @@ function Home() {
                     <img
                         src={HomeHero2}
                         alt='hero img'
-                        className='w-full object-contain md:max-w-[350px]'
+                        className='h-full w-full object-contain md:max-w-[350px] 2xl:max-h-[549px] 2xl:max-w-[508px]'
                     />
                 </div>
                 <article className='space-y-4 xl:space-y-8'>
-                    <h2 className='3xl:text-[64px] text-[32px] font-bold md:text-[40px]'>
+                    <h2 className='text-[32px] font-bold md:text-[40px] 2xl:text-[64px]'>
                         Lorem <span className='text-metalic-blue'>Ipsum</span>
                     </h2>
-                    <p className='3xl:text-[32px] text-[15px] md:text-[24px]'>
+                    <p className='text-[15px] md:text-[24px] 2xl:text-[32px]'>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor
                     </p>
-                    <div className='3xl:gap-y-8 grid w-max gap-4 md:grid-cols-2'>
+                    <div className='grid w-max gap-4 md:grid-cols-2 2xl:gap-y-8'>
                         <HomeStat title='100k+' description='Total Customers' />
                         <HomeStat
                             title='100k+'
@@ -62,15 +62,15 @@ function Home() {
                             description='Customer Satisfaction'
                         />
                     </div>
-                    <button className='3xl:h-[81px] flex h-[43px] w-full items-center justify-center gap-2 rounded-lg border border-metalic-blue text-[26px] text-lg font-medium leading-none text-metalic-blue md:w-[250px] xl:w-[274px]'>
+                    <button className='flex h-[43px] w-full items-center justify-center gap-2 rounded-lg border border-metalic-blue text-[26px] text-lg font-medium leading-none text-metalic-blue md:w-[250px] xl:w-[274px] 2xl:h-[81px]'>
                         More About Us
                         <ArrowRightIcon />
                     </button>
                 </article>
             </section>
-            <section className='3xl:grid-rows-1 grid grid-rows-[auto_auto] gap-10 p-4 md:grid-cols-[2fr_1fr] md:grid-rows-1'>
+            <section className='grid grid-rows-[auto_auto] gap-10 p-4 md:grid-cols-[2fr_1fr] md:grid-rows-1 2xl:grid-rows-1'>
                 <div className='flex items-start rounded-xl bg-arylide-yellow/10 p-4'>
-                    <h2 className='3xl:text-[64px] text-[36px] font-bold leading-none'>
+                    <h2 className='text-[36px] font-bold leading-none 2xl:text-[64px]'>
                         Start your business account today!
                     </h2>
                     <img
@@ -101,10 +101,10 @@ type HomeStatProps = {
 function HomeStat({ title, description }: HomeStatProps) {
     return (
         <div>
-            <h1 className='3xl:text-[50px] text-[25px] font-bold leading-none text-metalic-blue md:text-[30px]'>
+            <h1 className='text-[25px] font-bold leading-none text-metalic-blue md:text-[30px] 2xl:text-[50px]'>
                 {title}
             </h1>
-            <p className='3xl:text-[24px] text-[15px] text-black/90 md:text-[20px]'>
+            <p className='text-[15px] text-black/90 md:text-[20px] 2xl:text-[24px]'>
                 {description}
             </p>
         </div>

@@ -9,7 +9,7 @@ function LandingPage() {
     return (
         <div className='grid grid-rows-[auto_1fr] gap-y-4'>
             {/* <Header /> */}
-            <main className='space-y-20 xl:space-y-96'>
+            <main className='grid gap-20'>
                 <Home />
                 <About />
                 <Download />

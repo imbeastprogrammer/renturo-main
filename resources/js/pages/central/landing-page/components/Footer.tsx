@@ -10,7 +10,7 @@ import { ComponentPropsWithoutRef } from 'react';
 function Footer() {
     return (
         <footer className='rounded-tl-[150px] rounded-tr-[150px] bg-metalic-blue p-8 text-white'>
-            <div className='mx-auto grid max-w-[1556px] grid-cols-4 justify-items-center gap-8 px-20'>
+            <div className='3xl:max-w-screen-2xl mx-auto grid grid-cols-4 justify-items-center gap-8 px-20 xl:max-w-screen-lg 2xl:max-w-screen-xl'>
                 <div className='space-y-8'>
                     <img src={RenturoTextLogoWhite} alt='app logo' />
                     <div className='space-y-4'>

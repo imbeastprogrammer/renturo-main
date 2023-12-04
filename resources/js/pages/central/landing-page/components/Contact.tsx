@@ -10,28 +10,28 @@ import {
 
 function Contact() {
     return (
-        <div className='3xl:max-w-[1556px] mx-auto grid w-full gap-y-10 xl:max-w-[1024px]'>
-            <section className='3xl:gap-20 grid items-center gap-10 p-4 md:grid-cols-2'>
+        <div className='3xl:max-w-screen-2xl mx-auto grid w-full gap-y-10 xl:max-w-screen-lg 2xl:max-w-screen-xl'>
+            <section className='grid items-center gap-10 p-4 md:grid-cols-2 2xl:gap-20'>
                 <div>
-                    <h1 className='3xl:text-[64px] text-[32px] font-bold text-black/90 md:text-[40px]'>
+                    <h1 className='text-[32px] font-bold text-black/90 md:text-[40px] 2xl:text-[64px]'>
                         Our <span className='text-metalic-blue'>Partners</span>
                     </h1>
-                    <p className='3xl:text-[32px] text-left text-[15px] text-black/90 md:text-[24px]'>
+                    <p className='text-left text-[15px] text-black/90 md:text-[24px] 2xl:text-[32px]'>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor incididunt ut labore et dolore
                         magna aliqua.
                     </p>
                 </div>
                 <div className='grid grid-cols-3 gap-4'>
-                    <div className='3xl:h-[200px] 3xl:w-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue'></div>
-                    <div className='3xl:h-[200px] 3xl:w-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue'></div>
-                    <div className='3xl:h-[200px] 3xl:w-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue'></div>
-                    <div className='3xl:h-[200px] 3xl:w-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue'></div>
-                    <div className='3xl:h-[200px] 3xl:w-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue'></div>
-                    <div className='3xl:h-[200px] 3xl:w-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue'></div>
+                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
+                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
+                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
+                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
+                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
+                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
                 </div>
             </section>
-            <section className='3xl:max-h-[699px] relative my-40 grid place-items-center items-center md:h-[430px]'>
+            <section className='relative my-40 grid place-items-center items-center md:h-[430px] 2xl:my-80 2xl:h-[699px]'>
                 <img
                     src={Map}
                     alt='map logo'
@@ -70,12 +70,12 @@ function IconLink({ icon: Icon, ...props }: IconLinkProps) {
 
 function ContactForm() {
     return (
-        <form className='3xl:h-[1043px] 3xl:max-w-[671px] 3xl:p-8 grid h-max w-full gap-4 bg-metalic-blue p-8 md:absolute md:right-[100px] md:min-h-[641px] md:max-w-[410px] md:gap-y-4 md:rounded-2xl md:p-6'>
+        <form className='grid h-max w-full gap-4 bg-metalic-blue p-8 md:absolute md:right-[100px] md:min-h-[641px] md:max-w-[410px] md:gap-y-4 md:rounded-2xl md:p-6 2xl:h-[1043px] 2xl:max-w-[671px] 2xl:p-8'>
             <div className='text-white'>
-                <h2 className='3xl:text-[46px] text-[32px] font-bold'>
+                <h2 className='text-[32px] font-bold 2xl:text-[46px]'>
                     Get in touch
                 </h2>
-                <p className='3xl:text-[24px] text-sm font-medium'>
+                <p className='text-sm font-medium 2xl:text-[24px]'>
                     Have a question? Send us a message below.
                 </p>
             </div>
@@ -87,7 +87,7 @@ function ContactForm() {
                 <FormInfo title='Phone' description='(044) 123 4567' />
                 <FormInfo title='Email' description='info@email.com' />
             </div>
-            <div className='3xl:space-y-8 space-y-4'>
+            <div className='space-y-4 2xl:space-y-8'>
                 <FormInput placeholder='Name' />
                 <FormInput placeholder='Email' />
                 <FormInput placeholder='Phone Number' />
@@ -96,7 +96,7 @@ function ContactForm() {
             <div className='space-y-4'>
                 <button
                     type='button'
-                    className='3xl:h-[66px] 3xl:text-[22px] h-[43px] w-full rounded-lg bg-white text-sm font-semibold text-metalic-blue'
+                    className='h-[43px] w-full rounded-lg bg-white text-sm font-semibold text-metalic-blue 2xl:h-[66px] 2xl:text-[22px]'
                 >
                     Send Message
                 </button>
@@ -118,8 +118,8 @@ type FormInfoProps = {
 function FormInfo({ title, description }: FormInfoProps) {
     return (
         <div className='text-white'>
-            <h3 className='text-sm font-bold uppercase'>{title}</h3>
-            <p className='text-sm'>{description}</p>
+            <h3 className='text-sm font-bold uppercase 2xl:text-xl'>{title}</h3>
+            <p className='text-sm 2xl:text-xl'>{description}</p>
         </div>
     );
 }
@@ -127,7 +127,7 @@ function FormInfo({ title, description }: FormInfoProps) {
 function FormInput(props: ComponentPropsWithoutRef<'input'>) {
     return (
         <input
-            className='3xl:text-2xl w-full border-b border-white bg-transparent p-4 text-sm text-white outline-none placeholder:text-white'
+            className='w-full border-b border-white bg-transparent p-4 text-sm text-white outline-none placeholder:text-white 2xl:text-2xl'
             {...props}
         />
     );
@@ -136,7 +136,7 @@ function FormInput(props: ComponentPropsWithoutRef<'input'>) {
 function FormTextArea(props: ComponentPropsWithoutRef<'textarea'>) {
     return (
         <textarea
-            className='3xl:text-2xl w-full border-b border-white bg-transparent p-4 text-sm text-white outline-none placeholder:text-white'
+            className='w-full border-b border-white bg-transparent p-4 text-sm text-white outline-none placeholder:text-white 2xl:text-2xl'
             {...props}
         />
     );

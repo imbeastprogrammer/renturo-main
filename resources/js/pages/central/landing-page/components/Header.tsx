@@ -3,7 +3,7 @@ import RenturoTextLogoBlue from '@/assets/logo/RenturoLogoBlue.png';
 function Header() {
     return (
         <header>
-            <div className='mx-auto flex max-w-[1556px] items-center justify-between p-4'>
+            <div className='3xl:max-w-screen-2xl mx-auto flex max-w-screen-lg items-center justify-between p-4 2xl:max-w-screen-xl'>
                 <div>
                     <img
                         src={RenturoTextLogoBlue}
