@@ -23,7 +23,7 @@ function Header() {
                 <button className='hidden h-[40px] w-[170px] rounded-lg bg-metalic-blue  text-xl font-bold text-white lg:block 2xl:h-[60px] 2xl:w-[228px] 2xl:text-[25px]'>
                     Get Started
                 </button>
-                <button>
+                <button className='md:hidden'>
                     <FiMenu className='h-[30px] w-[30px] text-metalic-blue' />
                 </button>
             </div>
