@@ -6,6 +6,7 @@ import {
     TwitterIcon,
     FacebookIcon,
     InstagramIcon,
+    PartnerPlaceholder,
 } from '@/assets/central/landing-page';
 
 function Contact() {
@@ -22,13 +23,31 @@ function Contact() {
                         magna aliqua.
                     </p>
                 </div>
-                <div className='grid grid-cols-3 gap-4'>
-                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
-                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
-                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
-                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
-                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
-                    <div className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg bg-metalic-blue 2xl:h-[150px] 2xl:w-[150px]'></div>
+                <div className='grid grid-cols-3 gap-4 gap-y-8'>
+                    <img
+                        className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg object-contain 2xl:h-[150px] 2xl:w-[150px]'
+                        src={PartnerPlaceholder}
+                    />
+                    <img
+                        className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg object-contain 2xl:h-[150px] 2xl:w-[150px]'
+                        src={PartnerPlaceholder}
+                    />
+                    <img
+                        className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg object-contain 2xl:h-[150px] 2xl:w-[150px]'
+                        src={PartnerPlaceholder}
+                    />
+                    <img
+                        className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg object-contain 2xl:h-[150px] 2xl:w-[150px]'
+                        src={PartnerPlaceholder}
+                    />
+                    <img
+                        className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg object-contain 2xl:h-[150px] 2xl:w-[150px]'
+                        src={PartnerPlaceholder}
+                    />
+                    <img
+                        className='3xl:w-[200px] 3xl:h-[200px] h-[100px] w-[100px] rounded-lg object-contain 2xl:h-[150px] 2xl:w-[150px]'
+                        src={PartnerPlaceholder}
+                    />
                 </div>
             </section>
             <section className='relative my-40 grid place-items-center items-center md:h-[430px] 2xl:my-80 2xl:h-[699px]'>
