@@ -55,7 +55,7 @@ function Home() {
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor
                     </p>
-                    <div className='grid w-max gap-4 md:grid-cols-2 2xl:gap-y-8'>
+                    <div className='grid gap-4 md:grid-cols-2 2xl:gap-y-8'>
                         <HomeStat title='100k+' description='Total Customers' />
                         <HomeStat
                             title='100k+'
