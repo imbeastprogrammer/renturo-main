@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => 'password',
             'remember_token' => Str::random(10),
+            'mobile_number' => '0000 0000 000'
         ]);
 
         $this->call([
