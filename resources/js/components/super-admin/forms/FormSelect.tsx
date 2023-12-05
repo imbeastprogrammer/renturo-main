@@ -20,6 +20,7 @@ type FormSelectProps<T> = {
     name: Path<FieldValues & T>;
     placeholder?: string;
     data: { label: string; value: string }[];
+    disabled?: boolean;
 };
 
 function FormSelect<T>({
@@ -28,6 +29,7 @@ function FormSelect<T>({
     name,
     data,
     placeholder = 'Select Option',
+    disabled = false,
 }: FormSelectProps<T>) {
     return (
         <FormField
@@ -42,6 +44,7 @@ function FormSelect<T>({
                         <Select
                             value={field.value}
                             onValueChange={field.onChange}
+                            disabled={disabled}
                         >
                             <SelectTrigger
                                 className={cn(

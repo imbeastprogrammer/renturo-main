@@ -22,6 +22,7 @@ const defaultValues: LoginFormFields = {
 };
 
 function LoginForm() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessages, setErrorMessages] = useState<Record<
         string,
         string
@@ -34,7 +35,9 @@ function LoginForm() {
 
     const onSubmit = form.handleSubmit((values) => {
         router.post('/login', values, {
+            onBefore: () => setIsSubmitting(true),
             onError: (error) => setErrorMessages(error),
+            onFinish: () => setIsSubmitting(false),
         });
     });
 
@@ -51,6 +54,7 @@ function LoginForm() {
                             placeholder='Email'
                             control={form.control}
                             icon={MailIcon}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='password'
@@ -58,6 +62,7 @@ function LoginForm() {
                             control={form.control}
                             icon={EyeIcon}
                             type='password'
+                            disabled={isSubmitting}
                         />
                     </div>
                     <div className='flex items-center justify-between text-[18px]'>
@@ -81,6 +86,7 @@ function LoginForm() {
                         <Button
                             type='submit'
                             className='h-[51px] w-[283px] bg-yinmn-blue text-lg font-semibold uppercase hover:bg-yinmn-blue/90'
+                            disabled={isSubmitting}
                         >
                             log in
                         </Button>

@@ -13,6 +13,7 @@ type FormInputProps<T> = {
     control: Control<FieldValues & T>;
     name: Path<FieldValues & T>;
     description?: string;
+    disabled?: boolean;
 };
 
 function FormCheckbox<T>({
@@ -20,6 +21,7 @@ function FormCheckbox<T>({
     control,
     name,
     description,
+    disabled = false,
 }: FormInputProps<T>) {
     return (
         <FormField
@@ -32,6 +34,7 @@ function FormCheckbox<T>({
                     </FormLabel>
                     <FormControl>
                         <Checkbox
+                            disabled={disabled}
                             checked={field.value}
                             onCheckedChange={(checked) =>
                                 field.onChange(checked)

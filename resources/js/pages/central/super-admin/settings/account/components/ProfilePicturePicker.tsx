@@ -5,9 +5,14 @@ import { ProfilePicturePlaceholder } from '@/assets/central/settings';
 type ProfilePicturePickerProps = {
     value: string | File;
     onChange: (file: File) => void;
+    disabled?: boolean;
 };
 
-function ProfilePicturePicker({ value, onChange }: ProfilePicturePickerProps) {
+function ProfilePicturePicker({
+    value,
+    onChange,
+    disabled = false,
+}: ProfilePicturePickerProps) {
     const hiddenFileInputRef = useRef<HTMLInputElement | null>(null);
 
     const currentValue =
@@ -29,6 +34,7 @@ function ProfilePicturePicker({ value, onChange }: ProfilePicturePickerProps) {
                 className='hidden'
                 onChange={(e) => onChange(e.target.files?.[0] as File)}
                 ref={hiddenFileInputRef}
+                disabled={disabled}
             />
             <div>
                 <h1 className='text-xl font-medium'>Profile Picture</h1>
@@ -40,6 +46,7 @@ function ProfilePicturePicker({ value, onChange }: ProfilePicturePickerProps) {
                     type='button'
                     variant='outline'
                     className='mt-2 px-6'
+                    disabled={disabled}
                 >
                     Upload
                 </Button>

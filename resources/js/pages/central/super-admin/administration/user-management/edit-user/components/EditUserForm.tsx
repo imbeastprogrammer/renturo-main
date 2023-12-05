@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import _ from 'lodash';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { router } from '@inertiajs/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -35,7 +35,9 @@ const defaultValues: EditUserFormFields = {
 type EditUserFormProps = { user: User };
 
 function EditUserForm({ user }: EditUserFormProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useCentralToast();
+
     const form = useForm<EditUserFormFields>({
         defaultValues,
         values: { ...user },
@@ -46,6 +48,7 @@ function EditUserForm({ user }: EditUserFormProps) {
 
     const onSubmit = form.handleSubmit((values) => {
         router.put(`/super-admin/users/${user.id}`, values, {
+            onBefore: () => setIsSubmitting(true),
             onSuccess: () => {
                 toast.success({
                     title: 'Success',
@@ -62,6 +65,7 @@ function EditUserForm({ user }: EditUserFormProps) {
                         _.valuesIn(error)[0] ||
                         'Something went wrong, Please try again later.',
                 }),
+            onFinish: () => setIsSubmitting(false),
         });
     });
 
@@ -79,24 +83,28 @@ function EditUserForm({ user }: EditUserFormProps) {
                             label='First Name'
                             placeholder='First Name'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='last_name'
                             label='Last Name'
                             placeholder='Last Name'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='email'
                             label='Email Address'
                             placeholder='Email Address'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='mobile_number'
                             label='Mobile Number'
                             placeholder='Mobile Number'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -117,6 +125,7 @@ function EditUserForm({ user }: EditUserFormProps) {
                                     value: 'SUPER-ADMIN',
                                 },
                             ]}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -137,6 +146,7 @@ function EditUserForm({ user }: EditUserFormProps) {
                                     value: 'inactive',
                                 },
                             ]}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -155,6 +165,7 @@ function EditUserForm({ user }: EditUserFormProps) {
                     <Button
                         type='submit'
                         className='bg-[#84C58A] px-8 text-base font-medium hover:bg-[#84C58A]/90'
+                        disabled={isSubmitting}
                     >
                         Update Details
                     </Button>

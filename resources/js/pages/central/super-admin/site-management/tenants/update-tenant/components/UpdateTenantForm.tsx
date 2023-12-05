@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { z } from 'zod';
 import { router } from '@inertiajs/react';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -42,6 +42,7 @@ type UpdateTenantProps = {
 };
 
 function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useCentralToast();
 
     const form = useForm<UpdateTenantFormFields>({
@@ -67,6 +68,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
             `/super-admin/tenants/${tenant.id}`,
             { ...values, name: domain, plan_type: usage_plan },
             {
+                onBefore: () => setIsSubmitting(true),
                 onSuccess: () => {
                     toast.success({
                         title: 'Success',
@@ -83,6 +85,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                             _.valuesIn(error)[0] ||
                             'Something went wrong, Please try again later.',
                     }),
+                onFinish: () => setIsSubmitting(false),
             },
         );
     });
@@ -142,6 +145,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                                     value: 'custom_plan',
                                 },
                             ]}
+                            disabled={isSubmitting}
                         />
                         {selectedUsagePlan && (
                             <div className='ml-[200px] mt-2'>
@@ -167,18 +171,21 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                             label='First Name'
                             placeholder='First Name'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='last_name'
                             label='Last Name'
                             placeholder='Last Name'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='username'
                             label='Username'
                             placeholder='Username'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -190,12 +197,14 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                             label='Email Address'
                             placeholder='Email Address'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='mobile_no'
                             label='Mobile Number'
                             placeholder='Mobile Number'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -216,6 +225,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                                     value: 'inactive',
                                 },
                             ]}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -236,6 +246,7 @@ function UpdateTeanantForm({ tenant }: UpdateTenantProps) {
                     <Button
                         type='submit'
                         className='bg-[#84C58A] px-8 text-base font-medium hover:bg-[#84C58A]/90'
+                        disabled={isSubmitting}
                     >
                         Update Tenant
                     </Button>

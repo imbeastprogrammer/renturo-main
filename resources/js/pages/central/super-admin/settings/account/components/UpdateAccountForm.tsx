@@ -11,6 +11,7 @@ import { User } from '@/types/users';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import ProfilePicturePicker from './ProfilePicturePicker';
 import useCentralToast from '@/hooks/useCentralToast';
+import { useState } from 'react';
 
 const updateAccountSchema = z.object({
     profile_picture: z
@@ -64,7 +65,9 @@ const defaultValues: UpdateAccountFormFields = {
 type UpdateAccountForm = { user: User };
 
 function UpdateAccountForm({ user }: UpdateAccountForm) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useCentralToast();
+
     const form = useForm<UpdateAccountFormFields>({
         defaultValues,
         resolver: zodResolver(updateAccountSchema),
@@ -82,12 +85,14 @@ function UpdateAccountForm({ user }: UpdateAccountForm) {
             '/super-admin/settings/update-user-profile',
             { mobile_number: contact_no, ...values },
             {
+                onBefore: () => setIsSubmitting(true),
                 onSuccess: () =>
                     toast.success({
                         description: 'Your profile has been updated.',
                     }),
                 onError: (errors) =>
                     toast.error({ description: _.valuesIn(errors)[0] }),
+                onFinish: () => setIsSubmitting(false),
             },
         );
     });
@@ -110,6 +115,7 @@ function UpdateAccountForm({ user }: UpdateAccountForm) {
                         <ProfilePicturePicker
                             value={field.value || ''}
                             onChange={field.onChange}
+                            disabled={isSubmitting}
                         />
                     )}
                 />
@@ -119,24 +125,28 @@ function UpdateAccountForm({ user }: UpdateAccountForm) {
                         name='first_name'
                         label='First Name'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         control={form.control}
                         name='last_name'
                         label='Last Name'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         control={form.control}
                         name='email'
                         label='Email Address'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         control={form.control}
                         name='contact_no'
                         label='Contact Number'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <div className='col-span-2'>
                         <FormInput
@@ -144,6 +154,7 @@ function UpdateAccountForm({ user }: UpdateAccountForm) {
                             name='address'
                             label='Address'
                             orientation='vertical'
+                            disabled={isSubmitting}
                         />
                     </div>
                     <FormInput
@@ -151,24 +162,28 @@ function UpdateAccountForm({ user }: UpdateAccountForm) {
                         name='city'
                         label='City'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         control={form.control}
                         name='province'
                         label='Province'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         control={form.control}
                         name='country'
                         label='Country'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         control={form.control}
                         name='zipcode'
                         label='Zipcode'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div>
@@ -185,6 +200,7 @@ function UpdateAccountForm({ user }: UpdateAccountForm) {
                     <Button
                         type='submit'
                         className='bg-[#84C58A] hover:bg-[#84C58A]/90'
+                        disabled={isSubmitting}
                     >
                         Save Changes
                     </Button>

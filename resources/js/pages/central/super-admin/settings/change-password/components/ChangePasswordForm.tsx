@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import { z } from 'zod';
+import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin/forms/FormInput';
-import { router } from '@inertiajs/react';
 import useCentralToast from '@/hooks/useCentralToast';
 
 const changePasswordSchema = z
@@ -42,7 +43,9 @@ const defaultValues: ChangePasswordFormFields = {
 };
 
 function ChangePasswordForm() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const toast = useCentralToast();
+
     const form = useForm<ChangePasswordFormFields>({
         defaultValues,
         resolver: zodResolver(changePasswordSchema),
@@ -58,6 +61,7 @@ function ChangePasswordForm() {
                     confirm_password: confirm_new_password,
                 },
                 {
+                    onBefore: () => setIsSubmitting(true),
                     onSuccess: () => {
                         toast.success({
                             description:
@@ -67,6 +71,7 @@ function ChangePasswordForm() {
                     },
                     onError: (error) =>
                         toast.error({ description: _.valuesIn(error)[0] }),
+                    onFinish: () => setIsSubmitting(false),
                 },
             );
         },
@@ -90,6 +95,7 @@ function ChangePasswordForm() {
                         name='old_password'
                         label='Old Password'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         type='password'
@@ -97,6 +103,7 @@ function ChangePasswordForm() {
                         name='confirm_old_password'
                         label='Confirm Old Password'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         type='password'
@@ -104,6 +111,7 @@ function ChangePasswordForm() {
                         name='new_password'
                         label='New Password'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         type='password'
@@ -111,6 +119,7 @@ function ChangePasswordForm() {
                         name='confirm_new_password'
                         label='Confirm New Password'
                         orientation='vertical'
+                        disabled={isSubmitting}
                     />
                 </div>
                 <p className='text-black/50'>
@@ -130,7 +139,11 @@ function ChangePasswordForm() {
                     <Button variant='outline' className='font-medium'>
                         Cancel
                     </Button>
-                    <Button className='bg-[#84C58A] font-medium hover:bg-[#84C58A]/90'>
+                    <Button
+                        type='submit'
+                        className='bg-[#84C58A] font-medium hover:bg-[#84C58A]/90'
+                        disabled={isSubmitting}
+                    >
                         Save Changes
                     </Button>
                 </div>

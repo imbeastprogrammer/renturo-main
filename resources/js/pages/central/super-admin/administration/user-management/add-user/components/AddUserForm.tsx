@@ -87,30 +87,35 @@ function AddUserForm() {
                             label='First Name'
                             placeholder='First Name'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='last_name'
                             label='Last Name'
                             placeholder='Last Name'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='email'
                             label='Email Address'
                             placeholder='Email Address'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormInput
                             name='mobile_number'
                             label='Mobile Number'
                             placeholder='Mobile Number'
                             control={form.control}
+                            disabled={isSubmitting}
                         />
                         <FormCheckbox
                             name='allow_send_notification'
                             label='Send User Notification'
                             control={form.control}
                             description='Send the new user a welcome email with their account details.'
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -127,6 +132,7 @@ function AddUserForm() {
                                     value: 'administrator',
                                 },
                             ]}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>

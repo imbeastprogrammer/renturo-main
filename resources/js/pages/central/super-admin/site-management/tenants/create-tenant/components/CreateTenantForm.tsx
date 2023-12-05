@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { z } from 'zod';
 import { router } from '@inertiajs/react';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,9 @@ const defaultValues: CreateTenantFormFields = {
 };
 
 function CreateTenantForm() {
+    const [isSubmiting, setIsSubmitting] = useState(false);
     const toast = useCentralToast();
+
     const form = useForm<CreateTenantFormFields>({
         defaultValues,
         resolver: zodResolver(createTenantFormSchema),
@@ -58,6 +60,7 @@ function CreateTenantForm() {
                     plan_type: usage_plan,
                 },
                 {
+                    onBefore: () => setIsSubmitting(true),
                     onSuccess: () => {
                         toast.success({
                             title: 'Success',
@@ -75,6 +78,7 @@ function CreateTenantForm() {
                                 _.valuesIn(error)[0] ||
                                 'Something went wrong, Please try again later.',
                         }),
+                    onFinish: () => setIsSubmitting(false),
                 },
             );
         },
@@ -97,6 +101,7 @@ function CreateTenantForm() {
                                 label='Company'
                                 placeholder='Company'
                                 control={form.control}
+                                disabled={isSubmiting}
                             />
                         </div>
                         <div className='text-base text-[#2E3436]/50'></div>
@@ -108,6 +113,7 @@ function CreateTenantForm() {
                                 label='Domain'
                                 placeholder='Domain'
                                 control={form.control}
+                                disabled={isSubmiting}
                             />
                         </div>
                         <div className='text-base text-[#2E3436]/50'>
@@ -145,6 +151,7 @@ function CreateTenantForm() {
                                     value: 'custom_plan',
                                 },
                             ]}
+                            disabled={isSubmiting}
                         />
                         {selectedUsagePlan && (
                             <div className='ml-[200px] mt-2'>
@@ -170,18 +177,21 @@ function CreateTenantForm() {
                             label='Username'
                             placeholder='Username'
                             control={form.control}
+                            disabled={isSubmiting}
                         />
                         <FormInput
                             name='first_name'
                             label='First Name'
                             placeholder='First Name'
                             control={form.control}
+                            disabled={isSubmiting}
                         />
                         <FormInput
                             name='last_name'
                             label='Last Name'
                             placeholder='Last Name'
                             control={form.control}
+                            disabled={isSubmiting}
                         />
                     </div>
                 </div>
@@ -193,12 +203,14 @@ function CreateTenantForm() {
                             label='Email Address'
                             placeholder='Email Address'
                             control={form.control}
+                            disabled={isSubmiting}
                         />
                         <FormInput
                             name='mobile_number'
                             label='Mobile Number'
                             placeholder='Mobile Number'
                             control={form.control}
+                            disabled={isSubmiting}
                         />
                     </div>
                 </div>
@@ -217,6 +229,7 @@ function CreateTenantForm() {
                     <Button
                         type='submit'
                         className='bg-[#84C58A] px-8 text-base font-medium hover:bg-[#84C58A]/90'
+                        disabled={isSubmiting}
                     >
                         Create Tenant
                     </Button>
