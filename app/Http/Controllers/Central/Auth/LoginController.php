@@ -45,7 +45,7 @@ class LoginController extends Controller
     {
         $verificationCode = rand(1000, 9999);
 
-        $request->authenticate('central'); 
+        $request->authenticate('central');
 
         $request->session()->regenerate();
 
@@ -55,7 +55,7 @@ class LoginController extends Controller
         $user = Auth::guard('central')->user();
 
         $user->mobileVerification()->create([
-            'mobile_number' => $user->verified_mobile_no->mobile_number,
+            // 'mobile_number' => $user->verified_mobile_no->mobile_number,
             'mobile_number' => $user->mobile_number,
             'code' => $verificationCode,
             'expires_at' => Carbon::now()->addSeconds(300),
