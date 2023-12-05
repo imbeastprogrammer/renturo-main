@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\VerifyMobileController;
 use App\Http\Controllers\Central\Auth\LoginController;
 use App\Http\Controllers\Central\RolesManagementController;
 use App\Http\Controllers\Central\TenantManagementController;
@@ -34,10 +35,12 @@ Route::middleware('auth:central')->group(function () {
     Route::get('/login/enter-otp', function () {
         return Inertia::render("central/login-otp/index");
     });
+
+    Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);
+    Route::post('/resend/mobile/verification', [VerifyMobileController::class, 'store']);
 });
 
 Route::middleware('auth:central', 'verifiedMobileNumber')->group(function () {
-
     Route::post('logout', [LoginController::class, 'destroy']);
 
     Route::prefix('super-admin')->group(function () {
