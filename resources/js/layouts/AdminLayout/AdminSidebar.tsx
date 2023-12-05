@@ -107,7 +107,7 @@ function AdminSidebar() {
                                 <li>
                                     <SidebarLink
                                         icon={FiUser}
-                                        href='/admin/settings/personal-infomration'
+                                        href='/admin/settings/personal-information'
                                         isActive={pathname.includes('settings')}
                                     >
                                         Settings
