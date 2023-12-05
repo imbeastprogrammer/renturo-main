@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\Tenants\Auth\SendMobileVerificationCode;
 use Illuminate\Http\Request;
 use App\Models\MobileVerification;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
 use Auth;
+use Mail;
 
 class VerifyMobileController extends Controller
 {
@@ -28,6 +30,8 @@ class VerifyMobileController extends Controller
             'code' => $verificationCode,
             'expires_at' => Carbon::now()->addSeconds(300)
         ]);
+
+        Mail::to(Auth::user()->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
         return back()->with([
             'success' => 'The verification code for your mobile has been sent to the number ' . $mobileNumber . '.',
