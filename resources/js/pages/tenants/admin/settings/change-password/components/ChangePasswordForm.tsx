@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { z } from 'zod';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
+import { router } from '@inertiajs/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -10,6 +11,7 @@ import { cn } from '@/lib/utils';
 
 import { SuccessIcon, ErrorIcon } from '@/assets/tenant/form';
 import FormInput from '@/components/forms/FormInput';
+import useOwnerToast from '@/hooks/useOwnerToast';
 
 const atleastSixCharacter = z
     .string()
@@ -56,12 +58,37 @@ const defaultValues: ChangePasswordFormFields = {
 };
 
 function ChangePasswordForm() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const toast = useOwnerToast();
+
     const form = useForm<ChangePasswordFormFields>({
         defaultValues,
         resolver: zodResolver(changePasswordSchema),
     });
 
-    const onSubmit = form.handleSubmit(() => {});
+    const onSubmit = form.handleSubmit((values) => {
+        router.post(
+            '/admin/settings/change-password',
+            {
+                old_password: values.current_password,
+                new_password: values.new_password,
+                confirm_password: values.confirm_password,
+            },
+            {
+                onBefore: () => setIsSubmitting(true),
+                onSuccess: () => {
+                    toast.success({
+                        description:
+                            'The password has been changed successfully.',
+                    });
+                    router.post('/logout');
+                },
+                onError: (error) =>
+                    toast.error({ description: _.valuesIn(error)[0] }),
+                onFinish: () => setIsSubmitting(false),
+            },
+        );
+    });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 
     const newPassword = form.watch('new_password');
@@ -83,6 +110,7 @@ function ChangePasswordForm() {
                         type='password'
                         icon={EyeIcon}
                         showError={false}
+                        disabled={isSubmitting}
                     />
                     <div></div>
                     <FormInput
@@ -92,6 +120,7 @@ function ChangePasswordForm() {
                         type='password'
                         icon={EyeIcon}
                         showError={false}
+                        disabled={isSubmitting}
                     />
                     <FormInput
                         label='Confirm Password'
@@ -100,6 +129,7 @@ function ChangePasswordForm() {
                         type='password'
                         icon={EyeIcon}
                         showError={false}
+                        disabled={isSubmitting}
                     />
                 </div>
                 <div>
@@ -156,6 +186,7 @@ function ChangePasswordForm() {
                     <Button
                         type='submit'
                         className='w-[140px] bg-metalic-blue text-lg font-semibold hover:bg-metalic-blue/90'
+                        disabled={isSubmitting}
                     >
                         Save
                     </Button>

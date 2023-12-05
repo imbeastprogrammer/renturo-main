@@ -4,7 +4,7 @@ import Error from '../components/toast/owner/Error';
 
 type Params = { title?: string; description?: string };
 
-function useCentralToast() {
+function useOwnerToast() {
     const success = (params?: Params) =>
         toast.custom((t) =>
             t.visible ? (
@@ -21,4 +21,4 @@ function useCentralToast() {
     return { success, error };
 }
 
-export default useCentralToast;
+export default useOwnerToast;
