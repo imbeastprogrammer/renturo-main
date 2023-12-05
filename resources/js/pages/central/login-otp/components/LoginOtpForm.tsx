@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -20,14 +21,40 @@ const loginOtpSchema = z.object({
 type LoginOtpFormFields = z.infer<typeof loginOtpSchema>;
 const defaultValues: LoginOtpFormFields = { verification_code: '' };
 
+const DEFAULT_COUNDOWN_TIMER = 300;
+
 function LoginOtpForm() {
-    const [isDisabled, setDisabled] = useState(true);
-    const { countdown, reset } = useCountdown(5);
+    const [isSubmitting, setIsSubmittin] = useState(false);
+    const { countdown, reset } = useCountdown(DEFAULT_COUNDOWN_TIMER);
     const form = useForm<LoginOtpFormFields>({ defaultValues });
 
-    const onSubmit = form.handleSubmit((values) => {
-        setDisabled(false);
-    });
+    const disabled = form.watch('verification_code').length !== 4;
+
+    const onSubmit = form.handleSubmit((values) =>
+        router.put(
+            '/verify/mobile',
+            { code: values.verification_code },
+            {
+                onBefore: () => setIsSubmittin(true),
+                onFinish: () => setIsSubmittin(false),
+            },
+        ),
+    );
+
+    const onSubmitOnComplete = (value: string) =>
+        router.put(
+            '/verify/mobile',
+            { code: value },
+            {
+                onBefore: () => setIsSubmittin(true),
+                onFinish: () => setIsSubmittin(false),
+            },
+        );
+
+    const handleResend = () => {
+        router.post('/resend/mobile/verification');
+        reset(DEFAULT_COUNDOWN_TIMER);
+    };
 
     return (
         <div className='mx-auto grid max-w-[610px] place-items-center p-4'>
@@ -60,7 +87,7 @@ function LoginOtpForm() {
                                     length={4}
                                     secret={false}
                                     onChange={field.onChange}
-                                    onComplete={() => onSubmit()}
+                                    onComplete={onSubmitOnComplete}
                                     value={field.value}
                                 />
                                 <FormMessage />
@@ -75,7 +102,7 @@ function LoginOtpForm() {
                             </p>
                         ) : (
                             <button
-                                onClick={() => reset(5)}
+                                onClick={handleResend}
                                 className='text-picton-blue hover:underline'
                             >
                                 Resend
@@ -85,7 +112,7 @@ function LoginOtpForm() {
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            disabled={isDisabled}
+                            disabled={disabled || isSubmitting}
                             className='h-[73px] w-[283px] bg-yinmn-blue uppercase hover:bg-yinmn-blue/90'
                         >
                             verify
