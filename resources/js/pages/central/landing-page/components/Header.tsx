@@ -1,12 +1,11 @@
 import { PropsWithChildren } from 'react';
 import { FiMenu } from 'react-icons/fi';
 import RenturoTextLogoBlue from '@/assets/logo/RenturoLogoBlue.png';
-import { Button } from '@/components/ui/button';
 
 function Header() {
     return (
         <header className='sticky top-0 z-[1000] bg-white'>
-            <div className='3xl:max-w-screen-2xl mx-auto flex max-w-screen-lg items-center justify-between p-4 2xl:max-w-screen-xl'>
+            <div className='mx-auto flex max-w-screen-lg items-center justify-between p-4 2xl:max-w-screen-xl 3xl:max-w-screen-2xl'>
                 <div>
                     <img
                         src={RenturoTextLogoBlue}
