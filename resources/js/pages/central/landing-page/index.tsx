@@ -10,10 +10,18 @@ function LandingPage() {
         <div className='grid grid-rows-[auto_1fr] gap-y-4'>
             <Header />
             <main className='grid gap-20'>
-                <Home />
-                <About />
-                <Download />
-                <Contact />
+                <div id='home'>
+                    <Home />
+                </div>
+                <div id='about'>
+                    <About />
+                </div>
+                <div id='download'>
+                    <Download />
+                </div>
+                <div id='contact'>
+                    <Contact />
+                </div>
             </main>
             <Footer />
         </div>
