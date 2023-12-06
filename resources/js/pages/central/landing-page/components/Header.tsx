@@ -30,7 +30,7 @@ function Header() {
                         className='h-[36px] 2xl:h-[74px]'
                     />
                 </div>
-                <ul className='hidden cursor-pointer gap-8 font-medium md:text-xl xl:flex 2xl:text-[25px]'>
+                <ul className='hidden cursor-pointer gap-8 font-medium xl:flex 2xl:text-[25px]'>
                     {navlinks.map(({ to, label }, i) => (
                         <NavLink key={i} to={to}>
                             {label}
@@ -57,7 +57,10 @@ function NavLink({ children, to, className, onClick }: NavLinkProps) {
             offset={-200}
             isDynamic
             duration={0}
-            className={cn('font-medium text-black/70 transition', className)}
+            className={cn(
+                'text-xl font-medium text-black/70 transition',
+                className,
+            )}
             onClick={onClick}
         >
             {children}
@@ -70,7 +73,7 @@ function MobileNavigation() {
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger className='md:hidden'>
+            <SheetTrigger className='xl:hidden'>
                 <FiMenu className='h-[30px] w-[30px] text-metalic-blue' />
             </SheetTrigger>
             <SheetContent className='z-[1000] w-full bg-metalic-blue text-white'>
@@ -121,8 +124,10 @@ function MobileNavLink({
             spy
             activeClass='border-white'
             offset={-100}
+            isDynamic
+            duration={0}
             className={cn(
-                'w-max border-b border-transparent pb-4 text-[15px] transition',
+                'w-max cursor-pointer border-b border-transparent pb-4 text-[15px] transition',
                 className,
             )}
             onClick={onClick}
