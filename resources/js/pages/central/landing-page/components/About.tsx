@@ -7,7 +7,7 @@ import {
 function About() {
     return (
         <div className='bg-metalic-blue/10'>
-            <article className='3xl:max-w-screen-2xl 3xl:p-20 mx-auto w-full space-y-10 p-8 xl:max-w-screen-lg 2xl:max-w-screen-xl'>
+            <article className='mx-auto w-full space-y-10 p-8 xl:max-w-screen-lg 2xl:max-w-screen-xl 3xl:max-w-screen-2xl 3xl:p-20'>
                 <div className='text-center'>
                     <h1 className='text-[32px] font-bold text-black/90 md:text-[35px] 2xl:text-[64px]'>
                         Why <span className='text-metalic-blue'>Renturo?</span>

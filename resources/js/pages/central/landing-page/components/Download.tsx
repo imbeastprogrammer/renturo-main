@@ -8,7 +8,7 @@ import {
 function Download() {
     return (
         <div className='p-4 py-20 pl-0 md:pl-4 2xl:my-20'>
-            <section className='3xl:max-w-screen-2xl mx-auto flex max-h-[200px] w-full items-center justify-center gap-4 rounded-br-2xl rounded-tr-2xl bg-metalic-blue p-8 md:max-h-[260px] md:gap-8 md:rounded-2xl xl:max-w-screen-lg xl:gap-20 2xl:max-h-[428px] 2xl:max-w-screen-xl'>
+            <section className='mx-auto flex max-h-[200px] w-full items-center justify-center gap-4 rounded-br-2xl rounded-tr-2xl bg-metalic-blue p-8 md:max-h-[260px] md:gap-8 md:rounded-2xl xl:max-w-screen-lg xl:gap-20 2xl:max-h-[428px] 2xl:max-w-screen-xl 3xl:max-w-screen-2xl'>
                 <div>
                     <img
                         src={PhoneMockup}

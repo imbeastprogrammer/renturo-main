@@ -31,10 +31,11 @@ function Header() {
                     />
                 </div>
                 <ul className='hidden cursor-pointer gap-8 font-medium md:text-xl xl:flex 2xl:text-[25px]'>
-                    <NavLink>Home</NavLink>
-                    <NavLink>About Us</NavLink>
-                    <NavLink>Download</NavLink>
-                    <NavLink>Contact Us</NavLink>
+                    {navlinks.map(({ to, label }, i) => (
+                        <NavLink key={i} to={to}>
+                            {label}
+                        </NavLink>
+                    ))}
                 </ul>
                 <button className='hidden h-[40px] w-[170px] rounded-lg bg-metalic-blue  text-xl font-bold text-white lg:block 2xl:h-[60px] 2xl:w-[228px] 2xl:text-[25px]'>
                     Get Started
@@ -45,9 +46,23 @@ function Header() {
     );
 }
 
-type NavLinkProps = PropsWithChildren;
-function NavLink({ children }: NavLinkProps) {
-    return <li className='font-medium text-black/70 transition'>{children}</li>;
+type NavLinkProps = LinkProps;
+function NavLink({ children, to, className, onClick }: NavLinkProps) {
+    return (
+        <Link
+            to={to}
+            smooth
+            spy
+            activeStyle={{ fontWeight: 'bold', color: 'black' }}
+            offset={-200}
+            isDynamic
+            duration={0}
+            className={cn('font-medium text-black/70 transition', className)}
+            onClick={onClick}
+        >
+            {children}
+        </Link>
+    );
 }
 
 function MobileNavigation() {
@@ -107,7 +122,7 @@ function MobileNavLink({
             activeClass='border-white'
             offset={-100}
             className={cn(
-                'w-max border-b border-transparent pb-4 text-[15px]',
+                'w-max border-b border-transparent pb-4 text-[15px] transition',
                 className,
             )}
             onClick={onClick}
