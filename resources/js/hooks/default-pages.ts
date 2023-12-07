@@ -40,6 +40,14 @@ const contactPageFields: Page['fields'] = [
 const searchFilterFields: Page['fields'] = [
     {
         id: uuidv4(),
+        type: 'rating',
+        extraAttributes: {
+            is_required: true,
+            label: 'Rating',
+        },
+    },
+    {
+        id: uuidv4(),
         type: 'number',
         extraAttributes: {
             is_required: true,
