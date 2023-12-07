@@ -2,11 +2,13 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { FormElementInstance } from '@/pages/tenants/admin/post-management/form-builder/components/FormElement';
+import defaultPages from './default-pages';
 
-type Page = {
+export type Page = {
     page_title: string;
     page_id: string;
     fields: FormElementInstance[];
+    isDefault?: boolean;
 };
 
 type FormBuilderState = {
@@ -42,19 +44,13 @@ type FormBuilderAction = {
 
 type FormbuilderStore = FormBuilderState & FormBuilderAction;
 
-const defaultPage: Page = {
-    page_title: '',
-    page_id: uuidv4(),
-    fields: [],
-};
-
 const HISTORY_LIMIT = 20;
 
 const useFormBuilder = create<FormbuilderStore>()(
     persist(
         (set) => ({
-            pages: [defaultPage],
-            current_page_id: defaultPage.page_id,
+            pages: defaultPages,
+            current_page_id: defaultPages[0].page_id,
             selectedField: null,
             history: [],
             future: [],
@@ -97,6 +93,14 @@ const useFormBuilder = create<FormbuilderStore>()(
                 set((state) => {
                     if (state.current_page_id === pageId)
                         throw new Error('You cannot delete a active page');
+
+                    const pageToDelete = state.pages.find(
+                        (page) => page.page_id === pageId,
+                    );
+
+                    if (pageToDelete?.isDefault)
+                        throw new Error('You cannot delete a default page');
+
                     const pageRemoved = state.pages.filter(
                         (page) => page.page_id !== pageId,
                     );
