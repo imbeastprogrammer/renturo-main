@@ -1,9 +1,10 @@
+import { DragEndEvent, useDndMonitor } from '@dnd-kit/core';
+import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
 import { FileIcon, GripVerticalIcon, TrashIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+
 import useFormBuilder from '@/hooks/useFormBuilder';
-import { DragEndEvent, useDndMonitor } from '@dnd-kit/core';
-import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable';
 
 function PagesSelector() {
     const { pages, setPage, current_page_id, removePage, addPage, setPages } =
@@ -45,6 +46,7 @@ function PagesSelector() {
                         pageId={currentPage.page_id}
                         number={i + 1}
                         isActive={currentPage.page_id === current_page_id}
+                        isDefault={currentPage.isDefault}
                         onPageChange={() =>
                             handlePageChange(currentPage.page_id)
                         }
@@ -71,7 +73,8 @@ type PageItemProps = {
     pageTitle: string;
     pageId: string;
     number: number;
-    isActive: boolean;
+    isActive?: boolean;
+    isDefault?: boolean;
     onPageChange: (pageId: string) => void;
     onRemovePage: (pageId: string) => void;
 };
@@ -82,7 +85,8 @@ export function PageItem({
     pageId,
     onPageChange,
     onRemovePage,
-    isActive,
+    isActive = false,
+    isDefault = false,
 }: PageItemProps) {
     const sortable = useSortable({
         id: `page-handle-${number}`,
@@ -111,7 +115,9 @@ export function PageItem({
                         {...sortable.attributes}
                         className='text-gray-400 outline-none'
                     />
-                    <span className='font-semibold'>{`Page ${number}:`}</span>
+                    <span className='font-semibold'>{`Page ${number}: ${
+                        isDefault ? '(Default)' : ''
+                    }`}</span>
                     {pageTitle || 'Untitled'}
                 </div>
                 <div>
