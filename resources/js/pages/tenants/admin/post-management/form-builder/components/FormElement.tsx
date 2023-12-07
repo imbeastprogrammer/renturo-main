@@ -11,6 +11,7 @@ import Heading from './fields/Heading';
 import TextAreaField from './fields/TextAreaField';
 import TextField from './fields/TextField';
 import TimeField from './fields/TimeField';
+import RatingField from './fields/RatingField';
 
 export type ElementsType =
     | 'heading'
@@ -25,7 +26,8 @@ export type ElementsType =
     | 'checkbox'
     | 'radio'
     | 'checklist'
-    | 'attachment';
+    | 'attachment'
+    | 'rating';
 
 export type FormElementInstance = {
     id: string;
@@ -62,4 +64,5 @@ export const FormElements: FormElementsType = {
     checklist: ChecklistField,
     radio: RadioField,
     attachment: AttachmentField,
+    rating: RatingField,
 };

@@ -52,7 +52,7 @@ const searchFilterFields: Page['fields'] = [
         type: 'checkbox',
         extraAttributes: {
             is_required: true,
-            label: 'Price Range',
+            label: 'Category',
             type: 'range_input',
             options: ['Category 1', 'Category 2', 'Category 3', 'Category 4'],
             multiple_answer_accepted: false,

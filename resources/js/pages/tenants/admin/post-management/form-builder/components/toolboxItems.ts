@@ -13,6 +13,7 @@ import {
     HeadingIcon,
     TextFieldIcon,
     TimeIcon,
+    RatingIcon,
 } from '@/assets/form-builder';
 import { ElementsType } from './FormElement';
 
@@ -88,6 +89,11 @@ export const toolboxItems: ToolboxItem[] = [
                 title: 'Attachment',
                 icon: AttachmentIcon,
                 type: 'attachment',
+            },
+            {
+                title: 'Rating',
+                icon: RatingIcon,
+                type: 'rating',
             },
         ],
     },

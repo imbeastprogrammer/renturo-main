@@ -19,3 +19,4 @@ export { default as TextFieldIcon } from './textfield-logo';
 export { default as TimeIcon } from './time-logo';
 export { default as UndoIcon } from './undo-icon';
 export { default as HeadingIcon } from './heading';
+export { default as RatingIcon } from './rating-logo';
