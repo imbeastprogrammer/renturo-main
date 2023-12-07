@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -36,6 +37,7 @@ import { DeleteIcon } from '@/assets/form-builder';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 import FieldTypeChanger from '../FieldTypeChanger';
+import { ChevronDown, PlusIcon } from 'lucide-react';
 
 const extraAttributes = {
     is_required: false,
@@ -60,6 +62,35 @@ const NumberField: FormElement = {
     propertiesComponent: PropertiesComponent,
 };
 
+function RangeInput() {
+    return (
+        <div className='flex items-center gap-2'>
+            <Input placeholder='Min' type='number' readOnly className='w-max' />
+            <Separator className='w-4' />
+            <Input placeholder='Max' className='w-max' type='number' readOnly />
+        </div>
+    );
+}
+
+function MobileNumberInput() {
+    return (
+        <div className='flex items-center gap-2'>
+            <PlusIcon />
+            <div className='relative flex items-center'>
+                <Input type='number' readOnly className='w-20' />
+                <ChevronDown className='absolute right-2 text-gray-500' />
+            </div>
+            <Input type='number' readOnly />
+        </div>
+    );
+}
+
+const DesignerElementMap: Record<string, ReactNode> = {
+    number_input: <Input type='number' readOnly />,
+    range_input: <RangeInput />,
+    mobile_number_input: <MobileNumberInput />,
+};
+
 type DesignerComponentProps = {
     element: FormElementInstance;
 };
@@ -78,6 +109,9 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             FormElements[value].construct(element.id),
         );
     };
+
+    const DesignerElement =
+        DesignerElementMap[elementInstance.extraAttributes.type];
 
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
@@ -99,7 +133,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <Input type='number' readOnly />
+                {DesignerElement}
             </div>
         </div>
     );
@@ -177,6 +211,9 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                                                     </SelectItem>
                                                     <SelectItem value='mobile_number_input'>
                                                         Mobile Number
+                                                    </SelectItem>
+                                                    <SelectItem value='range_input'>
+                                                        Range Input
                                                     </SelectItem>
                                                 </SelectContent>
                                             </Select>
