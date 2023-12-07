@@ -39,7 +39,7 @@ export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
 
 function FormBuilder() {
     const sidebar = useMenuToggle();
-    const [active, setActive] = useState('components');
+    const [active, setActive] = useState('pages');
 
     const touchSensor = useSensor(TouchSensor, {
         activationConstraint: {

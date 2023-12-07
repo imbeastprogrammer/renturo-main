@@ -34,7 +34,7 @@ function PagesSelector() {
     });
 
     return (
-        <div className='space-y-2'>
+        <div className='mt-4 space-y-2'>
             <SortableContext
                 items={pages.map((page) => ({ id: page.page_id, ...page }))}
             >
