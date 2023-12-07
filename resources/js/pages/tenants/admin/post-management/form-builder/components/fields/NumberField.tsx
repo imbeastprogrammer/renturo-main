@@ -110,9 +110,6 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
-    const DesignerElement =
-        DesignerElementMap[elementInstance.extraAttributes.type];
-
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -133,7 +130,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                {DesignerElement}
+                {DesignerElementMap[elementInstance.extraAttributes.type]}
             </div>
         </div>
     );
