@@ -1,16 +1,12 @@
 import { z } from 'zod';
-import {
-    ElementsType,
-    FormElement,
-    FormElementInstance,
-    FormElements,
-} from '../FormElement';
+import { ReactNode } from 'react';
 import { CalendarIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Switch } from '@/components/ui/switch';
 import {
     Form,
     FormControl,
@@ -23,7 +19,19 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Switch } from '@/components/ui/switch';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
+    ElementsType,
+    FormElement,
+    FormElementInstance,
+    FormElements,
+} from '../FormElement';
 
 import { DeleteIcon } from '@/assets/form-builder';
 import useFormBuilder from '@/hooks/useFormBuilder';
@@ -34,11 +42,13 @@ import PropertyEditorHandle from '../PropertyEditorHandle';
 const extraAttributes = {
     is_required: false,
     label: 'Please enter date',
+    type: 'date',
 };
 
 const schema = z.object({
     is_required: z.boolean(),
     label: z.string(),
+    type: z.string(),
 });
 
 const DateField: FormElement = {
@@ -50,6 +60,29 @@ const DateField: FormElement = {
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
+};
+
+function DefaultDate() {
+    return (
+        <div className='flex w-max gap-20 rounded-lg border p-3 px-4 text-[#2E3436]/30'>
+            mm/dd/yyyy <CalendarIcon />
+        </div>
+    );
+}
+
+function DateRange() {
+    return (
+        <div className='flex items-center gap-2'>
+            <DefaultDate />
+            <Separator className='w-4' />
+            <DefaultDate />
+        </div>
+    );
+}
+
+const DesignerElementMap: Record<string, ReactNode> = {
+    date: <DefaultDate />,
+    date_range: <DateRange />,
 };
 
 type DesignerComponentProps = {
@@ -92,9 +125,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                 <Label className='text-[20px]'>
                     {elementInstance.extraAttributes.label}
                 </Label>
-                <div className='flex w-max gap-20 rounded-lg border p-3 px-4 text-[#2E3436]/30'>
-                    mm/dd/yyyy <CalendarIcon />
-                </div>
+                {DesignerElementMap[elementInstance.extraAttributes.type]}
             </div>
         </div>
     );
@@ -150,6 +181,35 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                                     </FormControl>
                                 </FormItem>
                             )}
+                        />
+                        <FormField
+                            name='type'
+                            control={form.control}
+                            render={({ field }) => {
+                                return (
+                                    <FormItem className='rounded-lg bg-white px-4 py-3'>
+                                        <FormLabel>Type</FormLabel>
+                                        <FormControl>
+                                            <Select
+                                                {...field}
+                                                onValueChange={field.onChange}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value='date'>
+                                                        Date
+                                                    </SelectItem>
+                                                    <SelectItem value='date_range'>
+                                                        Date Rage
+                                                    </SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                    </FormItem>
+                                );
+                            }}
                         />
                         <FormField
                             name='label'
