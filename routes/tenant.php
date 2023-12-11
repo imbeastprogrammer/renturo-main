@@ -96,3 +96,20 @@ Route::middleware([
         return Inertia::render('tenants/register/index');
     });
 });
+
+
+Route::get('/ads-partner', function () {
+    return Inertia::render('tenants/ads-partner/dashboard/index');
+});
+
+Route::get('/ads-partner/analytics', function () {
+    return Inertia::render('tenants/ads-partner/analytics/index');
+});
+
+Route::get('/ads-partner/advertisement', function () {
+    return Inertia::render('tenants/ads-partner/ads/index');
+});
+
+Route::get('/ads-partner/payments', function () {
+    return Inertia::render('tenants/ads-partner/payments/index');
+});
