@@ -2,7 +2,7 @@ import { FiSettings } from 'react-icons/fi';
 
 function UserButton() {
     return (
-        <div className='flex items-center gap-4 text-white'>
+        <div className='flex items-center gap-6 text-white'>
             <div className='h-[50px] w-[50px] rounded-full bg-white'></div>
             <div>
                 <h1 className='text-[22px] font-medium leading-none'>

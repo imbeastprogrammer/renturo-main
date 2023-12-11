@@ -3,9 +3,9 @@ import Navbar from './Navbar';
 
 function AdsPartnerLayout(props: PropsWithChildren) {
     return (
-        <div className='grid h-screen grid-rows-[auto_1fr]'>
+        <div className='grid h-screen grid-rows-[auto_1fr] font-outfit'>
             <Navbar />
-            <main className='p-4'>{props.children}</main>
+            <main className='bg-[#F9F9F9] p-4'>{props.children}</main>
         </div>
     );
 }

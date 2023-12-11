@@ -107,7 +107,7 @@ Route::get('/ads-partner/analytics', function () {
 });
 
 Route::get('/ads-partner/advertisement', function () {
-    return Inertia::render('tenants/ads-partner/ads/index');
+    return Inertia::render('tenants/ads-partner/advertisement/index');
 });
 
 Route::get('/ads-partner/payments', function () {
