@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\Tenants\Auth\SendMobileVerificationCode;
-use Illuminate\Http\Request;
-use App\Models\MobileVerification;
-use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 use App\Providers\RouteServiceProvider;
+use App\Models\MobileVerification;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Inertia\Inertia;
 use Carbon\Carbon;
 use Auth;
 use Mail;
@@ -31,7 +33,7 @@ class VerifyMobileController extends Controller
             'expires_at' => Carbon::now()->addSeconds(300)
         ]);
 
-        Mail::to(Auth::user()->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
+        // Mail::to(Auth::user()->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
         return back()->with([
             'success' => 'The verification code for your mobile has been sent to the number ' . $mobileNumber . '.',
@@ -44,31 +46,33 @@ class VerifyMobileController extends Controller
         $request->validate([
             'code' => 'required'
         ]);
-
+    
         $verifiedCode = MobileVerification::where('mobile_number', Auth::user()->verified_mobile_no->mobile_number)
             ->where('code', $request->code)
             ->where('expires_at', '>', Carbon::now())
             ->whereNull('verified_at')
             ->first();
-
+    
         if (!$verifiedCode) {
-            return response()->json([
-                'message' => 'The code is either not valid or has expired.'
-            ], 422);
-        }
 
-        $verifiedCode->update([
-            'verified_at' => Carbon::now()
-        ]);
+            return Redirect::back()->with('error', 'The code is either not valid or has expired.');
 
-        if (Auth::user()->role === User::ROLE_ADMIN) {
-            return redirect()->to(RouteServiceProvider::ADMIN_HOME);
-        } else if (Auth::user()->role === User::ROLE_OWNER) {
-            return redirect()->to(RouteServiceProvider::OWNER_HOME);
-        } else if (Auth::user()->role === User::ROLE_USER) {
-            return redirect()->to(RouteServiceProvider::USER_HOME);
         } else {
-            return redirect()->to(RouteServiceProvider::SUPER_ADMIN_HOME);
+            // If $verifiedCode exists, update it
+            $verifiedCode->update([
+                'verified_at' => Carbon::now()
+            ]);
         }
+    
+        // Redirect based on the role
+        // if (Auth::user()->role === User::ROLE_ADMIN) {
+        //     return redirect()->to(RouteServiceProvider::ADMIN_HOME);
+        // } else if (Auth::user()->role === User::ROLE_OWNER) {
+        //     return redirect()->to(RouteServiceProvider::OWNER_HOME);
+        // } else if (Auth::user()->role === User::ROLE_USER) {
+        //     return redirect()->to(RouteServiceProvider::USER_HOME);
+        // } else {
+        //     return redirect()->to(RouteServiceProvider::SUPER_ADMIN_HOME);
+        // }
     }
 }
