@@ -127,7 +127,7 @@ function EarningsReport() {
                         {data.map((_, i) => (
                             <Cell
                                 key={i}
-                                width={46}
+                                width={30}
                                 fill={focusBar === i ? '#EDCA5E' : '#F0F0F0'}
                             />
                         ))}
