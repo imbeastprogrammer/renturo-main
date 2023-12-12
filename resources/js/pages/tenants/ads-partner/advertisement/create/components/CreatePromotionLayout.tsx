@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { GiHamburgerMenu } from 'react-icons/gi';
+import DrawerNavigation from './DrawerNavigation';
 
 function CreatePromotionLayout({ children }: PropsWithChildren) {
     return (
@@ -14,11 +14,9 @@ function CreatePromotionLayout({ children }: PropsWithChildren) {
 
 function Header() {
     return (
-        <header className='p-6 shadow-lg'>
+        <header className='z-[1000] p-6 shadow-lg'>
             <div className='flex h-full items-center gap-6'>
-                <button type='button'>
-                    <GiHamburgerMenu className='h-[40px] w-[40px] text-metalic-blue' />
-                </button>
+                <DrawerNavigation />
                 <div>
                     <h1 className='text-[30px] font-semibold leading-none'>
                         Create Promotion
