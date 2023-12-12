@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { z } from 'zod';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
@@ -26,6 +27,7 @@ const DEFAULT_COUNDOWN_TIMER = 300;
 function LoginOtpForm() {
     const [isSubmitting, setIsSubmittin] = useState(false);
     const { countdown, reset } = useCountdown(DEFAULT_COUNDOWN_TIMER);
+    const [errorMessage, setErrorMessage] = useState('');
     const form = useForm<LoginOtpFormFields>({ defaultValues });
 
     const disabled = form.watch('verification_code').length !== 4;
@@ -36,24 +38,31 @@ function LoginOtpForm() {
             { code: values.verification_code },
             {
                 onBefore: () => setIsSubmittin(true),
+                onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
                 onFinish: () => setIsSubmittin(false),
             },
         ),
     );
 
-    const onSubmitOnComplete = (value: string) =>
+    const onSubmitOnComplete = (value: string) => {
+        form.setValue('verification_code', value);
         router.put(
             '/verify/mobile',
             { code: value },
             {
                 onBefore: () => setIsSubmittin(true),
+                onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
                 onFinish: () => setIsSubmittin(false),
             },
         );
+    };
 
     const handleResend = () => {
-        router.post('/resend/mobile/verification');
-        reset(DEFAULT_COUNDOWN_TIMER);
+        router.post(
+            '/resend/mobile/verification',
+            {},
+            { onSuccess: () => reset(DEFAULT_COUNDOWN_TIMER) },
+        );
     };
 
     return (
@@ -95,6 +104,9 @@ function LoginOtpForm() {
                         )}
                     />
                     <div className='space-y-2'>
+                        {!!errorMessage && (
+                            <p className='text-red-500'>{errorMessage}</p>
+                        )}
                         <p className='text-[18px]'>Didn’t receive any OTP?</p>
                         {countdown > 0 ? (
                             <p className='text-[16px] text-black/50'>
