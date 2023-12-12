@@ -110,6 +110,10 @@ Route::get('/ads-partner/advertisement', function () {
     return Inertia::render('tenants/ads-partner/advertisement/index');
 });
 
+Route::get('/ads-partner/advertisement/create', function () {
+    return Inertia::render('tenants/ads-partner/advertisement/create/index');
+});
+
 Route::get('/ads-partner/payments', function () {
     return Inertia::render('tenants/ads-partner/payments/index');
 });

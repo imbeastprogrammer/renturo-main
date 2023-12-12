@@ -14,7 +14,7 @@ function Advertisement() {
                 <h1 className='text-[48px] font-semibold'>Advertisements</h1>
                 <div className='flex gap-4'>
                     <div className='min-w-[330px]'>
-                        <TableSearchbar placeholder='Search for property, keyword, or owner' />
+                        <TableSearchbar placeholder='Search' />
                     </div>
                     <Button className='bg-metalic-blue text-[15px] font-medium hover:bg-metalic-blue/90'>
                         Search
@@ -26,7 +26,7 @@ function Advertisement() {
                             className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
                         >
                             <PlusIcon className='h-4 w-4' />
-                            Create
+                            Create New Ad
                         </Button>
                     </Link>
                 </div>
