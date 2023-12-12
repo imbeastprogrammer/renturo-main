@@ -55,8 +55,9 @@ class VerifyMobileController extends Controller
     
         if (!$verifiedCode) {
 
-            return Redirect::back()->with('error', 'The code is either not valid or has expired.');
-
+            // return Redirect::back()->with('error', 'The code is either not valid or has expired.');
+            // return back()->with(['error' => 'The code is either not valid or has expired.']);
+            return back()->withErrors(['otp' => 'The code is either not valid or has expired.']);
         } else {
             // If $verifiedCode exists, update it
             $verifiedCode->update([
