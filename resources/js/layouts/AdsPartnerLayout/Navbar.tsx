@@ -15,9 +15,11 @@ function Navbar() {
         <nav className='flex items-center justify-between gap-4 bg-metalic-blue p-4 px-6'>
             <div className='flex items-center gap-4'>
                 <img className='h-[62px] object-contain' src={dashboardLogo} />
-                {navbarItems.map(({ label, path }, i) => {
+                {navbarItems.map(({ label, path, isIndex }, i) => {
                     const fullPath = `/ads-partner${path}`;
-                    const isActive = fullPath === pathname;
+                    const isActive = isIndex
+                        ? pathname === fullPath
+                        : pathname.includes(path);
 
                     return (
                         <NavbarItem href={fullPath} key={i} isActive={isActive}>
