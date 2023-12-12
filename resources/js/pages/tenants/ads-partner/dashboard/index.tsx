@@ -1,8 +1,44 @@
 import AdsPartnerLayout from '@/layouts/AdsPartnerLayout';
 import { ReactNode } from 'react';
+import AdActivity from './components/AdActivity';
+import EarningsReport from './components/EarningsReport';
+import Notifications from './components/Notifications';
+import AdsActivity from './components/AdsActivity';
+import PaymentRecords from './components/PaymentRecords';
 
 function Dashboard() {
-    return <div>Dashboard</div>;
+    return (
+        <div className='grid h-full grid-rows-[auto_1fr] gap-4 overflow-hidden'>
+            <h1 className='text-[48px] font-semibold'>Dashboard</h1>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateAreas: ` 
+                    'ad-activity  earnings-report earnings-report notifications notifications' 
+                    'ads-activity ads-activity    ads-activity    payment-records payment-records' 
+                    `,
+                    gridTemplateRows: 'repeat(2,1fr)',
+                    gap: '1rem',
+                }}
+            >
+                <div style={{ gridArea: 'ad-activity' }}>
+                    <AdActivity />
+                </div>
+                <div style={{ gridArea: 'earnings-report' }}>
+                    <EarningsReport />
+                </div>
+                <div style={{ gridArea: 'notifications' }}>
+                    <Notifications />
+                </div>
+                <div style={{ gridArea: 'ads-activity' }}>
+                    <AdsActivity />
+                </div>
+                <div style={{ gridArea: 'payment-records' }}>
+                    <PaymentRecords />
+                </div>
+            </div>
+        </div>
+    );
 }
 
 Dashboard.layout = (page: ReactNode) => (
