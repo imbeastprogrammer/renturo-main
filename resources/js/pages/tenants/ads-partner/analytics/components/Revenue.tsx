@@ -1,10 +1,3 @@
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { useState } from 'react';
 import {
     Bar,
@@ -20,6 +13,13 @@ import {
     NameType,
 } from 'recharts/types/component/DefaultTooltipContent';
 import formatCurrency from '@/lib/formatCurrency';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 const data = [
     {
@@ -88,12 +88,12 @@ const CustomTooltip = ({
     return null;
 };
 
-function EarningsReport() {
+function Revenue() {
     const [focusBar, setFocusBar] = useState<number | null>(null);
     return (
-        <div className='grid h-full w-full grid-rows-[auto_1fr] gap-4 rounded-lg border p-4 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_1fr] gap-4 rounded-lg border p-4 shadow-lg'>
             <div className='flex items-center justify-between gap-4'>
-                <h1 className='text-xl font-medium'>Earnings Report</h1>
+                <h1 className='text-xl'>Revenue</h1>
                 <Select>
                     <SelectTrigger className='w-[144px] bg-black/5 text-black/40'>
                         <SelectValue placeholder='Filter' />
@@ -138,4 +138,4 @@ function EarningsReport() {
     );
 }
 
-export default EarningsReport;
+export default Revenue;
