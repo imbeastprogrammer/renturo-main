@@ -1,10 +1,3 @@
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { useState } from 'react';
 import {
     Bar,
@@ -20,6 +13,13 @@ import {
     NameType,
 } from 'recharts/types/component/DefaultTooltipContent';
 import formatCurrency from '@/lib/formatCurrency';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 const data = [
     {
