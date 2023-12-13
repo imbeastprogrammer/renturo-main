@@ -28,7 +28,7 @@ function Overview() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className='grid grid-cols-2 grid-rows-2 items-start gap-4'>
+            <div className='grid grid-cols-2 gap-4'>
                 <InfoItem value='1,400' icon={FaEye}>
                     Impressions
                 </InfoItem>

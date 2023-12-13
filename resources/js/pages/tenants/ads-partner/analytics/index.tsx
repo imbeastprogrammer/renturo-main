@@ -11,7 +11,7 @@ function Analytics() {
         <div className='grid h-full grid-rows-[auto_1fr] gap-4'>
             <h1 className='text-[48px] font-semibold'>Analytics</h1>
             <div
-                className='grid grid-rows-2 gap-4'
+                className='grid grid-cols-5 grid-rows-2 gap-4'
                 style={{
                     gridTemplateAreas: `
                     "overview           revenue            revenue       revenue-by-ad  revenue-by-ad"
