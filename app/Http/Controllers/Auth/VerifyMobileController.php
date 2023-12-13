@@ -54,10 +54,8 @@ class VerifyMobileController extends Controller
             ->first();
     
         if (!$verifiedCode) {
-
-            // return Redirect::back()->with('error', 'The code is either not valid or has expired.');
-            // return back()->with(['error' => 'The code is either not valid or has expired.']);
             return back()->withErrors(['otp' => 'The code is either not valid or has expired.']);
+
         } else {
             // If $verifiedCode exists, update it
             $verifiedCode->update([
@@ -66,14 +64,14 @@ class VerifyMobileController extends Controller
         }
     
         // Redirect based on the role
-        // if (Auth::user()->role === User::ROLE_ADMIN) {
-        //     return redirect()->to(RouteServiceProvider::ADMIN_HOME);
-        // } else if (Auth::user()->role === User::ROLE_OWNER) {
-        //     return redirect()->to(RouteServiceProvider::OWNER_HOME);
-        // } else if (Auth::user()->role === User::ROLE_USER) {
-        //     return redirect()->to(RouteServiceProvider::USER_HOME);
-        // } else {
-        //     return redirect()->to(RouteServiceProvider::SUPER_ADMIN_HOME);
-        // }
+        if (Auth::user()->role === User::ROLE_ADMIN) {
+            return redirect()->to(RouteServiceProvider::ADMIN_HOME);
+        } else if (Auth::user()->role === User::ROLE_OWNER) {
+            return redirect()->to(RouteServiceProvider::OWNER_HOME);
+        } else if (Auth::user()->role === User::ROLE_USER) {
+            return redirect()->to(RouteServiceProvider::USER_HOME);
+        } else {
+            return redirect()->to(RouteServiceProvider::SUPER_ADMIN_HOME);
+        }
     }
 }
