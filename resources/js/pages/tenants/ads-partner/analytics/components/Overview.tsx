@@ -51,7 +51,7 @@ type InfoItemProps = {
 function InfoItem({ value, children, icon: Icon }: InfoItemProps) {
     return (
         <div>
-            <h2 className='text-[40px] font-medium text-metalic-blue'>
+            <h2 className='text-[40px] font-medium leading-none text-metalic-blue'>
                 {value}
             </h2>
             <div className='flex items-center gap-2'>
