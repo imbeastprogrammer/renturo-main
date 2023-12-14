@@ -25,7 +25,8 @@ const defaultValues: LoginOtpFormFields = { verification_code: '' };
 const DEFAULT_COUNDOWN_TIMER = 300;
 
 function LoginOtpForm() {
-    const [isSubmitting, setIsSubmittin] = useState(false);
+    const [isResending, setIsResending] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { countdown, reset } = useCountdown(DEFAULT_COUNDOWN_TIMER);
     const [errorMessage, setErrorMessage] = useState('');
     const form = useForm<LoginOtpFormFields>({ defaultValues });
@@ -37,9 +38,9 @@ function LoginOtpForm() {
             '/verify/mobile',
             { code: values.verification_code },
             {
-                onBefore: () => setIsSubmittin(true),
+                onBefore: () => setIsSubmitting(true),
                 onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
-                onFinish: () => setIsSubmittin(false),
+                onFinish: () => setIsSubmitting(false),
             },
         ),
     );
@@ -50,9 +51,9 @@ function LoginOtpForm() {
             '/verify/mobile',
             { code: value },
             {
-                onBefore: () => setIsSubmittin(true),
+                onBefore: () => setIsSubmitting(true),
                 onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
-                onFinish: () => setIsSubmittin(false),
+                onFinish: () => setIsSubmitting(false),
             },
         );
     };
@@ -61,7 +62,12 @@ function LoginOtpForm() {
         router.post(
             '/resend/mobile/verification',
             {},
-            { onSuccess: () => reset(DEFAULT_COUNDOWN_TIMER) },
+            {
+                onBefore: () => setIsResending(true),
+                onSuccess: () => reset(DEFAULT_COUNDOWN_TIMER),
+                onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
+                onFinish: () => setIsResending(false),
+            },
         );
     };
 
@@ -109,16 +115,19 @@ function LoginOtpForm() {
                         )}
                         <p className='text-[18px]'>Didn’t receive any OTP?</p>
                         {countdown > 0 ? (
-                            <p className='text-[16px] text-black/50'>
+                            <p className='text-base text-black/50'>
                                 Resend in {countdown}s
                             </p>
                         ) : (
-                            <button
+                            <Button
+                                type='button'
+                                variant='link'
+                                className='h-auto py-0 text-base text-picton-blue'
+                                disabled={isResending}
                                 onClick={handleResend}
-                                className='text-picton-blue hover:underline'
                             >
                                 Resend
-                            </button>
+                            </Button>
                         )}
                     </div>
                     <div className='grid place-items-center'>
