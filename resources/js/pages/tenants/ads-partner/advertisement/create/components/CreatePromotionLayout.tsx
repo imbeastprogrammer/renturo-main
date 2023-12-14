@@ -19,7 +19,7 @@ function Header() {
                 <DrawerNavigation />
                 <div>
                     <h1 className='text-[30px] font-semibold leading-none'>
-                        Create Promotion
+                        Create Ads
                     </h1>
                     <p className='text-xl font-medium text-black/50'>
                         Promote you post, your way!
