@@ -20,6 +20,7 @@ import {
 import formatCurrency from '@/lib/formatCurrency';
 import { Button } from '@/components/ui/button';
 import FormAssetList from './elements/FormAssetList';
+import FormAdsButtonPicker from './elements/FormAdsButtonPicker';
 
 const createPromotionSchema = z.object({
     name: z.string(),
@@ -44,6 +45,7 @@ const createPromotionSchema = z.object({
                     ),
             ),
     ),
+    custom_button: z.string(),
     goal: z.string(),
     listing_id: z.string(),
     target_audience: z.string(),
@@ -83,6 +85,7 @@ const defaultValues: CreatePromotionFormFields = {
     message: '',
     ads_type: 'single',
     ads_asset: [],
+    custom_button: 'learn_more',
     goal: '',
     listing_id: '',
     target_audience: '',
@@ -189,6 +192,11 @@ const adsType = [
     { label: 'Carousel', value: 'carousel' },
 ];
 
+const customButtons = [
+    { label: 'Learn More', value: 'learn_more', href: '' },
+    { label: 'Get Now', value: 'get_now', href: '' },
+];
+
 function CreatePromotionForm() {
     const form = useForm<CreatePromotionFormFields>({ defaultValues });
 
@@ -219,6 +227,12 @@ function CreatePromotionForm() {
                         description='Customize your promotion structure to meet your specific needs.'
                     />
                     <FormAssetList />
+                    <FormAdsButtonPicker
+                        name='custom_button'
+                        label='Custom Button'
+                        control={form.control}
+                        data={customButtons}
+                    />
                 </PromotionItemContainer>
                 <PromotionItemContainer title='Promote Your Listing'>
                     <div className='space-y-2'>
