@@ -27,7 +27,7 @@ const DEFAULT_COUNDOWN_TIMER = 300;
 function LoginOtpForm() {
     const [isResending, setIsResending] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { countdown, reset } = useCountdown(DEFAULT_COUNDOWN_TIMER);
+    const { timeRemaining, reset } = useCountdown(0);
     const [errorMessage, setErrorMessage] = useState('');
     const form = useForm<LoginOtpFormFields>({ defaultValues });
 
@@ -59,6 +59,7 @@ function LoginOtpForm() {
     };
 
     const handleResend = () => {
+        return reset(DEFAULT_COUNDOWN_TIMER);
         router.post(
             '/resend/mobile/verification',
             {},
@@ -114,9 +115,9 @@ function LoginOtpForm() {
                             <p className='text-red-500'>{errorMessage}</p>
                         )}
                         <p className='text-[18px]'>Didn’t receive any OTP?</p>
-                        {countdown > 0 ? (
+                        {timeRemaining > 0 ? (
                             <p className='text-base text-black/50'>
-                                Resend in {countdown}s
+                                Resend in {timeRemaining}s
                             </p>
                         ) : (
                             <Button

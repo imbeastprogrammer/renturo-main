@@ -22,7 +22,7 @@ const defaultValues: ForgotPasswordOtpFields = { verification_code: '' };
 
 function ForgotPasswordOtpForm() {
     const [isDisabled, setDisabled] = useState(true);
-    const { countdown, reset } = useCountdown(5);
+    const { timeRemaining: countdown, reset } = useCountdown(5);
     const form = useForm<ForgotPasswordOtpFields>({ defaultValues });
 
     const onSubmit = form.handleSubmit((values) => {

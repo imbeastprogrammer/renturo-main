@@ -22,7 +22,7 @@ const defaultValues: LoginOtpFormFields = { verification_code: '' };
 
 function LoginOtpForm() {
     const [isDisabled, setDisabled] = useState(true);
-    const { countdown, reset } = useCountdown(5);
+    const { timeRemaining: countdown, reset } = useCountdown(5);
     const form = useForm<LoginOtpFormFields>({ defaultValues });
 
     const onSubmit = form.handleSubmit((values) => {
