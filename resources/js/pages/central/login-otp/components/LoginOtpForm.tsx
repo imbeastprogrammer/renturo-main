@@ -27,7 +27,7 @@ const DEFAULT_COUNDOWN_TIMER = 300;
 function LoginOtpForm() {
     const [isResending, setIsResending] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { timeRemaining, reset } = useCountdown(0);
+    const { timeRemaining, reset } = useCountdown(DEFAULT_COUNDOWN_TIMER);
     const [errorMessage, setErrorMessage] = useState('');
     const form = useForm<LoginOtpFormFields>({ defaultValues });
 
