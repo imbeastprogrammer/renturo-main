@@ -19,10 +19,31 @@ import {
 } from './elements';
 import formatCurrency from '@/lib/formatCurrency';
 import { Button } from '@/components/ui/button';
+import FormAssetList from './elements/FormAssetList';
 
 const createPromotionSchema = z.object({
     name: z.string(),
     message: z.string(),
+    ads_type: z.string(),
+    ads_asset: z.array(
+        z
+            .string()
+            .optional()
+            .or(
+                z
+                    .custom<File>()
+                    .refine(
+                        (file) =>
+                            !file ||
+                            (!!file && file.type?.startsWith('image')) ||
+                            file.type?.startsWith('video'),
+                        {
+                            message:
+                                'Only images or video are allowed to be sent.',
+                        },
+                    ),
+            ),
+    ),
     goal: z.string(),
     listing_id: z.string(),
     target_audience: z.string(),
@@ -60,6 +81,8 @@ type CreatePromotionFormFields = z.infer<typeof createPromotionSchema>;
 const defaultValues: CreatePromotionFormFields = {
     name: '',
     message: '',
+    ads_type: 'single',
+    ads_asset: [],
     goal: '',
     listing_id: '',
     target_audience: '',
@@ -158,6 +181,14 @@ const gender = [
     { label: 'Women', value: 'women' },
 ];
 
+const adsType = [
+    {
+        label: 'Single (Image or Video)',
+        value: 'single',
+    },
+    { label: 'Carousel', value: 'carousel' },
+];
+
 function CreatePromotionForm() {
     const form = useForm<CreatePromotionFormFields>({ defaultValues });
 
@@ -178,6 +209,16 @@ function CreatePromotionForm() {
                         label='Message'
                         description="Want to grab attention with your promoted post? Customize it with a message or caption that tells users more about what you're promoting."
                     />
+                </PromotionItemContainer>
+                <PromotionItemContainer title='Ad Setup'>
+                    <FormRadioInput
+                        name='ads-type'
+                        control={form.control}
+                        label='Format'
+                        data={adsType}
+                        description='Customize your promotion structure to meet your specific needs.'
+                    />
+                    <FormAssetList />
                 </PromotionItemContainer>
                 <PromotionItemContainer title='Promote Your Listing'>
                     <div className='space-y-2'>
