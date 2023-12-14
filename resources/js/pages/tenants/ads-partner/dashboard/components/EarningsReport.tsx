@@ -91,7 +91,7 @@ const CustomTooltip = ({
 function EarningsReport() {
     const [focusBar, setFocusBar] = useState<number | null>(null);
     return (
-        <div className='grid h-full w-full grid-rows-[auto_1fr] gap-4 rounded-lg border p-4 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_1fr] gap-4 rounded-lg border p-4 shadow-lg'>
             <div className='flex items-center justify-between gap-4'>
                 <h1 className='text-xl font-medium'>Earnings Report</h1>
                 <Select>

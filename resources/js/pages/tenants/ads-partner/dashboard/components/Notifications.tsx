@@ -24,9 +24,6 @@ function Notifications() {
                 <NotificationItem>
                     A new support ticket has been created.
                 </NotificationItem>
-                <NotificationItem>
-                    A tenant's payment has been declined.
-                </NotificationItem>
                 <NotificationItem>A tenant's invoice is due.</NotificationItem>
                 <p className='cursor-pointer text-[15px] font-medium text-jasper-orange hover:underline'>
                     30 unread notifications

@@ -8,17 +8,15 @@ import PaymentRecords from './components/PaymentRecords';
 
 function Dashboard() {
     return (
-        <div className='grid h-full grid-rows-[auto_1fr] gap-4 overflow-hidden'>
+        <div className='grid h-full grid-rows-[auto_1fr] gap-4'>
             <h1 className='text-[48px] font-semibold'>Dashboard</h1>
             <div
+                className='grid grid-cols-8 grid-rows-2 gap-4'
                 style={{
-                    display: 'grid',
                     gridTemplateAreas: ` 
-                    'ad-activity  earnings-report earnings-report notifications notifications' 
-                    'ads-activity ads-activity    ads-activity    payment-records payment-records' 
+                    'ad-activity  ad-activity   earnings-report earnings-report  earnings-report notifications notifications notifications' 
+                    'ads-activity ads-activity  ads-activity    ads-activity   payment-records payment-records payment-records payment-records'  
                     `,
-                    gridTemplateRows: 'repeat(2,1fr)',
-                    gap: '1rem',
                 }}
             >
                 <div style={{ gridArea: 'ad-activity' }}>
