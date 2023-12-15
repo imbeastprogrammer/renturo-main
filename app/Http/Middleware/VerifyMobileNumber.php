@@ -26,7 +26,7 @@ class VerifyMobileNumber
             // ], 403);
 
             // Redirect to the otp verification page
-            return redirect('/login/enter-otp');
+            return redirect('/login/otp');
         }
 
         return $next($request);

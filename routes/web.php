@@ -16,8 +16,8 @@ Route::get('/forgot-password', function () {
     return Inertia::render("central/forgot-password/index");
 });
 
-Route::get('/forgot-password/enter-otp', function () {
-    return Inertia::render("central/forgot-password-otp/index");
+Route::get('/forgot-password/otp', function () {
+    return Inertia::render("central/forgot-password/otp/index");
 });
 
 Route::get('/create-new-password', function () {
@@ -32,8 +32,8 @@ Route::middleware('guest:central')->group(function () {
 });
 
 Route::middleware('auth:central')->group(function () {
-    Route::get('/login/enter-otp', function () {
-        return Inertia::render("central/login-otp/index");
+    Route::get('/login/otp', function () {
+        return Inertia::render("central/login/otp/index");
     });
 
     Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);

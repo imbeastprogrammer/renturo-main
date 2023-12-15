@@ -63,9 +63,8 @@ class LoginController extends Controller
 
         Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
-        return redirect('/login/enter-otp');
 
-        // return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
+        return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
     }
 
     /**
