@@ -59,7 +59,6 @@ function LoginOtpForm() {
     };
 
     const handleResend = () => {
-        return reset(DEFAULT_COUNDOWN_TIMER);
         router.post(
             '/resend/mobile/verification',
             {},
