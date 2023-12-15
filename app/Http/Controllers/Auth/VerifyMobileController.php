@@ -35,7 +35,7 @@ class VerifyMobileController extends Controller
             'expires_at' => Carbon::now()->addSeconds(5)
         ]);
 
-        // Mail::to(Auth::user()->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
+        Mail::to(Auth::user()->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
         return back()->with([
             'success' => 'The verification code for your mobile has been sent to the number ' . $mobileNumber . '.',

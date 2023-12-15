@@ -63,7 +63,6 @@ class LoginController extends Controller
 
         Mail::to($user->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
 
-
         return redirect()->intended(RouteServiceProvider::SUPER_ADMIN_HOME);
     }
 

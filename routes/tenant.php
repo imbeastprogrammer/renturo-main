@@ -63,6 +63,10 @@ Route::middleware([
     });
 
     Route::middleware('auth')->group(function () {
+        Route::get('/login/otp', function () {
+            return Inertia::render('tenants/login/otp/index');
+        });
+        
         Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);
         Route::post('/resend/mobile/verification', [VerifyMobileController::class, 'store']);
 
@@ -86,9 +90,7 @@ Route::middleware([
     Route::get('/encrypt', [CryptographyController::class, 'encrypt']);
     Route::get('/decrypt', [CryptographyController::class, 'decrypt']);
 
-    Route::get('/login/otp', function () {
-        return Inertia::render('tenants/login/otp/index');
-    });
+
     Route::get('/forgot-password', function () {
         return Inertia::render('tenants/forgot-password/index');
     });
