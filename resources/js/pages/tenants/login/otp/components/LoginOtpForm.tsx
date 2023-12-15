@@ -1,7 +1,8 @@
+import _ from 'lodash';
 import { z } from 'zod';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
 import {
     Form,
     FormField,
@@ -11,6 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { FormPinInput } from '@/components/auth';
+
 import useCountdown from '@/hooks/useCountdown';
 
 const loginOtpSchema = z.object({
@@ -23,14 +25,53 @@ const defaultValues: LoginOtpFormFields = { verification_code: '' };
 const DEFAULT_COUNTDOWN_TIMER = 300;
 
 function LoginOtpForm() {
-    const [isDisabled, setDisabled] = useState(true);
+    const [isResending, setIsResending] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { timeRemaining, reset } = useCountdown(DEFAULT_COUNTDOWN_TIMER);
-
+    const [errorMessage, setErrorMessage] = useState('');
     const form = useForm<LoginOtpFormFields>({ defaultValues });
 
-    const onSubmit = form.handleSubmit((values) => {
-        setDisabled(false);
-    });
+    const disabled = form.watch('verification_code').length !== 4;
+
+    const onSubmit = form.handleSubmit((values) =>
+        router.put(
+            '/verify/mobile',
+            { code: values.verification_code },
+            {
+                onBefore: () => setIsSubmitting(true),
+                onSuccess: () => reset(DEFAULT_COUNTDOWN_TIMER),
+                onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
+                onFinish: () => setIsSubmitting(false),
+            },
+        ),
+    );
+
+    const onSubmitOnComplete = (value: string) => {
+        form.setValue('verification_code', value);
+        router.put(
+            '/verify/mobile',
+            { code: value },
+            {
+                onBefore: () => setIsSubmitting(true),
+                onSuccess: () => reset(DEFAULT_COUNTDOWN_TIMER),
+                onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
+                onFinish: () => setIsSubmitting(false),
+            },
+        );
+    };
+
+    const handleResend = () => {
+        router.post(
+            '/resend/mobile/verification',
+            {},
+            {
+                onBefore: () => setIsResending(true),
+                onSuccess: () => reset(DEFAULT_COUNTDOWN_TIMER),
+                onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
+                onFinish: () => setIsResending(false),
+            },
+        );
+    };
 
     return (
         <div className='mx-auto grid max-w-[610px] place-items-center p-4'>
@@ -63,13 +104,18 @@ function LoginOtpForm() {
                                     length={4}
                                     secret={false}
                                     onChange={field.onChange}
-                                    onComplete={() => onSubmit()}
+                                    onComplete={(values) =>
+                                        onSubmitOnComplete(values)
+                                    }
                                     value={field.value}
                                 />
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
+                    {!!errorMessage && (
+                        <p className='text-red-500'>{errorMessage}</p>
+                    )}
                     <div className='space-y-2'>
                         <p className='text-[18px]'>Didn’t receive any OTP?</p>
                         {timeRemaining > 0 ? (
@@ -79,7 +125,8 @@ function LoginOtpForm() {
                         ) : (
                             <Button
                                 variant='link'
-                                onClick={() => reset(5)}
+                                onClick={handleResend}
+                                disabled={isResending}
                                 className='h-auto py-0 text-base text-jasper-orange hover:underline'
                             >
                                 Resend
@@ -89,7 +136,7 @@ function LoginOtpForm() {
                     <div className='grid place-items-center'>
                         <Button
                             type='submit'
-                            disabled={isDisabled}
+                            disabled={disabled || isSubmitting}
                             className='h-[73px] w-[283px] bg-metalic-blue uppercase hover:bg-metalic-blue/90'
                         >
                             verify
