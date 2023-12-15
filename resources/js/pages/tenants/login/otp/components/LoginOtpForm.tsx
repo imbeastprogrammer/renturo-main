@@ -20,9 +20,12 @@ const loginOtpSchema = z.object({
 type LoginOtpFormFields = z.infer<typeof loginOtpSchema>;
 const defaultValues: LoginOtpFormFields = { verification_code: '' };
 
+const DEFAULT_COUNTDOWN_TIMER = 300;
+
 function LoginOtpForm() {
     const [isDisabled, setDisabled] = useState(true);
-    const { timeRemaining: countdown, reset } = useCountdown(5);
+    const { timeRemaining, reset } = useCountdown(DEFAULT_COUNTDOWN_TIMER);
+
     const form = useForm<LoginOtpFormFields>({ defaultValues });
 
     const onSubmit = form.handleSubmit((values) => {
@@ -69,17 +72,18 @@ function LoginOtpForm() {
                     />
                     <div className='space-y-2'>
                         <p className='text-[18px]'>Didn’t receive any OTP?</p>
-                        {countdown > 0 ? (
+                        {timeRemaining > 0 ? (
                             <p className='text-[16px] text-black/50'>
-                                Resend in {countdown}s
+                                Resend in {timeRemaining}s
                             </p>
                         ) : (
-                            <button
+                            <Button
+                                variant='link'
                                 onClick={() => reset(5)}
-                                className='text-jasper-orange hover:underline'
+                                className='h-auto py-0 text-base text-jasper-orange hover:underline'
                             >
                                 Resend
-                            </button>
+                            </Button>
                         )}
                     </div>
                     <div className='grid place-items-center'>
