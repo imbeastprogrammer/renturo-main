@@ -5,10 +5,10 @@ const useCountdown = (
     interval = 1000,
     onComplete?: () => void,
 ) => {
-    const initialTime =
-        JSON.parse(localStorage.getItem('countdown') || '{}') ||
-        initialCountdown;
-    const [timeRemaining, setTimeRemaining] = useState(initialTime);
+    const storedTime = parseInt(localStorage.getItem('countdown') || '0');
+    const [timeRemaining, setTimeRemaining] = useState(
+        storedTime || initialCountdown,
+    );
 
     useEffect(() => {
         let timer: number;
@@ -16,7 +16,7 @@ const useCountdown = (
             timer = setInterval(() => {
                 const time = timeRemaining - 1;
                 setTimeRemaining(time);
-                localStorage.setItem('countdown', JSON.stringify(time));
+                localStorage.setItem('countdown', time.toString());
             }, interval);
         } else {
             if (onComplete) {
@@ -30,7 +30,7 @@ const useCountdown = (
     }, [timeRemaining, interval, onComplete]);
 
     const reset = (newCountdown: number) => {
-        localStorage.removeItem('countdown');
+        localStorage.setItem('countdown', newCountdown.toString());
         setTimeRemaining(newCountdown);
     };
 
