@@ -39,6 +39,7 @@ function LoginOtpForm() {
             { code: values.verification_code },
             {
                 onBefore: () => setIsSubmitting(true),
+                onSuccess: () => reset(DEFAULT_COUNDOWN_TIMER),
                 onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
                 onFinish: () => setIsSubmitting(false),
             },
@@ -52,6 +53,7 @@ function LoginOtpForm() {
             { code: value },
             {
                 onBefore: () => setIsSubmitting(true),
+                onSuccess: () => reset(DEFAULT_COUNDOWN_TIMER),
                 onError: (err) => setErrorMessage(_.valuesIn(err)[0]),
                 onFinish: () => setIsSubmitting(false),
             },
