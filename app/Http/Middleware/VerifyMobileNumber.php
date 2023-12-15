@@ -18,12 +18,15 @@ class VerifyMobileNumber
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::user()->verified_mobile_no->verified_at) {
-            return response()->json([
-                'message' => 'failed',
-                'body' => [
-                    'message' => 'The mobile number has not been verified yet. Please check your mobile for the verification code.'
-                ]
-            ], 403);
+            // return response()->json([
+            //     'message' => 'failed',
+            //     'body' => [
+            //         'message' => 'The mobile number has not been verified yet. Please check your mobile for the verification code.'
+            //     ]
+            // ], 403);
+
+            // Redirect to the otp verification page
+            return redirect('/login/enter-otp');
         }
 
         return $next($request);

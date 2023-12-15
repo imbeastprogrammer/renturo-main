@@ -22,15 +22,17 @@ class VerifyMobileController extends Controller
         $mobileNumber = Auth::user()->verified_mobile_no->mobile_number;
 
         if (Auth::user()->verified_mobile_no->expires_at > Carbon::now()) {
-            return response()->json([
-                'message' => 'Too many request for verification code. Please retry after waiting for 300 seconds.'
-            ], 429);
+            // return response()->json([
+            //     'message' => 'Too many request for verification code. Please retry after waiting for 300 seconds.'
+            // ], 429);
+
+            return back()->withErrors(['otp' => 'Too many request for verification code. Please retry after waiting for 300 seconds.']);
         };
 
         Auth::user()->mobileVerification()->create([
             'mobile_number' => $mobileNumber,
             'code' => $verificationCode,
-            'expires_at' => Carbon::now()->addSeconds(300)
+            'expires_at' => Carbon::now()->addSeconds(5)
         ]);
 
         // Mail::to(Auth::user()->email)->send(new SendMobileVerificationCode(['code' => $verificationCode]));
