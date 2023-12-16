@@ -12,15 +12,20 @@ class DynamicFormField extends Model
 
     const FIELD_TYPES = [
         'text',
-        'number',
         'email',
         'password',
-        'file',
+        'number',
+        'textarea',
+        'select',
+        'multiselect',
         'checkbox',
         'radio',
         'date',
         'time',
-        'datetime-local'
+        'file',
+        'hidden',
+        'color',
+        'url',
     ];
 
     protected $fillable = [

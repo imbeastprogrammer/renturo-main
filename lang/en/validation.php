@@ -150,6 +150,7 @@ return [
     'url' => 'The :attribute must be a valid URL.',
     'ulid' => 'The :attribute must be a valid ULID.',
     'uuid' => 'The :attribute must be a valid UUID.',
+    'unique_in_array' => 'The :attribute must be unique in the fields array.',
 
     /*
     |--------------------------------------------------------------------------

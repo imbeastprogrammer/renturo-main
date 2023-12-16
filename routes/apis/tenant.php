@@ -25,15 +25,13 @@ Route::middleware([
     RedirectIfTenantActivated::class
 ])
     ->prefix('v1')
-    ->group(function () {
+    ->group(function () { 
         Route::post('login', [LoginController::class, 'login']);
         Route::post('register', [RegisterController::class, 'register']);
 
         Route::middleware('auth:api')->group(function () {
             Route::put('/verify/mobile', [VerifyMobileController::class, 'update']);
             Route::post('/resend/mobile/verification', [VerifyMobileController::class, 'store']);
-
-
         });
               
         Route::middleware(['auth:api', 'verifiedMobileNumber'])->group(function () {

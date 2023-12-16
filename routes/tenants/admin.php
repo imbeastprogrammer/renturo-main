@@ -77,7 +77,7 @@ Route::middleware([
     Route::put('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
     Route::resource('/form/pages', DynamicFormPageController::class);
 
-    Route::put('/sort/form/fields', [DynamicFormFieldController::class, 'sortFormFields']);
+    Route::post('/form/fields/restore/{id}', [DynamicFormFieldController::class, 'restore']);
     Route::resource('/form/fields', DynamicFormFieldController::class);
 
     Route::resource('/categories', CategoryManagementController::class);
