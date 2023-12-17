@@ -65,6 +65,10 @@ class SubCategoryManagementController extends Controller
 
         $category = Category::findOrFail($request->category_id);
 
+        if (!$category) {
+            return response()->json(['message' => 'Category id not found'], 404);
+        }
+
         $category->subCategories()->create([
             'name' => $request->name
         ]);

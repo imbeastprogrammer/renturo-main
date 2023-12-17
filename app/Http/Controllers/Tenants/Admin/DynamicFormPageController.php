@@ -18,9 +18,40 @@ class DynamicFormPageController extends Controller
      */
     public function index()
     {
-        $formPages = DynamicFormPage::all();
+        $formPages = DynamicFormPage::with('subCategory', 'dynamicFormFields')->get();
 
-        return response()->json(['form_pages' => $formPages]);
+        // Prepare the data for response, including sub_category_id and sub_category name
+        $formPagesData = $formPages->map(function ($formPage) {
+
+            // Extract dynamicFormFields IDs or other needed data
+            $fields = $formPage->dynamicFormFields->map(function ($field) {
+                return [
+                    'id' => $field->id,
+                    'user_id' => $field->user_id,
+                    'dynamic_form_page_id' => $field->dynamic_form_page_id,
+                    'input_field_label' => $field->input_field_label,
+                    'input_field_name' => $field->input_field_name,
+                    'input_field_type' => $field->input_field_type,
+                    'is_required' => $field->is_required,
+                    'is_multiple' => $field->is_multiple,
+                    'data' => $field->data,
+                ];
+            });
+            
+            return [
+                'id' => $formPage->id,
+                'sub_category_id' => $formPage->subCategory->id ?? null,
+                'sub_category_name' => $formPage->subCategory->name ?? 'No SubCategory',
+                'title' => $formPage->title,
+                'description' => $formPage->description,
+                'created_at' => $formPage->created_at,
+                'updated_at' => $formPage->updated_at,
+                'deleted_at' => $formPage->deleted_at,
+                'form_fields' => $fields,
+            ];
+        });
+
+        return response()->json(['form_pages' => $formPagesData]);
     }
 
     /**

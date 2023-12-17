@@ -24,7 +24,8 @@ class StoreFormPageRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:255'
+            'title' => 'required|string|max:255',
+            'sub_category_id' => 'required|exists:sub_categories,id',
         ];
     }
 }
