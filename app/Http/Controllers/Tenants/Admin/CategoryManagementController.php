@@ -15,8 +15,13 @@ class CategoryManagementController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        // Define the number of items per page
+        $perPage = 15; 
 
+        // Fetch categories with pagination
+        $categories = Category::paginate($perPage);
+
+        // Return the paginated response
         return response()->json($categories);
     }
 
@@ -59,7 +64,16 @@ class CategoryManagementController extends Controller
      */
     public function show($id)
     {
-        //
+        // Fetch the category by its ID
+        $category = Category::find($id);
+
+        // Check if the category was found
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        // Return the category data
+        return response()->json($category);
     }
 
     /**
@@ -105,12 +119,28 @@ class CategoryManagementController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::where('id', $id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
 
         $category->delete();
 
         return response()->json([
-            'message' => 'Category name updated.'
+            'message' => 'Category name was deleted.'
         ]);
+    }
+
+    public function restore($id) {
+
+        $record = Category::withTrashed()->where('id', $id);
+
+        if (!$record) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        $record->restore();
+        return response()->json(['message' => 'Category restored successfully']);
     }
 }

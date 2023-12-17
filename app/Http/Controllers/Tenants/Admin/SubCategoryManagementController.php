@@ -16,9 +16,28 @@ class SubCategoryManagementController extends Controller
      */
     public function index(Request $request)
     {
-        $subCategories = Category::where('id', $request->category_id)->first();
 
+        $perPage = 10;
+
+        // Fetch all sub-categories and eager load their parent categories
+        $subCategories = SubCategory::with('category')->paginate($perPage);
+
+        // Transform the paginated items
+        $transformedSubCategories = $subCategories->getCollection()->map(function ($subCategory) {
+            return [
+                'category_id' => $subCategory->category_id,
+                'category_name' => $subCategory->category ? $subCategory->category->name : 'No Category',
+                'sub_category_id' => $subCategory->id,
+                'sub_category_name' => $subCategory->name,
+            ];
+        });
+
+        // Replace the original items with the transformed collection
+        $subCategories->setCollection($transformedSubCategories);
+
+        // Return the paginated response
         return response()->json($subCategories);
+        
     }
 
     /**
@@ -63,7 +82,24 @@ class SubCategoryManagementController extends Controller
      */
     public function show($id)
     {
-        //
+        // Fetch the sub-category by ID and eager load its parent category
+        $subCategory = SubCategory::with('category')->find($id);
+
+        // Check if the sub-category was found
+        if (!$subCategory) {
+            return response()->json(['message' => 'Sub-category not found'], 404);
+        }
+
+        // Optional: Transform the sub-category data for the response
+        $subCategoryData = [
+            'category_id' => $subCategory->category_id,
+            'category_name' => $subCategory->category ? $subCategory->category->name : 'No Category',
+            'sub_category_id' => $subCategory->id,
+            'sub_category_name' => $subCategory->name,
+        ];
+
+        // Return the sub-category data
+        return response()->json($subCategoryData);
     }
 
     /**
@@ -93,6 +129,7 @@ class SubCategoryManagementController extends Controller
         $subCategory = SubCategory::findOrFail($id);
 
         $subCategory->update([
+            'category_id' => $request->category_id,
             'name' => $request->name
         ]);
 
@@ -109,12 +146,28 @@ class SubCategoryManagementController extends Controller
      */
     public function destroy($id)
     {
-        $subCategory = SubCategory::findOrFail($id);
+        $subCategory = SubCategory::find($id);
+
+        if (!$subCategory) {
+            return response()->json(['message' => 'Sub-category not found'], 404);
+        }
 
         $subCategory->delete();
 
         return response()->json([
-            'message' => 'Sub category name updated.'
+            'message' => 'Sub category name was updated.'
         ]);
+    }
+
+    public function restore($id) {
+
+        $record = SubCategory::withTrashed()->find($id);
+
+        if (!$record) {
+            return response()->json(['message' => 'Sub-category not found'], 404);
+        }
+
+        $record->restore();
+        return response()->json(['message' => 'Sub-category restored successfully']);
     }
 }

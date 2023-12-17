@@ -196,7 +196,7 @@ class DynamicFormFieldController extends Controller
         $record = DynamicFormField::withTrashed()->find($id);
 
         if (!$record) {
-            return response()->json(['message' => 'Form field found'], 404);
+            return response()->json(['message' => 'Form field not found'], 404);
         }
 
         $record->restore();

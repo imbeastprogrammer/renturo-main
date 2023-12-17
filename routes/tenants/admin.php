@@ -80,6 +80,9 @@ Route::middleware([
     Route::post('/form/fields/restore/{id}', [DynamicFormFieldController::class, 'restore']);
     Route::resource('/form/fields', DynamicFormFieldController::class);
 
+    Route::post('/categories/restore/{id}', [CategoryManagementController::class, 'restore']);
     Route::resource('/categories', CategoryManagementController::class);
+
+    Route::post('/sub-categories/restore/{id}', [SubCategoryManagementController::class, 'restore']);
     Route::resource('/sub-categories', SubCategoryManagementController::class);
 });
