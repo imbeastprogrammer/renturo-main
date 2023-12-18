@@ -30,7 +30,7 @@ import FieldTypeChanger from '../FieldTypeChanger';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
-const extraAttributes = {
+const field = {
     is_required: false,
     label: 'Editable Label',
 };
@@ -45,7 +45,7 @@ const TimeField: FormElement = {
     construct: (id) => ({
         id,
         type: 'time',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -58,7 +58,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
     const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
+        extraAttributes: typeof field;
     };
 
     const { currentFieldType, fieldTypes } = useFieldTypes(element.type);
@@ -88,9 +88,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             </div>
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
-                <Label className='text-[20px]'>
-                    {elementInstance.extraAttributes.label}
-                </Label>
+                <Label className='text-[20px]'>{elementInstance.label}</Label>
                 <Input type='time' className='w-max min-w-[200px]' />
             </div>
         </div>
@@ -103,7 +101,7 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
@@ -111,8 +109,9 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 

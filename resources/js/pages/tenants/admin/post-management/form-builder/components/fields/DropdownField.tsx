@@ -38,16 +38,20 @@ import FieldTypeChanger from '../FieldTypeChanger';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
-const extraAttributes = {
+const field = {
     is_required: false,
     label: 'Please select your answer',
-    options: [],
+    data: {
+        options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+    },
 };
 
 const schema = z.object({
     is_required: z.boolean(),
     label: z.string(),
-    options: z.array(z.string()).default([]),
+    data: z.object({
+        options: z.array(z.string()).default([]),
+    }),
 });
 
 const DropdownField: FormElement = {
@@ -55,7 +59,7 @@ const DropdownField: FormElement = {
     construct: (id) => ({
         id,
         type: 'dropdown',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -68,7 +72,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
     const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
+        data: typeof field.data;
     };
 
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
@@ -98,9 +102,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             </div>
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
-                <Label className='text-[20px]'>
-                    {elementInstance.extraAttributes.label}
-                </Label>
+                <Label className='text-[20px]'>{elementInstance.label}</Label>
                 <Select>
                     <SelectTrigger>
                         <SelectValue />
@@ -119,18 +121,19 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
-    const options = form.watch('options');
+    const options = form.watch('data.options');
 
     const { currentFieldType } = useFieldTypes(element.type);
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 
@@ -181,7 +184,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                         <div className='rounded-lg bg-white px-4 py-3'>
                             <FormField
                                 control={form.control}
-                                name='options'
+                                name='data.options'
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Options</FormLabel>
@@ -254,7 +257,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                                             size='sm'
                                             onClick={() => {
                                                 form.setValue(
-                                                    'options',
+                                                    'data.options',
                                                     field.value.concat(
                                                         'New option',
                                                     ),

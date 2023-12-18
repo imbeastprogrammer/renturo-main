@@ -30,18 +30,19 @@ import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
-const extraAttributes = {
-    text: 'Please enter a text',
+const field = {
+    label: 'Please enter a text',
+    is_required: false,
 };
 
-const schema = z.object({ text: z.string() });
+const schema = z.object({ label: z.string(), is_required: z.boolean() });
 
 const Body: FormElement = {
     type: 'body',
     construct: (id) => ({
         id,
         type: 'body',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -53,9 +54,7 @@ type DesignerComponentProps = {
 function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
-    const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
-    };
+    const elementInstance = element as FormElementInstance;
 
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
@@ -85,7 +84,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px] font-normal'>
-                    {elementInstance.extraAttributes.text}
+                    {elementInstance.label}
                 </Label>
             </div>
         </div>
@@ -99,7 +98,7 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
@@ -107,8 +106,9 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 
@@ -130,7 +130,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                         className='space-y-2'
                     >
                         <FormField
-                            name='text'
+                            name='label'
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem className='rounded-lg bg-white px-4 py-3'>

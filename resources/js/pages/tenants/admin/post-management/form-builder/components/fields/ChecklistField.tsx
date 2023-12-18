@@ -33,18 +33,22 @@ import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
-const extraAttributes = {
+const field = {
     is_required: false,
     label: 'Please choose your answer',
-    options: [],
-    multiple_answer_accepted: false,
+    data: {
+        options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+        multiple_answer_accepted: false,
+    },
 };
 
 const schema = z.object({
     is_required: z.boolean(),
     label: z.string(),
-    options: z.array(z.string()).default([]),
-    multiple_answer_accepted: z.boolean(),
+    data: z.object({
+        options: z.array(z.string()).default([]),
+        multiple_answer_accepted: z.boolean(),
+    }),
 });
 
 const ChecklistField: FormElement = {
@@ -52,7 +56,7 @@ const ChecklistField: FormElement = {
     construct: (id) => ({
         id,
         type: 'checklist',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -65,7 +69,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
     const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
+        data: typeof field.data;
     };
 
     const { currentFieldType, fieldTypes } = useFieldTypes(element.type);
@@ -96,10 +100,8 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
-                <Label className='text-[20px]'>
-                    {elementInstance.extraAttributes.label}
-                </Label>
-                {elementInstance.extraAttributes.options.map((option) => (
+                <Label className='text-[20px]'>{elementInstance.label}</Label>
+                {elementInstance.data.options.map((option) => (
                     <div
                         key={option}
                         className='pointer-events-none flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-3 px-4 text-metalic-blue'
@@ -120,18 +122,19 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
-    const options = form.watch('options');
+    const options = form.watch('data.options');
 
     const { currentFieldType } = useFieldTypes(element.type);
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 
@@ -182,12 +185,12 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                         <div className='rounded-lg bg-white px-4 py-3'>
                             <FormField
                                 control={form.control}
-                                name='options'
+                                name='data.options'
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Options</FormLabel>
                                         <FormField
-                                            name='multiple_answer_accepted'
+                                            name='data.multiple_answer_accepted'
                                             control={form.control}
                                             render={({ field }) => (
                                                 <FormItem className='flex items-center space-x-2 space-y-0'>
@@ -277,7 +280,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                                             size='sm'
                                             onClick={() => {
                                                 form.setValue(
-                                                    'options',
+                                                    'data.options',
                                                     field.value.concat(
                                                         'New option',
                                                     ),

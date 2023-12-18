@@ -30,18 +30,19 @@ import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
-const extraAttributes = {
+const field = {
+    is_required: false,
     label: 'This is a heading',
 };
 
-const schema = z.object({ label: z.string() });
+const schema = z.object({ label: z.string(), is_required: z.boolean() });
 
 const Heading: FormElement = {
     type: 'heading',
     construct: (id) => ({
         id,
         type: 'heading',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -53,9 +54,7 @@ type DesignerComponentProps = {
 function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
-    const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
-    };
+    const elementInstance = element as FormElementInstance;
 
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
@@ -84,9 +83,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             </div>
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
-                <Label className='text-[20px]'>
-                    {elementInstance.extraAttributes.label}
-                </Label>
+                <Label className='text-[20px]'>{elementInstance.label}</Label>
             </div>
         </div>
     );
@@ -99,7 +96,7 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
@@ -107,8 +104,9 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 

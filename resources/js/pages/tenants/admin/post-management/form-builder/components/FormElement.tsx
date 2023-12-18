@@ -32,7 +32,9 @@ export type ElementsType =
 export type FormElementInstance = {
     id: string;
     type: ElementsType;
-    extraAttributes?: Record<string, any>;
+    label: string;
+    is_required: boolean;
+    data?: Record<string, any>;
 };
 
 export type FormElement = {

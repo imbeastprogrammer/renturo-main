@@ -33,22 +33,26 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
+import { ChevronDown, PlusIcon } from 'lucide-react';
 import { DeleteIcon } from '@/assets/form-builder';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 import FieldTypeChanger from '../FieldTypeChanger';
-import { ChevronDown, PlusIcon } from 'lucide-react';
 
-const extraAttributes = {
+const field = {
     is_required: false,
     label: 'Please enter a number',
-    type: 'number_input',
+    data: {
+        type: 'number_input',
+    },
 };
 
 const schema = z.object({
     is_required: z.boolean(),
     label: z.string(),
-    type: z.string(),
+    data: z.object({
+        type: z.string(),
+    }),
 });
 
 const NumberField: FormElement = {
@@ -56,7 +60,7 @@ const NumberField: FormElement = {
     construct: (id) => ({
         id,
         type: 'number',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -98,7 +102,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
     const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
+        data: typeof field.data;
     };
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
@@ -127,10 +131,8 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             </div>
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
-                <Label className='text-[20px]'>
-                    {elementInstance.extraAttributes.label}
-                </Label>
-                {DesignerElementMap[elementInstance.extraAttributes.type]}
+                <Label className='text-[20px]'>{elementInstance.label}</Label>
+                {DesignerElementMap[elementInstance.data.type]}
             </div>
         </div>
     );
@@ -142,7 +144,7 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
@@ -150,8 +152,9 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 
@@ -188,7 +191,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                             )}
                         />
                         <FormField
-                            name='type'
+                            name='data.type'
                             control={form.control}
                             render={({ field }) => {
                                 return (
