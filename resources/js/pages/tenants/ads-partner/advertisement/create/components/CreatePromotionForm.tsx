@@ -194,7 +194,11 @@ const adsType = [
 
 const customButtons = [
     { label: 'Learn More', value: 'learn_more', href: '' },
-    { label: 'Get Now', value: 'get_now', href: '' },
+    { label: 'Book Now', value: 'book_now', href: '' },
+    { label: 'Get Started', value: 'get_started', href: '' },
+    { label: 'Request a Quote', value: 'request_a_quote', href: '' },
+    { label: 'Discover Now', value: 'discover_now', href: '' },
+    { label: 'Explore More', value: 'explore_more', href: '' },
 ];
 
 function CreatePromotionForm() {
