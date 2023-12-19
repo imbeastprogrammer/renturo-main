@@ -86,7 +86,7 @@ class CategoryManagementController extends Controller
         // Return the created category along with a success message
         return response()->json([
             "status" => "success",
-            'message' => 'Category created successfully.',
+            'message' => 'Category was successfully fetched.',
             'data' => $category,
         ], 201); 
     }
