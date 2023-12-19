@@ -189,7 +189,7 @@ const adsType = [
         label: 'Single (Image or Video)',
         value: 'single',
     },
-    { label: 'Carousel', value: 'carousel' },
+    { label: 'Carousel', value: 'multiple' },
 ];
 
 const customButtons = [
@@ -199,6 +199,7 @@ const customButtons = [
 
 function CreatePromotionForm() {
     const form = useForm<CreatePromotionFormFields>({ defaultValues });
+    const selectedAdsType = form.watch('ads_type') as 'single' | 'multiple';
 
     const handleSubmit = form.handleSubmit(() => {});
 
@@ -220,13 +221,17 @@ function CreatePromotionForm() {
                 </PromotionItemContainer>
                 <PromotionItemContainer title='Ad Setup'>
                     <FormRadioInput
-                        name='ads-type'
+                        name='ads_type'
                         control={form.control}
                         label='Format'
                         data={adsType}
                         description='Customize your promotion structure to meet your specific needs.'
                     />
-                    <FormAssetList />
+                    <FormAssetList
+                        name='ads_asset'
+                        control={form.control}
+                        type={selectedAdsType}
+                    />
                     <FormAdsButtonPicker
                         name='custom_button'
                         label='Custom Button'
