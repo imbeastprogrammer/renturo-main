@@ -1,39 +1,37 @@
-import { router } from '@inertiajs/react';
-import AdminLayout from '@/layouts/AdminLayout';
-import ListingFilter from '../properties/components/ListingFilter';
+import { ReactNode } from 'react';
+import { PlusIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+import TableSearchbar from '@/components/tenant/TableSearchbar';
 import CategoriesTable from './components/CategoriesTable';
-import dummyCategories from '@/data/dummyCategories';
-import { useSearchParams } from '@/hooks/useSearchParams';
+import AdminLayout from '@/layouts/AdminLayout';
 
-const tabs = [
-    { label: 'All Categories', value: 'all' },
-    { label: 'Approved', value: 'approved' },
-    { label: 'To Review', value: 'review' },
-    { label: 'Declined', value: 'declined' },
-];
-
-function CategoriesPage() {
-    const { searchParams, queryParams } = useSearchParams();
-    const filter = searchParams.get('filter') || 'all';
-
-    const handleChangeFilter = (value: string) => {
-        router.visit(`/admin/post/categories`, {
-            data: { ...queryParams, filter: value },
-        });
-    };
-
+function Categories() {
     return (
-        <div className='grid h-full grid-rows-[auto_1fr] gap-y-4 rounded-lg border p-4 shadow-lg'>
-            <ListingFilter
-                value={filter}
-                data={tabs}
-                onChange={handleChangeFilter}
-            />
-            <CategoriesTable categories={dummyCategories} />
+        <div className='grid h-full grid-rows-[auto_1fr] gap-y-4 rounded-lg border bg-white p-4 shadow-lg'>
+            <div className='flex items-center justify-between gap-2'>
+                <div className='flex gap-4'>
+                    <div className='min-w-[330px]'>
+                        <TableSearchbar placeholder='Search' />
+                    </div>
+                    <Button className='bg-metalic-blue text-[15px] font-medium hover:bg-metalic-blue/90'>
+                        Search
+                    </Button>
+                </div>
+                <Button
+                    type='button'
+                    variant='outline'
+                    className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
+                >
+                    <PlusIcon className='h-4 w-4' />
+                    Create New Category
+                </Button>
+            </div>
+            <CategoriesTable />
         </div>
     );
 }
 
-CategoriesPage.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
+Categories.layout = (page: ReactNode) => <AdminLayout>{page}</AdminLayout>;
 
-export default CategoriesPage;
+export default Categories;

@@ -72,7 +72,7 @@ function AdminSidebar() {
     const subLinks = activeSidebarItem?.sublinks;
 
     return (
-        <aside className='h-full'>
+        <aside className='h-full bg-white'>
             <div className='grid h-full grid-cols-[144px_1fr]'>
                 <div className='grid h-full grid-rows-[1fr_auto] bg-metalic-blue px-4 py-8 pr-0 text-white'>
                     <div>
