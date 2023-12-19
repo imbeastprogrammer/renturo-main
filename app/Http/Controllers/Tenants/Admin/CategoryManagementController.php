@@ -22,7 +22,7 @@ class CategoryManagementController extends Controller
         $categories = Category::paginate($perPage);
 
         // Return the paginated response
-        return response()->json($categories);
+        return response()->json($categories, 200);
     }
 
     /**
@@ -44,16 +44,20 @@ class CategoryManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255|unique:categories,name'
         ]);
-
-        Category::create([
+    
+        // Create and store the new category
+        $newCategory = Category::create([
             'name' => $request->name
         ]);
-
+    
+        // Return the created category along with a success message
         return response()->json([
-            'message' => 'Category name created.'
-        ]);
+            "status" => "success",
+            'message' => 'Category created successfully.',
+            'data' => $newCategory,
+        ], 201); 
     }
 
     /**
@@ -69,11 +73,22 @@ class CategoryManagementController extends Controller
 
         // Check if the category was found
         if (!$category) {
-            return response()->json(['message' => 'Category not found'], 404);
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Category not found',
+                "error" => [
+                    "errorCode" => "CATEGORY_NOT_FOUND",
+                    "errorDescription" => "The category ID you are looking for could not be found."
+                ]
+            ], 404); 
         }
 
-        // Return the category data
-        return response()->json($category);
+        // Return the created category along with a success message
+        return response()->json([
+            "status" => "success",
+            'message' => 'Category created successfully.',
+            'data' => $category,
+        ], 201); 
     }
 
     /**
@@ -97,18 +112,33 @@ class CategoryManagementController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255|unique:categories,name,' . $id,
         ]);
 
-        $category = Category::findOrFail($id);
+        $category = Category::find($id);
+
+         // Check if the category was found
+         if (!$category) {
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Category not found',
+                "error" => [
+                    "errorCode" => "CATEGORY_NOT_FOUND",
+                    "errorDescription" => "The category ID you are looking for could not be found."
+                ]
+            ], 404); 
+        }
 
         $category->update([
             'name' => $request->name
         ]);
 
-        return response()->json([
-            'message' => 'Category name updated.'
-        ]);
+         // Return the created category along with a success message
+         return response()->json([
+            "status" => "success",
+            'message' => 'Category was successfully updated.',
+            'data' => $category,
+        ], 200); 
     }
 
     /**
@@ -119,28 +149,47 @@ class CategoryManagementController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::where('id', $id);
+        $category = Category::find($id);
 
         if (!$category) {
-            return response()->json(['message' => 'Category not found'], 404);
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Category not found',
+                "error" => [
+                    "errorCode" => "CATEGORY_NOT_FOUND",
+                    "errorDescription" => "The category ID you are looking for could not be found."
+                ]
+            ], 404); 
         }
 
         $category->delete();
 
-        return response()->json([
-            'message' => 'Category name was deleted.'
-        ]);
+         // Return the created category along with a success message
+         return response()->json([
+            "status" => "success",
+            'message' => 'Category was successfully deleted.',
+        ], 200); 
     }
 
     public function restore($id) {
 
-        $record = Category::withTrashed()->where('id', $id);
+        $record = Category::withTrashed()->where('id', $id)->first();
 
         if (!$record) {
-            return response()->json(['message' => 'Category not found'], 404);
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Category not found',
+                "error" => [
+                    "errorCode" => "CATEGORY_NOT_FOUND",
+                    "errorDescription" => "The category ID you are looking for could not be found."
+                ]
+            ], 404); 
         }
 
         $record->restore();
-        return response()->json(['message' => 'Category restored successfully']);
+        return response()->json([
+            "status" => "success",
+            'message' => 'Category was successfully restored.',
+        ], 200); 
     }
 }
