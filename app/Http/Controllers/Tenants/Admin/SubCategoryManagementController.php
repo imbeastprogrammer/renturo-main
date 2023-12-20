@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\SubCategory;
+use Illuminate\Validation\Rule;
 
 class SubCategoryManagementController extends Controller
 {
@@ -17,7 +18,7 @@ class SubCategoryManagementController extends Controller
     public function index(Request $request)
     {
 
-        $perPage = 10;
+        $perPage = 15;
 
         // Fetch all sub-categories and eager load their parent categories
         $subCategories = SubCategory::with('category')->paginate($perPage);
@@ -37,7 +38,6 @@ class SubCategoryManagementController extends Controller
 
         // Return the paginated response
         return response()->json($subCategories);
-        
     }
 
     /**
@@ -59,23 +59,39 @@ class SubCategoryManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255'
+            'category_id' => 'required|exists:categories,id', 
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('sub_categories')->where(function ($query) use ($request) {
+                    return $query->where('category_id', $request->category_id);
+                }),
+            ],
         ]);
 
-        $category = Category::findOrFail($request->category_id);
+        $category = Category::find($request->category_id);
 
         if (!$category) {
-            return response()->json(['message' => 'Category id not found'], 404);
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Category not found',
+                "error" => [
+                    "errorCode" => "CATEGORY_NOT_FOUND",
+                    "errorDescription" => "The category ID you are looking for could not be found."
+                ]
+            ], 404); 
         }
 
-        $category->subCategories()->create([
+        $subCategory = $category->subCategories()->create([
             'name' => $request->name
         ]);
 
         return response()->json([
-            'message' => 'Sub category name created.'
-        ]);
+            "status" => "success",
+            'message' => 'Subcategory created successfully.',
+            'data' => $subCategory,
+        ], 201); 
     }
 
     /**
@@ -91,7 +107,14 @@ class SubCategoryManagementController extends Controller
 
         // Check if the sub-category was found
         if (!$subCategory) {
-            return response()->json(['message' => 'Sub-category not found'], 404);
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Subcategory not found',
+                "error" => [
+                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
+                    "errorDescription" => "The subcategory ID you are looking for could not be found."
+                ]
+            ], 404); 
         }
 
         // Optional: Transform the sub-category data for the response
@@ -101,9 +124,13 @@ class SubCategoryManagementController extends Controller
             'sub_category_id' => $subCategory->id,
             'sub_category_name' => $subCategory->name,
         ];
-
-        // Return the sub-category data
-        return response()->json($subCategoryData);
+    
+        // Return the created category along with a success message
+        return response()->json([
+            "status" => "success",
+            'message' => 'Subcategory was successfully fetched.',
+            'data' => $subCategoryData,
+        ], 201); 
     }
 
     /**
@@ -127,10 +154,30 @@ class SubCategoryManagementController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'category_id' => 'required|exists:categories,id', 
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('sub_categories')->where(function ($query) use ($request) {
+                    return $query->where('category_id', $request->category_id);
+                })->ignore($id),
+            ],
         ]);
 
-        $subCategory = SubCategory::findOrFail($id);
+        $subCategory = SubCategory::find($id);
+
+        // Check if the subcategory was found
+        if (!$subCategory) {
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Subcategory not found',
+                "error" => [
+                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
+                    "errorDescription" => "The subcategory ID you are looking for could not be found."
+                ]
+            ], 404); 
+        }
 
         $subCategory->update([
             'category_id' => $request->category_id,
@@ -138,8 +185,10 @@ class SubCategoryManagementController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Sub category name updated.'
-        ]);
+            "status" => "success",
+            'message' => 'Subcategory was successfully updated.',
+            'data' => $subCategory,
+        ], 200); 
     }
 
     /**
@@ -153,25 +202,44 @@ class SubCategoryManagementController extends Controller
         $subCategory = SubCategory::find($id);
 
         if (!$subCategory) {
-            return response()->json(['message' => 'Sub-category not found'], 404);
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Subcategory not found',
+                "error" => [
+                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
+                    "errorDescription" => "The subcategory ID you are looking for could not be found."
+                ]
+            ], 404);
         }
 
         $subCategory->delete();
 
+        // Return the created category along with a success message
         return response()->json([
-            'message' => 'Sub category name was updated.'
-        ]);
+            "status" => "success",
+            'message' => 'Subcategory was successfully deleted.',
+        ], 200); 
     }
 
     public function restore($id) {
 
-        $record = SubCategory::withTrashed()->find($id);
+        $record = SubCategory::withTrashed()->where('id', $id)->first();
 
         if (!$record) {
-            return response()->json(['message' => 'Sub-category not found'], 404);
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Subcategory not found',
+                "error" => [
+                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
+                    "errorDescription" => "The subcategory ID you are looking for could not be found."
+                ]
+            ], 404);
         }
 
         $record->restore();
-        return response()->json(['message' => 'Sub-category restored successfully']);
+        return response()->json([
+            "status" => "success",
+            'message' => 'Subcategory was successfully restored.',
+        ], 200); 
     }
 }

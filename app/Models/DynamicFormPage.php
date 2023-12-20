@@ -14,10 +14,16 @@ class DynamicFormPage extends Model
         'user_id',
         'title',
         'sort_no',
-        'sub_category_id',
+        'dynamic_form_id',
     ];
 
     protected $with = ['dynamicFormFields'];
+
+    public function dynamicForm()
+    {
+        // Inverse relationship with DynamicForm
+        return $this->belongsTo(DynamicForm::class);
+    }
 
     public function user()
     {
@@ -26,6 +32,7 @@ class DynamicFormPage extends Model
 
     public function dynamicFormFields()
     {
+        // One-to-Many relationship with DynamicFormField
         return $this->hasMany(DynamicFormField::class);
     }
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\Tenants\Admin\UserManagementController;
 use App\Http\Controllers\Tenants\Admin\PostManagementController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormFieldController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormPageController;
+use App\Http\Controllers\Tenants\Admin\DynamicFormController;
 use App\Http\Controllers\Tenants\Admin\CategoryManagementController;
 use App\Http\Controllers\Tenants\Admin\FormBuilderController;
 use App\Http\Controllers\Tenants\Admin\PostManagementAdsController;
@@ -67,7 +68,10 @@ Route::middleware([
     Route::resource('/posts', PostManagementController::class);
     Route::get('/post-management/properties', [PostManagementPropertiesController::class, 'index']);
     Route::get('/post-management/bookings', [PostManagementBookingsController::class, 'index']);
-    Route::get('/post-management/categories', [PostManagementCategoriesController::class, 'index']);
+
+    Route::get('/post-management/categories', [CategoryManagementController::class, 'index']);
+    Route::post('/categories/restore/{id}', [CategoryManagementController::class, 'restore']);
+    Route::resource('/categories', CategoryManagementController::class);
 
     Route::get('/post-management/promotions', [PostManagementPromotionsController::class, 'index']);
     Route::get('/post-management/promotions/{id}', [PostManagementPromotionsController::class, 'edit']);
@@ -80,9 +84,11 @@ Route::middleware([
     Route::post('/form/fields/restore/{id}', [DynamicFormFieldController::class, 'restore']);
     Route::resource('/form/fields', DynamicFormFieldController::class);
 
-    Route::post('/categories/restore/{id}', [CategoryManagementController::class, 'restore']);
-    Route::resource('/categories', CategoryManagementController::class);
 
     Route::post('/sub-categories/restore/{id}', [SubCategoryManagementController::class, 'restore']);
     Route::resource('/sub-categories', SubCategoryManagementController::class);
+
+    Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
+    Route::resource('/form', DynamicFormController::class);
+
 });
