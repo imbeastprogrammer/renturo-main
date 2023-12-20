@@ -44,8 +44,8 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
 
     return (
         <>
-            <Table>
-                <TableHeader>
+            <Table className='overflow-auto'>
+                <TableHeader className='sticky top-0 bg-white'>
                     <TableRow>
                         <TableHead className='w-[100px]'>ID</TableHead>
                         <TableHead>Category Name</TableHead>
