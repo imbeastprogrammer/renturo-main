@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 
 class SubCategoryManagementController extends Controller
 {
@@ -22,6 +23,7 @@ class SubCategoryManagementController extends Controller
 
         // Fetch all sub-categories and eager load their parent categories
         $subCategories = SubCategory::with('category')->paginate($perPage);
+        $categories = Category::all();
 
         // Transform the paginated items
         $transformedSubCategories = $subCategories->getCollection()->map(function ($subCategory) {
@@ -37,7 +39,7 @@ class SubCategoryManagementController extends Controller
         $subCategories->setCollection($transformedSubCategories);
 
         // Return the paginated response
-        return response()->json($subCategories);
+        return Inertia::render('tenants/admin/post-management/sub-categories/index', ['sub_categories' => $subCategories, 'categories' => $categories]);
     }
 
     /**
@@ -59,7 +61,7 @@ class SubCategoryManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id', 
+            'category_id' => 'required|exists:categories,id',
             'name' => [
                 'required',
                 'string',
@@ -80,7 +82,7 @@ class SubCategoryManagementController extends Controller
                     "errorCode" => "CATEGORY_NOT_FOUND",
                     "errorDescription" => "The category ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         $subCategory = $category->subCategories()->create([
@@ -91,7 +93,7 @@ class SubCategoryManagementController extends Controller
             "status" => "success",
             'message' => 'Subcategory created successfully.',
             'data' => $subCategory,
-        ], 201); 
+        ], 201);
     }
 
     /**
@@ -114,7 +116,7 @@ class SubCategoryManagementController extends Controller
                     "errorCode" => "SUBCATEGORY_NOT_FOUND",
                     "errorDescription" => "The subcategory ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         // Optional: Transform the sub-category data for the response
@@ -124,13 +126,13 @@ class SubCategoryManagementController extends Controller
             'sub_category_id' => $subCategory->id,
             'sub_category_name' => $subCategory->name,
         ];
-    
+
         // Return the created category along with a success message
         return response()->json([
             "status" => "success",
             'message' => 'Subcategory was successfully fetched.',
             'data' => $subCategoryData,
-        ], 201); 
+        ], 201);
     }
 
     /**
@@ -154,7 +156,7 @@ class SubCategoryManagementController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id', 
+            'category_id' => 'required|exists:categories,id',
             'name' => [
                 'required',
                 'string',
@@ -176,7 +178,7 @@ class SubCategoryManagementController extends Controller
                     "errorCode" => "SUBCATEGORY_NOT_FOUND",
                     "errorDescription" => "The subcategory ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         $subCategory->update([
@@ -188,7 +190,7 @@ class SubCategoryManagementController extends Controller
             "status" => "success",
             'message' => 'Subcategory was successfully updated.',
             'data' => $subCategory,
-        ], 200); 
+        ], 200);
     }
 
     /**
@@ -218,10 +220,11 @@ class SubCategoryManagementController extends Controller
         return response()->json([
             "status" => "success",
             'message' => 'Subcategory was successfully deleted.',
-        ], 200); 
+        ], 200);
     }
 
-    public function restore($id) {
+    public function restore($id)
+    {
 
         $record = SubCategory::withTrashed()->where('id', $id)->first();
 
@@ -240,6 +243,6 @@ class SubCategoryManagementController extends Controller
         return response()->json([
             "status" => "success",
             'message' => 'Subcategory was successfully restored.',
-        ], 200); 
+        ], 200);
     }
 }

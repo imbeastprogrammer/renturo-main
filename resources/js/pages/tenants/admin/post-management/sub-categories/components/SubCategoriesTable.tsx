@@ -15,21 +15,25 @@ import {
 import { MoreHorizontalIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-import { Category } from '@/types/categories';
+import { Category, FormattedSubCategory } from '@/types/categories';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
-import DeleteCategoryModal from './DeleteCategoryModal';
-import UpdateCategoryModal from './UpdateCategoryModal';
-
-interface CategoriesTableProps {
-    categories: Category[];
-}
+import DeleteSubCategoryModal from './DeleteSubCategoryModal';
+import UpdateSubCategoryModal from './UpdateCategoryModal';
 
 interface UpdateModalState {
     isOpen: boolean;
-    category: Category | null;
+    subCategory: FormattedSubCategory | null;
 }
 
-function CategoriesTable({ categories }: CategoriesTableProps) {
+interface SubCategoriesTableProps {
+    subCategories: FormattedSubCategory[];
+    categories: Category[];
+}
+
+function SubCategoriesTable({
+    subCategories,
+    categories,
+}: SubCategoriesTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
         isOpen: false,
         id: 0,
@@ -37,10 +41,10 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
 
     const [udpateModalState, setUpdateModalState] = useState<UpdateModalState>({
         isOpen: false,
-        category: null,
+        subCategory: null,
     });
 
-    if (!categories.length) return <NoDataFound />;
+    if (!subCategories.length) return <NoDataFound />;
 
     return (
         <>
@@ -48,20 +52,22 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                 <TableHeader className='sticky top-0 bg-white'>
                     <TableRow>
                         <TableHead className='w-[100px]'>ID</TableHead>
-                        <TableHead>Category Name</TableHead>
-                        <TableHead>Icon</TableHead>
+                        <TableHead>Sub-Category Name</TableHead>
+                        <TableHead>Category</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className='text-center'>Action</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {categories.map((category) => (
-                        <TableRow key={category.id}>
+                    {subCategories.map((subCategory) => (
+                        <TableRow key={subCategory.sub_category_id}>
                             <TableHead className='w-[100px]'>
-                                {category.id}
+                                {subCategory.sub_category_id}
                             </TableHead>
-                            <TableHead>{category.name}</TableHead>
-                            <TableHead>NA (static)</TableHead>
+                            <TableHead>
+                                {subCategory.sub_category_name}
+                            </TableHead>
+                            <TableHead>{subCategory.category_name}</TableHead>
                             <TableHead>NA (static)</TableHead>
                             <TableHead className='text-center'>
                                 <DropdownMenu>
@@ -73,7 +79,7 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                                             onClick={() =>
                                                 setUpdateModalState({
                                                     isOpen: true,
-                                                    category,
+                                                    subCategory: subCategory,
                                                 })
                                             }
                                             className='text-metalic-blue focus:text-blue-500'
@@ -84,7 +90,7 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                                             onClick={() =>
                                                 setDeleteModalState({
                                                     isOpen: true,
-                                                    id: category.id,
+                                                    id: subCategory.sub_category_id,
                                                 })
                                             }
                                             className='text-red-500 focus:text-red-500'
@@ -98,16 +104,17 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                     ))}
                 </TableBody>
             </Table>
-            <DeleteCategoryModal
+            <DeleteSubCategoryModal
                 isOpen={deleteModalState.isOpen}
                 id={deleteModalState.id}
                 onClose={() => setDeleteModalState({ isOpen: false, id: 0 })}
             />
-            <UpdateCategoryModal
+            <UpdateSubCategoryModal
                 isOpen={udpateModalState.isOpen}
-                category={udpateModalState.category}
+                subCategory={udpateModalState.subCategory}
+                categories={categories}
                 onClose={() =>
-                    setUpdateModalState({ isOpen: false, category: null })
+                    setUpdateModalState({ isOpen: false, subCategory: null })
                 }
             />
         </>
@@ -157,4 +164,4 @@ function NoDataFound() {
     );
 }
 
-export default CategoriesTable;
+export default SubCategoriesTable;

@@ -19,6 +19,8 @@ export const sidebarItems: GroupLink[] = [
         sublinks: [
             { label: 'List of Properties', path: '/properties' },
             { label: 'Bookings', path: '/bookings' },
+            { label: 'Categories', path: '/categories' },
+            { label: 'Sub-Categories', path: '/sub-categories' },
             { label: 'Promotions', path: '/promotions' },
             { label: 'Ads', path: '/ads' },
             { label: 'Form Builder', path: '/form-builder' },

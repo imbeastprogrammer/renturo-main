@@ -12,6 +12,7 @@ export const LabelMap: Record<string, any> = {
     '/admin/post-management/properties': 'List of Properties',
     '/admin/post-management/bookings': 'Bookings',
     '/admin/post-management/categories': 'Categories',
+    '/admin/post-management/sub-categories': 'Sub-Categories',
     '/admin/post-management/promotions': 'Promotions',
     '/admin/post-management/ads': 'Ads',
     '/admin/user-management': 'User Management',
@@ -35,7 +36,7 @@ export const LabelMap: Record<string, any> = {
 
 function AdminLayout({ children }: AdminLayoutProps) {
     return (
-        <div className='grid h-screen grid-cols-[auto_1fr] overflow-hidden'>
+        <div className='grid h-screen grid-cols-[auto_1fr] overflow-hidden bg-[#F9F9F9]'>
             <AdminSidebar />
             <main className='grid grid-rows-[auto_1fr] gap-4 overflow-hidden p-4'>
                 <AdminLayoutHeader />

@@ -5,36 +5,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import { useSearchParams } from '@/hooks/useSearchParams';
-import { Category } from '@/types/categories';
+import { Category, FormattedSubCategory } from '@/types/categories';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
-import CategoriesTable from './components/CategoriesTable';
+import SubCategoriesTable from './components/SubCategoriesTable';
 import AdminLayout from '@/layouts/AdminLayout';
-import CreateCategoryModal from './components/CreateCategoryModal';
+import CreateSubCategoryModal from './components/CreateSubCategoryModal';
 import Pagination from '@/components/tenant/Pagination';
 
-interface CategoriesProps {
-    categories: PaginatedCategories;
+interface SubCategoriesProps {
+    sub_categories: PaginatedCategories;
+    categories: Category[];
 }
 
 interface PaginatedCategories {
     current_page: number;
     last_page: number;
-    data: Category[];
+    data: FormattedSubCategory[];
     next_page_url: string | null;
     prev_page_url: string | null;
 }
-function Categories({ categories }: CategoriesProps) {
+function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
     const { pathname } = window.location;
-    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
     const { searchParams } = useSearchParams();
     const page = Number(searchParams.get('page')) || 1;
 
-    const handleShowCreateCategoryModal = () => setShowCategoryModal(true);
+    const handleShowCreateSubCategoryModal = () =>
+        setShowSubCategoryModal(true);
+
     const handleNextPage = () =>
-        categories.next_page_url && router.replace(categories.next_page_url);
+        sub_categories.next_page_url &&
+        router.replace(sub_categories.next_page_url);
 
     const handlePrevPage = () => {
-        categories.prev_page_url && router.replace(categories.prev_page_url);
+        sub_categories.prev_page_url &&
+            router.replace(sub_categories.prev_page_url);
     };
     const handlePageChange = (page: number) =>
         router.replace(`${pathname}?page=${page}`);
@@ -55,23 +60,26 @@ function Categories({ categories }: CategoriesProps) {
                         type='button'
                         variant='outline'
                         className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
-                        onClick={handleShowCreateCategoryModal}
+                        onClick={handleShowCreateSubCategoryModal}
                     >
                         <PlusIcon className='h-4 w-4' />
-                        Create New Category
+                        Create New Sub Category
                     </Button>
                 </div>
-                <CategoriesTable categories={categories.data} />
+                <SubCategoriesTable
+                    categories={categories}
+                    subCategories={sub_categories.data}
+                />
                 <div className='flex items-center justify-between'>
                     <div className='text-sm'>
                         <span>
-                            Showing {categories.data.length} Records of Page{' '}
-                            {categories.current_page}
+                            Showing {sub_categories.data.length} Records of Page{' '}
+                            {sub_categories.current_page}
                         </span>
                     </div>
                     <Pagination
-                        currentPage={categories.current_page}
-                        numberOfPages={categories.last_page}
+                        currentPage={sub_categories.current_page}
+                        numberOfPages={sub_categories.last_page}
                         onNextPage={handleNextPage}
                         onPrevPage={handlePrevPage}
                         onPageChange={handlePageChange}
@@ -88,15 +96,15 @@ function Categories({ categories }: CategoriesProps) {
                     </div>
                 </div>
             </div>
-
-            <CreateCategoryModal
-                isOpen={showCategoryModal}
-                onClose={() => setShowCategoryModal(false)}
+            <CreateSubCategoryModal
+                isOpen={showSubCategoryModal}
+                categories={categories}
+                onClose={() => setShowSubCategoryModal(false)}
             />
         </>
     );
 }
 
-Categories.layout = (page: ReactNode) => <AdminLayout>{page}</AdminLayout>;
+SubCategories.layout = (page: ReactNode) => <AdminLayout>{page}</AdminLayout>;
 
-export default Categories;
+export default SubCategories;
