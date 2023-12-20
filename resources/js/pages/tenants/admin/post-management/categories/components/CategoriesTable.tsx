@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 import {
     Table,
     TableBody,
@@ -13,20 +13,31 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontalIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 import { Category } from '@/types/categories';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
 import DeleteCategoryModal from './DeleteCategoryModal';
-import { useState } from 'react';
+import UpdateCategoryModal from './UpdateCategoryModal';
 
 interface CategoriesTableProps {
     categories: Category[];
+}
+
+interface UpdateModalState {
+    isOpen: boolean;
+    category: Category | null;
 }
 
 function CategoriesTable({ categories }: CategoriesTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
         isOpen: false,
         id: 0,
+    });
+
+    const [udpateModalState, setUpdateModalState] = useState<UpdateModalState>({
+        isOpen: false,
+        category: null,
     });
 
     if (!categories.length) return <NoDataFound />;
@@ -58,7 +69,15 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                                         <MoreHorizontalIcon />
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
-                                        <DropdownMenuItem className='text-metalic-blue focus:text-blue-500'>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                setUpdateModalState({
+                                                    isOpen: true,
+                                                    category,
+                                                })
+                                            }
+                                            className='text-metalic-blue focus:text-blue-500'
+                                        >
                                             Edit
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
@@ -83,6 +102,13 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                 isOpen={deleteModalState.isOpen}
                 id={deleteModalState.id}
                 onClose={() => setDeleteModalState({ isOpen: false, id: 0 })}
+            />
+            <UpdateCategoryModal
+                isOpen={udpateModalState.isOpen}
+                category={udpateModalState.category}
+                onClose={() =>
+                    setUpdateModalState({ isOpen: false, category: null })
+                }
             />
         </>
     );
