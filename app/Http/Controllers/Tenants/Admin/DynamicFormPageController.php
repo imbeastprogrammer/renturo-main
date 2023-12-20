@@ -195,21 +195,4 @@ class DynamicFormPageController extends Controller
             'message' => 'Dynamic form was successfully restored.',
         ], 200); 
     }
-
-    public function sortFormPages(Request $request)
-    {
-        $request->validate([
-            'form_page_id.*' => 'required'
-        ]);
-
-        foreach ($request->form_page_id as $key => $formPageId) {
-            DynamicFormPage::where('id', $formPageId)
-                ->where('user_id', Auth::user()->id)
-                ->update([
-                    'sort_no' => ++$key
-                ]);
-        }
-
-        return response()->json(['message' => 'Form pages sorted.']);
-    }
 }
