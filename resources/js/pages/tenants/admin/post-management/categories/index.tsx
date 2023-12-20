@@ -1,13 +1,28 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+import { Category } from '@/types/categories';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
 import CategoriesTable from './components/CategoriesTable';
 import AdminLayout from '@/layouts/AdminLayout';
 import CreateCategoryModal from './components/CreateCategoryModal';
 
-function Categories() {
+interface CategoriesProps {
+    categories: PaginatedCategories;
+}
+
+interface PaginatedCategories {
+    last_page: number;
+    data: Category[];
+    next_page_url: string | null;
+    prev_page_url: string | null;
+}
+function Categories({ categories }: CategoriesProps) {
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+
+    const handleShowCreateCategoryModal = () => setShowCategoryModal(true);
+
     return (
         <div className='grid h-full grid-rows-[auto_1fr] gap-y-4 rounded-lg border bg-white p-4 shadow-lg'>
             <div className='flex items-center justify-between gap-2'>
@@ -23,13 +38,17 @@ function Categories() {
                     type='button'
                     variant='outline'
                     className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
+                    onClick={handleShowCreateCategoryModal}
                 >
                     <PlusIcon className='h-4 w-4' />
                     Create New Category
                 </Button>
             </div>
-            <CategoriesTable />
-            <CreateCategoryModal isOpen onClose={() => {}} />
+            <CategoriesTable categories={categories.data} />
+            <CreateCategoryModal
+                isOpen={showCategoryModal}
+                onClose={() => setShowCategoryModal(false)}
+            />
         </div>
     );
 }

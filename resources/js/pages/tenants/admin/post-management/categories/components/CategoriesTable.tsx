@@ -7,10 +7,15 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
+import { Category } from '@/types/categories';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
 
-function CategoriesTable() {
-    return <NoDataFound />;
+interface CategoriesTableProps {
+    categories: Category[];
+}
+
+function CategoriesTable({ categories }: CategoriesTableProps) {
+    if (!categories.length) return <NoDataFound />;
 
     return (
         <Table>
@@ -20,10 +25,22 @@ function CategoriesTable() {
                     <TableHead>Category Name</TableHead>
                     <TableHead>Icon</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Action</TableHead>
+                    <TableHead className='text-right'>Action</TableHead>
                 </TableRow>
             </TableHeader>
-            <TableBody></TableBody>
+            <TableBody>
+                {categories.map((category) => (
+                    <TableRow key={category.id}>
+                        <TableHead className='w-[100px]'>
+                            {category.id}
+                        </TableHead>
+                        <TableHead>{category.name}</TableHead>
+                        <TableHead>NA (static)</TableHead>
+                        <TableHead>NA (static)</TableHead>
+                        <TableHead className='text-right'>Action</TableHead>
+                    </TableRow>
+                ))}
+            </TableBody>
         </Table>
     );
 }
