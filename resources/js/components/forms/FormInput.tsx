@@ -23,6 +23,7 @@ function FormInput<T>({
     name,
     icon: Icon,
     showError = true,
+    className,
     ...props
 }: FormInputProps<T>) {
     return (
@@ -45,6 +46,7 @@ function FormInput<T>({
                                         'border-red-500 bg-red-500/5 text-red-500':
                                             !!fieldState.error?.message,
                                     },
+                                    className,
                                 )}
                                 {...field}
                                 {...props}
