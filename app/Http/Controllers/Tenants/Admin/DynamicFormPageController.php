@@ -18,40 +18,64 @@ class DynamicFormPageController extends Controller
      */
     public function index()
     {
-        $formPages = DynamicFormPage::with('subCategory', 'dynamicFormFields')->get();
+        $formPages = DynamicFormPage::with(['dynamicForm.subCategory', 'dynamicFormFields'])->paginate(15);
 
-        // Prepare the data for response, including sub_category_id and sub_category name
         $formPagesData = $formPages->map(function ($formPage) {
 
-            // Extract dynamicFormFields IDs or other needed data
-            $fields = $formPage->dynamicFormFields->map(function ($field) {
-                return [
-                    'id' => $field->id,
-                    'user_id' => $field->user_id,
-                    'dynamic_form_page_id' => $field->dynamic_form_page_id,
-                    'input_field_label' => $field->input_field_label,
-                    'input_field_name' => $field->input_field_name,
-                    'input_field_type' => $field->input_field_type,
-                    'is_required' => $field->is_required,
-                    'is_multiple' => $field->is_multiple,
-                    'data' => $field->data,
-                ];
+            // Check if dynamicFormFields is not null
+            $fields = collect($formPage->dynamicFormFields)->map(function ($field) {
+               
+                // Map DynamicFormFields
+                $fields = $formPage->dynamicFormFields->map(function ($field) {
+                    return [
+                        'id' => $field->id,
+                        'user_id' => $field->user_id,
+                        'dynamic_form_page_id' => $field->dynamic_form_page_id,
+                        'input_field_label' => $field->input_field_label,
+                        'input_field_name' => $field->input_field_name,
+                        'input_field_type' => $field->input_field_type,
+                        'is_required' => $field->is_required,
+                        'is_multiple' => $field->is_multiple,
+                        'data' => $field->data,
+                    ];
+                });
             });
             
+            // Extract DynamicForm data if available
+            $form = optional($formPage->dynamicForm)->toArray();
+
+            // Check if DynamicForm has fields and map them
+            if ($formPage->dynamicForm && $formPage->dynamicForm->dynamicFields) {
+                $form['fields'] = $formPage->dynamicForm->dynamicFields->map(function ($dynamicField) {
+                    return [
+                        'id' => $dynamicField->id,
+                        'user_id' => $dynamicField->user_id,
+                        'dynamic_form_page_id' => $dynamicField->dynamic_form_page_id,
+                        'input_field_label' => $dynamicField->input_field_label,
+                        'input_field_name' => $dynamicField->input_field_name,
+                        'input_field_type' => $dynamicField->input_field_type,
+                        'is_required' => $dynamicField->is_required,
+                        'is_multiple' => $dynamicField->is_multiple,
+                        'data' => $dynamicField->data,
+                    ];
+                });
+            }
+
+            // Return the mapped formPage data along with DynamicForm data
             return [
                 'id' => $formPage->id,
-                'sub_category_id' => $formPage->subCategory->id ?? null,
-                'sub_category_name' => $formPage->subCategory->name ?? 'No SubCategory',
                 'title' => $formPage->title,
-                'description' => $formPage->description,
                 'created_at' => $formPage->created_at,
                 'updated_at' => $formPage->updated_at,
                 'deleted_at' => $formPage->deleted_at,
-                'form_fields' => $fields,
+                'dynamic_form' => $form,
+                'dynamic_form_fields' => $fields,
             ];
         });
 
-        return response()->json(['form_pages' => $formPagesData]);
+        $formPages->setCollection($formPagesData);
+
+        return response()->json($formPages);
     }
 
     /**
@@ -72,10 +96,10 @@ class DynamicFormPageController extends Controller
      */
     public function store(StoreFormPageRequest $request)
     {
-        $dynamicFormPage = DynamicFormPage::create($request->validated());
+        $formPage = DynamicFormPage::create($request->validated());
 
         return response()->json([
-            'data' => $dynamicFormPage,
+            'data' => $formPage,
             'message' => 'Form page created.'
         ], 201);
     }
@@ -111,13 +135,11 @@ class DynamicFormPageController extends Controller
      */
     public function update(UpdateFormPageRequest $request, $id)
     {
-        $formPage = DynamicFormPage::where('id', $id)
-            ->where('user_id', Auth::user()->id)
-            ->firstOrFail();
+        // Utilize route model binding for cleaner code and direct access
+        $formPage = DynamicFormPage::find($id);
 
-        $formPage->update([
-            'title' => $request->title
-        ]);
+        // Mass assignment for updating data
+        $formPage->update($request->only(['title']));
 
         return response()->json($formPage);
     }
@@ -130,13 +152,48 @@ class DynamicFormPageController extends Controller
      */
     public function destroy($id)
     {
-        $formPage = DynamicFormPage::where('id', $id)
-            ->where('user_id', Auth::user()->id)
-            ->firstOrFail();
+        $formPage = DynamicFormPage::find($id);
+
+        if (!$formPage) {
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Dynamic form page not found',
+                "error" => [
+                    "errorCode" => "FORM_PAGE_NOT_FOUND",
+                    "errorDescription" => "The dynamic form page ID you are looking for could not be found."
+                ]
+            ], 404); 
+        }
 
         $formPage->delete();
 
-        return response()->json(['message' => 'Form page deleted.']);
+        // Return the created category along with a success message
+        return response()->json([
+            "status" => "success",
+            'message' => 'Dynamic form page was successfully deleted.',
+        ], 200); 
+    }
+
+    public function restore($id) {
+
+        $record = DynamicFormPage::withTrashed()->where('id', $id)->first();
+
+        if (!$record) {
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Dynamic form page not found',
+                "error" => [
+                    "errorCode" => "FORM_PAGE_NOT_FOUND",
+                    "errorDescription" => "The dynamic form page ID you are looking for could not be found."
+                ]
+            ], 404); 
+        }
+
+        $record->restore();
+        return response()->json([
+            "status" => "success",
+            'message' => 'Dynamic form was successfully restored.',
+        ], 200); 
     }
 
     public function sortFormPages(Request $request)

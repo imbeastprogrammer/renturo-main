@@ -76,6 +76,7 @@ Route::middleware([
     Route::get('/post-management/form-builder', [FormBuilderController::class, 'index']);
 
     Route::put('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
+    Route::post('/form/pages/restore/{id}', [DynamicFormPageController::class, 'restore']);
     Route::resource('/form/pages', DynamicFormPageController::class);
 
     Route::post('/form/fields/restore/{id}', [DynamicFormFieldController::class, 'restore']);
@@ -88,6 +89,8 @@ Route::middleware([
     Route::resource('/sub-categories', SubCategoryManagementController::class);
 
     Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
+    Route::get('/form/all/{id}', [DynamicFormController::class, 'getFormPagesAndFields']);
+    Route::put('/form/all/{id}', [DynamicFormController::class, 'updateFormPagesAndFields']);
     Route::resource('/form', DynamicFormController::class);
 
 });

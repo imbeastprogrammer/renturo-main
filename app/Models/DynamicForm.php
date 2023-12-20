@@ -18,7 +18,7 @@ class DynamicForm extends Model
         'subcategory_id'
     ];
 
-    public function formPages(){
+    public function dynamicFormPages(){
 
         // One-to-Many relationship with DynamicFormPage
         return $this->hasMany(DynamicFormPage::class);
