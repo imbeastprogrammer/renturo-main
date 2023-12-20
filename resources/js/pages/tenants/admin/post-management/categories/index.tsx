@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
 import CategoriesTable from './components/CategoriesTable';
 import AdminLayout from '@/layouts/AdminLayout';
+import CreateCategoryModal from './components/CreateCategoryModal';
 
 function Categories() {
     return (
@@ -28,6 +29,7 @@ function Categories() {
                 </Button>
             </div>
             <CategoriesTable />
+            <CreateCategoryModal isOpen onClose={() => {}} />
         </div>
     );
 }
