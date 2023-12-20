@@ -30,8 +30,7 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                 onClose();
                 toast.success({
                     title: 'Success',
-                    description:
-                        'The new category has been deleted to the system.',
+                    description: 'The category has been deleted to the system.',
                 });
             },
             onError: (error) => {
