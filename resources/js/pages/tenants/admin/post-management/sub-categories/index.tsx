@@ -26,11 +26,13 @@ interface PaginatedCategories {
 }
 function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
     const { pathname } = window.location;
-    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
     const { searchParams } = useSearchParams();
     const page = Number(searchParams.get('page')) || 1;
 
-    const handleShowCreateCategoryModal = () => setShowCategoryModal(true);
+    const handleShowCreateSubCategoryModal = () =>
+        setShowSubCategoryModal(true);
+
     const handleNextPage = () =>
         sub_categories.next_page_url &&
         router.replace(sub_categories.next_page_url);
@@ -58,7 +60,7 @@ function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
                         type='button'
                         variant='outline'
                         className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
-                        onClick={handleShowCreateCategoryModal}
+                        onClick={handleShowCreateSubCategoryModal}
                     >
                         <PlusIcon className='h-4 w-4' />
                         Create New Sub Category
@@ -95,9 +97,9 @@ function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
                 </div>
             </div>
             <CreateSubCategoryModal
-                isOpen={showCategoryModal}
+                isOpen={showSubCategoryModal}
                 categories={categories}
-                onClose={() => setShowCategoryModal(false)}
+                onClose={() => setShowSubCategoryModal(false)}
             />
         </>
     );
