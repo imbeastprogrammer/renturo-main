@@ -15,21 +15,25 @@ import {
 import { MoreHorizontalIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-import { FormattedSubCategory } from '@/types/categories';
+import { Category, FormattedSubCategory } from '@/types/categories';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
 import DeleteSubCategoryModal from './DeleteSubCategoryModal';
 import UpdateSubCategoryModal from './UpdateCategoryModal';
-
-interface SubCategoriesTableProps {
-    subCategories: FormattedSubCategory[];
-}
 
 interface UpdateModalState {
     isOpen: boolean;
     subCategory: FormattedSubCategory | null;
 }
 
-function SubCategoriesTable({ subCategories }: SubCategoriesTableProps) {
+interface SubCategoriesTableProps {
+    subCategories: FormattedSubCategory[];
+    categories: Category[];
+}
+
+function SubCategoriesTable({
+    subCategories,
+    categories,
+}: SubCategoriesTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
         isOpen: false,
         id: 0,
@@ -108,6 +112,7 @@ function SubCategoriesTable({ subCategories }: SubCategoriesTableProps) {
             <UpdateSubCategoryModal
                 isOpen={udpateModalState.isOpen}
                 subCategory={udpateModalState.subCategory}
+                categories={categories}
                 onClose={() =>
                     setUpdateModalState({ isOpen: false, subCategory: null })
                 }

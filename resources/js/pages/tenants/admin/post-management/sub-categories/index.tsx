@@ -64,7 +64,10 @@ function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
                         Create New Sub Category
                     </Button>
                 </div>
-                <SubCategoriesTable subCategories={sub_categories.data} />
+                <SubCategoriesTable
+                    categories={categories}
+                    subCategories={sub_categories.data}
+                />
                 <div className='flex items-center justify-between'>
                     <div className='text-sm'>
                         <span>
