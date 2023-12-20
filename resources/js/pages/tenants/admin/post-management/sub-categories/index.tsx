@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import { useSearchParams } from '@/hooks/useSearchParams';
-import { FormattedSubCategory } from '@/types/categories';
+import { Category, FormattedSubCategory } from '@/types/categories';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
 import SubCategoriesTable from './components/SubCategoriesTable';
 import AdminLayout from '@/layouts/AdminLayout';
@@ -14,6 +14,7 @@ import Pagination from '@/components/tenant/Pagination';
 
 interface SubCategoriesProps {
     sub_categories: PaginatedCategories;
+    categories: Category[];
 }
 
 interface PaginatedCategories {
@@ -23,7 +24,7 @@ interface PaginatedCategories {
     next_page_url: string | null;
     prev_page_url: string | null;
 }
-function SubCategories({ sub_categories }: SubCategoriesProps) {
+function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
     const { pathname } = window.location;
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const { searchParams } = useSearchParams();
@@ -92,6 +93,7 @@ function SubCategories({ sub_categories }: SubCategoriesProps) {
             </div>
             <CreateSubCategoryModal
                 isOpen={showCategoryModal}
+                categories={categories}
                 onClose={() => setShowCategoryModal(false)}
             />
         </>

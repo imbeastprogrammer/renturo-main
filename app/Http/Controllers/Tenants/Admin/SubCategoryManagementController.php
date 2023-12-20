@@ -23,6 +23,7 @@ class SubCategoryManagementController extends Controller
 
         // Fetch all sub-categories and eager load their parent categories
         $subCategories = SubCategory::with('category')->paginate($perPage);
+        $categories = Category::all();
 
         // Transform the paginated items
         $transformedSubCategories = $subCategories->getCollection()->map(function ($subCategory) {
@@ -38,7 +39,7 @@ class SubCategoryManagementController extends Controller
         $subCategories->setCollection($transformedSubCategories);
 
         // Return the paginated response
-        return Inertia::render('tenants/admin/post-management/sub-categories/index', ['sub_categories' => $subCategories]);
+        return Inertia::render('tenants/admin/post-management/sub-categories/index', ['sub_categories' => $subCategories, 'categories' => $categories]);
     }
 
     /**

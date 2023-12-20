@@ -7,50 +7,40 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-import FormInput from '@/components/forms/FormInput';
-import IconPicker from './IconPicker';
-import useOwnerToast from '@/hooks/useOwnerToast';
 
-interface CreateModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
+import { Category } from '@/types/categories';
+import FormInput from '@/components/forms/FormInput';
+import useOwnerToast from '@/hooks/useOwnerToast';
+import FormSelect from '@/components/forms/FormSelect';
 
 const validationSchema = z.object({
     name: z.string().nonempty('Name is required'),
-    icon: z
-        .string()
-        .optional()
-        .or(
-            z
-                .custom<File>()
-                .refine(
-                    (file) =>
-                        !file || (!!file && file.size <= 10 * 1024 * 1024),
-                    {
-                        message:
-                            'The profile picture must be a maximum of 10MB.',
-                    },
-                )
-                .refine(
-                    (file) =>
-                        !file || (!!file && file.type?.startsWith('image')),
-                    {
-                        message: 'Only images are allowed to be sent.',
-                    },
-                ),
-        ),
+    category_id: z.string().nonempty('Category is required'),
 });
 
 type CreateSubCategoryFields = z.infer<typeof validationSchema>;
 const defaultValues: CreateSubCategoryFields = {
     name: '',
-    icon: '',
+    category_id: '',
 };
+interface CreateModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    categories: Category[];
+}
 
-function CreateSubCategoryModal({ isOpen, onClose }: CreateModalProps) {
+function CreateSubCategoryModal({
+    isOpen,
+    onClose,
+    categories,
+}: CreateModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
+
+    const categoriesOptions = categories.map(({ name, id }) => ({
+        label: name,
+        value: id.toString(),
+    }));
 
     const form = useForm<CreateSubCategoryFields>({
         defaultValues,
@@ -58,11 +48,13 @@ function CreateSubCategoryModal({ isOpen, onClose }: CreateModalProps) {
     });
 
     const handleSubmit = form.handleSubmit((values) =>
-        router.post('/admin/categories', values, {
+        router.post('/admin/sub-categories', values, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
             onSuccess: () => {
-                toast.success({ description: 'New Category has been added.' });
+                toast.success({
+                    description: 'New Sub-Category has been added.',
+                });
                 onClose();
             },
             onError: (err) => toast.error({ description: _.valuesIn(err)[0] }),
@@ -84,15 +76,16 @@ function CreateSubCategoryModal({ isOpen, onClose }: CreateModalProps) {
                         <div className='space-y-4'>
                             <FormInput
                                 name='name'
-                                label='Category Name'
+                                label='Sub-Category Name'
                                 control={form.control}
                                 className='h-[45px]'
                             />
-                            <IconPicker
-                                label='Icon'
-                                name='icon'
+                            <FormSelect
+                                label='Category'
+                                name='category_id'
                                 control={form.control}
-                                description='Upload tips: size under [file limit]kb, resolution around [recommended]px, file format PNG or SVG.'
+                                data={categoriesOptions}
+                                className='h-[45px]'
                             />
                         </div>
                         <div className='flex justify-end gap-4'>
