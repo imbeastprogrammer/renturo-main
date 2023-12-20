@@ -12,6 +12,7 @@ export const LabelMap: Record<string, any> = {
     '/admin/post-management/properties': 'List of Properties',
     '/admin/post-management/bookings': 'Bookings',
     '/admin/post-management/categories': 'Categories',
+    '/admin/post-management/sub-categories': 'Sub-Categories',
     '/admin/post-management/promotions': 'Promotions',
     '/admin/post-management/ads': 'Ads',
     '/admin/user-management': 'User Management',

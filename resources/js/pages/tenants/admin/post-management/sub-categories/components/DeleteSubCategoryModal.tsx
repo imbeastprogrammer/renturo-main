@@ -18,28 +18,27 @@ type DeleteModalProps = {
     onClose: () => void;
     id: number;
 };
-function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
+function DeleteSubCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const toast = useCentralToast();
 
     const handleDelete = () => {
-        router.delete(`/admin/categories/${id}`, {
+        router.delete(`/admin/sub-categories/${id}`, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
             onSuccess: () => {
                 onClose();
                 toast.success({
                     title: 'Success',
-                    description: 'The category has been deleted to the system.',
+                    description:
+                        'The sub-category has been deleted to the system.',
                 });
             },
             onError: (error) => {
                 onClose();
                 toast.error({
                     title: 'Error',
-                    description:
-                        Object.keys(error)[0] ||
-                        'Something went wrong, Please try again later.',
+                    description: Object.keys(error)[0],
                 });
             },
         });
@@ -59,8 +58,8 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                         Are you sure?
                     </DialogTitle>
                     <DialogDescription className='text-center text-base font-thin text-black/50'>
-                        This action will remove the category and all of their
-                        associated data from the system.
+                        This action will remove the sub-category and all of
+                        their associated data from the system.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className='w-full'>
@@ -71,7 +70,7 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                             disabled={isLoading}
                             onClick={handleDelete}
                         >
-                            Delete Category
+                            Delete Sub-Category
                         </Button>
                         <Button
                             variant='outline'
@@ -87,4 +86,4 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
     );
 }
 
-export default DeleteCategoryModal;
+export default DeleteSubCategoryModal;

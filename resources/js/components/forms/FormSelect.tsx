@@ -14,6 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 type FormInputProps<T> = {
     label?: string;
@@ -23,6 +24,7 @@ type FormInputProps<T> = {
     data: { label: string; value: string }[];
     placeholder?: string;
     disabled?: boolean;
+    className?: string;
 };
 
 // change the background of this based on the figma
@@ -34,6 +36,7 @@ function FormSelect<T>({
     label,
     disabled,
     placeholder,
+    className,
 }: FormInputProps<T>) {
     return (
         <FormField
@@ -53,13 +56,18 @@ function FormSelect<T>({
                                 onValueChange={field.onChange}
                                 disabled={disabled}
                             >
-                                <SelectTrigger className='h-[60px] rounded-lg bg-[#F3F7FD] p-6 text-base focus-visible:ring-transparent'>
+                                <SelectTrigger
+                                    className={cn(
+                                        'h-[60px] rounded-lg bg-[#F3F7FD] p-6 text-base focus-visible:ring-transparent',
+                                        className,
+                                    )}
+                                >
                                     <SelectValue
                                         className='placeholder:text-black/50'
                                         placeholder={placeholder}
                                     />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className='max-h-[300px]'>
                                     {data.map((d) => (
                                         <SelectItem
                                             key={d.value}
