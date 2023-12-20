@@ -17,11 +17,13 @@ class SubCategory extends Model
 
     public function category()
     {
+         // Inverse relationship with Category
         return $this->belongsTo(Category::class);
     }
 
-    public function formPages()
+    public function dynamicForms()
     {
-        return $this->hasMany(DynamicFormPage::class);
+        // One-to-Many relationship with DynamicForm
+        return $this->hasMany(DynamicForm::class);
     }
 }

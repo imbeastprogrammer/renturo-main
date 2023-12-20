@@ -12,6 +12,7 @@ use App\Http\Controllers\Tenants\Admin\UserManagementController;
 use App\Http\Controllers\Tenants\Admin\PostManagementController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormFieldController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormPageController;
+use App\Http\Controllers\Tenants\Admin\DynamicFormController;
 use App\Http\Controllers\Tenants\Admin\CategoryManagementController;
 use App\Http\Controllers\Tenants\Admin\FormBuilderController;
 use App\Http\Controllers\Tenants\Admin\PostManagementAdsController;
@@ -85,4 +86,8 @@ Route::middleware([
 
     Route::post('/sub-categories/restore/{id}', [SubCategoryManagementController::class, 'restore']);
     Route::resource('/sub-categories', SubCategoryManagementController::class);
+
+    Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
+    Route::resource('/form', DynamicFormController::class);
+
 });
