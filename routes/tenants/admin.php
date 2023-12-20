@@ -73,6 +73,10 @@ Route::middleware([
     Route::post('/categories/restore/{id}', [CategoryManagementController::class, 'restore']);
     Route::resource('/categories', CategoryManagementController::class);
 
+    Route::get('/post-management/sub-categories', [SubCategoryManagementController::class, 'index']);
+    Route::resource('/sub-categories', SubCategoryManagementController::class);
+    Route::post('/sub-categories/restore/{id}', [SubCategoryManagementController::class, 'restore']);
+
     Route::get('/post-management/promotions', [PostManagementPromotionsController::class, 'index']);
     Route::get('/post-management/promotions/{id}', [PostManagementPromotionsController::class, 'edit']);
     Route::get('/post-management/ads', [PostManagementAdsController::class, 'index']);
@@ -85,10 +89,7 @@ Route::middleware([
     Route::resource('/form/fields', DynamicFormFieldController::class);
 
 
-    Route::post('/sub-categories/restore/{id}', [SubCategoryManagementController::class, 'restore']);
-    Route::resource('/sub-categories', SubCategoryManagementController::class);
 
     Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
     Route::resource('/form', DynamicFormController::class);
-
 });
