@@ -23,7 +23,7 @@ function DeleteSubCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
     const toast = useCentralToast();
 
     const handleDelete = () => {
-        router.delete(`/admin/categories/${id}`, {
+        router.delete(`/admin/sub-categories/${id}`, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
             onSuccess: () => {
@@ -31,16 +31,14 @@ function DeleteSubCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                 toast.success({
                     title: 'Success',
                     description:
-                        'The new category has been deleted to the system.',
+                        'The sub-category has been deleted to the system.',
                 });
             },
             onError: (error) => {
                 onClose();
                 toast.error({
                     title: 'Error',
-                    description:
-                        Object.keys(error)[0] ||
-                        'Something went wrong, Please try again later.',
+                    description: Object.keys(error)[0],
                 });
             },
         });
