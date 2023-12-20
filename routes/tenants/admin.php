@@ -82,14 +82,13 @@ Route::middleware([
     Route::get('/post-management/ads', [PostManagementAdsController::class, 'index']);
     Route::get('/post-management/form-builder', [FormBuilderController::class, 'index']);
 
+    Route::get('/post-management/dynamic-forms', [DynamicFormController::class, 'index']);
+    Route::resource('/form', DynamicFormController::class);
+    Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
+
     Route::put('/sort/form/pages', [DynamicFormPageController::class, 'sortFormPages']);
     Route::resource('/form/pages', DynamicFormPageController::class);
 
     Route::post('/form/fields/restore/{id}', [DynamicFormFieldController::class, 'restore']);
     Route::resource('/form/fields', DynamicFormFieldController::class);
-
-
-
-    Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
-    Route::resource('/form', DynamicFormController::class);
 });

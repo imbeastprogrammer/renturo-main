@@ -7,7 +7,7 @@ use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormRequest;
 use App\Http\Controllers\Controller;
 use App\Models\DynamicForm;
 use Illuminate\Http\Request;
-
+use Inertia\Inertia;
 
 class DynamicFormController extends Controller
 {
@@ -19,7 +19,7 @@ class DynamicFormController extends Controller
     public function index()
     {
 
-        $perPage = 15; 
+        $perPage = 15;
 
         $dynamicForms = DynamicForm::with('subCategory.category')->paginate($perPage);
 
@@ -43,7 +43,7 @@ class DynamicFormController extends Controller
             ];
         });
 
-        return response()->json([
+        $paginated_reponse = [
             "status" => "success",
             'message' => 'Dynamic Form was successfully fetched.',
             'data' => $response,
@@ -53,10 +53,12 @@ class DynamicFormController extends Controller
                 'currentPage' => $dynamicForms->currentPage(),
                 'lastPage' => $dynamicForms->lastPage(),
             ],
-        ], 200); 
+        ];
+
+        return Inertia::render('tenants/admin/post-management/dynamic-forms/index', ['dynamic_forms' => $paginated_reponse]);
     }
 
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -82,7 +84,7 @@ class DynamicFormController extends Controller
             "status" => "success",
             'message' => 'Dynamic Form created successfully.',
             'data' => $dynamicFormPage,
-        ], 201); 
+        ], 201);
     }
 
     /**
@@ -95,7 +97,7 @@ class DynamicFormController extends Controller
     {
         // Fetch the category by its ID
         $dynamicForm = DynamicForm::with('subCategory.category')
-        ->find($id);
+            ->find($id);
 
         // Check if the category was found
         if (!$dynamicForm) {
@@ -106,10 +108,10 @@ class DynamicFormController extends Controller
                     "errorCode" => "FORM_NOT_FOUND",
                     "errorDescription" => "The dynamic form ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
-         // Format the response
+        // Format the response
         $response = [
             'id' => $dynamicForm->id,
             'name' => $dynamicForm->name,
@@ -132,7 +134,7 @@ class DynamicFormController extends Controller
             "status" => "success",
             'message' => 'Form was successfully fetched.',
             'data' => $response,
-        ], 200); 
+        ], 200);
     }
 
     /**
@@ -161,7 +163,7 @@ class DynamicFormController extends Controller
 
         $dynamicForm->update($request->validated());
 
-        return response()->json($dynamicForm); 
+        return response()->json($dynamicForm);
     }
 
     /**
@@ -182,19 +184,20 @@ class DynamicFormController extends Controller
                     "errorCode" => "FORM_NOT_FOUND",
                     "errorDescription" => "The dynamic form ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         $dynamicForm->delete();
 
-         // Return the created category along with a success message
-         return response()->json([
+        // Return the created category along with a success message
+        return response()->json([
             "status" => "success",
             'message' => 'Dynamic form was successfully deleted.',
-        ], 200); 
+        ], 200);
     }
 
-    public function restore($id) {
+    public function restore($id)
+    {
 
         $record = DynamicForm::withTrashed()->where('id', $id)->first();
 
@@ -206,13 +209,13 @@ class DynamicFormController extends Controller
                     "errorCode" => "FORM_NOT_FOUND",
                     "errorDescription" => "The dynamic form ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         $record->restore();
         return response()->json([
             "status" => "success",
             'message' => 'Dynamic form was successfully restored.',
-        ], 200); 
+        ], 200);
     }
 }
