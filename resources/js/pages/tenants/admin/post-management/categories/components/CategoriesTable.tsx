@@ -6,42 +6,85 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontalIcon } from 'lucide-react';
 
 import { Category } from '@/types/categories';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
+import DeleteCategoryModal from './DeleteCategoryModal';
+import { useState } from 'react';
 
 interface CategoriesTableProps {
     categories: Category[];
 }
 
 function CategoriesTable({ categories }: CategoriesTableProps) {
+    const [deleteModalState, setDeleteModalState] = useState({
+        isOpen: false,
+        id: 0,
+    });
+
     if (!categories.length) return <NoDataFound />;
 
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className='w-[100px]'>ID</TableHead>
-                    <TableHead>Category Name</TableHead>
-                    <TableHead>Icon</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className='text-right'>Action</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {categories.map((category) => (
-                    <TableRow key={category.id}>
-                        <TableHead className='w-[100px]'>
-                            {category.id}
-                        </TableHead>
-                        <TableHead>{category.name}</TableHead>
-                        <TableHead>NA (static)</TableHead>
-                        <TableHead>NA (static)</TableHead>
-                        <TableHead className='text-right'>Action</TableHead>
+        <>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className='w-[100px]'>ID</TableHead>
+                        <TableHead>Category Name</TableHead>
+                        <TableHead>Icon</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className='text-center'>Action</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+                <TableBody>
+                    {categories.map((category) => (
+                        <TableRow key={category.id}>
+                            <TableHead className='w-[100px]'>
+                                {category.id}
+                            </TableHead>
+                            <TableHead>{category.name}</TableHead>
+                            <TableHead>NA (static)</TableHead>
+                            <TableHead>NA (static)</TableHead>
+                            <TableHead className='text-center'>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <MoreHorizontalIcon />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem className='text-metalic-blue focus:text-blue-500'>
+                                            Edit
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                setDeleteModalState({
+                                                    isOpen: true,
+                                                    id: category.id,
+                                                })
+                                            }
+                                            className='text-red-500 focus:text-red-500'
+                                        >
+                                            Delete
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableHead>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+            <DeleteCategoryModal
+                isOpen={deleteModalState.isOpen}
+                id={deleteModalState.id}
+                onClose={() => setDeleteModalState({ isOpen: false, id: 0 })}
+            />
+        </>
     );
 }
 
