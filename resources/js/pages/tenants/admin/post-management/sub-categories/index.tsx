@@ -60,7 +60,7 @@ function SubCategories({ sub_categories }: SubCategoriesProps) {
                         onClick={handleShowCreateCategoryModal}
                     >
                         <PlusIcon className='h-4 w-4' />
-                        Create New Category
+                        Create New Sub Category
                     </Button>
                 </div>
                 <SubCategoriesTable subCategories={sub_categories.data} />

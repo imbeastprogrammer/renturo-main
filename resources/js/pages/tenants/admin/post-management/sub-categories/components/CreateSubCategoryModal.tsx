@@ -78,7 +78,7 @@ function CreateSubCategoryModal({ isOpen, onClose }: CreateModalProps) {
                     <form onSubmit={handleSubmit} className='space-y-4'>
                         <div>
                             <h1 className='text-[22px] font-medium'>
-                                Create Category
+                                Create Sub-Category
                             </h1>
                         </div>
                         <div className='space-y-4'>

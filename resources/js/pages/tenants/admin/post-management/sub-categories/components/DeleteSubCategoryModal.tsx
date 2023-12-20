@@ -60,8 +60,8 @@ function DeleteSubCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                         Are you sure?
                     </DialogTitle>
                     <DialogDescription className='text-center text-base font-thin text-black/50'>
-                        This action will remove the category and all of their
-                        associated data from the system.
+                        This action will remove the sub-category and all of
+                        their associated data from the system.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className='w-full'>
@@ -72,7 +72,7 @@ function DeleteSubCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                             disabled={isLoading}
                             onClick={handleDelete}
                         >
-                            Delete Category
+                            Delete Sub-Category
                         </Button>
                         <Button
                             variant='outline'

@@ -93,7 +93,7 @@ function UpdateSubCategoryModal({
                     <form onSubmit={handleSubmit} className='space-y-4'>
                         <div>
                             <h1 className='text-[22px] font-medium'>
-                                Update Category
+                                Update Sub-Category
                             </h1>
                         </div>
                         <div className='space-y-4'>
