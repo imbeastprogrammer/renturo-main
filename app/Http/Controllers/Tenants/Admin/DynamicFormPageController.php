@@ -138,6 +138,17 @@ class DynamicFormPageController extends Controller
         // Utilize route model binding for cleaner code and direct access
         $formPage = DynamicFormPage::find($id);
 
+        if (!$formPage) {
+            return response()->json([
+                "status" => "failed",
+                'message' => 'Dynamic form page not found',
+                "error" => [
+                    "errorCode" => "FORM_PAGE_NOT_FOUND",
+                    "errorDescription" => "The dynamic form page ID you are looking for could not be found."
+                ]
+            ], 404); 
+        }
+
         // Mass assignment for updating data
         $formPage->update($request->only(['title']));
 
