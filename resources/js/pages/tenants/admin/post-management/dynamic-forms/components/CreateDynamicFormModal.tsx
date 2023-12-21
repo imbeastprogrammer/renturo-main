@@ -10,7 +10,7 @@ import { Form } from '@/components/ui/form';
 
 import useOwnerToast from '@/hooks/useOwnerToast';
 import { FormSelect, FormInput, FormTextAreaInput } from '@/components/forms';
-import { SubCategory } from '@/types/categories';
+import { Category, SubCategory } from '@/types/categories';
 
 const validationSchema = z.object({
     name: z.string().nonempty('Name is required'),
@@ -31,25 +31,36 @@ interface CreateDynamicFormModalProps {
     isOpen: boolean;
     onClose: () => void;
     subCategories: SubCategory[];
+    categories: Category[];
 }
 
 function CreateDynamicFormModal({
     isOpen,
     onClose,
     subCategories,
+    categories,
 }: CreateDynamicFormModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
-
-    const subCategoriesOptions = subCategories.map(({ id, name }) => ({
-        label: name,
-        value: id.toString(),
-    }));
 
     const form = useForm<CreateDynamicFormFields>({
         defaultValues,
         resolver: zodResolver(validationSchema),
     });
+
+    const selectedCategoryId = form.watch('category_id');
+
+    const subCategoriesOptions = subCategories
+        .filter(({ category_id }) => category_id === Number(selectedCategoryId))
+        .map(({ id, name }) => ({
+            label: name,
+            value: id.toString(),
+        }));
+
+    const categoriesOptions = categories.map(({ id, name }) => ({
+        label: name,
+        value: id.toString(),
+    }));
 
     const handleSubmit = form.handleSubmit((values) =>
         router.post('/admin/form', values, {
@@ -87,7 +98,7 @@ function CreateDynamicFormModal({
                                     control={form.control}
                                     name='category_id'
                                     label='Category'
-                                    data={[]}
+                                    data={categoriesOptions}
                                     className='h-[45px]'
                                 />
                                 <FormSelect
