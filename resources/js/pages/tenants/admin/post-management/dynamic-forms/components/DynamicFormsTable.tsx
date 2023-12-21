@@ -15,7 +15,7 @@ import {
 import { MoreHorizontalIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-import { SubCategory } from '@/types/categories';
+import { Category, SubCategory } from '@/types/categories';
 import { DynamicForm } from '@/types/dynamic-form';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
 import DeleteCategoryModal from './DeleteDynamicFormModal';
@@ -25,6 +25,7 @@ import SubCategories from '../../sub-categories';
 interface DynamicFormsTableProps {
     dynamicForms: DynamicForm[];
     subCategories: SubCategory[];
+    categories: Category[];
 }
 
 interface UpdateModalState {
@@ -35,6 +36,7 @@ interface UpdateModalState {
 function DynamicFormsTable({
     dynamicForms,
     subCategories,
+    categories,
 }: DynamicFormsTableProps) {
     const [deleteModalState, setDeleteModalState] = useState({
         isOpen: false,
@@ -120,6 +122,7 @@ function DynamicFormsTable({
             <UpdateDynamicFormModal
                 isOpen={udpateModalState.isOpen}
                 subCategories={subCategories}
+                categories={categories}
                 dynamicForm={udpateModalState.dynamicForm}
                 onClose={() =>
                     setUpdateModalState({ isOpen: false, dynamicForm: null })

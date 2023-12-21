@@ -9,7 +9,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 import { FormSelect, FormInput, FormTextAreaInput } from '@/components/forms';
 
-import { SubCategory } from '@/types/categories';
+import { Category, SubCategory } from '@/types/categories';
 import { DynamicForm } from '@/types/dynamic-form';
 import useOwnerToast from '@/hooks/useOwnerToast';
 
@@ -33,6 +33,7 @@ interface UpdateDynamicFormModalProps {
     onClose: () => void;
     subCategories: SubCategory[];
     dynamicForm: DynamicForm | null;
+    categories: Category[];
 }
 
 function UpdateDynamicFormModal({
@@ -40,14 +41,10 @@ function UpdateDynamicFormModal({
     onClose,
     subCategories,
     dynamicForm,
+    categories,
 }: UpdateDynamicFormModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
-
-    const subCategoriesOptions = subCategories.map(({ id, name }) => ({
-        label: name,
-        value: id.toString(),
-    }));
 
     const form = useForm<UpdateDynamicFormFields>({
         defaultValues,
@@ -55,9 +52,24 @@ function UpdateDynamicFormModal({
             name: dynamicForm?.name || '',
             description: dynamicForm?.description || '',
             subcategory_id: dynamicForm?.subcategory.id.toString() || '',
+            category_id: dynamicForm?.subcategory.category.id.toString() || '',
         },
         resolver: zodResolver(validationSchema),
     });
+
+    const selectedCategoryId = form.watch('category_id');
+
+    const subCategoriesOptions = subCategories
+        .filter(({ category_id }) => category_id === Number(selectedCategoryId))
+        .map(({ id, name }) => ({
+            label: name,
+            value: id.toString(),
+        }));
+
+    const categoriesOptions = categories.map(({ id, name }) => ({
+        label: name,
+        value: id.toString(),
+    }));
 
     const handleSubmit = form.handleSubmit((values) =>
         router.put(`/admin/form/${dynamicForm?.id}`, values, {
@@ -95,7 +107,7 @@ function UpdateDynamicFormModal({
                                     control={form.control}
                                     name='category_id'
                                     label='Category'
-                                    data={[]}
+                                    data={categoriesOptions}
                                     className='h-[45px]'
                                 />
                                 <FormSelect

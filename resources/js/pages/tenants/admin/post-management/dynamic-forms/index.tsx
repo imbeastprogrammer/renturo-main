@@ -14,8 +14,9 @@ import CreateDynamicFormModal from './components/CreateDynamicFormModal';
 import Pagination from '@/components/tenant/Pagination';
 
 interface DynamicFormsProps {
-    dynamic_forms: PaginatedDynamicForms;
-    sub_categories: SubCategory[];
+    dynamicForms: PaginatedDynamicForms;
+    subCategories: SubCategory[];
+    categories: Category[];
 }
 
 interface PaginatedDynamicForms {
@@ -27,7 +28,11 @@ interface PaginatedDynamicForms {
         lastPage: number;
     };
 }
-function DynamicForms({ dynamic_forms, sub_categories }: DynamicFormsProps) {
+function DynamicForms({
+    dynamicForms,
+    subCategories,
+    categories,
+}: DynamicFormsProps) {
     const { pathname } = window.location;
     const [showDynamicFormModal, setShowDynamicFormModal] = useState(false);
     const { searchParams } = useSearchParams();
@@ -69,19 +74,20 @@ function DynamicForms({ dynamic_forms, sub_categories }: DynamicFormsProps) {
                     </Button>
                 </div>
                 <DynamicFormsTable
-                    subCategories={sub_categories}
-                    dynamicForms={dynamic_forms.data}
+                    categories={categories}
+                    subCategories={subCategories}
+                    dynamicForms={dynamicForms.data}
                 />
                 <div className='flex items-center justify-between'>
                     <div className='text-sm'>
                         <span>
-                            Showing {dynamic_forms.data.length} Records of Page{' '}
-                            {dynamic_forms.pagination.currentPage}
+                            Showing {dynamicForms.data.length} Records of Page{' '}
+                            {dynamicForms.pagination.currentPage}
                         </span>
                     </div>
                     <Pagination
-                        currentPage={dynamic_forms.pagination.currentPage}
-                        numberOfPages={dynamic_forms.pagination.lastPage}
+                        currentPage={dynamicForms.pagination.currentPage}
+                        numberOfPages={dynamicForms.pagination.lastPage}
                         onNextPage={handleNextPage}
                         onPrevPage={handlePrevPage}
                         onPageChange={handlePageChange}
@@ -99,7 +105,8 @@ function DynamicForms({ dynamic_forms, sub_categories }: DynamicFormsProps) {
                 </div>
             </div>
             <CreateDynamicFormModal
-                subCategories={sub_categories}
+                categories={categories}
+                subCategories={subCategories}
                 isOpen={showDynamicFormModal}
                 onClose={() => setShowDynamicFormModal(false)}
             />
