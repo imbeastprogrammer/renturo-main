@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Tenants\Admin\FormBuilder;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreFormPageRequest extends FormRequest
 {
@@ -24,8 +25,15 @@ class StoreFormPageRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:255',
-            'sub_category_id' => 'required|exists:sub_categories,id',
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('dynamic_form_pages')->where(function ($query) {
+                    return $query->where('dynamic_form_id', $this->dynamic_form_id);
+                }),
+            ],
+            'dynamic_form_id' => 'required|exists:dynamic_forms,id',
         ];
     }
 }
