@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { DeleteWarning } from '@/assets/central';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
-import { useState } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -23,23 +23,19 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
     const toast = useCentralToast();
 
     const handleDelete = () => {
-        router.delete(`/admin/categories/${id}`, {
+        router.delete(`/admin/form/${id}`, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
             onSuccess: () => {
                 onClose();
                 toast.success({
-                    title: 'Success',
-                    description: 'The category has been deleted to the system.',
+                    description: 'The form has been deleted to the system.',
                 });
             },
             onError: (error) => {
                 onClose();
                 toast.error({
-                    title: 'Error',
-                    description:
-                        Object.keys(error)[0] ||
-                        'Something went wrong, Please try again later.',
+                    description: Object.keys(error)[0],
                 });
             },
         });
@@ -59,7 +55,7 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                         Are you sure?
                     </DialogTitle>
                     <DialogDescription className='text-center text-base font-thin text-black/50'>
-                        This action will remove the category and all of their
+                        This action will remove the form and all of their
                         associated data from the system.
                     </DialogDescription>
                 </DialogHeader>
@@ -71,7 +67,7 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
                             disabled={isLoading}
                             onClick={handleDelete}
                         >
-                            Delete Category
+                            Delete Form
                         </Button>
                         <Button
                             variant='outline'

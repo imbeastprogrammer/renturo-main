@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 
 import { DynamicForm } from '@/types/dynamic-form';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
-import DeleteCategoryModal from './DeleteCategoryModal';
+import DeleteCategoryModal from './DeleteDynamicFormModal';
 import UpdateDynamicFormModal from './UpdateCategoryModal';
 
 interface DynamicFormsTableProps {
