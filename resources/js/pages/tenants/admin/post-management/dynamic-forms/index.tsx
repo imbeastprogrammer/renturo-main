@@ -5,16 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import { useSearchParams } from '@/hooks/useSearchParams';
-import { Category } from '@/types/categories';
+import { Category, SubCategory } from '@/types/categories';
 import { DynamicForm } from '@/types/dynamic-form';
 import TableSearchbar from '@/components/tenant/TableSearchbar';
 import DynamicFormsTable from './components/DynamicFormsTable';
 import AdminLayout from '@/layouts/AdminLayout';
-import CreateDynamicFormModal from './components/CreateCategoryModal';
+import CreateDynamicFormModal from './components/CreateDynamicFormModal';
 import Pagination from '@/components/tenant/Pagination';
 
 interface DynamicFormsProps {
     dynamic_forms: PaginatedDynamicForms;
+    sub_categories: SubCategory[];
 }
 
 interface PaginatedDynamicForms {
@@ -26,13 +27,15 @@ interface PaginatedDynamicForms {
         lastPage: number;
     };
 }
-function DynamicForms({ dynamic_forms }: DynamicFormsProps) {
+function DynamicForms({ dynamic_forms, sub_categories }: DynamicFormsProps) {
     const { pathname } = window.location;
-    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [showDynamicFormModal, setShowDynamicFormModal] = useState(false);
     const { searchParams } = useSearchParams();
     const page = Number(searchParams.get('page')) || 1;
 
-    const handleShowCreateCategoryModal = () => setShowCategoryModal(true);
+    const handleShowCreateDynamicFormModal = () =>
+        setShowDynamicFormModal(true);
+
     const handleNextPage = (newPage: number) =>
         router.replace(pathname, { data: { page: newPage } });
 
@@ -59,7 +62,7 @@ function DynamicForms({ dynamic_forms }: DynamicFormsProps) {
                         type='button'
                         variant='outline'
                         className='items-center gap-2 border-metalic-blue text-[15px] font-medium text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue'
-                        onClick={handleShowCreateCategoryModal}
+                        onClick={handleShowCreateDynamicFormModal}
                     >
                         <PlusIcon className='h-4 w-4' />
                         Create New Form
@@ -93,8 +96,9 @@ function DynamicForms({ dynamic_forms }: DynamicFormsProps) {
                 </div>
             </div>
             <CreateDynamicFormModal
-                isOpen={showCategoryModal}
-                onClose={() => setShowCategoryModal(false)}
+                subCategories={sub_categories}
+                isOpen={showDynamicFormModal}
+                onClose={() => setShowDynamicFormModal(false)}
             />
         </>
     );

@@ -6,6 +6,7 @@ use App\Http\Requests\Tenants\Admin\FormBuilder\StoreFormRequest;
 use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormRequest;
 use App\Http\Controllers\Controller;
 use App\Models\DynamicForm;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -22,6 +23,7 @@ class DynamicFormController extends Controller
         $perPage = 15;
 
         $dynamicForms = DynamicForm::with('subCategory.category')->paginate($perPage);
+        $subCategories = SubCategory::all();
 
         // Format the response
         $response = $dynamicForms->getCollection()->map(function ($form) {
@@ -55,7 +57,7 @@ class DynamicFormController extends Controller
             ],
         ];
 
-        return Inertia::render('tenants/admin/post-management/dynamic-forms/index', ['dynamic_forms' => $paginated_reponse]);
+        return Inertia::render('tenants/admin/post-management/dynamic-forms/index', ['dynamic_forms' => $paginated_reponse, 'sub_categories' => $subCategories]);
     }
 
 
