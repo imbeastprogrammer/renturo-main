@@ -68,7 +68,10 @@ function DynamicForms({ dynamic_forms, sub_categories }: DynamicFormsProps) {
                         Create New Form
                     </Button>
                 </div>
-                <DynamicFormsTable dynamicForms={dynamic_forms.data} />
+                <DynamicFormsTable
+                    subCategories={sub_categories}
+                    dynamicForms={dynamic_forms.data}
+                />
                 <div className='flex items-center justify-between'>
                     <div className='text-sm'>
                         <span>
