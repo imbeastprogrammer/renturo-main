@@ -14,7 +14,6 @@ import Pagination from '@/components/tenant/Pagination';
 
 interface SubCategoriesProps {
     sub_categories: PaginatedCategories;
-    categories: Category[];
 }
 
 interface PaginatedCategories {
@@ -24,7 +23,7 @@ interface PaginatedCategories {
     next_page_url: string | null;
     prev_page_url: string | null;
 }
-function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
+function SubCategories({ sub_categories }: SubCategoriesProps) {
     const { pathname } = window.location;
     const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
     const { searchParams } = useSearchParams();
@@ -66,10 +65,7 @@ function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
                         Create New Sub Category
                     </Button>
                 </div>
-                <SubCategoriesTable
-                    categories={categories}
-                    subCategories={sub_categories.data}
-                />
+                <SubCategoriesTable subCategories={sub_categories.data} />
                 <div className='flex items-center justify-between'>
                     <div className='text-sm'>
                         <span>
@@ -98,7 +94,6 @@ function SubCategories({ sub_categories, categories }: SubCategoriesProps) {
             </div>
             <CreateSubCategoryModal
                 isOpen={showSubCategoryModal}
-                categories={categories}
                 onClose={() => setShowSubCategoryModal(false)}
             />
         </>

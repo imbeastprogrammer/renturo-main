@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import _ from 'lodash';
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -26,14 +26,12 @@ const defaultValues: CreateSubCategoryFields = {
 interface CreateModalProps {
     isOpen: boolean;
     onClose: () => void;
-    categories: Category[];
 }
 
-function CreateSubCategoryModal({
-    isOpen,
-    onClose,
-    categories,
-}: CreateModalProps) {
+function CreateSubCategoryModal({ isOpen, onClose }: CreateModalProps) {
+    const props = usePage().props;
+    const categories = props.categories as Category[];
+
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
 

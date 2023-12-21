@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { z } from 'zod';
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -28,17 +28,17 @@ type UpdateModalProps = {
     isOpen: boolean;
     onClose: () => void;
     subCategory: FormattedSubCategory | null;
-    categories: Category[];
 };
 
 function UpdateSubCategoryModal({
     isOpen,
     onClose,
     subCategory,
-    categories,
 }: UpdateModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
+    const props = usePage().props;
+    const categories = props.categories as Category[];
 
     const categoriesOptions = categories.map(({ name, id }) => ({
         label: name,

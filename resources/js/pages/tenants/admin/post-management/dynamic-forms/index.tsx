@@ -105,8 +105,6 @@ function DynamicForms({
                 </div>
             </div>
             <CreateDynamicFormModal
-                categories={categories}
-                subCategories={subCategories}
                 isOpen={showDynamicFormModal}
                 onClose={() => setShowDynamicFormModal(false)}
             />

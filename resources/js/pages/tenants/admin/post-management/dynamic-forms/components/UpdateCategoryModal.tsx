@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import _ from 'lodash';
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -14,10 +14,10 @@ import { DynamicForm } from '@/types/dynamic-form';
 import useOwnerToast from '@/hooks/useOwnerToast';
 
 const validationSchema = z.object({
-    name: z.string().nonempty('Name is required'),
+    name: z.string().nonempty('Name is required.'),
     description: z.string().nonempty('Description is required.'),
-    category_id: z.string().optional(),
-    subcategory_id: z.string().nonempty('Sub-Category is Required'),
+    category_id: z.string().nonempty('Category is required.'),
+    subcategory_id: z.string().nonempty('Sub-Category is required.'),
 });
 
 type UpdateDynamicFormFields = z.infer<typeof validationSchema>;
@@ -39,12 +39,14 @@ interface UpdateDynamicFormModalProps {
 function UpdateDynamicFormModal({
     isOpen,
     onClose,
-    subCategories,
     dynamicForm,
-    categories,
 }: UpdateDynamicFormModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
+    const props = usePage().props;
+
+    const categories = props.categories as Category[];
+    const subCategories = props.subCategories as SubCategory[];
 
     const form = useForm<UpdateDynamicFormFields>({
         defaultValues,
