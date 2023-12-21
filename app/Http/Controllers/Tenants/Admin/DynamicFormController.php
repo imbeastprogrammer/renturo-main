@@ -6,8 +6,10 @@ use App\Http\Requests\Tenants\Admin\FormBuilder\StoreFormRequest;
 use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use App\Models\DynamicForm;
+use Inertia\Inertia;
 
 class DynamicFormController extends Controller
 {
@@ -19,9 +21,10 @@ class DynamicFormController extends Controller
     public function index()
     {
 
-        $perPage = 15; 
+        $perPage = 15;
 
         $dynamicForms = DynamicForm::with('subCategory.category')->paginate($perPage);
+        $subCategories = SubCategory::all();
 
         // Format the response
         $response = $dynamicForms->getCollection()->map(function ($form) {
@@ -43,7 +46,7 @@ class DynamicFormController extends Controller
             ];
         });
 
-        return response()->json([
+        $paginated_reponse = [
             "status" => "success",
             'message' => 'Dynamic Form was successfully fetched.',
             'data' => $response,
@@ -53,10 +56,12 @@ class DynamicFormController extends Controller
                 'currentPage' => $dynamicForms->currentPage(),
                 'lastPage' => $dynamicForms->lastPage(),
             ],
-        ], 200); 
+        ];
+
+        return Inertia::render('tenants/admin/post-management/dynamic-forms/index', ['dynamic_forms' => $paginated_reponse, 'sub_categories' => $subCategories]);
     }
 
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -82,7 +87,7 @@ class DynamicFormController extends Controller
             "status" => "success",
             'message' => 'Dynamic Form created successfully.',
             'data' => $dynamicFormPage,
-        ], 201); 
+        ], 201);
     }
 
     /**
@@ -95,8 +100,8 @@ class DynamicFormController extends Controller
     {
         // Fetch the dynamic form by its ID along with its related subcategory, category, pages, and fields
         $dynamicForm = DynamicForm::with([
-            'subCategory.category', 
-            'dynamicFormPages.dynamicFormFields', 
+            'subCategory.category',
+            'dynamicFormPages.dynamicFormFields',
         ])->find($id);
 
         // Check if the category was found
@@ -108,7 +113,7 @@ class DynamicFormController extends Controller
                     "errorCode" => "FORM_NOT_FOUND",
                     "errorDescription" => "The dynamic form ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         // Format the response
@@ -148,7 +153,7 @@ class DynamicFormController extends Controller
             "status" => "success",
             'message' => 'Form was successfully fetched.',
             'data' => $dynamicForm,
-        ], 200); 
+        ], 200);
     }
 
     /**
@@ -175,7 +180,7 @@ class DynamicFormController extends Controller
         $dynamicForm = DynamicForm::find($id);
         $dynamicForm->update($request->validated());
 
-        return response()->json($dynamicForm); 
+        return response()->json($dynamicForm);
     }
 
     /**
@@ -196,19 +201,20 @@ class DynamicFormController extends Controller
                     "errorCode" => "FORM_NOT_FOUND",
                     "errorDescription" => "The dynamic form ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         $dynamicForm->delete();
 
-         // Return the created category along with a success message
-         return response()->json([
+        // Return the created category along with a success message
+        return response()->json([
             "status" => "success",
             'message' => 'Dynamic form was successfully deleted.',
-        ], 200); 
+        ], 200);
     }
 
-    public function restore($id) {
+    public function restore($id)
+    {
 
         $record = DynamicForm::withTrashed()->where('id', $id)->first();
 
@@ -220,27 +226,26 @@ class DynamicFormController extends Controller
                     "errorCode" => "FORM_NOT_FOUND",
                     "errorDescription" => "The dynamic form ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
 
         $record->restore();
         return response()->json([
             "status" => "success",
             'message' => 'Dynamic form was successfully restored.',
-        ], 200); 
+        ], 200);
     }
 
     public function getFormPagesAndFields($id)
     {
         // Retrieve the dynamic form with its pages and fields
         $dynamicForm = DynamicForm::with('dynamicFormPages.dynamicFormFields')
-                                  ->where('id', $id)
-                                  ->first();
+            ->where('id', $id)
+            ->first();
 
         if ($dynamicForm) {
             // Return the dynamic form with its nested relations
             return response()->json($dynamicForm);
-            
         } else {
             // Handle the case where the dynamic form is not found
             return response()->json([
@@ -250,7 +255,7 @@ class DynamicFormController extends Controller
                     "errorCode" => "FORM_NOT_FOUND",
                     "errorDescription" => "The dynamic form ID you are looking for could not be found."
                 ]
-            ], 404); 
+            ], 404);
         }
     }
 
@@ -258,7 +263,7 @@ class DynamicFormController extends Controller
     {
         // Start a transaction
         DB::beginTransaction();
-    
+
         try {
 
             // Find the DynamicForm
@@ -271,7 +276,7 @@ class DynamicFormController extends Controller
             $existingPageTitles = $dynamicForm->dynamicFormPages->pluck('title')->toArray();
 
             foreach ($request->input('dynamic_form_pages') as $index => $pageData) {
-                
+
                 // Check for duplicate title in new pages
                 if (!isset($pageData['id']) && in_array($pageData['title'], $existingPageTitles)) {
                     throw new \Exception("Duplicate page title: " . $pageData['title']);
@@ -284,7 +289,6 @@ class DynamicFormController extends Controller
                         'title' => $pageData['title'],
                         'sort_no' => $index + 1
                     ]);
-
                 } else {
                     // Create new DynamicFormPage
                     $formPage = $dynamicForm->dynamicFormPages()->create([
@@ -294,10 +298,9 @@ class DynamicFormController extends Controller
                     ]);
                     $existingPageTitles[] = $pageData['title']; // Add new title to existing titles array
                 }
-           }
+            }
             DB::commit();
             return response()->json(['message' => 'Dynamic form updated successfully']);
-    
         } catch (\Exception $e) {
             // Rollback Transaction
             DB::rollBack();

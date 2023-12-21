@@ -42,7 +42,7 @@ function FormSelect<T>({
         <FormField
             control={control}
             name={name}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
                 <FormItem className='w-full'>
                     {label && (
                         <FormLabel className='text-[18px] font-medium'>
@@ -59,6 +59,10 @@ function FormSelect<T>({
                                 <SelectTrigger
                                     className={cn(
                                         'h-[60px] rounded-lg bg-[#F3F7FD] p-6 text-base focus-visible:ring-transparent',
+                                        {
+                                            'border-red-500 bg-red-500/5 focus:ring-transparent':
+                                                fieldState.error?.message,
+                                        },
                                         className,
                                     )}
                                 >
