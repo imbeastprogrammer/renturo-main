@@ -21,32 +21,35 @@ class SubCategoryManagementController extends Controller
         $perPage = 15;
 
         // Fetch all sub-categories and eager load their parent categories
-        $subCategories = SubCategory::with('category')->paginate($perPage);
+        $subCategories = SubCategory::with("category")->paginate($perPage);
 
         // Transform the paginated items
         $transformedSubCategories = $subCategories->getCollection()->map(function ($subCategory) {
             return [
-                'category_id' => $subCategory->category_id,
-                'category_name' => $subCategory->category ? $subCategory->category->name : 'No Category',
-                'sub_category_id' => $subCategory->id,
-                'sub_category_name' => $subCategory->name,
+                "category_id" => $subCategory->category_id,
+                "category_name" => $subCategory->category ? $subCategory->category->name : "No Category",
+                "sub_category_id" => $subCategory->id,
+                "sub_category_name" => $subCategory->name,
             ];
         });
 
         // Replace the original items with the transformed collection
         $subCategories->setCollection($transformedSubCategories);
 
+        // Fetch the list of categories
+        $categories = Category::all();
+        
         if ($request->expectsJson()) {
             // Return the created category along with a success message
             return response()->json([
                 "status" => "success",
-                "message" => 'Subcategory was successfully fetched.',
+                "message" => "Subcategory was successfully fetched.",
                 "data" => $subCategories,
             ], 201);
         }
 
-         // For non-JSON requests, return an Inertia response
-        return Inertia::render('tenants/admin/post-management/sub-categories/index', ['sub_categories' => $subCategories, 'categories' => $categories]);
+        // For non-JSON requests, return an Inertia response
+        return Inertia::render("tenants/admin/post-management/sub-categories/index", ["sub_categories" => $subCategories, "categories" => $categories]);
     }
 
     /**
@@ -68,34 +71,41 @@ class SubCategoryManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('sub_categories')->where(function ($query) use ($request) {
-                    return $query->where('category_id', $request->category_id);
+            "category_id" => "required|exists:categories,id",
+            "name" => [
+                "required",
+                "string",
+                "max:255",
+                Rule::unique("sub_categories")->where(function ($query) use ($request) {
+                    return $query->where("category_id", $request->category_id);
                 }),
             ],
         ]);
 
+        // Fetch the category based on the validated category_id
+        $category = Category::findOrFail($request->category_id);
+
+        // Create the subcategory
         $subCategory = $category->subCategories()->create([
             "name" => $request->name
         ]);
-
+        
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                'message' => 'Subcategory created successfully.',
-                'data' => $subCategory,
+                "message" => 'Subcategory created successfully.',
+                "data" => $subCategory,
             ], 201);
         } 
-
+        
         // For non-JSON requests, return an Inertia response
-        return back()->with([
+        // Redirect to the desired page and pass the necessary data
+        return Inertia::render("/some-page", [
             "status" => "success",
-            'message' => 'Subcategory created successfully.',
-            'data' => $subCategory,
+            "message" => "Subcategory created successfully.",
+            "data" => [
+                "sub_category" => $subCategory,
+            ],
         ]);
     }
 
@@ -108,14 +118,14 @@ class SubCategoryManagementController extends Controller
     public function show(Request $request, $id)
     {
         // Fetch the sub-category by ID and eager load its parent category
-        $subCategory = SubCategory::with('category')->findOrFail($id);
+        $subCategory = SubCategory::with("category")->findOrFail($id);
 
         // Optional: Transform the sub-category data for the response
         $subCategoryData = [
-            'category_id' => $subCategory->category_id,
-            'category_name' => $subCategory->category ? $subCategory->category->name : 'No Category',
-            'sub_category_id' => $subCategory->id,
-            'sub_category_name' => $subCategory->name,
+            "category_id" => $subCategory->category_id,
+            "category_name" => $subCategory->category ? $subCategory->category->name : "No Category",
+            "sub_category_id" => $subCategory->id,
+            "sub_category_name" => $subCategory->name,
         ];
 
         // Return the created subcategory along with a success message
@@ -129,7 +139,7 @@ class SubCategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         return Inertia::render('', [
-            'message' => 'Subcategory was successfully fetched.',
+            "message" => "Subcategory was successfully fetched.",
             // Include other necessary data for the component
         ]);
     }
@@ -155,13 +165,13 @@ class SubCategoryManagementController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('sub_categories')->where(function ($query) use ($request) {
-                    return $query->where('category_id', $request->category_id);
+            "category_id" => "required|exists:categories,id",
+            "name" => [
+                "required",
+                "string",
+                "max:255",
+                Rule::unique("sub_categories")->where(function ($query) use ($request) {
+                    return $query->where("category_id", $request->category_id);
                 })->ignore($id),
             ],
         ]);
@@ -169,21 +179,21 @@ class SubCategoryManagementController extends Controller
         $subCategory = SubCategory::findOrFail($id);
 
         $subCategory->update([
-            'category_id' => $request->category_id,
-            'name' => $request->name
+            "category_id" => $request->category_id,
+            "name" => $request->name
         ]);
 
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                'message' => 'Subcategory was successfully updated.',
-                'data' => $subCategory,
+                "message" => "Subcategory was successfully updated.",
+                "data" => $subCategory,
             ], 201);
         }
        
         // For non-JSON requests, return an Inertia response
-        return Inertia::render('', [
-            'message' => 'Subcategory was successfully updated.',
+        return Inertia::render("", [
+            "message" => "Subcategory was successfully updated.",
             // Include other necessary data for the component
         ]);
     }
@@ -203,13 +213,13 @@ class SubCategoryManagementController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                'message' => 'Subcategory was successfully deleted.',
+                "message" => "Subcategory was successfully deleted.",
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
-        return Inertia::render('', [
-            'message' => 'Subcategory was successfully deleted.',
+        return Inertia::render("", [
+            "message" => "Subcategory was successfully deleted.",
             // Include other necessary data for the component
         ]);
     }
@@ -222,14 +232,13 @@ class SubCategoryManagementController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                'message' => 'Subcategory was successfully restored.',
+                "message" => "Subcategory was successfully restored.",
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
         return Inertia::render('', [
-            'message' => 'Subcategory was successfully restored.',
-            // Include other necessary data for the component
+            "message" => "Subcategory was successfully restored.",
         ]);
     }
 }
