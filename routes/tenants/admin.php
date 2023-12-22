@@ -79,8 +79,10 @@ Route::middleware([
 
     Route::get('/post-management/promotions', [PostManagementPromotionsController::class, 'index']);
     Route::get('/post-management/promotions/{id}', [PostManagementPromotionsController::class, 'edit']);
-    Route::get('/post-management/advertisements', [PostManagementAdsController::class, 'index']);
     Route::get('/post-management/form-builder', [FormBuilderController::class, 'index']);
+
+    Route::get('/post-management/advertisements', [PostManagementAdsController::class, 'index']);
+    Route::get('/post-management/advertisements/{id}', [PostManagementAdsController::class, 'show']);
 
     Route::get('/post-management/dynamic-forms', [DynamicFormController::class, 'index']);
     Route::resource('/form', DynamicFormController::class);

@@ -11,4 +11,9 @@ class PostManagementAdsController extends Controller
     {
         return Inertia::render('tenants/admin/post-management/advertisements/index');
     }
+
+    public function show($id)
+    {
+        return Inertia::render('tenants/admin/post-management/advertisements/view-advertisement/index');
+    }
 }
