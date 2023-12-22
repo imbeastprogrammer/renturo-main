@@ -268,13 +268,21 @@ class DynamicFormController extends Controller
             $dynamicForm->update($request->only(['name', 'description']));
 
             // Retrieve all current page titles for the dynamic form
-            $existingPageTitles = $dynamicForm->dynamicFormPages->pluck('title')->toArray();
+            // $existingPageTitles = $dynamicForm->dynamicFormPages->pluck('title')->toArray();
+
+            // Retrieve all current page titles with their IDs for the dynamic form
+            $existingPages = $dynamicForm->dynamicFormPages->pluck('title', 'id');
 
             foreach ($request->input('dynamic_form_pages') as $index => $pageData) {
                 
-                // Check for duplicate title in new pages
-                if (!isset($pageData['id']) && in_array($pageData['title'], $existingPageTitles)) {
-                    throw new \Exception("Duplicate page title: " . $pageData['title']);
+                // Check for duplicate title in new and existing pages
+                foreach ($existingPages as $existingId => $existingTitle) {
+                    if (
+                        (!isset($pageData['id']) || $pageData['id'] != $existingId) &&
+                        $pageData['title'] == $existingTitle
+                    ) {
+                        throw new \Exception("Duplicate page title: " . $pageData['title']);
+                    }
                 }
 
                 if (isset($pageData['id'])) {
@@ -284,16 +292,17 @@ class DynamicFormController extends Controller
                         'title' => $pageData['title'],
                         'sort_no' => $index + 1
                     ]);
-
+    
                 } else {
                     // Create new DynamicFormPage
                     $formPage = $dynamicForm->dynamicFormPages()->create([
                         'title' => $pageData['title'],
                         'sort_no' => $index + 1
-                        // Other necessary fields can be added here
                     ]);
-                    $existingPageTitles[] = $pageData['title']; // Add new title to existing titles array
                 }
+
+                // Update the existingPages array
+                $existingPages[$formPage->id] = $formPage->title;
            }
             DB::commit();
             return response()->json(['message' => 'Dynamic form updated successfully']);

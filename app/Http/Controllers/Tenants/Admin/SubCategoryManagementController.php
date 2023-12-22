@@ -18,12 +18,10 @@ class SubCategoryManagementController extends Controller
      */
     public function index(Request $request)
     {
-
         $perPage = 15;
 
         // Fetch all sub-categories and eager load their parent categories
         $subCategories = SubCategory::with('category')->paginate($perPage);
-        $categories = Category::all();
 
         // Transform the paginated items
         $transformedSubCategories = $subCategories->getCollection()->map(function ($subCategory) {
@@ -38,7 +36,16 @@ class SubCategoryManagementController extends Controller
         // Replace the original items with the transformed collection
         $subCategories->setCollection($transformedSubCategories);
 
-        // Return the paginated response
+        if ($request->expectsJson()) {
+            // Return the created category along with a success message
+            return response()->json([
+                "status" => "success",
+                "message" => 'Subcategory was successfully fetched.',
+                "data" => $subCategories,
+            ], 201);
+        }
+
+         // For non-JSON requests, return an Inertia response
         return Inertia::render('tenants/admin/post-management/sub-categories/index', ['sub_categories' => $subCategories, 'categories' => $categories]);
     }
 
@@ -72,28 +79,24 @@ class SubCategoryManagementController extends Controller
             ],
         ]);
 
-        $category = Category::find($request->category_id);
-
-        if (!$category) {
-            return response()->json([
-                "status" => "failed",
-                'message' => 'Category not found',
-                "error" => [
-                    "errorCode" => "CATEGORY_NOT_FOUND",
-                    "errorDescription" => "The category ID you are looking for could not be found."
-                ]
-            ], 404);
-        }
-
         $subCategory = $category->subCategories()->create([
-            'name' => $request->name
+            "name" => $request->name
         ]);
 
-        return response()->json([
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                'message' => 'Subcategory created successfully.',
+                'data' => $subCategory,
+            ], 201);
+        } 
+
+        // For non-JSON requests, return an Inertia response
+        return back()->with([
             "status" => "success",
             'message' => 'Subcategory created successfully.',
             'data' => $subCategory,
-        ], 201);
+        ]);
     }
 
     /**
@@ -102,22 +105,10 @@ class SubCategoryManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         // Fetch the sub-category by ID and eager load its parent category
-        $subCategory = SubCategory::with('category')->find($id);
-
-        // Check if the sub-category was found
-        if (!$subCategory) {
-            return response()->json([
-                "status" => "failed",
-                'message' => 'Subcategory not found',
-                "error" => [
-                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
-                    "errorDescription" => "The subcategory ID you are looking for could not be found."
-                ]
-            ], 404);
-        }
+        $subCategory = SubCategory::with('category')->findOrFail($id);
 
         // Optional: Transform the sub-category data for the response
         $subCategoryData = [
@@ -127,12 +118,20 @@ class SubCategoryManagementController extends Controller
             'sub_category_name' => $subCategory->name,
         ];
 
-        // Return the created category along with a success message
-        return response()->json([
-            "status" => "success",
+        // Return the created subcategory along with a success message
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                "message" => 'Subcategory was successfully fetched.',
+                "data" => $subCategoryData,
+            ], 200);
+        }
+
+        // For non-JSON requests, return an Inertia response
+        return Inertia::render('', [
             'message' => 'Subcategory was successfully fetched.',
-            'data' => $subCategoryData,
-        ], 201);
+            // Include other necessary data for the component
+        ]);
     }
 
     /**
@@ -167,30 +166,26 @@ class SubCategoryManagementController extends Controller
             ],
         ]);
 
-        $subCategory = SubCategory::find($id);
-
-        // Check if the subcategory was found
-        if (!$subCategory) {
-            return response()->json([
-                "status" => "failed",
-                'message' => 'Subcategory not found',
-                "error" => [
-                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
-                    "errorDescription" => "The subcategory ID you are looking for could not be found."
-                ]
-            ], 404);
-        }
+        $subCategory = SubCategory::findOrFail($id);
 
         $subCategory->update([
             'category_id' => $request->category_id,
             'name' => $request->name
         ]);
 
-        return response()->json([
-            "status" => "success",
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                'message' => 'Subcategory was successfully updated.',
+                'data' => $subCategory,
+            ], 201);
+        }
+       
+        // For non-JSON requests, return an Inertia response
+        return Inertia::render('', [
             'message' => 'Subcategory was successfully updated.',
-            'data' => $subCategory,
-        ], 200);
+            // Include other necessary data for the component
+        ]);
     }
 
     /**
@@ -199,50 +194,42 @@ class SubCategoryManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $subCategory = SubCategory::find($id);
-
-        if (!$subCategory) {
-            return response()->json([
-                "status" => "failed",
-                'message' => 'Subcategory not found',
-                "error" => [
-                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
-                    "errorDescription" => "The subcategory ID you are looking for could not be found."
-                ]
-            ], 404);
-        }
+        $subCategory = SubCategory::findOrFail($id);
 
         $subCategory->delete();
 
-        // Return the created category along with a success message
-        return response()->json([
-            "status" => "success",
-            'message' => 'Subcategory was successfully deleted.',
-        ], 200);
-    }
-
-    public function restore($id)
-    {
-
-        $record = SubCategory::withTrashed()->where('id', $id)->first();
-
-        if (!$record) {
+        if ($request->expectsJson()) {
             return response()->json([
-                "status" => "failed",
-                'message' => 'Subcategory not found',
-                "error" => [
-                    "errorCode" => "SUBCATEGORY_NOT_FOUND",
-                    "errorDescription" => "The subcategory ID you are looking for could not be found."
-                ]
-            ], 404);
+                "status" => "success",
+                'message' => 'Subcategory was successfully deleted.',
+            ], 200);
         }
 
+        // For non-JSON requests, return an Inertia response
+        return Inertia::render('', [
+            'message' => 'Subcategory was successfully deleted.',
+            // Include other necessary data for the component
+        ]);
+    }
+
+    public function restore(Request $request, $id)
+    {
+        $record = SubCategory::withTrashed()->findOrFail($id);
         $record->restore();
-        return response()->json([
-            "status" => "success",
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                'message' => 'Subcategory was successfully restored.',
+            ], 200);
+        }
+
+        // For non-JSON requests, return an Inertia response
+        return Inertia::render('', [
             'message' => 'Subcategory was successfully restored.',
-        ], 200);
+            // Include other necessary data for the component
+        ]);
     }
 }
