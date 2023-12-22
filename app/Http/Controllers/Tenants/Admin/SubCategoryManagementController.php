@@ -93,7 +93,7 @@ class SubCategoryManagementController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                "message" => 'Subcategory created successfully.',
+                "message" => "Subcategory created successfully.",
                 "data" => $subCategory,
             ], 201);
         } 
@@ -132,13 +132,13 @@ class SubCategoryManagementController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                "message" => 'Subcategory was successfully fetched.',
+                "message" => "Subcategory was successfully fetched.",
                 "data" => $subCategoryData,
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
-        return Inertia::render('', [
+        return Inertia::render("", [
             "message" => "Subcategory was successfully fetched.",
             // Include other necessary data for the component
         ]);
@@ -237,7 +237,7 @@ class SubCategoryManagementController extends Controller
         }
 
         // For non-JSON requests, return an Inertia response
-        return Inertia::render('', [
+        return Inertia::render("", [
             "message" => "Subcategory was successfully restored.",
         ]);
     }
