@@ -17,7 +17,7 @@ function BookingsPage() {
     const filter = searchParams.get('filter');
 
     return (
-        <div className='grid h-full grid-rows-[auto_1fr] gap-y-4 rounded-lg border p-4 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_1fr] gap-y-4 rounded-lg border bg-white p-4 shadow-lg'>
             <ListingFilter
                 value={filter || 'all'}
                 data={tabs}

@@ -4,7 +4,7 @@ import SettingsNavigation from './SettingsNavigation';
 
 function SettingsSidebar() {
     return (
-        <ScrollArea>
+        <ScrollArea className='p-4'>
             <UserPicture />
             <SettingsNavigation />
         </ScrollArea>

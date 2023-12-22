@@ -4,7 +4,7 @@ import profile from '@/assets/profile.png';
 
 function Activities() {
     return (
-        <ScrollArea className='h-full rounded-lg border p-4 shadow-lg'>
+        <ScrollArea className='h-full rounded-lg border bg-white p-4 shadow-lg'>
             <div className='sticky top-0 z-[100] bg-white'>
                 <h1 className='text-[22px] font-semibold'>Activities</h1>
             </div>

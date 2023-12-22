@@ -18,7 +18,7 @@ const statusColor: Record<string, string> = {
 
 function RecentBookings() {
     return (
-        <div className='grid h-full grid-rows-[auto_1fr] gap-4 overflow-x-auto rounded-lg border p-4 shadow-lg'>
+        <div className='grid h-full grid-rows-[auto_1fr] gap-4 overflow-x-auto rounded-lg border bg-white p-4 shadow-lg'>
             <h1 className='flex items-center gap-2 text-[22px] font-semibold leading-none'>
                 Recent Bookings <ChevronDown />
             </h1>
