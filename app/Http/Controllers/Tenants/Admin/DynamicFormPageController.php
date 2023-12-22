@@ -99,8 +99,8 @@ class DynamicFormPageController extends Controller
         $formPage = DynamicFormPage::create($request->validated());
 
         return response()->json([
-            'data' => $formPage,
-            'message' => 'Form page created.'
+            "data" => $formPage,
+            "message" => 'Form page created.'
         ], 201);
     }
 
@@ -112,7 +112,7 @@ class DynamicFormPageController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -181,7 +181,7 @@ class DynamicFormPageController extends Controller
         // Return the created category along with a success message
         return response()->json([
             "status" => "success",
-            'message' => 'Dynamic form page was successfully deleted.',
+            "message" => 'Dynamic form page was successfully deleted.',
         ], 200); 
     }
 
@@ -203,7 +203,35 @@ class DynamicFormPageController extends Controller
         $record->restore();
         return response()->json([
             "status" => "success",
-            'message' => 'Dynamic form was successfully restored.',
+            "message" => 'Dynamic form was successfully restored.',
         ], 200); 
     }
+
+    public function search(Request $request)
+    {
+        $query = DynamicFormPage::query();
+
+        $searchTerm = $request->form_page_search;
+
+        // If a search term for DynamicFormPages is provided
+        if ($request->has('form_page_search')) {
+           
+            // Check if the search term is numeric, and search by ID
+            if (is_numeric($searchTerm)) {
+                $query->where('id', $searchTerm);
+            } else {
+                // Otherwise, search by title
+                $query->where('title', 'like', '%' . $searchTerm . '%');
+            }
+        }
+
+        $dynamicForms = $query->with('dynamicForm.subCategory', 'dynamicFormFields')->get();
+
+        return response()->json([
+            "status" => "success",
+            "message" => 'Dynamic form was successfully restored.',
+            "data" => $dynamicForms
+        ], 200); 
+    }
+
 }

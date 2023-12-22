@@ -87,11 +87,12 @@ Route::middleware([
     Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
 
     Route::post('/form/pages/restore/{id}', [DynamicFormPageController::class, 'restore']);
+    Route::get('/form/pages/search/', [DynamicFormPageController::class, 'search']);
     Route::resource('/form/pages', DynamicFormPageController::class);
 
     Route::post('/form/fields/restore/{id}', [DynamicFormFieldController::class, 'restore']);
     Route::resource('/form/fields', DynamicFormFieldController::class);
-
+    
     Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
     Route::get('/form/all/{id}', [DynamicFormController::class, 'getFormPagesAndFields']);
     Route::put('/form/all/{id}', [DynamicFormController::class, 'updateFormPagesAndFields']);

@@ -275,10 +275,13 @@ class DynamicFormController extends Controller
             $dynamicForm->update($request->only(['name', 'description']));
 
             // Retrieve all current page titles for the dynamic form
-            $existingPageTitles = $dynamicForm->dynamicFormPages->pluck('title')->toArray();
+            // $existingPageTitles = $dynamicForm->dynamicFormPages->pluck('title')->toArray();
+
+            // Retrieve all current page titles with their IDs for the dynamic form
+            $existingPages = $dynamicForm->dynamicFormPages->pluck('title', 'id');
 
             foreach ($request->input('dynamic_form_pages') as $index => $pageData) {
-
+                
                 // Check for duplicate title in new pages
                 if (!isset($pageData['id']) && in_array($pageData['title'], $existingPageTitles)) {
                     throw new \Exception("Duplicate page title: " . $pageData['title']);
@@ -291,16 +294,15 @@ class DynamicFormController extends Controller
                         'title' => $pageData['title'],
                         'sort_no' => $index + 1
                     ]);
+
                 } else {
                     // Create new DynamicFormPage
                     $formPage = $dynamicForm->dynamicFormPages()->create([
                         'title' => $pageData['title'],
                         'sort_no' => $index + 1
-                        // Other necessary fields can be added here
                     ]);
-                    $existingPageTitles[] = $pageData['title']; // Add new title to existing titles array
                 }
-            }
+           }
             DB::commit();
             return response()->json(['message' => 'Dynamic form updated successfully']);
         } catch (\Exception $e) {
