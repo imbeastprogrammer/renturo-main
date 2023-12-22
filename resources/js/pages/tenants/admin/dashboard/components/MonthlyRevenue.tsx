@@ -85,7 +85,7 @@ function MontlyRevenue() {
     const [focusBar, setFocusBar] = useState<number | null>(null);
 
     return (
-        <div className='grid h-full w-full grid-rows-[auto_1fr] gap-2 rounded-lg border p-4 shadow-lg'>
+        <div className='grid h-full w-full grid-rows-[auto_1fr] gap-2 rounded-lg border bg-white p-4 shadow-lg'>
             <div>
                 <h1 className='text-[22px] font-semibold leading-none'>
                     Montly Revenue

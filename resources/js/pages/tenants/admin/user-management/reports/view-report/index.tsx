@@ -7,7 +7,7 @@ import ImageList from './components/ImageList';
 
 function ViewReport() {
     return (
-        <ScrollArea className='rounded-lg border shadow-lg'>
+        <ScrollArea className='rounded-lg border bg-white shadow-lg'>
             <div className='space-y-8 p-4'>
                 <div className='space-y-4'>
                     <h1 className='text-[24px] font-semibold'>User Details</h1>

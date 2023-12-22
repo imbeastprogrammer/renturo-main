@@ -1,14 +1,12 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSearchParams } from '@/hooks/useSearchParams';
 
-import { Listing } from '@/types/listings';
 import AdminLayout from '@/layouts/AdminLayout';
 import ListingsTable from './components/ListingsTable';
 import ListingFilter from './components/ListingFilter';
-import Searchbar from '@/components/tenant/Searchbar';
+import dummyListings from '@/data/dummyListings';
 import Pagination from '@/components/tenant/Pagination';
 
 const tabs = [
@@ -18,34 +16,23 @@ const tabs = [
     { label: 'Declined', value: 'declined' },
 ];
 
-type PropertiesProps = {
-    posts: Listing[];
-};
-function Properties({ posts }: PropertiesProps) {
+function Advertisements() {
     const { searchParams, queryParams } = useSearchParams();
     const filter = searchParams.get('filter');
     const [currentPage, setCurrentPage] = useState(1);
 
     return (
-        <div className='grid h-full grid-rows-[auto_auto_1fr] gap-y-4 overflow-hidden rounded-lg border bg-white p-4 shadow-lg'>
-            <div className='flex items-center gap-2'>
-                <Searchbar placeholder='Search for property, keyword, or owner' />
-                <Searchbar placeholder='Search by category' />
-                <Searchbar placeholder='Search by subcategory' />
-                <Button className='w-[107px] bg-metalic-blue text-[15px] font-medium hover:bg-metalic-blue/90'>
-                    Search
-                </Button>
-            </div>
+        <div className='grid h-full grid-rows-[auto_1fr] gap-y-4 rounded-lg border bg-white p-4 shadow-lg'>
             <ListingFilter
                 value={filter || 'all'}
                 data={tabs}
                 onChange={(value) =>
-                    router.visit(`/admin/post-management/list-of-properties`, {
+                    router.visit(`/admin/post-management/advertisements`, {
                         data: { ...queryParams, filter: value },
                     })
                 }
             />
-            <ListingsTable listings={posts} />
+            <ListingsTable listings={dummyListings} />
             <div className='flex items-center justify-between'>
                 <div className='text-sm'>
                     <span>Showing 1 to 3 of 3 users</span>
@@ -72,6 +59,6 @@ function Properties({ posts }: PropertiesProps) {
     );
 }
 
-Properties.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
+Advertisements.layout = (page: any) => <AdminLayout>{page}</AdminLayout>;
 
-export default Properties;
+export default Advertisements;
