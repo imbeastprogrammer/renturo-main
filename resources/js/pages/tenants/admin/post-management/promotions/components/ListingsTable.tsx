@@ -47,7 +47,6 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
         <Table>
             <TableHeader>
                 <TableRow className='text-base font-semibold text-black/50'>
-                    <TableHead className='w-[100px]'>#</TableHead>
                     <TableHead>Id</TableHead>
                     <TableHead>Listing Name</TableHead>
                     <TableHead>Posted By</TableHead>
@@ -59,14 +58,13 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
             <TableBody>
                 {listings.map((listing) => (
                     <TableRow
-                        key={listing.no}
+                        key={listing.id}
                         className='text-sm font-normal text-black/50'
                     >
-                        <TableCell>{listing.no}</TableCell>
                         <TableCell>{listing.id}</TableCell>
-                        <TableCell>{listing.listing_name}</TableCell>
-                        <TableCell>{listing.posted_by}</TableCell>
-                        <TableCell>{listing.price_range}</TableCell>
+                        <TableCell>{listing.title}</TableCell>
+                        <TableCell>Static</TableCell>
+                        <TableCell>Static</TableCell>
                         <TableCell>
                             <ListingStatusSelector
                                 value={listing.status}
@@ -83,7 +81,7 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                                 <DropdownMenuContent className='-translate-x-8'>
                                     <DropdownMenuItem
                                         onClick={() =>
-                                            navigateToViewPage(listing.no)
+                                            navigateToViewPage(listing.id)
                                         }
                                     >
                                         View Promotion
