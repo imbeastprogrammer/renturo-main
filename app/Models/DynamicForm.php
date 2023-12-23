@@ -23,7 +23,7 @@ class DynamicForm extends Model
         // One-to-Many relationship with DynamicFormPage
         return $this->hasMany(DynamicFormPage::class);
     }
-
+    
     public function subCategory(){
 
         // Many-to-One relationship with SubCategory

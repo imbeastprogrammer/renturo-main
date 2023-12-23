@@ -159,7 +159,7 @@ class CategoryManagementController extends Controller
             return response()->json([
                 "status" => "success",
                 "message" => "Category was successfully deleted.",
-            ], 200); // Or use 204 if you prefer no content in the response
+            ], 200); 
         }
 
         // For non-JSON requests, return an Inertia response

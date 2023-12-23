@@ -202,6 +202,7 @@ class SubCategoryManagementController extends Controller
         $subCategory->delete();
 
         if ($request->expectsJson()) {
+            // Return a success message after deletion
             return response()->json([
                 "status" => "success",
                 "message" => "Subcategory was successfully deleted.",
@@ -209,6 +210,7 @@ class SubCategoryManagementController extends Controller
         }
 
         // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
         return redirect()->back()->with('success', 'Subcategory was successfully deleted.');
     }
 
