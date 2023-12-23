@@ -22,8 +22,8 @@ class CategoryManagementController extends Controller
         // Fetch categories with pagination
         $categories = Category::paginate($perPage);
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
-            // Return the created category along with a success message
             return response()->json([
                 "status" => "success",
                 "message" => "Categories was successfully fetched.",
@@ -62,8 +62,8 @@ class CategoryManagementController extends Controller
             "name" => $request->name
         ]);
     
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
-            // Return the created category along with a success message
             return response()->json([
                 "status" => "success",
                 "message" => "Category was successfully created.",
@@ -73,7 +73,7 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Category was successfully created.');
+        return redirect()->back()->with("success", "Category was successfully created.");
     }
 
     /**
@@ -87,6 +87,7 @@ class CategoryManagementController extends Controller
         // Fetch the category by its ID
         $category = Category::findOrFail($id);
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
@@ -129,6 +130,7 @@ class CategoryManagementController extends Controller
             "name" => $request->name
         ]);
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
@@ -139,7 +141,7 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Category was successfully updated.');
+        return redirect()->back()->with("success", "Category was successfully updated.");
     }
 
     /**
@@ -151,11 +153,10 @@ class CategoryManagementController extends Controller
     public function destroy(Request $request, $id)
     {
         $category = Category::findOrFail($id);
-
         $category->delete();
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
-            // Return a success message after deletion
             return response()->json([
                 "status" => "success",
                 "message" => "Category was successfully deleted.",
@@ -164,17 +165,16 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Category was successfully deleted.');
+        return redirect()->back()->with("success", "Category was successfully deleted.");
     }
 
     public function restore(Request $request, $id)
     {
         $record = Category::withTrashed()->findOrFail($id);
-
         $record->restore();
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
-            // Return a success message after deletion
             return response()->json([
                 "status" => "success",
                 "message" => "Category was successfully restored.",
@@ -183,6 +183,6 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Category was successfully restored.');
+        return redirect()->back()->with("success", "Category was successfully restored.");
     }
 }

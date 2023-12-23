@@ -9,7 +9,6 @@ use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormFieldRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\DynamicFormField;
 use App\Models\DynamicFormPage;
-use Auth;
 
 class DynamicFormFieldController extends Controller
 {
@@ -20,9 +19,36 @@ class DynamicFormFieldController extends Controller
      */
     public function index(Request $request)
     {
-        $formPage = DynamicFormPage::where('id', $request->form_page_id)->first();
+        $query = DynamicFormPage::query();
 
-        return response()->json(['form_page' => $formPage]);
+        $searchTerm = $request->form_page_search;
+
+        // If a search term for DynamicFormPages is provided
+        if ($request->has("form_page_search")) {
+           
+            // Check if the search term is numeric, and search by ID
+            if (is_numeric($searchTerm)) {
+                $query->where("id", $searchTerm);
+            } else {
+                // Otherwise, search by title
+                $query->where("title", "like", "%" . $searchTerm . "%");
+            }
+        }
+
+        $dynamicFormPages = $query->with("dynamicForm.subCategory", "dynamicFormFields")->get();
+       
+        // For JSON requests, return a success response
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                "message" => "Dynamic form page with fields was successfully fetched.",
+                "data" => $dynamicFormPages
+            ], 201);
+        }
+       
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Dynamic form page with fields was successfully fetched.");
     }
 
     /**
@@ -43,7 +69,7 @@ class DynamicFormFieldController extends Controller
      */
     public function store(StoreFormFieldRequest $request)
     {
-        $fields = $request->input('fields'); // Assuming 'fields' is the key that contains the array of fields
+        $fields = $request->input("fields"); // Assuming "fields" is the key that contains the array of fields
         
         // Start a transaction
         DB::beginTransaction();
@@ -53,26 +79,47 @@ class DynamicFormFieldController extends Controller
                 
                 // Validate $fieldData here if necessary
                 DynamicFormField::create([
-                    'dynamic_form_page_id' => $request->dynamic_form_page_id,
-                    'input_field_label' => $fieldData['input_field_label'],
-                    'input_field_name' => $fieldData['input_field_name'],
-                    'input_field_type' => $fieldData['input_field_type'],
-                    'is_required' => $fieldData['is_required'],
-                    'is_multiple' => $fieldData['is_multiple'], 
-                    'data' => $fieldData['data'] ?? null,
-                    'sort_no' => $index + 1 // Using the array index as the sort number, incremented by 1
+                    "dynamic_form_page_id" => $request->dynamic_form_page_id,
+                    "input_field_label" => $fieldData["input_field_label"],
+                    "input_field_name" => $fieldData["input_field_name"],
+                    "input_field_type" => $fieldData["input_field_type"],
+                    "is_required" => $fieldData["is_required"],
+                    "is_multiple" => $fieldData["is_multiple"], 
+                    "data" => $fieldData["data"] ?? null,
+                    "sort_no" => $index + 1 // Using the array index as the sort number, incremented by 1
                 ]);
             }
     
             // Commit the transaction
             DB::commit();
-            return response()->json(
-                ['message' => 'Fields saved successfully'], 200);
-        
+
+            // For JSON requests, return a success response
+            if ($request->expectsJson()) {
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Dynamic form fields was successfully created."
+                ], 201);
+            }
+           
+            // For non-JSON requests, return an Inertia response
+            // Redirect to the desired page and pass the necessary data
+            return redirect()->back()->with("success", "Dynamic form fields was successfully created.");
+
         } catch (\Exception $e) {
             // An error occurred; rollback the transaction
             DB::rollBack();
-            return response()->json(['message' => 'Failed to save fields', 'error' => $e->getMessage()], 500);
+
+            // For JSON requests, return a success response
+            if ($request->expectsJson()) {
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Failed to save fields." . $e->getMessage()
+                ], 500);
+            }
+           
+            // For non-JSON requests, return an Inertia response
+            // Redirect to the desired page and pass the necessary data
+            return redirect()->back()->with("success", "Failed to save fields." . $e->getMessage());
         }
     }
 
@@ -107,8 +154,8 @@ class DynamicFormFieldController extends Controller
      */
     public function update(UpdateFormFieldRequest $request, $id)
     {
-        $fields = $request->input('fields'); // Assuming 'fields' is the key that contains the array of fields
-        $fieldIds = array_filter(array_column($fields, 'id')); // Extract all field IDs from the request
+        $fields = $request->input("fields"); // Assuming "fields" is the key that contains the array of fields
+        $fieldIds = array_filter(array_column($fields, "id")); // Extract all field IDs from the request
 
         // Start a transaction
         DB::beginTransaction();
@@ -116,57 +163,79 @@ class DynamicFormFieldController extends Controller
         try {
 
             // Remove fields not included in the request
-            DynamicFormField::where('dynamic_form_page_id', $request->dynamic_form_page_id)
-            ->whereNotIn('id', $fieldIds)
+            DynamicFormField::where("dynamic_form_page_id", $request->dynamic_form_page_id)
+            ->whereNotIn("id", $fieldIds)
             ->delete();
             
             foreach ($fields as $index => $fieldData) {
 
-                if (isset($fieldData['id'])) {
+                if (isset($fieldData["id"])) {
 
                     // Update existing field
-                    $formField = DynamicFormField::where('id', $fieldData['id'])
-                                                 ->where('dynamic_form_page_id', $request->dynamic_form_page_id)
+                    $formField = DynamicFormField::where("id", $fieldData["id"])
+                                                 ->where("dynamic_form_page_id", $request->dynamic_form_page_id)
                                                  ->first();
                     
                     if ($formField) {
                         $formField->update([
-                            'input_field_label' => $fieldData['input_field_label'],
-                            'input_field_name' => $fieldData['input_field_name'],
-                            'input_field_type' => $fieldData['input_field_type'],
-                            'is_required' => $fieldData['is_required'],
-                            'is_multiple' => $fieldData['is_multiple'], 
-                            'data' => $fieldData['data'] ?? null,
-                            'sort_no' => $index + 1 // Using the array index as the sort number, incremented by 1
+                            "input_field_label" => $fieldData["input_field_label"],
+                            "input_field_name" => $fieldData["input_field_name"],
+                            "input_field_type" => $fieldData["input_field_type"],
+                            "is_required" => $fieldData["is_required"],
+                            "is_multiple" => $fieldData["is_multiple"], 
+                            "data" => $fieldData["data"] ?? null,
+                            "sort_no" => $index + 1 // Using the array index as the sort number, incremented by 1
                         ]);
                     } else {
 
                         // Handle the case where the field does not exist
-                        return response()->json(['message' => 'Failed to update fields', 'error' => "Field id {$fieldData['id']} does not exists."], 500);
+                        return response()->json(["message" => "Failed to update fields", "error" => "Field id {$fieldData["id"]} does not exists."], 500);
                     }
                 } else {
                     // Validate $fieldData here if necessary
                     DynamicFormField::create([
-                        'dynamic_form_page_id' => $request->dynamic_form_page_id,
-                        'input_field_label' => $fieldData['input_field_label'],
-                        'input_field_name' => $fieldData['input_field_name'],
-                        'input_field_type' => $fieldData['input_field_type'],
-                        'is_required' => $fieldData['is_required'],
-                        'is_multiple' => $fieldData['is_multiple'], 
-                        'data' => $fieldData['data'] ?? null,
-                        'sort_no' => $index + 1 // Using the array index as the sort number, incremented by 1
+                        "dynamic_form_page_id" => $request->dynamic_form_page_id,
+                        "input_field_label" => $fieldData["input_field_label"],
+                        "input_field_name" => $fieldData["input_field_name"],
+                        "input_field_type" => $fieldData["input_field_type"],
+                        "is_required" => $fieldData["is_required"],
+                        "is_multiple" => $fieldData["is_multiple"], 
+                        "data" => $fieldData["data"] ?? null,
+                        "sort_no" => $index + 1 // Using the array index as the sort number, incremented by 1
                     ]);
                 }
             }
         
             // Commit the transaction
             DB::commit();
-            return response()->json(['message' => 'Fields updated successfully'], 200);
+
+            // For JSON requests, return a success response
+            if ($request->expectsJson()) {
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Dynamic form fields was successfully updated."
+                ], 200);
+            }
+
+            // For non-JSON requests, return an Inertia response
+            // Redirect to the desired page and pass the necessary data
+            return redirect()->back()->with("success", "Fields updated successfully.");
         
         } catch (\Exception $e) {
             // An error occurred; rollback the transaction
             DB::rollBack();
-            return response()->json(['message' => 'Failed to update fields', 'error' => $e->getMessage()], 500);
+
+            // For JSON request, return a success response
+            if ($request->expectsJson()) {
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Failed to update fields." . $e->getMessage()
+                ], 500);
+            }
+
+            // For non-JSON requests, return an Inertia response
+            // Redirect to the desired page and pass the necessary data
+            return redirect()->back()->with("success", "Failed to update fields." . $e->getMessage());
         }
     }
 
@@ -176,30 +245,39 @@ class DynamicFormFieldController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $formField = DynamicFormField::where('id', $id)
-            ->where('user_id', Auth::user()->id)
-            ->first();
+        $dynamicFormField = DynamicFormField::findOrFail($id);
+        $dynamicFormField->delete();
 
-        if (!$formField) {
-            return response()->json(['message' => 'Form field not found or already deleted.'], 404);
+        // For JSON request, return a success response
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                "message" => "Dynamic form field was successfully deleted.",
+            ], 200); 
         }
 
-        $formField->delete();
-
-        return response()->json(['message' => 'Form field deleted.']);
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Dynamic form field was successfully deleted.");
     }
 
-    public function restore($id) {
+    public function restore(Request $request, $id) {
 
-        $record = DynamicFormField::withTrashed()->find($id);
+        $record = DynamicFormField::withTrashed()->findOrFail($id);
+        $record->restore();
 
-        if (!$record) {
-            return response()->json(['message' => 'Form field not found'], 404);
+         // For JSON request, return a success response
+         if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                "message" => "Dynamic form field was successfully restored.",
+            ], 200); 
         }
 
-        $record->restore();
-        return response()->json(['message' => 'Form field restored successfully']);
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Dynamic form field was successfully restored.");
     }
 }

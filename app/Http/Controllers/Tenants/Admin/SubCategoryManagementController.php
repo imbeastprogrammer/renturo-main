@@ -39,8 +39,8 @@ class SubCategoryManagementController extends Controller
         // Fetch the list of categories
         $categories = Category::all();
         
+        // For JSON request, return a success response
         if ($request->expectsJson()) {
-            // Return the created category along with a success message
             return response()->json([
                 "status" => "success",
                 "message" => "Subcategory was successfully fetched.",
@@ -49,6 +49,7 @@ class SubCategoryManagementController extends Controller
         }
 
         // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
         return Inertia::render("tenants/admin/post-management/sub-categories/index", ["sub_categories" => $subCategories, "categories" => $categories]);
     }
 
@@ -90,6 +91,7 @@ class SubCategoryManagementController extends Controller
             "name" => $request->name
         ]);
         
+        // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
@@ -100,7 +102,7 @@ class SubCategoryManagementController extends Controller
         
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Subcategory was successfully created.');
+        return redirect()->back()->with("success", "Subcategory was successfully created.");
     }
 
     /**
@@ -122,7 +124,7 @@ class SubCategoryManagementController extends Controller
             "sub_category_name" => $subCategory->name,
         ];
 
-        // Return the created subcategory along with a success message
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
@@ -132,6 +134,7 @@ class SubCategoryManagementController extends Controller
         }
 
         // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
         return Inertia::render("", [
             "message" => "Subcategory was successfully fetched.",
             // Include other necessary data for the component
@@ -177,6 +180,7 @@ class SubCategoryManagementController extends Controller
             "name" => $request->name
         ]);
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
@@ -186,7 +190,8 @@ class SubCategoryManagementController extends Controller
         }
        
         // For non-JSON requests, return an Inertia response
-        return redirect()->back()->with('success', 'Subcategory was successfully updated.');
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Subcategory was successfully updated.");
     }
 
     /**
@@ -198,11 +203,10 @@ class SubCategoryManagementController extends Controller
     public function destroy(Request $request, $id)
     {
         $subCategory = SubCategory::findOrFail($id);
-
         $subCategory->delete();
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
-            // Return a success message after deletion
             return response()->json([
                 "status" => "success",
                 "message" => "Subcategory was successfully deleted.",
@@ -211,7 +215,7 @@ class SubCategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Subcategory was successfully deleted.');
+        return redirect()->back()->with("success", "Subcategory was successfully deleted.");
     }
 
     public function restore(Request $request, $id)
@@ -219,6 +223,7 @@ class SubCategoryManagementController extends Controller
         $record = SubCategory::withTrashed()->findOrFail($id);
         $record->restore();
 
+        // For JSON requests, return a success response
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
@@ -227,6 +232,7 @@ class SubCategoryManagementController extends Controller
         }
 
         // For non-JSON requests, return an Inertia response
-        return redirect()->back()->with('success', 'Subcategory was successfully restored.');
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Subcategory was successfully restored.");
     }
 }

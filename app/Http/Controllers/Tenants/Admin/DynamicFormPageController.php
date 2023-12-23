@@ -19,8 +19,8 @@ class DynamicFormPageController extends Controller
     public function index(Request $request)
     {
         $formPages = DynamicFormPage::with([
-            'dynamicForm.subCategory', 
-            'dynamicFormFields'
+            "dynamicForm.subCategory", 
+            "dynamicFormFields"
         ])->paginate(15);
 
         $formPagesData = $formPages->map(function ($formPage) {
@@ -31,15 +31,15 @@ class DynamicFormPageController extends Controller
                 // Map DynamicFormFields
                 $fields = $formPage->dynamicFormFields->map(function ($field) {
                     return [
-                        'id' => $field->id,
-                        'user_id' => $field->user_id,
-                        'dynamic_form_page_id' => $field->dynamic_form_page_id,
-                        'input_field_label' => $field->input_field_label,
-                        'input_field_name' => $field->input_field_name,
-                        'input_field_type' => $field->input_field_type,
-                        'is_required' => $field->is_required,
-                        'is_multiple' => $field->is_multiple,
-                        'data' => $field->data,
+                        "id" => $field->id,
+                        "user_id" => $field->user_id,
+                        "dynamic_form_page_id" => $field->dynamic_form_page_id,
+                        "input_field_label" => $field->input_field_label,
+                        "input_field_name" => $field->input_field_name,
+                        "input_field_type" => $field->input_field_type,
+                        "is_required" => $field->is_required,
+                        "is_multiple" => $field->is_multiple,
+                        "data" => $field->data,
                     ];
                 });
             });
@@ -49,37 +49,37 @@ class DynamicFormPageController extends Controller
 
             // Check if DynamicForm has fields and map them
             if ($formPage->dynamicForm && $formPage->dynamicForm->dynamicFields) {
-                $form['fields'] = $formPage->dynamicForm->dynamicFields->map(function ($dynamicField) {
+                $form["fields"] = $formPage->dynamicForm->dynamicFields->map(function ($dynamicField) {
                     return [
-                        'id' => $dynamicField->id,
-                        'user_id' => $dynamicField->user_id,
-                        'dynamic_form_page_id' => $dynamicField->dynamic_form_page_id,
-                        'input_field_label' => $dynamicField->input_field_label,
-                        'input_field_name' => $dynamicField->input_field_name,
-                        'input_field_type' => $dynamicField->input_field_type,
-                        'is_required' => $dynamicField->is_required,
-                        'is_multiple' => $dynamicField->is_multiple,
-                        'data' => $dynamicField->data,
+                        "id" => $dynamicField->id,
+                        "user_id" => $dynamicField->user_id,
+                        "dynamic_form_page_id" => $dynamicField->dynamic_form_page_id,
+                        "input_field_label" => $dynamicField->input_field_label,
+                        "input_field_name" => $dynamicField->input_field_name,
+                        "input_field_type" => $dynamicField->input_field_type,
+                        "is_required" => $dynamicField->is_required,
+                        "is_multiple" => $dynamicField->is_multiple,
+                        "data" => $dynamicField->data,
                     ];
                 });
             }
 
             // Return the mapped formPage data along with DynamicForm data
             return [
-                'id' => $formPage->id,
-                'title' => $formPage->title,
-                'created_at' => $formPage->created_at,
-                'updated_at' => $formPage->updated_at,
-                'deleted_at' => $formPage->deleted_at,
-                'dynamic_form' => $form,
-                'dynamic_form_fields' => $fields,
+                "id" => $formPage->id,
+                "title" => $formPage->title,
+                "created_at" => $formPage->created_at,
+                "updated_at" => $formPage->updated_at,
+                "deleted_at" => $formPage->deleted_at,
+                "dynamic_form" => $form,
+                "dynamic_form_fields" => $fields,
             ];
         });
 
         $formPages->setCollection($formPagesData);
 
+        // For JSON request, return a success response
         if ($request->expectsJson()) {
-            // Return the created category along with a success message
             return response()->json([
                 "status" => "success",
                 "message" => "Dynamic form page was successfully fetched.",
@@ -111,18 +111,18 @@ class DynamicFormPageController extends Controller
     {
         $dynamicFormPage = DynamicFormPage::create($request->validated());
 
+        // For JSON request, return a success response
         if ($request->expectsJson()) {
-            // Return the created category along with a success message
             return response()->json([
                 "status" => "success",
-                'message' => 'Dynamic form page was successfully created.',
-                'data' => $dynamicFormPage,
+                "message" => "Dynamic form page was successfully created.",
+                "data" => $dynamicFormPage,
             ], 201);
         }
        
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Dynamic form page was successfully created.');
+        return redirect()->back()->with("success", "Dynamic form page was successfully created.");
     }
 
     /**
@@ -160,20 +160,20 @@ class DynamicFormPageController extends Controller
 
         // Utilize route model binding for cleaner code and direct access
         $dynamicFormPage = DynamicFormPage::findOrFail($id);
-        $dynamicFormPage->update($request->only(['title']));
+        $dynamicFormPage->update($request->only(["title"]));
 
-        // Return the created category along with a success message
+        // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                'message' => 'Dynamic form page was successfully updated.',
-                'data' => $dynamicFormPage->fresh(),
+                "message" => "Dynamic form page was successfully updated.",
+                "data" => $dynamicFormPage->fresh(),
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Dynamic form page was successfully updated.');
+        return redirect()->back()->with("success", "Dynamic form page was successfully updated.");
     }
 
     /**
@@ -187,9 +187,8 @@ class DynamicFormPageController extends Controller
         $dynamicFormPage = DynamicFormPage::findOrFail($id);
         $dynamicFormPage->delete();
 
-        // Return the created category along with a success message
+        // For JSON request, return a success response
         if ($request->expectsJson()) {
-            // Return a success message after deletion
             return response()->json([
                 "status" => "success",
                 "message" => "Dynamic form page was successfully deleted.",
@@ -198,7 +197,7 @@ class DynamicFormPageController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Dynamic form page was successfully deleted.');
+        return redirect()->back()->with("success", "Dynamic form page was successfully deleted.");
     }
 
     public function restore(Request $request, $id) {
@@ -206,17 +205,17 @@ class DynamicFormPageController extends Controller
         $record = DynamicFormPage::withTrashed()->findOrFail($id);
         $record->restore();
 
-         if ($request->expectsJson()) {
-            // Return a success message after deletion
+        // For JSON request, return a success response
+        if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                'message' => 'Dynamic form page was successfully restored.',
+                "message" => "Dynamic form page was successfully restored.",
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Dynamic form page was successfully restored.');
+        return redirect()->back()->with("success", "Dynamic form page was successfully restored.");
     }
 
     public function search(Request $request)
@@ -226,31 +225,31 @@ class DynamicFormPageController extends Controller
         $searchTerm = $request->form_page_search;
 
         // If a search term for DynamicFormPages is provided
-        if ($request->has('form_page_search')) {
+        if ($request->has("form_page_search")) {
            
             // Check if the search term is numeric, and search by ID
             if (is_numeric($searchTerm)) {
-                $query->where('id', $searchTerm);
+                $query->where("id", $searchTerm);
             } else {
                 // Otherwise, search by title
-                $query->where('title', 'like', '%' . $searchTerm . '%');
+                $query->where("title", "like", "%" . $searchTerm . "%");
             }
         }
 
-        $dynamicFormPages = $query->with('dynamicForm.subCategory', 'dynamicFormFields')->get();
+        $dynamicFormPages = $query->with("dynamicForm.subCategory", "dynamicFormFields")->get();
         
+        // For JSON request, return a success response
         if ($request->expectsJson()) {
-            // Return a success message after deletion
             return response()->json([
                 "status" => "success",
-                "message" => 'Dynamic form page was successfully fetched.',
+                "message" => "Dynamic form page was successfully fetched.",
                 "data" => $dynamicFormPages
             ], 200); 
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with('success', 'Dynamic form page was successfully fetched.');
+        return redirect()->back()->with("success", "Dynamic form page was successfully fetched.");
     }
 
 }
