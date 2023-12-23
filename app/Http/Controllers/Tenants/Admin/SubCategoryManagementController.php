@@ -93,20 +93,14 @@ class SubCategoryManagementController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 "status" => "success",
-                "message" => "Subcategory created successfully.",
+                "message" => "Subcategory was successfully created.",
                 "data" => $subCategory,
             ], 201);
         } 
         
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return Inertia::render("/some-page", [
-            "status" => "success",
-            "message" => "Subcategory created successfully.",
-            "data" => [
-                "sub_category" => $subCategory,
-            ],
-        ]);
+        return redirect()->back()->with('success', 'Subcategory was successfully created.');
     }
 
     /**
@@ -192,10 +186,7 @@ class SubCategoryManagementController extends Controller
         }
        
         // For non-JSON requests, return an Inertia response
-        return Inertia::render("", [
-            "message" => "Subcategory was successfully updated.",
-            // Include other necessary data for the component
-        ]);
+        return redirect()->back()->with('success', 'Subcategory was successfully updated.');
     }
 
     /**
@@ -218,10 +209,7 @@ class SubCategoryManagementController extends Controller
         }
 
         // For non-JSON requests, return an Inertia response
-        return Inertia::render("", [
-            "message" => "Subcategory was successfully deleted.",
-            // Include other necessary data for the component
-        ]);
+        return redirect()->back()->with('success', 'Subcategory was successfully deleted.');
     }
 
     public function restore(Request $request, $id)
@@ -237,8 +225,6 @@ class SubCategoryManagementController extends Controller
         }
 
         // For non-JSON requests, return an Inertia response
-        return Inertia::render("", [
-            "message" => "Subcategory was successfully restored.",
-        ]);
+        return redirect()->back()->with('success', 'Subcategory was successfully restored.');
     }
 }
