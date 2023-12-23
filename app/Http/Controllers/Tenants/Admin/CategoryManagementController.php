@@ -66,17 +66,14 @@ class CategoryManagementController extends Controller
             // Return the created category along with a success message
             return response()->json([
                 "status" => "success",
-                "message" => "Category created successfully.",
+                "message" => "Category was successfully created.",
                 "data" => $newCategory,
             ], 201);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return Inertia::render("", [
-            "message" => "Category created successfully.",
-            "category" => $newCategory,
-        ]);
+        return redirect()->back()->with('success', 'Category was successfully created.');
     }
 
     /**
@@ -100,10 +97,7 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return Inertia::render("", [
-            "message" => "Subcategory was successfully fetched.",
-            "category" => $category,
-        ]);
+
     }
 
     /**
@@ -145,9 +139,7 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return Inertia::render("", [
-            "message" => "Category was successfully updated."
-        ]);
+        return redirect()->back()->with('success', 'Category was successfully updated.');
     }
 
     /**
@@ -172,12 +164,10 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return Inertia::render("", [
-            "message" => "Category was successfully deleted.",
-        ]);
+        return redirect()->back()->with('success', 'Category was successfully deleted.');
     }
 
-    public function restore($id)
+    public function restore(Request $request, $id)
     {
         $record = Category::withTrashed()->findOrFail($id);
 
@@ -193,8 +183,6 @@ class CategoryManagementController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return Inertia::render("", [
-            "message" => "Category was successfully restored.",
-        ]);
+        return redirect()->back()->with('success', 'Category was successfully restored.');
     }
 }
