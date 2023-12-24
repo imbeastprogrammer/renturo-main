@@ -330,12 +330,39 @@ class DynamicFormController extends Controller
             }
 
             DB::commit();
-            return response()->json(['message' => 'Dynamic form updated successfully']);
+
+            // For JSON request, return a success response
+            if ($request->expectsJson()) {
+                return response()->json([
+                    "status" => "failed",
+                    "message" => "Dynamic form updated successfully.",
+                ], 201); 
+            }
+
+            // For non-JSON requests, return an Inertia response
+            // Redirect to the desired page and pass the necessary data
+            return redirect()->back()->with([
+                "message", "Dynamic form updated successfully.",
+            ]);
 
         } catch (\Exception $e) {
             // Rollback Transaction
             DB::rollBack();
-            return response()->json(['message' => 'Failed to update dynamic form', 'error' => $e->getMessage()], 500);
+
+            // For JSON request, return a success response
+            if ($request->expectsJson()) {
+                return response()->json([
+                    "message" => "Failed to update dynamic form.",
+                    "errors" => $e->getMessage()
+                ], 404); 
+            }
+
+            // For non-JSON requests, return an Inertia response
+            // Redirect to the desired page and pass the necessary data
+            return redirect()->back()->withErrors([
+                "message", "Failed to update dynamic form.",
+                "errors" => $e->getMessage()
+            ]);
         }
     }
 }
