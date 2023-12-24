@@ -11,6 +11,7 @@ use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use App\Models\DynamicForm;
 use Inertia\Inertia;
+use Exception;
 
 class DynamicFormController extends Controller
 {
@@ -280,43 +281,61 @@ class DynamicFormController extends Controller
             $dynamicForm = DynamicForm::findOrFail($id);
 
             // Update DynamicForm details
-            $dynamicForm->update($request->only(["name", "description"]));
-
-            // Retrieve all current page titles for the dynamic form
-            // $existingPageTitles = $dynamicForm->dynamicFormPages->pluck("title")->toArray();
+            $dynamicForm->update($request->only(['name', 'description']));
 
             // Retrieve all current page titles with their IDs for the dynamic form
-            $existingPages = $dynamicForm->dynamicFormPages->pluck("title", "id");
+            $existingPages = $dynamicForm->dynamicFormPages->pluck('title', 'id');
 
-            foreach ($request->input("dynamic_form_pages") as $index => $pageData) {
-                
-                // Check for duplicate title in new pages
-                if (!isset($pageData["id"]) && in_array($pageData["title"], $existingPageTitles)) {
-                    throw new \Exception("Duplicate page title: " . $pageData["title"]);
+            foreach ($request->input('dynamic_form_pages') as $index => $pageData) {
+
+                // Check for duplicate title in new and existing pages
+                foreach ($existingPages as $existingId => $existingTitle) {
+                    if ((!isset($pageData['id']) || $pageData['id'] != $existingId) &&
+                        $pageData['title'] == $existingTitle) {
+                        throw new Exception("Duplicate page title: " . $pageData['title']);
+                    }
                 }
 
-                if (isset($pageData["id"])) {
-                    // Update existing DynamicFormPage
-                    $formPage = $dynamicForm->dynamicFormPages()->findOrFail($pageData["id"]);
-                    $formPage->update([
-                        "title" => $pageData["title"],
-                        "sort_no" => $index + 1
-                    ]);
+                // Update existing DynamicFormPage or create new one
+                $formPage = isset($pageData['id'])
+                            ? $dynamicForm->dynamicFormPages()->findOrFail($pageData['id'])
+                            : $dynamicForm->dynamicFormPages()->create([
+                                  'title' => $pageData['title'],
+                                  'sort_no' => $index + 1
+                              ]);
 
-                } else {
-                    // Create new DynamicFormPage
-                    $formPage = $dynamicForm->dynamicFormPages()->create([
-                        "title" => $pageData["title"],
-                        "sort_no" => $index + 1
-                    ]);
+                // Update the existingPages array
+                $existingPages[$formPage->id] = $formPage->title;
+
+                // Handle DynamicFormFields
+                foreach ($pageData['dynamic_form_fields'] as $fieldIndex => $fieldData) {
+
+                    // Generate the input_field_name based on the input_field_label
+                    $fieldName = strtolower(trim($fieldData['input_field_label']));
+                    $fieldName = preg_replace('/\s+/', '_', $fieldName); // Replace spaces with underscores
+                    
+                    $formPage->dynamicFormFields()->updateOrCreate(
+                        ['id' => $fieldData['id']],
+                        [
+                            'input_field_label' => $fieldData['input_field_label'],
+                            'input_field_name' => $fieldName, // Use the generated field name
+                            'input_field_type' => $fieldData['input_field_type'],
+                            'is_required' => $fieldData['is_required'],
+                            'is_multiple' => $fieldData['is_multiple'],
+                            'sort_no' => $fieldIndex + 1, // Use the loop index for sorting
+                            'data' => $fieldData['data'] ?? null
+                        ]
+                    );
                 }
-           }
+            }
+
             DB::commit();
-            return response()->json(["message" => "Dynamic form updated successfully"]);
+            return response()->json(['message' => 'Dynamic form updated successfully']);
+
         } catch (\Exception $e) {
             // Rollback Transaction
             DB::rollBack();
-            return response()->json(["message" => "Failed to update dynamic form", "error" => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to update dynamic form', 'error' => $e->getMessage()], 500);
         }
     }
 }
