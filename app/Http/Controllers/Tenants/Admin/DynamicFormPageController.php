@@ -38,7 +38,6 @@ class DynamicFormPageController extends Controller
                         "input_field_name" => $field->input_field_name,
                         "input_field_type" => $field->input_field_type,
                         "is_required" => $field->is_required,
-                        "is_multiple" => $field->is_multiple,
                         "data" => $field->data,
                     ];
                 });
@@ -58,7 +57,6 @@ class DynamicFormPageController extends Controller
                         "input_field_name" => $dynamicField->input_field_name,
                         "input_field_type" => $dynamicField->input_field_type,
                         "is_required" => $dynamicField->is_required,
-                        "is_multiple" => $dynamicField->is_multiple,
                         "data" => $dynamicField->data,
                     ];
                 });

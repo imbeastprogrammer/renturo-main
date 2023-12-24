@@ -321,7 +321,6 @@ class DynamicFormController extends Controller
                             'input_field_name' => $fieldName, // Use the generated field name
                             'input_field_type' => $fieldData['input_field_type'],
                             'is_required' => $fieldData['is_required'],
-                            'is_multiple' => $fieldData['is_multiple'],
                             'sort_no' => $fieldIndex + 1, // Use the loop index for sorting
                             'data' => $fieldData['data'] ?? null
                         ]

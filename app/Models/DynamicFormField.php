@@ -35,7 +35,6 @@ class DynamicFormField extends Model
         'input_field_name',
         'input_field_type',
         'is_required',
-        'is_multiple',
         'sort_no',
         'data'
     ];

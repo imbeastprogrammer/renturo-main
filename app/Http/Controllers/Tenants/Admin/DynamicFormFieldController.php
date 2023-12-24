@@ -84,7 +84,6 @@ class DynamicFormFieldController extends Controller
                     "input_field_name" => $fieldData["input_field_name"],
                     "input_field_type" => $fieldData["input_field_type"],
                     "is_required" => $fieldData["is_required"],
-                    "is_multiple" => $fieldData["is_multiple"], 
                     "data" => $fieldData["data"] ?? null,
                     "sort_no" => $index + 1 // Using the array index as the sort number, incremented by 1
                 ]);
@@ -182,7 +181,6 @@ class DynamicFormFieldController extends Controller
                             "input_field_name" => $fieldData["input_field_name"],
                             "input_field_type" => $fieldData["input_field_type"],
                             "is_required" => $fieldData["is_required"],
-                            "is_multiple" => $fieldData["is_multiple"], 
                             "data" => $fieldData["data"] ?? null,
                             "sort_no" => $index + 1 // Using the array index as the sort number, incremented by 1
                         ]);
@@ -199,7 +197,6 @@ class DynamicFormFieldController extends Controller
                         "input_field_name" => $fieldData["input_field_name"],
                         "input_field_type" => $fieldData["input_field_type"],
                         "is_required" => $fieldData["is_required"],
-                        "is_multiple" => $fieldData["is_multiple"], 
                         "data" => $fieldData["data"] ?? null,
                         "sort_no" => $index + 1 // Using the array index as the sort number, incremented by 1
                     ]);
