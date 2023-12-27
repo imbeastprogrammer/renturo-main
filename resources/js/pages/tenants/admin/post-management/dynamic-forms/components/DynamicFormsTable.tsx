@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import {
     Table,
     TableBody,
@@ -20,7 +21,6 @@ import { DynamicForm } from '@/types/dynamic-form';
 import { NotDataFoundHero } from '@/assets/tenant/owner/promotions';
 import DeleteCategoryModal from './DeleteDynamicFormModal';
 import UpdateDynamicFormModal from './UpdateCategoryModal';
-import SubCategories from '../../sub-categories';
 
 interface DynamicFormsTableProps {
     dynamicForms: DynamicForm[];
@@ -49,6 +49,12 @@ function DynamicFormsTable({
     });
 
     if (!dynamicForms.length) return <NoDataFound />;
+
+    const onCreateForm = (id: number) => {
+        router.replace(
+            `/admin/post-management/dynamic-forms/form-builder/${id}`,
+        );
+    };
 
     return (
         <>
@@ -85,6 +91,13 @@ function DynamicFormsTable({
                                         <MoreHorizontalIcon />
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                onCreateForm(dynamicForm.id)
+                                            }
+                                        >
+                                            Create Form
+                                        </DropdownMenuItem>
                                         <DropdownMenuItem
                                             onClick={() =>
                                                 setUpdateModalState({

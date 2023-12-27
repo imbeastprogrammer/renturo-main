@@ -78,6 +78,11 @@ class DynamicFormController extends Controller
         return Inertia::render("tenants/admin/post-management/dynamic-forms/index", ["dynamicForms" => $dynamicForms, "subCategories" => $subCategories, "categories" => $categories]);
     }
 
+    public function formBuilder()
+    {
+        return Inertia::render('tenants/admin/post-management/dynamic-forms/form-builder/index');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -106,7 +111,7 @@ class DynamicFormController extends Controller
                 "data" => $dynamicForm,
             ], 201);
         }
-       
+
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
         return redirect()->back()->with("success", "Dynamic form was successfully created.");
@@ -225,7 +230,7 @@ class DynamicFormController extends Controller
             return response()->json([
                 "status" => "success",
                 "message" => "Dynamic form was successfully deleted.",
-            ], 200); 
+            ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
@@ -291,18 +296,19 @@ class DynamicFormController extends Controller
                 // Check for duplicate title in new and existing pages
                 foreach ($existingPages as $existingId => $existingTitle) {
                     if ((!isset($pageData['id']) || $pageData['id'] != $existingId) &&
-                        $pageData['title'] == $existingTitle) {
+                        $pageData['title'] == $existingTitle
+                    ) {
                         throw new Exception("Duplicate page title: " . $pageData['title']);
                     }
                 }
 
                 // Update existing DynamicFormPage or create new one
                 $formPage = isset($pageData['id'])
-                            ? $dynamicForm->dynamicFormPages()->findOrFail($pageData['id'])
-                            : $dynamicForm->dynamicFormPages()->create([
-                                  'title' => $pageData['title'],
-                                  'sort_no' => $index + 1
-                              ]);
+                    ? $dynamicForm->dynamicFormPages()->findOrFail($pageData['id'])
+                    : $dynamicForm->dynamicFormPages()->create([
+                        'title' => $pageData['title'],
+                        'sort_no' => $index + 1
+                    ]);
 
                 // Update the existingPages array
                 $existingPages[$formPage->id] = $formPage->title;
@@ -313,7 +319,7 @@ class DynamicFormController extends Controller
                     // Generate the input_field_name based on the input_field_label
                     $fieldName = strtolower(trim($fieldData['input_field_label']));
                     $fieldName = preg_replace('/\s+/', '_', $fieldName); // Replace spaces with underscores
-                    
+
                     $formPage->dynamicFormFields()->updateOrCreate(
                         ['id' => $fieldData['id']],
                         [
@@ -335,7 +341,7 @@ class DynamicFormController extends Controller
                 return response()->json([
                     "status" => "failed",
                     "message" => "Dynamic form updated successfully.",
-                ], 201); 
+                ], 201);
             }
 
             // For non-JSON requests, return an Inertia response
@@ -343,7 +349,6 @@ class DynamicFormController extends Controller
             return redirect()->back()->with([
                 "message", "Dynamic form updated successfully.",
             ]);
-
         } catch (\Exception $e) {
             // Rollback Transaction
             DB::rollBack();
@@ -353,7 +358,7 @@ class DynamicFormController extends Controller
                 return response()->json([
                     "message" => "Failed to update dynamic form.",
                     "errors" => $e->getMessage()
-                ], 404); 
+                ], 404);
             }
 
             // For non-JSON requests, return an Inertia response

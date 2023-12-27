@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Tenants\Admin\PostController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -14,10 +13,8 @@ use App\Http\Controllers\Tenants\Admin\DynamicFormFieldController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormPageController;
 use App\Http\Controllers\Tenants\Admin\DynamicFormController;
 use App\Http\Controllers\Tenants\Admin\CategoryManagementController;
-use App\Http\Controllers\Tenants\Admin\FormBuilderController;
 use App\Http\Controllers\Tenants\Admin\PostManagementAdsController;
 use App\Http\Controllers\Tenants\Admin\PostManagementBookingsController;
-use App\Http\Controllers\Tenants\Admin\PostManagementCategoriesController;
 use App\Http\Controllers\Tenants\Admin\PostManagementPromotionsController;
 use App\Http\Controllers\Tenants\Admin\PostManagementPropertiesController;
 use App\Http\Controllers\Tenants\Admin\ReportsController;
@@ -79,12 +76,12 @@ Route::middleware([
 
     Route::get('/post-management/promotions', [PostManagementPromotionsController::class, 'index']);
     Route::get('/post-management/promotions/{id}', [PostManagementPromotionsController::class, 'edit']);
-    Route::get('/post-management/form-builder', [FormBuilderController::class, 'index']);
 
     Route::get('/post-management/advertisements', [PostManagementAdsController::class, 'index']);
     Route::get('/post-management/advertisements/{id}', [PostManagementAdsController::class, 'show']);
 
     Route::get('/post-management/dynamic-forms', [DynamicFormController::class, 'index']);
+    Route::get('/post-management/dynamic-forms/form-builder/{id}', [DynamicFormController::class, 'formBuilder']);
     Route::resource('/form', DynamicFormController::class);
     Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
 
