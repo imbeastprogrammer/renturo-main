@@ -11,6 +11,7 @@ import { User } from '@/types/users';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const updateOwnerSchema = z.object({
     first_name: z.string().nonempty(),
@@ -50,18 +51,22 @@ function UpdateOwnerForm({ owner }: UpdateOwnerFormProps) {
     });
 
     const onSubmit = form.handleSubmit((values) => {
-        router.put(`/admin/users/${owner.id}`, values, {
-            onBefore: () => setIsSubmitting(true),
-            onSuccess: () => {
-                toast.success({
-                    description: 'Owner has been updated from the system',
-                });
-                router.visit('/admin/user-management/owners?active=Users');
+        router.put(
+            `/admin/users/${owner.id}`,
+            { ...values, mobile_number: values.mobile_no },
+            {
+                onBefore: () => setIsSubmitting(true),
+                onSuccess: (data) => {
+                    toast.success({
+                        description: getSuccessMessage(data),
+                    });
+                    router.replace('/admin/user-management/owners');
+                },
+                onError: (errors) =>
+                    toast.error({ description: _.valuesIn(errors)[0] }),
+                onFinish: () => setIsSubmitting(false),
             },
-            onError: (errors) =>
-                toast.error({ description: _.valuesIn(errors)[0] }),
-            onFinish: () => setIsSubmitting(false),
-        });
+        );
     });
     const hasErrors = Object.keys(form.formState.errors).length > 0;
 

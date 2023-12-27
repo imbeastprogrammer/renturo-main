@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const createAdminSchema = z.object({
     first_name: z.string().nonempty(),
@@ -39,11 +40,11 @@ function CreateAdminForm() {
     const onSubmit = form.handleSubmit(({ ...values }) => {
         router.post('/admin/users', values, {
             onBefore: () => setIsSubmitting(true),
-            onSuccess: () => {
+            onSuccess: (data) => {
                 toast.success({
-                    description: 'New user has been added to the system.',
+                    description: getSuccessMessage(data),
                 });
-                router.visit('/admin/user-management/admins');
+                router.replace('/admin/user-management/admins');
             },
             onError: (errors) =>
                 toast.error({ description: _.valuesIn(errors)[0] }),

@@ -65,7 +65,7 @@ function Reports({ reports }: AdminsProps) {
                     </Button>
                 </div>
                 <div>
-                    <Link href='/admin/user-management/admins/create'>
+                    <Link href='/admin/user-management/reports'>
                         <Button
                             variant='outline'
                             className='h-[40px] w-[100px] border-metalic-blue text-metalic-blue hover:bg-metalic-blue/5 hover:text-metalic-blue/90'

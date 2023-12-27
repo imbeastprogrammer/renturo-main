@@ -10,6 +10,7 @@ import { Form } from '@/components/ui/form';
 import FormInput from '@/components/forms/FormInput';
 import IconPicker from './IconPicker';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 interface CreateCategoryModalProps {
     isOpen: boolean;
@@ -61,8 +62,8 @@ function CreateCategoryModal({ isOpen, onClose }: CreateCategoryModalProps) {
         router.post('/admin/categories', values, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
-                toast.success({ description: 'New Category has been added.' });
+            onSuccess: (data) => {
+                toast.success({ description: getSuccessMessage(data) });
                 onClose();
             },
             onError: (err) => toast.error({ description: _.valuesIn(err)[0] }),

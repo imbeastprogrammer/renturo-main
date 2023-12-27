@@ -12,6 +12,7 @@ import { Category } from '@/types/categories';
 import FormInput from '@/components/forms/FormInput';
 import useOwnerToast from '@/hooks/useOwnerToast';
 import FormSelect from '@/components/forms/FormSelect';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const validationSchema = z.object({
     name: z.string().nonempty('Name is required'),
@@ -49,9 +50,9 @@ function CreateSubCategoryModal({ isOpen, onClose }: CreateModalProps) {
         router.post('/admin/sub-categories', values, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
+            onSuccess: (data) => {
                 toast.success({
-                    description: 'New Sub-Category has been added.',
+                    description: getSuccessMessage(data),
                 });
                 onClose();
             },

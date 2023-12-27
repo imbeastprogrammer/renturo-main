@@ -12,6 +12,7 @@ import { FormSelect, FormInput, FormTextAreaInput } from '@/components/forms';
 import { Category, SubCategory } from '@/types/categories';
 import { DynamicForm } from '@/types/dynamic-form';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const validationSchema = z.object({
     name: z.string().nonempty('Name is required.'),
@@ -77,8 +78,8 @@ function UpdateDynamicFormModal({
         router.put(`/admin/form/${dynamicForm?.id}`, values, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
-                toast.success({ description: 'Form has been updated.' });
+            onSuccess: (data) => {
+                toast.success({ description: getSuccessMessage(data) });
                 onClose();
             },
             onError: (err) => toast.error({ description: _.valuesIn(err)[0] }),

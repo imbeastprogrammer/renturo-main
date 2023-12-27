@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const createOwnerSchema = z.object({
     first_name: z.string().nonempty(),
@@ -38,16 +39,20 @@ function CreateOwnerForm() {
     });
 
     const onSubmit = form.handleSubmit((values) => {
-        router.post('/admin/users', values, {
-            onBefore: () => setIsSubmitting(true),
-            onSuccess: () => {
-                toast.success({ description: 'New user has been added.' });
-                router.visit('/admin/user-management/owners');
+        router.post(
+            '/admin/users',
+            { ...values, mobile_number: values.mobile_no },
+            {
+                onBefore: () => setIsSubmitting(true),
+                onSuccess: (data) => {
+                    toast.success({ description: getSuccessMessage(data) });
+                    router.replace('/admin/user-management/owners');
+                },
+                onError: (errors) =>
+                    toast.error({ description: _.valuesIn(errors)[0] }),
+                onFinish: () => setIsSubmitting(false),
             },
-            onError: (errors) =>
-                toast.error({ description: _.valuesIn(errors)[0] }),
-            onFinish: () => setIsSubmitting(false),
-        });
+        );
     });
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;

@@ -9,8 +9,9 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 
 import { Category, SubCategory } from '@/types/categories';
-import useOwnerToast from '@/hooks/useOwnerToast';
 import { FormSelect, FormInput, FormTextAreaInput } from '@/components/forms';
+import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const validationSchema = z.object({
     name: z.string().nonempty('Name is required.'),
@@ -66,8 +67,8 @@ function CreateDynamicFormModal({
         router.post('/admin/form', values, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
-                toast.success({ description: 'New Form has been added.' });
+            onSuccess: (data) => {
+                toast.success({ description: getSuccessMessage(data) });
                 onClose();
             },
             onError: (err) => toast.error({ description: _.valuesIn(err)[0] }),

@@ -11,6 +11,7 @@ import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
 import FormSelect from '@/components/forms/FormSelect';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const formSchema = z.object({
     first_name: z.string().nonempty(),
@@ -41,11 +42,9 @@ function CreateUserForm() {
             { ...values, mobile_number: values.phone },
             {
                 onBefore: () => setIsSubmitting(true),
-                onSuccess: (e) => {
+                onSuccess: (data) => {
                     toast.success({
-                        title: 'Success',
-                        description:
-                            'The new user has been added to the system.',
+                        description: getSuccessMessage(data),
                     });
                     router.visit('/admin/user-management/users', {
                         replace: true,
@@ -53,10 +52,7 @@ function CreateUserForm() {
                 },
                 onError: (error) => {
                     toast.error({
-                        title: 'Error',
-                        description:
-                            _.valuesIn(error)[0] ||
-                            'Something went wrong, Please try again later.',
+                        description: _.valuesIn(error)[0],
                     });
                 },
                 onFinish: () => setIsSubmitting(false),

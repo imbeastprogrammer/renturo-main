@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { DeleteWarning } from '@/assets/central';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/react';
@@ -12,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 
 import useCentralToast from '@/hooks/useCentralToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 type DeleteModalProps = {
     isOpen: boolean;
@@ -26,20 +28,16 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
         router.delete(`/admin/categories/${id}`, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
+            onSuccess: (data) => {
                 onClose();
                 toast.success({
-                    title: 'Success',
-                    description: 'The category has been deleted to the system.',
+                    description: getSuccessMessage(data),
                 });
             },
             onError: (error) => {
                 onClose();
                 toast.error({
-                    title: 'Error',
-                    description:
-                        Object.keys(error)[0] ||
-                        'Something went wrong, Please try again later.',
+                    description: _.valuesIn(error)[0],
                 });
             },
         });
