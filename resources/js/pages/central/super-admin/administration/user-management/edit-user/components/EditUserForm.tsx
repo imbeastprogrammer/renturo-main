@@ -12,6 +12,7 @@ import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import FormSelect from '@/components/super-admin/forms/FormSelect';
 import useCentralToast from '@/hooks/useCentralToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const editUserFormSchema = z.object({
     first_name: z.string().nonempty(),
@@ -49,21 +50,15 @@ function EditUserForm({ user }: EditUserFormProps) {
     const onSubmit = form.handleSubmit((values) => {
         router.put(`/super-admin/users/${user.id}`, values, {
             onBefore: () => setIsSubmitting(true),
-            onSuccess: () => {
+            onSuccess: (data) => {
                 toast.success({
-                    title: 'Success',
-                    description: 'The user has been updated successfully.',
+                    description: getSuccessMessage(data),
                 });
-                router.visit('/super-admin/administration/user-management', {
-                    replace: true,
-                });
+                router.replace('/super-admin/administration/user-management');
             },
             onError: (error) =>
                 toast.error({
-                    title: 'Error',
-                    description:
-                        _.valuesIn(error)[0] ||
-                        'Something went wrong, Please try again later.',
+                    description: _.valuesIn(error)[0],
                 }),
             onFinish: () => setIsSubmitting(false),
         });

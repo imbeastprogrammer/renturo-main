@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import useCentralToast from '@/hooks/useCentralToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const changePasswordSchema = z
     .object({
@@ -62,10 +63,9 @@ function ChangePasswordForm() {
                 },
                 {
                     onBefore: () => setIsSubmitting(true),
-                    onSuccess: () => {
+                    onSuccess: (data) => {
                         toast.success({
-                            description:
-                                'The password has been changed successfully.',
+                            description: getSuccessMessage(data),
                         });
                         router.post('/logout');
                     },
