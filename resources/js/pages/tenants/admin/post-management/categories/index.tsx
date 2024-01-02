@@ -88,7 +88,6 @@ function Categories({ categories }: CategoriesProps) {
                     </div>
                 </div>
             </div>
-
             <CreateCategoryModal
                 isOpen={showCategoryModal}
                 onClose={() => setShowCategoryModal(false)}

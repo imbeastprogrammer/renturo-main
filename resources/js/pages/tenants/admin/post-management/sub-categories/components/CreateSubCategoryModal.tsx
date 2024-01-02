@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import _ from 'lodash';
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { Category } from '@/types/categories';
 import FormInput from '@/components/forms/FormInput';
 import useOwnerToast from '@/hooks/useOwnerToast';
 import FormSelect from '@/components/forms/FormSelect';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const validationSchema = z.object({
     name: z.string().nonempty('Name is required'),
@@ -26,14 +27,12 @@ const defaultValues: CreateSubCategoryFields = {
 interface CreateModalProps {
     isOpen: boolean;
     onClose: () => void;
-    categories: Category[];
 }
 
-function CreateSubCategoryModal({
-    isOpen,
-    onClose,
-    categories,
-}: CreateModalProps) {
+function CreateSubCategoryModal({ isOpen, onClose }: CreateModalProps) {
+    const props = usePage().props;
+    const categories = props.categories as Category[];
+
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
 
@@ -51,9 +50,9 @@ function CreateSubCategoryModal({
         router.post('/admin/sub-categories', values, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
+            onSuccess: (data) => {
                 toast.success({
-                    description: 'New Sub-Category has been added.',
+                    description: getSuccessMessage(data),
                 });
                 onClose();
             },

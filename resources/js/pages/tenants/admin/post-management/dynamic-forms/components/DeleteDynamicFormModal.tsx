@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 
 import useCentralToast from '@/hooks/useCentralToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 type DeleteModalProps = {
     isOpen: boolean;
@@ -26,10 +27,10 @@ function DeleteCategoryModal({ isOpen, onClose, id }: DeleteModalProps) {
         router.delete(`/admin/form/${id}`, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
+            onSuccess: (data) => {
                 onClose();
                 toast.success({
-                    description: 'The form has been deleted to the system.',
+                    description: getSuccessMessage(data),
                 });
             },
             onError: (error) => {

@@ -47,7 +47,7 @@ const CustomTooltip = ({
 
 function MontlyTrends() {
     return (
-        <div className='grid h-full w-full grid-rows-[auto_1fr_auto] gap-4 rounded-lg border p-4 shadow-lg'>
+        <div className='grid h-full w-full grid-rows-[auto_1fr_auto] gap-4 rounded-lg border bg-white p-4 shadow-lg'>
             <div>
                 <h1 className='text-[22px] font-semibold'>Monthly Trends</h1>
             </div>

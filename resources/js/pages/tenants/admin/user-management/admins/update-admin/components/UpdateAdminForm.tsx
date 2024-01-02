@@ -11,6 +11,7 @@ import { User } from '@/types/users';
 import { ErrorIcon } from '@/assets/central';
 import FormInput from '@/components/forms/FormInput';
 import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const updateAdminSchema = z.object({
     first_name: z.string().nonempty(),
@@ -51,9 +52,9 @@ function UpdateAdminForm({ admin }: UpdateAdminFormProps) {
     const onSubmit = form.handleSubmit((values) => {
         router.put(`/admin/users/${admin.id}`, values, {
             onBefore: () => setIsSubmitting(true),
-            onSuccess: () => {
-                toast.success({ description: 'The admin has been updated.' });
-                router.visit('/admin/user-management/admins');
+            onSuccess: (data) => {
+                toast.success({ description: getSuccessMessage(data) });
+                router.replace('/admin/user-management/admins');
             },
             onError: (errors) =>
                 toast.error({ description: _.valuesIn(errors)[0] }),

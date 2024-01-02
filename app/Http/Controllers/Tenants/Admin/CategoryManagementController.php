@@ -14,7 +14,7 @@ class CategoryManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // Define the number of items per page
         $perPage = 15;
@@ -22,9 +22,17 @@ class CategoryManagementController extends Controller
         // Fetch categories with pagination
         $categories = Category::paginate($perPage);
 
-        // Return the paginated response
+        // For JSON requests, return a success response
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                "message" => "Categories was successfully fetched.",
+                "data" => $categories,
+            ], 201);
+        }
 
-        return Inertia::render('tenants/admin/post-management/categories/index', ['categories' => $categories]);
+        // For non-JSON requests, return an Inertia response
+        return Inertia::render("tenants/admin/post-management/categories/index", ["categories" => $categories]);
     }
 
     /**
@@ -46,20 +54,26 @@ class CategoryManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name'
+            "name" => "required|string|max:255|unique:categories,name"
         ]);
-
+    
         // Create and store the new category
         $newCategory = Category::create([
-            'name' => $request->name
+            "name" => $request->name
         ]);
+    
+        // For JSON requests, return a success response
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                "message" => "Category was successfully created.",
+                "data" => $newCategory,
+            ], 201);
+        }
 
-        // Return the created category along with a success message
-        return response()->json([
-            "status" => "success",
-            'message' => 'Category created successfully.',
-            'data' => $newCategory,
-        ], 201);
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Category was successfully created.");
     }
 
     /**
@@ -68,29 +82,23 @@ class CategoryManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         // Fetch the category by its ID
-        $category = Category::find($id);
+        $category = Category::findOrFail($id);
 
-        // Check if the category was found
-        if (!$category) {
+        // For JSON requests, return a success response
+        if ($request->expectsJson()) {
             return response()->json([
-                "status" => "failed",
-                'message' => 'Category not found',
-                "error" => [
-                    "errorCode" => "CATEGORY_NOT_FOUND",
-                    "errorDescription" => "The category ID you are looking for could not be found."
-                ]
-            ], 404);
+                "status" => "success",
+                "message" => "Category was successfully fetched.",
+                "data" => $category,
+            ], 200);
         }
 
-        // Return the created category along with a success message
-        return response()->json([
-            "status" => "success",
-            'message' => 'Category was successfully fetched.',
-            'data' => $category,
-        ], 201);
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+
     }
 
     /**
@@ -114,33 +122,26 @@ class CategoryManagementController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $id,
+            "name" => "required|string|max:255|unique:categories,name," . $id,
+        ]);
+    
+        $category = Category::findOrFail($id);
+        $category->update([
+            "name" => $request->name
         ]);
 
-        $category = Category::find($id);
-
-        // Check if the category was found
-        if (!$category) {
+        // For JSON requests, return a success response
+        if ($request->expectsJson()) {
             return response()->json([
-                "status" => "failed",
-                'message' => 'Category not found',
-                "error" => [
-                    "errorCode" => "CATEGORY_NOT_FOUND",
-                    "errorDescription" => "The category ID you are looking for could not be found."
-                ]
-            ], 404);
+                "status" => "success",
+                "message" => "Category was successfully updated.",
+                "data" => $category->fresh(),
+            ], 200);
         }
 
-        $category->update([
-            'name' => $request->name
-        ]);
-
-        // Return the created category along with a success message
-        return response()->json([
-            "status" => "success",
-            'message' => 'Category was successfully updated.',
-            'data' => $category,
-        ], 200);
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Category was successfully updated.");
     }
 
     /**
@@ -149,50 +150,39 @@ class CategoryManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $category = Category::find($id);
-
-        if (!$category) {
-            return response()->json([
-                "status" => "failed",
-                'message' => 'Category not found',
-                "error" => [
-                    "errorCode" => "CATEGORY_NOT_FOUND",
-                    "errorDescription" => "The category ID you are looking for could not be found."
-                ]
-            ], 404);
-        }
-
+        $category = Category::findOrFail($id);
         $category->delete();
 
-        // Return the created category along with a success message
-        return response()->json([
-            "status" => "success",
-            'message' => 'Category was successfully deleted.',
-        ], 200);
-    }
-
-    public function restore($id)
-    {
-
-        $record = Category::withTrashed()->where('id', $id)->first();
-
-        if (!$record) {
+        // For JSON requests, return a success response
+        if ($request->expectsJson()) {
             return response()->json([
-                "status" => "failed",
-                'message' => 'Category not found',
-                "error" => [
-                    "errorCode" => "CATEGORY_NOT_FOUND",
-                    "errorDescription" => "The category ID you are looking for could not be found."
-                ]
-            ], 404);
+                "status" => "success",
+                "message" => "Category was successfully deleted.",
+            ], 200); 
         }
 
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Category was successfully deleted.");
+    }
+
+    public function restore(Request $request, $id)
+    {
+        $record = Category::withTrashed()->findOrFail($id);
         $record->restore();
-        return response()->json([
-            "status" => "success",
-            'message' => 'Category was successfully restored.',
-        ], 200);
+
+        // For JSON requests, return a success response
+        if ($request->expectsJson()) {
+            return response()->json([
+                "status" => "success",
+                "message" => "Category was successfully restored.",
+            ], 200);
+        }
+
+        // For non-JSON requests, return an Inertia response
+        // Redirect to the desired page and pass the necessary data
+        return redirect()->back()->with("success", "Category was successfully restored.");
     }
 }

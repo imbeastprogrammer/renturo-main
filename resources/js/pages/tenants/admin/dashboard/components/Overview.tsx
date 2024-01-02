@@ -8,7 +8,7 @@ import {
 
 function Overview() {
     return (
-        <article className='grid h-full grid-rows-[auto_1fr] gap-4 rounded-lg border p-4 shadow-lg'>
+        <article className='grid h-full grid-rows-[auto_1fr] gap-4 rounded-lg border bg-white p-4 shadow-lg'>
             <h1 className='text-[22px] font-semibold'>Overview</h1>
             <ul className='space-y-4'>
                 <li>

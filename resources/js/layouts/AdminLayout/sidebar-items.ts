@@ -22,7 +22,7 @@ export const sidebarItems: GroupLink[] = [
             { label: 'Categories', path: '/categories' },
             { label: 'Sub-Categories', path: '/sub-categories' },
             { label: 'Promotions', path: '/promotions' },
-            { label: 'Ads', path: '/ads' },
+            { label: 'Advertisements', path: '/advertisements' },
             { label: 'List of Forms', path: '/dynamic-forms' },
         ],
     },

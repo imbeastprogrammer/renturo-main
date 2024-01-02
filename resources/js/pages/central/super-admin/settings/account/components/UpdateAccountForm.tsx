@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { z } from 'zod';
+import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +12,7 @@ import { User } from '@/types/users';
 import FormInput from '@/components/super-admin/forms/FormInput';
 import ProfilePicturePicker from './ProfilePicturePicker';
 import useCentralToast from '@/hooks/useCentralToast';
-import { useState } from 'react';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const updateAccountSchema = z.object({
     profile_picture: z
@@ -86,9 +87,9 @@ function UpdateAccountForm({ user }: UpdateAccountForm) {
             { mobile_number: contact_no, ...values },
             {
                 onBefore: () => setIsSubmitting(true),
-                onSuccess: () =>
+                onSuccess: (data) =>
                     toast.success({
-                        description: 'Your profile has been updated.',
+                        description: getSuccessMessage(data),
                     }),
                 onError: (errors) =>
                     toast.error({ description: _.valuesIn(errors)[0] }),

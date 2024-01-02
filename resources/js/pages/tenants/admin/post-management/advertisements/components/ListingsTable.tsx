@@ -40,7 +40,7 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
     };
 
     const navigateToViewPage = (id: number) => {
-        router.visit(`/admin/post-management/promotions/${id}?active=Post`);
+        router.visit(`/admin/post-management/advertisements/${id}`);
     };
 
     return (
@@ -84,10 +84,10 @@ function ListingsTable({ listings = [] }: ListingTableProps) {
                                             navigateToViewPage(listing.id)
                                         }
                                     >
-                                        View Promotion
+                                        View Advertisement
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className='text-red-500'>
-                                        Delete Promotion
+                                        Delete Advertisement
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

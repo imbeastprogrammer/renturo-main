@@ -12,6 +12,7 @@ import FormInput from '@/components/super-admin/forms/FormInput';
 import FormCheckbox from '@/components/super-admin/forms/FormCheckbox';
 import FormSelect from '@/components/super-admin/forms/FormSelect';
 import useCentralToast from '@/hooks/useCentralToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const addUserFormSchema = z.object({
     first_name: z.string().nonempty(),
@@ -50,11 +51,9 @@ function AddUserForm() {
                 { first_name, last_name, email, mobile_number },
                 {
                     onBefore: () => setSubmitting(true),
-                    onSuccess: () => {
+                    onSuccess: (data) => {
                         toast.success({
-                            title: 'Success',
-                            description:
-                                'The new user has been added to the system.',
+                            description: getSuccessMessage(data),
                         });
                         router.replace(
                             '/super-admin/administration/user-management',
@@ -62,10 +61,7 @@ function AddUserForm() {
                     },
                     onError: (error) =>
                         toast.error({
-                            title: 'Error',
-                            description:
-                                _.valuesIn(error)[0] ||
-                                'Something went wrong, Please try again later.',
+                            description: _.valuesIn(error)[0],
                         }),
                     onFinish: () => setSubmitting(false),
                 },

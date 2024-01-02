@@ -1,22 +1,23 @@
 import { z } from 'zod';
 import _ from 'lodash';
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 
-import useOwnerToast from '@/hooks/useOwnerToast';
-import { FormSelect, FormInput, FormTextAreaInput } from '@/components/forms';
 import { Category, SubCategory } from '@/types/categories';
+import { FormSelect, FormInput, FormTextAreaInput } from '@/components/forms';
+import useOwnerToast from '@/hooks/useOwnerToast';
+import getSuccessMessage from '@/lib/getSuccessMessage';
 
 const validationSchema = z.object({
-    name: z.string().nonempty('Name is required'),
+    name: z.string().nonempty('Name is required.'),
     description: z.string().nonempty('Description is required.'),
-    category_id: z.string().optional(),
-    subcategory_id: z.string().nonempty('Sub-Category is Required'),
+    category_id: z.string().nonempty('Category is required.'),
+    subcategory_id: z.string().nonempty('Sub-Category is required.'),
 });
 
 type CreateDynamicFormFields = z.infer<typeof validationSchema>;
@@ -30,18 +31,18 @@ const defaultValues: CreateDynamicFormFields = {
 interface CreateDynamicFormModalProps {
     isOpen: boolean;
     onClose: () => void;
-    subCategories: SubCategory[];
-    categories: Category[];
 }
 
 function CreateDynamicFormModal({
     isOpen,
     onClose,
-    subCategories,
-    categories,
 }: CreateDynamicFormModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const toast = useOwnerToast();
+    const props = usePage().props;
+
+    const categories = props.categories as Category[];
+    const subCategories = props.subCategories as SubCategory[];
 
     const form = useForm<CreateDynamicFormFields>({
         defaultValues,
@@ -66,8 +67,8 @@ function CreateDynamicFormModal({
         router.post('/admin/form', values, {
             onBefore: () => setIsLoading(true),
             onFinish: () => setIsLoading(false),
-            onSuccess: () => {
-                toast.success({ description: 'New Form has been added.' });
+            onSuccess: (data) => {
+                toast.success({ description: getSuccessMessage(data) });
                 onClose();
             },
             onError: (err) => toast.error({ description: _.valuesIn(err)[0] }),

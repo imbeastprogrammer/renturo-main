@@ -47,7 +47,6 @@ class StoreFormFieldRequest extends FormRequest
             ],
             'fields.*.input_field_type' => ['required', Rule::in(DynamicFormField::FIELD_TYPES)],
             'fields.*.is_required' => 'required|boolean',
-            'fields.*.is_multiple' => 'required|boolean',
             'fields.*.data' => 'sometimes|required|array',
             // 'data.*.label' => 'required|string|max:255', // Validate each label in the data array
             // 'data.*.value' => 'required' // Validate each value in the data array
