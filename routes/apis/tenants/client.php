@@ -12,6 +12,7 @@ use App\Http\Middleware\RedirectIfTenantActivated;
 use App\Http\Controllers\Api\V1\Tenants\StoreController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormSubmissionController;
+use App\Http\Controllers\Api\V1\Tenants\Client\BankController;
 
 Route::middleware([
     'api',
@@ -47,5 +48,8 @@ Route::middleware([
             Route::post('/forms/{formId}/submit', [DynamicFormSubmissionController::class, 'submit']);
             Route::get('/forms/user/{userId}', [DynamicFormSubmissionController::class, 'getUserSubmission']);
             Route::get('/forms/user/{userId}/form/{formId}', [DynamicFormSubmissionController::class, 'getUserFormSubmission']);
+
+            Route::resource('/banks', BankController::class);
+            Route::get('/user/banks/', [BankController::class, 'getUserBanks']);
         });
     });
