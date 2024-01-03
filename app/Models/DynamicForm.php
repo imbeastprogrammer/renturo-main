@@ -35,4 +35,10 @@ class DynamicForm extends Model
         // Many-to-One relationship with User
         return $this->belongsTo(User::class);
     }
+
+    public function dynamicFormSubmissions()
+    {
+        return $this->hasMany(DynamicFormSubmission::class);
+    }
+
 }
