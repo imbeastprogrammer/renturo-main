@@ -41,9 +41,9 @@ Route::middleware([
             Route::put('/password', [PasswordController::class, 'update']);
             Route::delete('logout', [LoginController::class, 'logout']);
 
-            Route::get('/store', [StoreController::class, 'index']);
-            Route::post('/store', [StoreController::class, 'store']);
-            Route::put('/store/{id}', [StoreController::class, 'update']);
-            Route::get('/store/{id}', [StoreController::class, 'show']);
+            // Route::get('/store', [StoreController::class, 'index']);
+            // Route::post('/store', [StoreController::class, 'store']);
+            // Route::put('/store/{id}', [StoreController::class, 'update']);
+            // Route::get('/store/{id}', [StoreController::class, 'show']);
         });
     });
