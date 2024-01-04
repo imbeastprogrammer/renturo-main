@@ -48,7 +48,10 @@ class BankController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         // Add the user_id to the validated data
@@ -57,7 +60,13 @@ class BankController extends Controller
 
         $bank = Bank::create($validatedData);
 
-        return response()->json($bank, 201);
+        return response()->json([
+            'message' => 'success',
+            'body' => [
+                'message' => 'Bank was created successfully.',
+                'data' => $bank,
+            ]
+        ], 201);
     }
 
     /**
@@ -76,7 +85,10 @@ class BankController extends Controller
                 ->first();
 
         if(!$bank) {
-            return response()->json(['message' => 'Bank not found'], 404);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Bank not found.'
+            ], 404);
         }
 
         $bank = [
@@ -86,7 +98,13 @@ class BankController extends Controller
             "is_active" => $bank->is_active,
         ];
 
-        return response()->json($bank);
+        return response()->json([
+            'message' => 'success',
+            'body' => [
+                'message' => 'Bank was fetch successfully.',
+                'data' => $bank,
+            ]
+        ], 200);
     }
 
     /**
@@ -106,7 +124,10 @@ class BankController extends Controller
 
         // Check if the bank exists and belongs to the user
         if (!$bank) {
-            return response()->json(['message' => 'Bank account not found or access denied'], 404);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Bank not found or access denied.'
+            ], 404);
         }
 
         // Validate the request data
@@ -126,13 +147,22 @@ class BankController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         // Update the bank record with validated data
         $bank->update($validator->validated());
 
-        return response()->json($bank);
+        return response()->json([
+            'message' => 'success',
+            'body' => [
+                'message' => 'Bank was updated successfully.',
+                'data' => $bank,
+            ]
+        ], 201);
     }
 
     /**
@@ -151,13 +181,21 @@ class BankController extends Controller
 
         // If the bank account is not found or does not belong to the user, abort with a 404 response
         if (!$bank) {
-            return response()->json(['message' => 'Bank account not found'], 404);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Bank not found.'
+            ], 404);
         }
 
         // Delete the bank account
         $bank->delete();
 
-        return response()->json(['message' => 'Bank account deleted successfully']);
+        return response()->json([
+            'message' => 'success',
+            'body' => [
+                'message' => 'Bank account was deleted successfully.'
+            ]
+        ]);
     }
 
     public function getUserBanks(Request $request)
@@ -168,6 +206,20 @@ class BankController extends Controller
         // Retrieve all banks associated with the authenticated user
         $banks = Bank::where('user_id', $userId)->get();
 
-        return response()->json(['submission_details', $banks]);
+        // Check if any bank records were found
+        if ($banks->isEmpty()) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'No bank accounts found.'
+            ], 404); 
+        }
+
+        return response()->json([
+            'message' => 'success',
+            'body' => [
+                'message' => 'User bank(s) account was fetch successfully.',
+                'data' => $banks,
+            ]
+        ]);
     }
 }
