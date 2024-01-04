@@ -50,6 +50,6 @@ class DynamicFormField extends Model
 
     public function dynamicFormPage()
     {
-        return $this->belongsTo(DynamicFormPage::class);
+        return $this->belongsTo(DynamicFormPage::class, 'dynamic_form_page_id');
     }
 }

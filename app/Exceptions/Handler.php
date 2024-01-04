@@ -49,6 +49,8 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (NotFoundHttpException $e, $request) {
+
+            #TODO: Check this API response when API is not found
             if ($request->is('api/*')) {
                 return response()->json([
                     'message' => 'The API route you are looking for does not exist.'

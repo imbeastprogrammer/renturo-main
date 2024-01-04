@@ -136,10 +136,10 @@ class TenancyServiceProvider extends ServiceProvider
                 ->group(base_path('routes/tenants/admin.php'));
         }
 
-        if (file_exists(base_path('routes/tenants/owner.php'))) {
+        if (file_exists(base_path('routes/tenants/client.php'))) {
             Route::namespace(static::$controllerNamespace)
-                ->prefix('owner')
-                ->group(base_path('routes/tenants/owner.php'));
+                ->prefix('client')
+                ->group(base_path('routes/tenants/client.php'));
         }
 
         if (file_exists(base_path('routes/tenants/user.php'))) {
@@ -156,10 +156,10 @@ class TenancyServiceProvider extends ServiceProvider
                 ->group(base_path('routes/apis/tenant.php'));
         }
 
-        if (file_exists(base_path('routes/apis/tenants/owner.php'))) {
+        if (file_exists(base_path('routes/apis/tenants/client.php'))) {
             Route::namespace(static::$controllerNamespace)
-                ->prefix('api/owner')
-                ->group(base_path('routes/apis/tenants/owner.php'));
+                ->prefix('api/client')
+                ->group(base_path('routes/apis/tenants/client.php'));
         }
 
         if (file_exists(base_path('routes/apis/tenants/user.php'))) {
