@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import { MenuIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -17,16 +18,30 @@ import useUndoAndRedoFormbuilderByKeyPress from '@/hooks/useUndoAndRedoFormbuild
 function FormBuilderHeader() {
     const [saving, setSaving] = useState(false);
     const { isOpen, toggleMenu } = useMenuToggle();
-    const { history, future, undo, redo } = useFormBuilder();
+    const { pages, history, future, undo, redo } = useFormBuilder();
     useUndoAndRedoFormbuilderByKeyPress({ undo, redo });
 
     const handleMenuToggle = () => toggleMenu(isOpen);
     const handleSave = () => {
-        setSaving(true);
-
-        setTimeout(() => {
-            setSaving(false);
-        }, 3000);
+        router.put(
+            '/admin/form/all/1',
+            {
+                dynamic_form_pages: pages.map((page) => ({
+                    title: page.page_title,
+                    dynamic_form_fields: page.fields.map((field) => ({
+                        input_field_label: field.label,
+                        input_field_name: field.name,
+                        input_field_type: field.type,
+                        is_required: field.is_required,
+                        data: field.data,
+                    })),
+                })),
+            },
+            {
+                onBefore: () => setSaving(true),
+                onFinish: () => setSaving(false),
+            },
+        );
     };
 
     return (
