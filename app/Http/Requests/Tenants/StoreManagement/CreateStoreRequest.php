@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\Tenants\StoreManagement;
 
-use App\Models\Store;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class CreateStoreRequest extends FormRequest
 {
@@ -26,8 +27,15 @@ class CreateStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|email|max:100',
-            'url' =>'max:100|unique:' . Store::class,
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('stores')->where(function ($query) {
+                    return $query->where('user_id', Auth::id());
+                }),
+            ],
+            'url' => 'max:100|unique:stores,url',
             'logo' => 'nullable|string'
         ];
     }
@@ -38,7 +46,6 @@ class CreateStoreRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         #TODO: Add uploaded file validation for logo
-
         // Generate a random url for the store
         $url = rand(10000000000000, 99999999999999);
 
