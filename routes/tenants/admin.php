@@ -81,7 +81,7 @@ Route::middleware([
     Route::get('/post-management/advertisements/{id}', [PostManagementAdsController::class, 'show']);
 
     Route::get('/post-management/dynamic-forms', [DynamicFormController::class, 'index']);
-    Route::get('/post-management/dynamic-forms/form-builder/{id}', [DynamicFormController::class, 'formBuilder']);
+    Route::get('/post-management/dynamic-forms/form-builder/{id}', [DynamicFormController::class, 'getFormPagesAndFields']);
     Route::resource('/form', DynamicFormController::class);
     Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
 
