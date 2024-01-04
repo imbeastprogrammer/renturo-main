@@ -53,7 +53,10 @@ class DynamicFormSubmissionController extends Controller
             ->first();
     
         if ($existingSubmission) {
-            return response()->json(['message' => 'You have already submitted this form.'], 422);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'You have already submitted this form.'
+            ], 422);
         }
     
         // Here, instead of using the validation rules, we're taking the validated data from the request.
@@ -69,7 +72,13 @@ class DynamicFormSubmissionController extends Controller
             'data' => json_encode($processedData), // Ensure you're saving the processed data, not the validation rules
         ]);
     
-        return response()->json(['message' => 'Form submitted successfully', 'submission' => $submission]);
+        return response()->json([
+            'message' => 'success',
+            'body' => [
+                'message' => 'Form was submitted successfully.',
+                'data' => $submission,
+            ]
+        ], 201);
     }
 
     private function processSubmissionData($pagesData) {
@@ -92,7 +101,10 @@ class DynamicFormSubmissionController extends Controller
                                        ->first();
 
         if (!$submission) {
-            return response()->json(['message' => 'Submission not found'], 404);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Form submission not found.'
+            ], 404);
         }
 
         $formData = json_decode($submission->data, true);
@@ -102,7 +114,10 @@ class DynamicFormSubmissionController extends Controller
         $dynamicForm = DynamicForm::find($submission->dynamic_form_id);
 
         if (!$dynamicForm) {
-            return response()->json(['message' => 'Dynamic form not found'], 404);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Dynamic form not found'
+            ], 404);
         }
 
         // Fetch all pages for the form
@@ -156,12 +171,20 @@ class DynamicFormSubmissionController extends Controller
             $submissionDetails[] = $pageDetails;
         }
 
-        return response()->json([
+        $data = [
             'dynamic_form_id' => $submission->dynamic_form_id,
             'name' => $dynamicForm->name,
             'description' => $dynamicForm->description,
             'dynamic_form_pages' => $submissionDetails
-        ]);
+        ];
+        
+        return response()->json([
+            'message' =>'success',
+            'body' => [
+                'message' => 'Form submission was fetched successfully.',
+                'data' => $data
+            ]
+        ], 200);
     }
 
     /**
@@ -200,7 +223,14 @@ class DynamicFormSubmissionController extends Controller
             $existingSubmission->data = json_encode($processedData);
             $existingSubmission->save();
 
-            return response()->json(['message' => 'Form updated successfully', 'submission' => $existingSubmission]);
+            return response()->json([
+                'message' => 'success',
+                'body' => [
+                  'message' => 'Form updated successfully',
+                    'data' => $existingSubmission
+                ]
+            ], 200);
+        
         } else {
             // Create a new submission
             $submission = DynamicFormSubmission::create([
@@ -209,7 +239,13 @@ class DynamicFormSubmissionController extends Controller
                 'data' => json_encode($processedData),
             ]);
 
-            return response()->json(['message' => 'Form submitted successfully', 'submission' => $submission]);
+            return response()->json([
+                'message' => 'success',
+                'body' => [
+                  'message' => 'Form submitted successfully',
+                    'data' => $submission
+                ]
+            ], 201);
         }
     }
 
@@ -230,9 +266,9 @@ class DynamicFormSubmissionController extends Controller
     
         if (!$dynamicFormSubmission) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Form submission not found or does not belong to the user.',
-            ], 404); // Return a 404 not found error if the submission doesn't exist or doesn't belong to the user
+                'message' => 'failed',
+                'errors' => 'Form submission not found.'    
+            ], 404); // Return a 404 not found error if the submission doesn't exist 
         }
     
         // Proceed with deletion
@@ -240,7 +276,10 @@ class DynamicFormSubmissionController extends Controller
     
         return response()->json([
             'status' => 'success',
-            'message' => 'Form submission was successfully deleted.',
+            'body' => [
+                'message' => 'Form submission was successfully deleted.',
+                'data' => []
+            ]
         ], 200);
 
     }
@@ -286,7 +325,13 @@ class DynamicFormSubmissionController extends Controller
             }
         }
                                             
-        return response()->json(['submission_details' => $userSubmissions]);
+        return response()->json([
+            'message' =>'success',
+            'body' => [
+                'message' => 'Form submissions were fetched successfully.',
+                'data' => $userSubmissions
+            ]
+        ], 200);
     }
 
     public function getUserFormSubmission(Request $request, $userId, $formId)
@@ -299,13 +344,19 @@ class DynamicFormSubmissionController extends Controller
             ->first();
 
         if (!$submission) {
-            return response()->json(['message' => 'Submission not found'], 404);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Form submission not found.'
+            ], 404);
         }
 
         // Retrieve the dynamic form details
         $dynamicForm = DynamicForm::find($formId);
         if (!$dynamicForm) {
-            return response()->json(['message' => 'Dynamic form not found'], 404);
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Dynamic form not found'
+            ], 404);
         }
 
         // Decode the JSON data back into an array
@@ -352,6 +403,12 @@ class DynamicFormSubmissionController extends Controller
             'dynamic_form_pages' => $dynamicFormPages
         ];
 
-        return response()->json(['submission_details' => [$submissionDetails]]);
+        return response()->json([
+           'message' =>'success',
+            'body' => [
+                'message' => 'Form submission details were fetched successfully.',
+                'data' => $submissionDetails
+            ], 
+        ], 200);
     }
 }

@@ -74,7 +74,13 @@ class DynamicFormController extends Controller
             }) : []
         ];
 
-        return response()->json($transformedData);
+        return response()->json([
+            'message' => 'success',
+            'body' => [
+                'message' => 'Form was fetched successfully.',
+                'data' => $transformedData,
+            ]
+        ], 200);
     }
 
     /**
