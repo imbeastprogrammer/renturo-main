@@ -3,13 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Middleware\RedirectIfTenantActivated;
 
-use App\Http\Controllers\Api\V1\Tenants\StoreController;
+use App\Http\Controllers\Api\V1\Tenants\Client\StoreController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormSubmissionController;
 use App\Http\Controllers\Api\V1\Tenants\Client\BankController;
@@ -37,10 +35,8 @@ Route::middleware([
             // Route::put('/password', [PasswordController::class, 'update']);
             // Route::delete('logout', [LoginController::class, 'logout']);
 
-            Route::get('/store', [StoreController::class, 'index']);
-            Route::post('/store', [StoreController::class, 'store']);
-            Route::put('/store/{id}', [StoreController::class, 'update']);
-            Route::get('/store/{id}', [StoreController::class, 'show']);
+            Route::resource('/store', StoreController::class);
+            Route::get('/store/user/{userId}', [StoreController::class, 'getUserStores']);
 
             Route::get('/form/{formId}', [DynamicFormController::class, 'show']);
 
