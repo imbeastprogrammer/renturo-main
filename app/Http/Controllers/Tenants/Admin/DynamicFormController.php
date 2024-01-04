@@ -78,11 +78,6 @@ class DynamicFormController extends Controller
         return Inertia::render("tenants/admin/post-management/dynamic-forms/index", ["dynamicForms" => $dynamicForms, "subCategories" => $subCategories, "categories" => $categories]);
     }
 
-    public function formBuilder()
-    {
-        return Inertia::render('tenants/admin/post-management/dynamic-forms/form-builder/index');
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -273,6 +268,7 @@ class DynamicFormController extends Controller
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
+        return Inertia::render('tenants/admin/post-management/dynamic-forms/form-builder/index', ['dynamicForm' => $dynamicForm]);
     }
 
     public function updateFormPagesAndFields(Request $request, $id)
