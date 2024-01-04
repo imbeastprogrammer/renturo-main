@@ -59,10 +59,10 @@ const schema = z.object({
 });
 
 const AttachmentField: FormElement = {
-    type: 'attachment',
+    type: 'file',
     construct: (id) => ({
         id,
-        type: 'attachment',
+        type: 'file',
         ...field,
     }),
     designerComponent: DesignerComponent,

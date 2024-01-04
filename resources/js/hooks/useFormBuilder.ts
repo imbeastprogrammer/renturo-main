@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { FormElementInstance } from '@/pages/tenants/admin/post-management/form-builder/components/FormElement';
+import { FormElementInstance } from '@/pages/tenants/admin/post-management/dynamic-forms/form-builder/components/FormElement';
 import defaultPages from './default-pages';
 
 export type Page = {

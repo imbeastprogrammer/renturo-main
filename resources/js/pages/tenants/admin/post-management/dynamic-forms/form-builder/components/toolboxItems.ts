@@ -39,7 +39,7 @@ export const toolboxItems: ToolboxItem[] = [
             {
                 title: 'Text Field',
                 icon: TextFieldIcon,
-                type: 'text-field',
+                type: 'text',
             },
             {
                 title: 'Text Area',
@@ -63,7 +63,7 @@ export const toolboxItems: ToolboxItem[] = [
             {
                 title: 'Dropdown',
                 icon: DropdownIcon,
-                type: 'dropdown',
+                type: 'select',
             },
             {
                 title: 'Checkbox',
@@ -88,7 +88,7 @@ export const toolboxItems: ToolboxItem[] = [
             {
                 title: 'Attachment',
                 icon: AttachmentIcon,
-                type: 'attachment',
+                type: 'file',
             },
             {
                 title: 'Rating',

@@ -39,10 +39,10 @@ const field = {
 const schema = z.object({ is_required: z.boolean(), label: z.string() });
 
 const TextField: FormElement = {
-    type: 'text-field',
+    type: 'text',
     construct: (id) => ({
         id,
-        type: 'text-field',
+        type: 'text',
         ...field,
     }),
     designerComponent: DesignerComponent,

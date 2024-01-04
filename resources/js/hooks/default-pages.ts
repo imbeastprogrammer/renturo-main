@@ -4,13 +4,13 @@ import { Page } from './useFormBuilder';
 const contactPageFields: Page['fields'] = [
     {
         id: uuidv4(),
-        type: 'text-field',
+        type: 'text',
         is_required: true,
         label: 'First name',
     },
     {
         id: uuidv4(),
-        type: 'text-field',
+        type: 'text',
         is_required: true,
         label: 'Last Name',
     },
@@ -25,7 +25,7 @@ const contactPageFields: Page['fields'] = [
     },
     {
         id: uuidv4(),
-        type: 'text-field',
+        type: 'text',
         is_required: true,
         label: 'Address',
     },
@@ -78,7 +78,7 @@ const searchFilterFields: Page['fields'] = [
     },
     {
         id: uuidv4(),
-        type: 'text-field',
+        type: 'text',
         is_required: true,
         label: 'Amenities',
     },

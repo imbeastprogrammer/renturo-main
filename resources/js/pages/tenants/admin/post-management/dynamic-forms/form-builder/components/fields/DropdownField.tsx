@@ -55,10 +55,10 @@ const schema = z.object({
 });
 
 const DropdownField: FormElement = {
-    type: 'dropdown',
+    type: 'select',
     construct: (id) => ({
         id,
-        type: 'dropdown',
+        type: 'select',
         ...field,
     }),
     designerComponent: DesignerComponent,
