@@ -13,29 +13,29 @@ export type Page = {
 
 type FormBuilderState = {
     pages: Page[];
-    current_page_id: string;
+    current_page_id: string | number;
     history: Array<Page[]>;
     future: Array<Page[]>;
 };
 
 type FormBuilderAction = {
-    setPage: (pageId: string) => void;
+    setPage: (pageId: string | number) => void;
     addPage: () => void;
     setPages: (pages: Page[]) => void;
-    updatePage: (pageId: string, page: Page) => void;
-    removePage: (pageId: string) => void;
-    setFields: (pageId: string, fields: FormElementInstance[]) => void;
+    updatePage: (pageId: string | number, page: Page) => void;
+    removePage: (pageId: string | number) => void;
+    setFields: (pageId: string | number, fields: FormElementInstance[]) => void;
     addField: (
-        pageId: string,
+        pageId: string | number,
         index: number,
         field: FormElementInstance,
     ) => void;
-    removeField: (pageId: string, id: string) => void;
+    removeField: (pageId: string | number, id: string | number) => void;
     selectedField: FormElementInstance | null;
     setSelectedField: (field: FormElementInstance) => void;
     updateField: (
-        pageId: string,
-        id: string,
+        pageId: string | number,
+        id: string | number,
         field: FormElementInstance,
     ) => void;
     undo: () => void;

@@ -53,7 +53,6 @@ const searchFilterFields: Page['fields'] = [
         is_required: true,
         label: 'Category',
         data: {
-            type: 'range_input',
             options: ['Category 1', 'Category 2', 'Category 3', 'Category 4'],
             multiple_answer_accepted: false,
         },

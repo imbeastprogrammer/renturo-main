@@ -154,7 +154,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
     });
 
     return (
-        <AccordionItem value={element.id} className='border-0'>
+        <AccordionItem value={element.id.toString()} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
                 {currentFieldType && (
                     <PropertyEditorHandle

@@ -36,7 +36,7 @@ export type ElementsType =
 // | 'url';
 
 export type FormElementInstance = {
-    id: string;
+    id: string | number;
     type: ElementsType;
     label: string;
     is_required: boolean;
@@ -45,7 +45,7 @@ export type FormElementInstance = {
 
 export type FormElement = {
     type: ElementsType;
-    construct: (id: string) => FormElementInstance;
+    construct: (id: string | number) => FormElementInstance;
     designerComponent: React.FC<{
         element: FormElementInstance;
     }>;
