@@ -13,11 +13,19 @@ class DynamicFormSubmission extends Model
     protected $fillable = [
         'dynamic_form_id',
         'user_id',
-        'data',
+        'store_id',
+        'data'
     ];
 
     public function dynamicForm()
     {
         return $this->belongsTo(DynamicForm::class, 'dynamic_form_id');
     }
+
+    // Relationship to Store
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
+
 }

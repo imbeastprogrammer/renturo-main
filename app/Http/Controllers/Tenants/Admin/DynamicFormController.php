@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenants\Admin;
 
 use App\Http\Requests\Tenants\Admin\FormBuilder\StoreFormRequest;
 use App\Http\Requests\Tenants\Admin\FormBuilder\UpdateFormRequest;
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\DynamicForm;
 use Inertia\Inertia;
 use Exception;
+
 
 class DynamicFormController extends Controller
 {
@@ -345,7 +347,35 @@ class DynamicFormController extends Controller
             return redirect()->back()->with([
                 "message", "Dynamic form updated successfully.",
             ]);
-        } catch (\Exception $e) {
+       
+        } catch (QueryException $ex) {
+
+            // Rollback Transaction
+            DB::rollBack();
+    
+            // Check if it's a data truncation issue
+            if (str_contains($ex->getMessage(), 'Data truncated')) {
+                $errorMessage = 'Data format error: One or more input field type have data that cannot be saved. Please check the acceptable field type to proceed.';
+            } else {
+                $errorMessage = $ex->getMessage();
+            }
+    
+            // Handle JSON request
+            if ($request->expectsJson()) {
+                return response()->json([
+                    "message" => "Failed to update dynamic form.",
+                    "errors" => $errorMessage
+                ], 400);
+            }
+    
+            // Handle non-JSON request
+            return redirect()->back()->withErrors([
+                "message", "Failed to update dynamic form.",
+                "errors" => $errorMessage
+            ]);
+
+        }  catch (\Exception $e) {
+            
             // Rollback Transaction
             DB::rollBack();
 
