@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\Tenants\Client\StoreController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormSubmissionController;
 use App\Http\Controllers\Api\V1\Tenants\Client\BankController;
+use App\Http\Controllers\API\V1\Tenants\Client\CategoryController;
 
 Route::middleware([
     'api',
@@ -47,5 +48,7 @@ Route::middleware([
 
             Route::resource('/banks', BankController::class);
             Route::get('/user/banks/', [BankController::class, 'getUserBanks']);
+
+            Route::resource('/categories', CategoryController::class);
         });
     });
