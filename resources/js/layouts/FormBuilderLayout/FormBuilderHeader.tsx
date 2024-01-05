@@ -45,7 +45,8 @@ function FormBuilderHeader() {
     const dynamicForm = props.dynamicForm as DynamicForm;
     const [saving, setSaving] = useState(false);
     const { isOpen, toggleMenu } = useMenuToggle();
-    const { pages, history, future, undo, redo, setPages } = useFormBuilder();
+    const { pages, history, future, undo, redo, setPages, setPage } =
+        useFormBuilder();
     const toast = useOwnerToast();
 
     useUndoAndRedoFormbuilderByKeyPress({ undo, redo });
@@ -59,6 +60,9 @@ function FormBuilderHeader() {
                 name: dynamicForm.name,
                 subcategory_id: dynamicForm.subcategory_id,
                 dynamic_form_pages: pages.map((page) => ({
+                    ...(typeof page.page_id === 'number' && {
+                        id: page.page_id,
+                    }),
                     title: page.page_title,
                     dynamic_form_fields: page.fields.map((field) => ({
                         id: typeof field.id === 'string' ? 0 : field.id,
@@ -81,6 +85,7 @@ function FormBuilderHeader() {
     };
 
     useEffect(() => {
+        setPage(dynamicForm.dynamic_form_pages[0].id);
         setPages(
             dynamicForm.dynamic_form_pages.map((page) => ({
                 page_id: page.id,
