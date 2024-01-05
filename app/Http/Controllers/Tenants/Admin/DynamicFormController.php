@@ -26,37 +26,37 @@ class DynamicFormController extends Controller
     {
         $perPage = 15;
 
-        $dynamicForms = DynamicForm::with("subCategory.category")->paginate($perPage);
+        $dynamicForms = DynamicForm::with('subCategory.category')->paginate($perPage);
 
         // Format the response
         $response = $dynamicForms->getCollection()->map(function ($form) {
             return [
-                "id" => $form->id,
-                "name" => $form->name,
-                "description" => $form->description,
-                "subcategory" => [
-                    "id" => $form->subCategory ? $form->subCategory->id : null,
-                    "name" => $form->subCategory ? $form->subCategory->name : "No Subcategory",
-                    "category" => [
-                        "id" => $form->subCategory && $form->subCategory->category ? $form->subCategory->category->id : null,
-                        "name" => $form->subCategory && $form->subCategory->category ? $form->subCategory->category->name : "No Category"
+                'id' => $form->id,
+                'name' => $form->name,
+                'description' => $form->description,
+                'subcategory' => [
+                    'id' => $form->subCategory ? $form->subCategory->id : null,
+                    'name' => $form->subCategory ? $form->subCategory->name : 'No Subcategory',
+                    'category' => [
+                        'id' => $form->subCategory && $form->subCategory->category ? $form->subCategory->category->id : null,
+                        'name' => $form->subCategory && $form->subCategory->category ? $form->subCategory->category->name : 'No Category'
                     ],
                 ],
-                "created_at" => $form->created_at,
-                "updated_at" => $form->updated_at,
-                "deleted_at" => $form->deleted_at
+                'created_at' => $form->created_at,
+                'updated_at' => $form->updated_at,
+                'deleted_at' => $form->deleted_at
             ];
         });
 
         $dynamicForms = [
-            "status" => "success",
-            "message" => "Dynamic Form was successfully fetched.",
-            "data" => $response,
-            "pagination" => [
-                "total" => $dynamicForms->total(),
-                "perPage" => $dynamicForms->perPage(),
-                "currentPage" => $dynamicForms->currentPage(),
-                "lastPage" => $dynamicForms->lastPage(),
+            'status' => 'success',
+            'message' => 'Dynamic Form was successfully fetched.',
+            'data' => $response,
+            'pagination' => [
+                'total' => $dynamicForms->total(),
+                'perPage' => $dynamicForms->perPage(),
+                'currentPage' => $dynamicForms->currentPage(),
+                'lastPage' => $dynamicForms->lastPage(),
             ],
         ];
 
@@ -69,15 +69,15 @@ class DynamicFormController extends Controller
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
-                "status" => "success",
-                "message" => "Dynamic form was successfully fetched.",
-                "data" => $dynamicForms,
+                'status' => 'success',
+                'message' => 'Dynamic form was successfully fetched.',
+                'data' => $dynamicForms,
             ], 201);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return Inertia::render("tenants/admin/post-management/dynamic-forms/index", ["dynamicForms" => $dynamicForms, "subCategories" => $subCategories, "categories" => $categories]);
+        return Inertia::render('tenants/admin/post-management/dynamic-forms/index', ['dynamicForms' => $dynamicForms, 'subCategories' => $subCategories, 'categories' => $categories]);
     }
 
     /**
@@ -103,15 +103,15 @@ class DynamicFormController extends Controller
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
-                "status" => "success",
-                "message" => "Dynamic form was successfully created.",
-                "data" => $dynamicForm,
+                'status' => 'success',
+                'message' => 'Dynamic form was successfully created.',
+                'data' => $dynamicForm,
             ], 201);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with("success", "Dynamic form was successfully created.");
+        return redirect()->back()->with('success', 'Dynamic form was successfully created.');
     }
 
     /**
@@ -124,48 +124,48 @@ class DynamicFormController extends Controller
     {
         // Fetch the dynamic form by its ID along with its related subcategory, category, pages, and fields
         $dynamicForm = DynamicForm::with([
-            "subCategory.category",
-            "dynamicFormPages.dynamicFormFields",
+            'subCategory.category',
+            'dynamicFormPages.dynamicFormFields',
         ])->findOrFail($id);
 
         // Format the response
         $dynamicForm = [
-            "id" => $dynamicForm->id,
-            "name" => $dynamicForm->name,
-            "description" => $dynamicForm->description,
-            "subcategory" => $dynamicForm->subCategory ? [
-                "id" => $dynamicForm->subCategory->id,
-                "name" => $dynamicForm->subCategory->name,
-                "category" => $dynamicForm->subCategory->category ? [
-                    "id" => $dynamicForm->subCategory->category->id,
-                    "name" => $dynamicForm->subCategory->category->name
+            'id' => $dynamicForm->id,
+            'name' => $dynamicForm->name,
+            'description' => $dynamicForm->description,
+            'subcategory' => $dynamicForm->subCategory ? [
+                'id' => $dynamicForm->subCategory->id,
+                'name' => $dynamicForm->subCategory->name,
+                'category' => $dynamicForm->subCategory->category ? [
+                    'id' => $dynamicForm->subCategory->category->id,
+                    'name' => $dynamicForm->subCategory->category->name
                 ] : null
             ] : null,
-            "dynamicFormPages" => $dynamicForm->dynamicFormPages->map(function ($page) {
+            'dynamicFormPages' => $dynamicForm->dynamicFormPages->map(function ($page) {
                 return [
-                    "id" => $page->id,
-                    "title" => $page->title,
-                    "dynamicFormFields" => $page->dynamicFormFields->map(function ($field) {
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'dynamicFormFields' => $page->dynamicFormFields->map(function ($field) {
                         return [
-                            "id" => $field->id,
-                            "label" => $field->label,
-                            "type" => $field->type,
+                            'id' => $field->id,
+                            'label' => $field->label,
+                            'type' => $field->type,
                             // Add other field attributes as needed
                         ];
                     })
                 ];
             }),
-            "created_at" => $dynamicForm->created_at,
-            "updated_at" => $dynamicForm->updated_at,
-            "deleted_at" => $dynamicForm->deleted_at
+            'created_at' => $dynamicForm->created_at,
+            'updated_at' => $dynamicForm->updated_at,
+            'deleted_at' => $dynamicForm->deleted_at
         ];
 
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
-                "status" => "success",
-                "message" => "Form was successfully fetched.",
-                "data" => $dynamicForm,
+                'status' => 'success',
+                'message' => 'Form was successfully fetched.',
+                'data' => $dynamicForm,
             ], 200);
         }
 
@@ -200,15 +200,15 @@ class DynamicFormController extends Controller
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
-                "status" => "success",
-                "message" => "Dynamic form was successfully updated.",
-                "data" => $dynamicForm->fresh(),
+                'status' => 'success',
+                'message' => 'Dynamic form was successfully updated.',
+                'data' => $dynamicForm->fresh(),
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with("success", "Dynamic form was successfully updated.");
+        return redirect()->back()->with('success', 'Dynamic form was successfully updated.');
     }
 
     /**
@@ -225,14 +225,14 @@ class DynamicFormController extends Controller
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
-                "status" => "success",
-                "message" => "Dynamic form was successfully deleted.",
+                'status' => 'success',
+                'message' => 'Dynamic form was successfully deleted.',
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with("success", "Dynamic form was successfully deleted.");
+        return redirect()->back()->with('success', 'Dynamic form was successfully deleted.');
     }
 
     public function restore(Request $request, $id)
@@ -243,28 +243,28 @@ class DynamicFormController extends Controller
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
-                "status" => "success",
-                "message" => "Dynamic form was successfully restored.",
+                'status' => 'success',
+                'message' => 'Dynamic form was successfully restored.',
             ], 200);
         }
 
         // For non-JSON requests, return an Inertia response
         // Redirect to the desired page and pass the necessary data
-        return redirect()->back()->with("success", "Dynamic form was successfully restored.");
+        return redirect()->back()->with('success', 'Dynamic form was successfully restored.');
     }
 
     public function getFormPagesAndFields(Request $request, $id)
     {
         // Retrieve the dynamic form with its pages and fields
-        $dynamicForm = DynamicForm::with("dynamicFormPages.dynamicFormFields")
+        $dynamicForm = DynamicForm::with('dynamicFormPages.dynamicFormFields')
             ->findOrFail($id);
 
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([
-                "status" => "success",
-                "message" => "Form was successfully fetched.",
-                "data" => $dynamicForm,
+                'status' => 'success',
+                'message' => 'Form was successfully fetched.',
+                'data' => $dynamicForm,
             ], 200);
         }
 
@@ -296,7 +296,7 @@ class DynamicFormController extends Controller
                     if ((!isset($pageData['id']) || $pageData['id'] != $existingId) &&
                         $pageData['title'] == $existingTitle
                     ) {
-                        throw new Exception("Duplicate page title: " . $pageData['title']);
+                        throw new Exception('Duplicate page title: ' . $pageData['title']);
                     }
                 }
 
@@ -337,15 +337,15 @@ class DynamicFormController extends Controller
             // For JSON request, return a success response
             if ($request->expectsJson()) {
                 return response()->json([
-                    "status" => "failed",
-                    "message" => "Dynamic form updated successfully.",
+                    'status' => 'success',
+                    'message' => 'Dynamic form updated successfully.',
                 ], 201);
             }
 
             // For non-JSON requests, return an Inertia response
             // Redirect to the desired page and pass the necessary data
             return redirect()->back()->with([
-                "message", "Dynamic form updated successfully.",
+                'message' => 'Dynamic form updated successfully.',
             ]);
        
         } catch (QueryException $ex) {
@@ -363,15 +363,15 @@ class DynamicFormController extends Controller
             // Handle JSON request
             if ($request->expectsJson()) {
                 return response()->json([
-                    "message" => "Failed to update dynamic form.",
-                    "errors" => $errorMessage
+                    'message' => 'Failed to update dynamic form.',
+                    'errors' => $errorMessage
                 ], 400);
             }
     
             // Handle non-JSON request
             return redirect()->back()->withErrors([
-                "message", "Failed to update dynamic form.",
-                "errors" => $errorMessage
+                'message' => 'Failed to update dynamic form.',
+                'errors' => $errorMessage
             ]);
 
         }  catch (\Exception $e) {
@@ -382,16 +382,16 @@ class DynamicFormController extends Controller
             // For JSON request, return a success response
             if ($request->expectsJson()) {
                 return response()->json([
-                    "message" => "Failed to update dynamic form.",
-                    "errors" => $e->getMessage()
+                    'message' => 'Failed to update dynamic form.',
+                    'errors' => $e->getMessage()
                 ], 404);
             }
 
             // For non-JSON requests, return an Inertia response
             // Redirect to the desired page and pass the necessary data
             return redirect()->back()->withErrors([
-                "message", "Failed to update dynamic form.",
-                "errors" => $e->getMessage()
+                'message' => 'Failed to update dynamic form.',
+                'errors' => $e->getMessage()
             ]);
         }
     }
