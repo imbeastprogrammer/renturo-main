@@ -85,7 +85,7 @@ function FormBuilderHeader() {
     };
 
     useEffect(() => {
-        setPage(dynamicForm.dynamic_form_pages[0].id);
+        setPage(dynamicForm.dynamic_form_pages?.[0].id);
         setPages(
             dynamicForm.dynamic_form_pages.map((page) => ({
                 page_id: page.id,
@@ -94,7 +94,7 @@ function FormBuilderHeader() {
                     id: field.id,
                     label: field.input_field_label,
                     type: field.input_field_type,
-                    is_required: field.is_required,
+                    is_required: field.is_required ? true : false,
                     data: field.data,
                 })),
             })),
