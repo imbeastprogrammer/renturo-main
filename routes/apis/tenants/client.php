@@ -49,6 +49,8 @@ Route::middleware([
             Route::resource('/banks', BankController::class);
             Route::get('/user/banks/', [BankController::class, 'getUserBanks']);
 
-            Route::resource('/categories', CategoryController::class);
+            Route::get('/categories', [CategoryController::class, 'index']);
+            Route::get('/categories/search', [CategoryController::class, 'search']);
+
         });
     });

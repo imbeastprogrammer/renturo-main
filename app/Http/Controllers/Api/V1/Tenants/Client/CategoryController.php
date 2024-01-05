@@ -22,7 +22,7 @@ class CategoryController extends Controller
             "status" => "success",
             "message" => "Categories was successfully fetched.",
             "data" => $categories,
-        ], 201);
+        ], 200);
     }
 
     /**
@@ -89,5 +89,28 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function search(Request $request) {
+        
+        $searchTerm = $request->input('query', '');
+
+        // Check if search term length is at least 3 characters
+        if (strlen($searchTerm) < 3) {
+            // Return empty array or all categories without filtering
+            return response()->json([]); // Uncomment this to return an empty array
+            // return response()->json(Category::with('subcategories')->get()); // Return all categories if search term is too short
+        } else {
+
+            $categories = Category::query()
+            ->where('name', 'LIKE', "%{$searchTerm}%")
+            ->orWhereHas('subCategories', function($query) use ($searchTerm) {
+                $query->where('name', 'LIKE', "%{$searchTerm}%");
+            })
+            ->with('subCategories')
+            ->get();
+
+            return response()->json($categories);
+        }
     }
 }
