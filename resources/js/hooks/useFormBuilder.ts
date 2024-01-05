@@ -5,8 +5,8 @@ import { FormElementInstance } from '@/pages/tenants/admin/post-management/dynam
 import defaultPages from './default-pages';
 
 export type Page = {
-    page_title: string;
-    page_id: string;
+    page_title: string | number;
+    page_id: string | number;
     fields: FormElementInstance[];
     isDefault?: boolean;
 };
