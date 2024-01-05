@@ -67,6 +67,7 @@ class DynamicFormSubmissionController extends Controller
     
         // Store the data
         $submission = DynamicFormSubmission::create([
+            'store_id' => $request->input('store_id'),
             'dynamic_form_id' => $formId,
             'user_id' => $userId,
             'data' => json_encode($processedData), // Ensure you're saving the processed data, not the validation rules
@@ -209,6 +210,7 @@ class DynamicFormSubmissionController extends Controller
     {
         $userId = $request->user()->id; // Assuming user authentication
 
+        $storeId = $request->input('store_id');
         // Check if the user has already made a submission for this form
         $existingSubmission = DynamicFormSubmission::where('user_id', $userId)
             ->where('dynamic_form_id', $formId)
@@ -221,6 +223,7 @@ class DynamicFormSubmissionController extends Controller
         if ($existingSubmission) {
             // Update the existing submission
             $existingSubmission->data = json_encode($processedData);
+            $existingSubmission->store_id = $storeId; // Update the store_id
             $existingSubmission->save();
 
             return response()->json([
@@ -234,6 +237,7 @@ class DynamicFormSubmissionController extends Controller
         } else {
             // Create a new submission
             $submission = DynamicFormSubmission::create([
+                'store_id' => $storeId,
                 'dynamic_form_id' => $formId,
                 'user_id' => $userId,
                 'data' => json_encode($processedData),

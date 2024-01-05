@@ -19,4 +19,11 @@ class Store extends Model
     public function users() {
         return $this->belongsTo(User::class);
     }
+
+    // Relationship to FormSubmissions
+    public function dynamicFormSubmissions()
+    {
+        return $this->hasMany(DynamicFormSubmission::class);
+    }
+
 }

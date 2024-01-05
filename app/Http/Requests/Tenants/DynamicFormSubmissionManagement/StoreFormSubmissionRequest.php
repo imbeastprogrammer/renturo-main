@@ -6,6 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\DynamicFormField;
 
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\Store;
+
 class StoreFormSubmissionRequest extends FormRequest
 {
     /**
@@ -25,8 +29,22 @@ class StoreFormSubmissionRequest extends FormRequest
      */
     public function rules()
     {
+        $user = Auth::user(); // Get the authenticated user
+
         $formId = $this->input('dynamic_form_id');
+
         $rules = [
+            'store_id' => [
+                'required',
+                'exists:stores,id',
+                function ($attribute, $value, $fail) use ($user) {
+                    // Assuming the 'user_id' column in your stores table references the store's owner
+                    $storeOwnerId = Store::where('id', $value)->value('user_id');
+                    if ($user->id !== $storeOwnerId) {
+                        $fail('You are not authorized to add a submission for this store.');
+                    }
+                },
+            ],
             'dynamic_form_id' => 'required|exists:dynamic_forms,id',
             'dynamic_form_pages' => 'required|array',
             // This rule ensures that each page ID is within the form's pages
