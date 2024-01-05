@@ -99,16 +99,17 @@ class CategoryController extends Controller
         if (strlen($searchTerm) < 3) {
             // Return empty array or all categories without filtering
             return response()->json([]); // Uncomment this to return an empty array
-            // return response()->json(Category::with('subcategories')->get()); // Return all categories if search term is too short
+            // return response()->json(Category::with('subCategories')->get()); // Return all categories if search term is too short
         } else {
 
             $categories = Category::query()
-            ->where('name', 'LIKE', "%{$searchTerm}%")
-            ->orWhereHas('subCategories', function($query) use ($searchTerm) {
-                $query->where('name', 'LIKE', "%{$searchTerm}%");
-            })
-            ->with('subCategories')
-            ->get();
+                ->where('name', 'LIKE', "%{$searchTerm}%")
+                ->orWhereHas('subCategories', function($query) use ($searchTerm) {
+                    $query->where('name', 'LIKE', "%{$searchTerm}%");
+                })
+                ->with('subCategories')
+                ->limit(10) // Limit the number of results
+                ->get();
 
             return response()->json($categories);
         }
