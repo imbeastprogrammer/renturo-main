@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { z } from 'zod';
+import { router } from '@inertiajs/react';
 import {
     ElementsType,
     FormElement,
@@ -67,6 +68,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
+    const handleRemoveField = () => {
+        if (typeof element.id === 'string')
+            return removeField(current_page_id, element.id);
+
+        router.delete(`/admin/form/fields/${element.id}`);
+    };
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -76,9 +84,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     data={fieldTypes}
                     onValueChange={handleValueChange}
                 />
-                <button
-                    onClick={() => removeField(current_page_id, element.id)}
-                >
+                <button onClick={handleRemoveField}>
                     <DeleteIcon />
                 </button>
             </div>

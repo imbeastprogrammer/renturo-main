@@ -6,6 +6,7 @@ import {
     FormElementInstance,
     FormElements,
 } from '../FormElement';
+import { router } from '@inertiajs/react';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -56,7 +57,6 @@ type DesignerComponentProps = {
 function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
-    const elementInstance = element as FormElementInstance;
 
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
@@ -68,6 +68,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
+    const handleRemoveField = () => {
+        if (typeof element.id === 'string')
+            return removeField(current_page_id, element.id);
+
+        router.delete(`/admin/form/fields/${element.id}`);
+    };
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -77,15 +84,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     value={currentFieldType?.type}
                     onValueChange={handleValueChange}
                 />
-                <button
-                    onClick={() => removeField(current_page_id, element.id)}
-                >
+                <button onClick={handleRemoveField}>
                     <DeleteIcon />
                 </button>
             </div>
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
-                <Label className='text-[20px]'>{elementInstance.label}</Label>
+                <Label className='text-[20px]'>{element.label}</Label>
                 <Textarea readOnly />
             </div>
         </div>

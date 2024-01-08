@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { router } from '@inertiajs/react';
 import {
     Form,
     FormControl,
@@ -82,6 +83,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
+    const handleRemoveField = () => {
+        if (typeof element.id === 'string')
+            return removeField(current_page_id, element.id);
+
+        router.delete(`/admin/form/fields/${element.id}`);
+    };
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -92,9 +100,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     data={fieldTypes}
                 />
 
-                <button
-                    onClick={() => removeField(current_page_id, element.id)}
-                >
+                <button onClick={handleRemoveField}>
                     <DeleteIcon />
                 </button>
             </div>

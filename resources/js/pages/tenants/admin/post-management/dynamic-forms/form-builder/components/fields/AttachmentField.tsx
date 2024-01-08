@@ -5,6 +5,7 @@ import {
     FormElementInstance,
     FormElements,
 } from '../FormElement';
+import { router } from '@inertiajs/react';
 import { UploadIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
@@ -89,6 +90,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
+    const handleRemoveField = () => {
+        if (typeof element.id === 'string')
+            return removeField(current_page_id, element.id);
+
+        router.delete(`/admin/form/fields/${element.id}`);
+    };
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -98,9 +106,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <button
-                    onClick={() => removeField(current_page_id, element.id)}
-                >
+                <button onClick={handleRemoveField}>
                     <DeleteIcon />
                 </button>
             </div>
