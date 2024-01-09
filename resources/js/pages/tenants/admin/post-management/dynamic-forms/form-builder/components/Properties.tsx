@@ -16,7 +16,7 @@ function Properties() {
             <Accordion
                 type='single'
                 collapsible
-                value={selectedField?.id}
+                value={selectedField?.id.toString()}
                 className='h-full overflow-auto p-4 py-8'
             >
                 {currentPage?.fields.map((field) => {

@@ -4,36 +4,30 @@ import { Page } from './useFormBuilder';
 const contactPageFields: Page['fields'] = [
     {
         id: uuidv4(),
-        type: 'text-field',
-        extraAttributes: {
-            is_required: true,
-            label: 'First name',
-        },
+        type: 'text',
+        is_required: true,
+        label: 'First name',
     },
     {
         id: uuidv4(),
-        type: 'text-field',
-        extraAttributes: {
-            is_required: true,
-            label: 'Last Name',
-        },
+        type: 'text',
+        is_required: true,
+        label: 'Last Name',
     },
     {
         id: uuidv4(),
         type: 'number',
-        extraAttributes: {
-            is_required: true,
-            label: 'Contact Number',
+        is_required: true,
+        label: 'Contact Number',
+        data: {
             type: 'mobile_number_input',
         },
     },
     {
         id: uuidv4(),
-        type: 'text-field',
-        extraAttributes: {
-            is_required: true,
-            label: 'Address',
-        },
+        type: 'text',
+        is_required: true,
+        label: 'Address',
     },
 ];
 
@@ -41,27 +35,24 @@ const searchFilterFields: Page['fields'] = [
     {
         id: uuidv4(),
         type: 'rating',
-        extraAttributes: {
-            is_required: true,
-            label: 'Rating',
-        },
+        is_required: true,
+        label: 'Rating',
     },
     {
         id: uuidv4(),
         type: 'number',
-        extraAttributes: {
-            is_required: true,
-            label: 'Price Range',
+        is_required: true,
+        label: 'Price Range',
+        data: {
             type: 'range_input',
         },
     },
     {
         id: uuidv4(),
         type: 'checkbox',
-        extraAttributes: {
-            is_required: true,
-            label: 'Category',
-            type: 'range_input',
+        is_required: true,
+        label: 'Category',
+        data: {
             options: ['Category 1', 'Category 2', 'Category 3', 'Category 4'],
             multiple_answer_accepted: false,
         },
@@ -69,28 +60,26 @@ const searchFilterFields: Page['fields'] = [
     {
         id: uuidv4(),
         type: 'date',
-        extraAttributes: {
-            is_required: true,
-            label: 'Date Range',
+        is_required: true,
+        label: 'Date Range',
+        data: {
             type: 'date_range',
         },
     },
     {
         id: uuidv4(),
         type: 'number',
-        extraAttributes: {
-            is_required: true,
-            label: 'Number of Guests',
+        is_required: true,
+        label: 'Number of Guests',
+        data: {
             type: 'number_input',
         },
     },
     {
         id: uuidv4(),
-        type: 'text-field',
-        extraAttributes: {
-            is_required: true,
-            label: 'Amenities',
-        },
+        type: 'text',
+        is_required: true,
+        label: 'Amenities',
     },
 ];
 

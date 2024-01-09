@@ -6,6 +6,7 @@ import {
     FormElementInstance,
     FormElements,
 } from '../FormElement';
+import { router } from '@inertiajs/react';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
@@ -30,18 +31,19 @@ import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
-const extraAttributes = {
-    text: 'Please enter a text',
+const field = {
+    label: 'Please enter a text',
+    is_required: false,
 };
 
-const schema = z.object({ text: z.string() });
+const schema = z.object({ label: z.string(), is_required: z.boolean() });
 
 const Body: FormElement = {
     type: 'body',
     construct: (id) => ({
         id,
         type: 'body',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -53,9 +55,7 @@ type DesignerComponentProps = {
 function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
-    const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
-    };
+    const elementInstance = element as FormElementInstance;
 
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
 
@@ -67,6 +67,15 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
+    const handleRemoveField = () => {
+        if (typeof element.id === 'string')
+            return removeField(current_page_id, element.id);
+
+        router.delete(`/admin/form/fields/${element.id}`, {
+            onSuccess: () => removeField(current_page_id, element.id),
+        });
+    };
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -76,16 +85,14 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     data={fieldTypes}
                     onValueChange={handleValueChange}
                 />
-                <button
-                    onClick={() => removeField(current_page_id, element.id)}
-                >
+                <button onClick={handleRemoveField}>
                     <DeleteIcon />
                 </button>
             </div>
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px] font-normal'>
-                    {elementInstance.extraAttributes.text}
+                    {elementInstance.label}
                 </Label>
             </div>
         </div>
@@ -99,7 +106,7 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
@@ -107,13 +114,14 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 
     return (
-        <AccordionItem value={element.id} className='border-0'>
+        <AccordionItem value={element.id.toString()} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
                 {currentFieldType && (
                     <PropertyEditorHandle
@@ -130,7 +138,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                         className='space-y-2'
                     >
                         <FormField
-                            name='text'
+                            name='label'
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem className='rounded-lg bg-white px-4 py-3'>

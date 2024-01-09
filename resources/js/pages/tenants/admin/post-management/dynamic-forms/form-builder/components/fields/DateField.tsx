@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ReactNode } from 'react';
+import { router } from '@inertiajs/react';
 import { CalendarIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
@@ -39,16 +40,20 @@ import FieldTypeChanger from '../FieldTypeChanger';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import PropertyEditorHandle from '../PropertyEditorHandle';
 
-const extraAttributes = {
+const field = {
     is_required: false,
     label: 'Please enter date',
-    type: 'date',
+    data: {
+        type: 'date',
+    },
 };
 
 const schema = z.object({
     is_required: z.boolean(),
     label: z.string(),
-    type: z.string(),
+    data: z.object({
+        type: z.string(),
+    }),
 });
 
 const DateField: FormElement = {
@@ -56,7 +61,7 @@ const DateField: FormElement = {
     construct: (id) => ({
         id,
         type: 'date',
-        extraAttributes,
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -92,7 +97,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
     const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
+        data: typeof field.data;
     };
 
     const { fieldTypes, currentFieldType } = useFieldTypes(element.type);
@@ -105,6 +110,15 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
+    const handleRemoveField = () => {
+        if (typeof element.id === 'string')
+            return removeField(current_page_id, element.id);
+
+        router.delete(`/admin/form/fields/${element.id}`, {
+            onSuccess: () => removeField(current_page_id, element.id),
+        });
+    };
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -114,18 +128,14 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <button
-                    onClick={() => removeField(current_page_id, element.id)}
-                >
+                <button onClick={handleRemoveField}>
                     <DeleteIcon />
                 </button>
             </div>
             <Separator className='my-2' />
             <div className='pointer-events-none space-y-2'>
-                <Label className='text-[20px]'>
-                    {elementInstance.extraAttributes.label}
-                </Label>
-                {DesignerElementMap[elementInstance.extraAttributes.type]}
+                <Label className='text-[20px]'>{elementInstance.label}</Label>
+                {DesignerElementMap[elementInstance.data.type]}
             </div>
         </div>
     );
@@ -137,7 +147,7 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
@@ -145,13 +155,14 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 
     return (
-        <AccordionItem value={element.id} className='border-0'>
+        <AccordionItem value={element.id.toString()} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
                 {currentFieldType && (
                     <PropertyEditorHandle
@@ -183,7 +194,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                             )}
                         />
                         <FormField
-                            name='type'
+                            name='data.type'
                             control={form.control}
                             render={({ field }) => {
                                 return (

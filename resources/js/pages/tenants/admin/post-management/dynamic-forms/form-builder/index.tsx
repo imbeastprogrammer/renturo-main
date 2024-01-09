@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import {
     DndContext,
     PointerSensor,
@@ -11,6 +11,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 
+import { useSearchParams } from '@/hooks/useSearchParams';
 import { toolboxItems } from './components/toolboxItems';
 import Toolbox from './components/Toolbox';
 import Dropzone from './components/Dropzone';
@@ -39,7 +40,9 @@ export type FormFields = FormbuilderForm['custom_fields'][0] & { id: string };
 
 function FormBuilder() {
     const sidebar = useMenuToggle();
-    const [active, setActive] = useState('pages');
+    const { searchParams } = useSearchParams();
+    const { pathname } = window.location;
+    const active = searchParams.get('active') || 'pages';
 
     const touchSensor = useSensor(TouchSensor, {
         activationConstraint: {
@@ -66,7 +69,9 @@ function FormBuilder() {
                         <Tabs
                             defaultValue={active}
                             className='grid grid-rows-[auto_1fr] overflow-auto bg-white p-6'
-                            onValueChange={setActive}
+                            onValueChange={(value) =>
+                                router.replace(`${pathname}?active=${value}`)
+                            }
                         >
                             <TabsList className='h-max w-full rounded-full'>
                                 <TabsTrigger

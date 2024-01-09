@@ -16,28 +16,36 @@ import RatingField from './fields/RatingField';
 export type ElementsType =
     | 'heading'
     | 'body'
-    | 'text-field'
+    | 'text'
     | 'textarea'
     | 'number'
     | 'email'
     | 'date'
     | 'time'
-    | 'dropdown'
+    | 'select'
     | 'checkbox'
     | 'radio'
     | 'checklist'
-    | 'attachment'
-    | 'rating';
+    | 'rating'
+    | 'file';
+// | 'password'
+// | 'multiselect'
+// | 'attachment'
+// | 'hidden'
+// | 'color'
+// | 'url';
 
 export type FormElementInstance = {
-    id: string;
+    id: string | number;
     type: ElementsType;
-    extraAttributes?: Record<string, any>;
+    label: string;
+    is_required: boolean;
+    data?: Record<string, any>;
 };
 
 export type FormElement = {
     type: ElementsType;
-    construct: (id: string) => FormElementInstance;
+    construct: (id: string | number) => FormElementInstance;
     designerComponent: React.FC<{
         element: FormElementInstance;
     }>;
@@ -53,16 +61,16 @@ type FormElementsType = {
 export const FormElements: FormElementsType = {
     heading: Heading,
     body: Body,
-    'text-field': TextField,
+    text: TextField,
     textarea: TextAreaField,
     number: NumberField,
     email: EmailField,
     date: DateField,
     time: TimeField,
-    dropdown: DropdownField,
+    select: DropdownField,
     checkbox: CheckboxField,
     checklist: ChecklistField,
     radio: RadioField,
-    attachment: AttachmentField,
+    file: AttachmentField,
     rating: RatingField,
 };

@@ -5,6 +5,7 @@ import {
     FormElementInstance,
     FormElements,
 } from '../FormElement';
+import { router } from '@inertiajs/react';
 import { UploadIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
@@ -38,28 +39,32 @@ import PropertyEditorHandle from '../PropertyEditorHandle';
 import useFieldTypes from '../../hooks/useFieldTypes';
 import FieldTypeChanger from '../FieldTypeChanger';
 
-const extraAttributes = {
+const field = {
     is_required: false,
     label: 'Attach File here',
-    allow_only_specific_file_types: false,
-    maximum_number_of_files: '1',
-    maximum_file_size: '10mb',
+    data: {
+        allow_only_specific_file_types: false,
+        maximum_number_of_files: '1',
+        maximum_file_size: '10mb',
+    },
 };
 
 const schema = z.object({
     is_required: z.boolean(),
     label: z.string(),
-    allow_only_specific_file_types: z.boolean(),
-    maximum_number_of_files: z.string(),
-    maximum_file_size: z.string(),
+    data: z.object({
+        allow_only_specific_file_types: z.boolean(),
+        maximum_number_of_files: z.string(),
+        maximum_file_size: z.string(),
+    }),
 });
 
 const AttachmentField: FormElement = {
-    type: 'attachment',
+    type: 'file',
     construct: (id) => ({
         id,
-        type: 'attachment',
-        extraAttributes,
+        type: 'file',
+        ...field,
     }),
     designerComponent: DesignerComponent,
     propertiesComponent: PropertiesComponent,
@@ -72,7 +77,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
     const { removeField, setSelectedField, updateField, current_page_id } =
         useFormBuilder();
     const elementInstance = element as FormElementInstance & {
-        extraAttributes: typeof extraAttributes;
+        data: typeof field.data;
     };
 
     const { currentFieldType, fieldTypes } = useFieldTypes(element.type);
@@ -85,6 +90,15 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         );
     };
 
+    const handleRemoveField = () => {
+        if (typeof element.id === 'string')
+            return removeField(current_page_id, element.id);
+
+        router.delete(`/admin/form/fields/${element.id}`, {
+            onSuccess: () => removeField(current_page_id, element.id),
+        });
+    };
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -94,17 +108,13 @@ function DesignerComponent({ element }: DesignerComponentProps) {
                     onValueChange={handleValueChange}
                     data={fieldTypes}
                 />
-                <button
-                    onClick={() => removeField(current_page_id, element.id)}
-                >
+                <button onClick={handleRemoveField}>
                     <DeleteIcon />
                 </button>
             </div>
             <Separator className='my-2' />
             <div className='space-y-2'>
-                <Label className='text-[20px]'>
-                    {elementInstance.extraAttributes.label}
-                </Label>
+                <Label className='text-[20px]'>{elementInstance.label}</Label>
                 <div className='flex w-max gap-8 rounded-lg bg-[#2E3436]/10 p-2 px-4 text-[15px]'>
                     Attach File <UploadIcon />
                 </div>
@@ -119,7 +129,7 @@ type PropertiesComponentProps = {
 function PropertiesComponent({ element }: PropertiesComponentProps) {
     const { updateField, current_page_id } = useFormBuilder();
     const form = useForm<z.infer<typeof schema>>({
-        defaultValues: element.extraAttributes,
+        defaultValues: element,
         resolver: zodResolver(schema),
     });
 
@@ -127,13 +137,14 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
 
     const applyChanges = form.handleSubmit((values) => {
         updateField(current_page_id, element.id, {
-            ...element,
-            extraAttributes: { ...values },
+            id: element.id,
+            type: element.type,
+            ...values,
         });
     });
 
     return (
-        <AccordionItem value={element.id} className='border-0'>
+        <AccordionItem value={element.id.toString()} className='border-0'>
             <AccordionTrigger className='mb-2 rounded-lg bg-white p-3 px-4'>
                 {currentFieldType && (
                     <PropertyEditorHandle
@@ -179,7 +190,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                         <div className='space-y-2 rounded-lg bg-white px-4 py-2'>
                             <h1 className='mb-4'>Settings</h1>
                             <FormField
-                                name='allow_only_specific_file_types'
+                                name='data.allow_only_specific_file_types'
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem className='flex items-center justify-between space-y-0'>
@@ -196,7 +207,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                                 )}
                             />
                             <FormField
-                                name='maximum_number_of_files'
+                                name='data.maximum_number_of_files'
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem className='flex items-center justify-between gap-4 space-y-0'>
@@ -234,7 +245,7 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
                                 )}
                             />
                             <FormField
-                                name='maximum_file_size'
+                                name='data.maximum_file_size'
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem className='flex items-center justify-between gap-4 space-y-0'>
