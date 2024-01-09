@@ -90,7 +90,9 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         if (typeof element.id === 'string')
             return removeField(current_page_id, element.id);
 
-        router.delete(`/admin/form/fields/${element.id}`);
+        router.delete(`/admin/form/fields/${element.id}`, {
+            onSuccess: () => removeField(current_page_id, element.id),
+        });
     };
 
     return (
