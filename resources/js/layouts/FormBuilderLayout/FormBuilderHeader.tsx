@@ -85,7 +85,7 @@ function FormBuilderHeader() {
     };
 
     useEffect(() => {
-        setPage(dynamicForm.dynamic_form_pages?.[0].id);
+        setPage(dynamicForm.dynamic_form_pages?.[0]?.id);
         setPages(
             dynamicForm.dynamic_form_pages.map((page) => ({
                 page_id: page.id,
