@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormSubmissionController;
 use App\Http\Controllers\Api\V1\Tenants\Client\BankController;
 use App\Http\Controllers\API\V1\Tenants\Client\CategoryController;
+use App\Http\Controllers\API\V1\Tenants\Client\MessageController;
+use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
 
 Route::middleware([
     'api',
@@ -51,6 +53,19 @@ Route::middleware([
 
             Route::get('/categories', [CategoryController::class, 'index']);
             Route::get('/categories/search', [CategoryController::class, 'search']);
+
+            Route::resource('/chats', ChatController::class);
+            Route::delete('/chats/{chat}/leave', [ChatController::class, 'leaveChat']);
+            Route::delete('/chats/{chat}/delete', [ChatController::class, 'deleteChat']);
+            Route::post('/chats/{chat}/add/participants', [ChatController::class, 'addParticipants']);
+            Route::delete('/chats/{chat}/remove/participants', [ChatController::class, 'removeParticipants']);
+
+            Route::post('/messages', [MessageController::class, 'sendMessage']);
+            
+            // Route::get('/messages', 'MessageController@getMessages');
+            // Route::post('/messages/read', 'MessageController@markAsRead');
+            // Route::post('/typing', 'MessageController@userTyping');
+
 
         });
     });

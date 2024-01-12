@@ -116,4 +116,12 @@ class User extends Authenticatable
     public function deletedByUser() {
         return $this->hasMany(User::class, 'id', 'deleted_by');
     }
+
+    /**
+     * The chats that the user belongs to.
+     */
+    public function chats()
+    {
+        return $this->belongsToMany(Chat::class)->withPivot('is_admin');
+    }
 }
