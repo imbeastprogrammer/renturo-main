@@ -8,8 +8,8 @@ type ErrorProps = {
 
 function Error({ title, description, onClose }: ErrorProps) {
     return (
-        <div className='relative flex min-w-[350px] -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
-            <div className='grid h-[58px] w-[58px] place-items-center rounded-full bg-red-500 text-white'>
+        <div className='relative flex min-w-[350px] max-w-lg -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
+            <div className='grid h-[58px] w-[58px] flex-shrink-0 place-items-center rounded-full bg-red-500 text-white'>
                 <XIcon className='h-[40px] w-[40px]' />
             </div>
             <div>

@@ -8,8 +8,8 @@ type SuccessProps = {
 
 function Success({ title, description, onClose }: SuccessProps) {
     return (
-        <div className='relative flex min-w-[350px] -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
-            <CheckIcon className='h-[40px] w-[40px] text-green-500' />
+        <div className='relative flex min-w-[350px] max-w-lg -translate-x-2 -translate-y-2 items-center gap-4 rounded-lg border bg-white p-4 shadow-lg'>
+            <CheckIcon className='h-[40px] w-[40px] flex-shrink-0 text-green-500' />
             <div>
                 <h1 className='text-base font-semibold'>
                     {title || 'Success'}
