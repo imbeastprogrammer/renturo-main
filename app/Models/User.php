@@ -124,4 +124,15 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Chat::class)->withPivot('is_admin');
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

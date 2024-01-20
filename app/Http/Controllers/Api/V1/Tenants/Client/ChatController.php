@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\BaseApiController;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Events\Chat\UserTyping;
 
 class ChatController extends BaseApiController
 {
@@ -239,5 +240,14 @@ class ChatController extends BaseApiController
                     ->where('users.id', $userId)
                     ->wherePivot('is_admin', true)
                     ->exists();
+    }
+
+    public function userTyping(Request $request, $chatId) {
+
+        $user = auth()->user();
+
+        broadcast(new UserTyping($user, $chatId));
+
+        return $this->sendSuccessResponse($chatId, 'User typing event broadcasted', 200);
     }
 }

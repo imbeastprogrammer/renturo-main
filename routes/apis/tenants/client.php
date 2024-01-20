@@ -59,10 +59,13 @@ Route::middleware([
             Route::delete('/chats/{chat}/delete', [ChatController::class, 'deleteChat']);
             Route::post('/chats/{chat}/add/participants', [ChatController::class, 'addParticipants']);
             Route::delete('/chats/{chat}/remove/participants', [ChatController::class, 'removeParticipants']);
+            Route::post('/chats/{chat}/typing', [ChatController::class, 'userTyping']);
 
             Route::post('/messages', [MessageController::class, 'sendMessage']);
-            
-            // Route::get('/messages', 'MessageController@getMessages');
+            Route::put('/messages/{message}/read', [MessageController::class, 'markAsRead']);
+            Route::get('/messages/{chatId}/get', [MessageController::class, 'getMessages']);
+            Route::delete('/messages/{message}/delete', [MessageController::class, 'deleteMessage']);
+
             // Route::post('/messages/read', 'MessageController@markAsRead');
             // Route::post('/typing', 'MessageController@userTyping');
 
