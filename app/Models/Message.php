@@ -23,4 +23,10 @@ class Message extends Model
     public function chat(){
         return $this->belongsTo(Chat::class);
     }
+
+    public function reads()
+    {
+        return $this->hasMany(MessageRead::class);
+    }
+
 }

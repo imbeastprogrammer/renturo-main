@@ -2,6 +2,7 @@
 
 namespace App\Events\Chat;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -14,35 +15,17 @@ class UserTyping
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $user;
     public $chatId;
-    public $userId;
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct($chatId, $userId)
+
+    public function __construct(User $user, $chatId)
     {
+        $this->user = $user;
         $this->chatId = $chatId;
-        $this->userId = $userId;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.'. $this->chatId);
-    }
-    /**
-     * Get the data to broadcast.
-     *
-     * @return array
-     */
-    public function broadcastWith()
-    {
-        return ['userId' => $this->userId];
+        return new PrivateChannel('chat.' . $this->chatId);
     }
 }
