@@ -79,7 +79,7 @@ function FormBuilderHeader() {
                 onSuccess: (data) =>
                     toast.success({ description: getSuccessMessage(data) }),
                 onError: (error) =>
-                    toast.error({ description: _.valuesIn(error)[0] }),
+                    toast.error({ description: _.valuesIn(error).join(',') }),
             },
         );
     };
