@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\V1\Tenants\Client\BankController;
 use App\Http\Controllers\API\V1\Tenants\Client\CategoryController;
 use App\Http\Controllers\API\V1\Tenants\Client\MessageController;
 use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
+use App\Http\Controllers\API\V1\ImageUploadController;
+use Database\Factories\ImageFactory;
 
 Route::middleware([
     'api',
@@ -65,10 +67,7 @@ Route::middleware([
             Route::put('/messages/{message}/read', [MessageController::class, 'markAsRead']);
             Route::get('/messages/{chatId}/get', [MessageController::class, 'getMessages']);
             Route::delete('/messages/{message}/delete', [MessageController::class, 'deleteMessage']);
-
-            // Route::post('/messages/read', 'MessageController@markAsRead');
-            // Route::post('/typing', 'MessageController@userTyping');
-
-
+            
+            Route::post('/messages/file-upload', [ImageUploadController::class, 'upload']);
         });
     });
