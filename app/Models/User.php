@@ -135,4 +135,8 @@ class User extends Authenticatable
         return $this->belongsTo(User::class);
     }
 
+    public function dynamicFormAvailabilities()
+    {
+        return $this->hasMany(DynamicFormAvailability::class);
+    }
 }

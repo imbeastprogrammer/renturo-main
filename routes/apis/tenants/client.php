@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\V1\Tenants\Client\BankController;
 use App\Http\Controllers\API\V1\Tenants\Client\CategoryController;
 use App\Http\Controllers\API\V1\Tenants\Client\MessageController;
 use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
+use App\Http\Controllers\API\V1\Tenants\Client\DynamicFormAvailabilityController;
+
 use App\Http\Controllers\API\V1\ImageUploadController;
 use Database\Factories\ImageFactory;
 
@@ -69,5 +71,7 @@ Route::middleware([
             Route::delete('/messages/{message}/delete', [MessageController::class, 'deleteMessage']);
             
             Route::post('/messages/file-upload', [ImageUploadController::class, 'upload']);
+
+            Route::resource('/form-availability', DynamicFormAvailabilityController::class);
         });
     });

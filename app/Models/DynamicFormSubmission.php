@@ -28,4 +28,9 @@ class DynamicFormSubmission extends Model
         return $this->belongsTo(Store::class);
     }
 
+    public function dynamicFormAvailability()
+    {
+        return $this->hasMany(DynamicFormAvailability::class);
+    }
+
 }
