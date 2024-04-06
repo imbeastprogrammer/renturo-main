@@ -29,7 +29,7 @@ class PasswordRequest extends FormRequest
             'password' => [
                 'required',
                 'confirmed',
-                Password::min(16)
+                Password::min(8)
                     ->letters()
                     ->mixedCase()
                     ->numbers()
