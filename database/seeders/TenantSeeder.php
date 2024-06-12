@@ -19,6 +19,9 @@ class TenantSeeder extends Seeder
      */
     public function run()
     {
+
+        $this->command->info('Starting to seed TenantSeeder data...');
+
         $tenantId = Str::lower(Str::random(6));
 
         $tenant = Tenant::create([
@@ -91,6 +94,10 @@ class TenantSeeder extends Seeder
 
             //Passport install
             Artisan::call("tenants:run passport:client --option='personal=personal' --option='name={$tenant->id}' --tenants={$tenant->id}");
+            $output = Artisan::output();
+            $this->command->info("Passport Command TenantSeeder Output: " . $output);
+
+            $this->command->info('Seeding completed for TenantSeeder data.');
         });
     }
 }

@@ -15,10 +15,13 @@ class PasswordController extends Controller
                 'password' => $request->password,
             ]);
 
+            $user = $request->user();
+
             return response()->json([
                 'message' => 'success',
                 'body' => [
-                  'message' => 'Password updated!'
+                  'message' => 'Password updated!',
+                  'user' => $user,
                 ]
             ], 200);
 

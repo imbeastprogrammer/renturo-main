@@ -14,8 +14,12 @@ class TenantDatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->command->info('Starting to seed TenantDatabaseSeeder data...');
+
         $this->call([
             TenantPostSeeder::class
         ]);
+
+        $this->command->info('Seeding completed for TenantDatabaseSeeder data.');
     }
 }

@@ -16,8 +16,12 @@ class TenantPostSeeder extends Seeder
      */
     public function run()
     {
+        $this->command->info('Starting to seed TenantPostSeeder data...');
+
         Post::factory(10)
             ->has(Image::factory()->count(5))
             ->create();
+
+        $this->command->info('Seeding completed for TenantPostSeeder data.');
     }
 }

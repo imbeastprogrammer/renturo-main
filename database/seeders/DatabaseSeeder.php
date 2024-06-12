@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Central\User;
+use Illuminate\Support\Facades\Log;
 use Artisan;
 use Str;
 
@@ -17,21 +18,53 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Artisan::call("passport:client --personal");
 
-        User::create([
-            'first_name' => fake()->firstName(),
-            'last_name' => fake()->lastName(),
-            'email' => 'super-admin@renturo.test',
-            'role' => 'SUPER-ADMIN',
-            'email_verified_at' => now(),
-            'password' => 'password',
-            'remember_token' => Str::random(10),
-            'mobile_number' => '0000 0000 000'
-        ]);
+        try {
+            $this->command->info('Starting to seed DatabaseSeeder data...');
 
-        $this->call([
-            TenantSeeder::class
-        ]);
+            Artisan::call('passport:client', [
+                '--personal' => true,
+                '--name' => 'Renturo Personal Access Client'  // Provide a default name to avoid user interaction
+            ]);
+            
+            $output = Artisan::output();
+            $this->command->info("Passport Command DatabaseSeeder Output: " . $output);
+    
+            // Artisan::call("passport:client --personal");
+    
+            User::create(
+                [
+                    'first_name' => fake()->firstName(),
+                    'last_name' => fake()->lastName(),
+                    'email' => 'super-admin@renturo.test',
+                    'role' => 'SUPER-ADMIN',
+                    'email_verified_at' => now(),
+                    'password' => 'password',
+                    'remember_token' => Str::random(10),
+                    'mobile_number' => '0000 0000 001'
+                ],
+            );
+            User::create(
+                [
+                    'first_name' => fake()->firstName(),
+                    'last_name' => fake()->lastName(),
+                    'email' => 'super-admin-2@renturo.test',
+                    'role' => 'SUPER-ADMIN',
+                    'email_verified_at' => now(),
+                    'password' => 'password',
+                    'remember_token' => Str::random(10),
+                    'mobile_number' => '0000 0000 002'
+                ],
+            );
+    
+            $this->call([
+                TenantSeeder::class
+            ]);
+    
+            $this->command->info('Seeding completed for DatabaseSeeder data.');
+
+        } catch (\Exception $e) {
+            Log::error("Failed to execute passport:client --personal: " . $e->getMessage());
+        }
     }
 }
