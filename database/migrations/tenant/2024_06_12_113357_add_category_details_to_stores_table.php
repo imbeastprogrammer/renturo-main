@@ -27,8 +27,8 @@ return new class extends Migration
             $table->foreign('sub_category_id')->references('id')->on('sub_categories')->onUpdate('cascade')->onDelete('cascade');
 
             // If sub_category must always be related to the category, consider adding:
-            // $table->foreign('sub_category_id')->references('id')->on('sub_categories')
-            //     ->where('category_id', 'stores.category_select');
+            $table->foreign('sub_category_id')->references('id')->on('sub_categories')
+                ->where('category_id', 'stores.category_select');
         });
     }
 
