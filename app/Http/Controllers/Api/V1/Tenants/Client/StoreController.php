@@ -129,7 +129,7 @@ class StoreController extends Controller
         if (!$store) { 
             return response()->json([
                'message' => 'failed',
-                'errors' => 'Store not found.'
+               'errors' => 'Store not found.'
             ], 404);
         }
 

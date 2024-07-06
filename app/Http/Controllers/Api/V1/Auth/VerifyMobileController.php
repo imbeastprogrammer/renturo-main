@@ -13,6 +13,8 @@ use Auth;
 
 class VerifyMobileController extends Controller
 {
+
+    // To create mobile verification for authenticated user
     public function store()
     {
         try {
@@ -50,6 +52,7 @@ class VerifyMobileController extends Controller
         }
     }
 
+    // To update mobile verification code for authenticated user
     public function update(Request $request)
     {
         try {

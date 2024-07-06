@@ -19,52 +19,36 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        try {
-            $this->command->info('Starting to seed DatabaseSeeder data...');
+        $this->command->info('Starting to seed DatabaseSeeder data...');
 
-            Artisan::call('passport:client', [
-                '--personal' => true,
-                '--name' => 'Renturo Personal Access Client'  // Provide a default name to avoid user interaction
-            ]);
-            
-            $output = Artisan::output();
-            $this->command->info("Passport Command DatabaseSeeder Output: " . $output);
-    
-            // Artisan::call("passport:client --personal");
-    
-            User::create(
-                [
-                    'first_name' => fake()->firstName(),
-                    'last_name' => fake()->lastName(),
-                    'email' => 'super-admin@renturo.test',
-                    'role' => 'SUPER-ADMIN',
-                    'email_verified_at' => now(),
-                    'password' => 'password',
-                    'remember_token' => Str::random(10),
-                    'mobile_number' => '0000 0000 001'
-                ],
-            );
-            User::create(
-                [
-                    'first_name' => fake()->firstName(),
-                    'last_name' => fake()->lastName(),
-                    'email' => 'super-admin-2@renturo.test',
-                    'role' => 'SUPER-ADMIN',
-                    'email_verified_at' => now(),
-                    'password' => 'password',
-                    'remember_token' => Str::random(10),
-                    'mobile_number' => '0000 0000 002'
-                ],
-            );
-    
-            $this->call([
-                TenantSeeder::class
-            ]);
-    
-            $this->command->info('Seeding completed for DatabaseSeeder data.');
+        Artisan::call('passport:client', [
+            '--personal' => true,
+            '--name' => 'Renturo Personal Access Client'  // Provide a default name to avoid user interaction
+        ]);
+        
+        $output = Artisan::output();
+        $this->command->info("Passport Command DatabaseSeeder Output: " . $output);
 
-        } catch (\Exception $e) {
-            Log::error("Failed to execute passport:client --personal: " . $e->getMessage());
-        }
+        // Artisan::call("passport:client --personal");
+
+        User::create(
+            [
+                'first_name' => fake()->firstName(),
+                'last_name' => fake()->lastName(),
+                'email' => 'super-admin@renturo.test',
+                'role' => 'SUPER-ADMIN',
+                'email_verified_at' => now(),
+                'password' => 'password',
+                'remember_token' => Str::random(10),
+                'mobile_number' => '0000 0000 001'
+            ],
+        );
+
+        $this->call([
+            TenantSeeder::class
+        ]);
+
+        $this->command->info('Seeding completed for DatabaseSeeder data.');
+
     }
 }

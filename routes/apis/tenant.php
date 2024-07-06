@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\Auth\VerifyMobileController;
+use App\Http\Controllers\Api\V1\UserManagementController;
 
 use App\Http\Controllers\Api\V1\Tenants\StoreController;
 
@@ -36,9 +37,11 @@ Route::middleware([
         });
               
         Route::middleware(['auth:api', 'verifiedMobileNumber'])->group(function () {
-        Route::get('/user', function (Request $request) {
-            return $request->user();
-        });
+           
+            Route::get('/user', function (Request $request) {
+                return $request->user();
+            });
+
             Route::put('/password', [PasswordController::class, 'update']);
             Route::delete('logout', [LoginController::class, 'logout']);
 
@@ -47,4 +50,6 @@ Route::middleware([
             // Route::put('/store/{id}', [StoreController::class, 'update']);
             // Route::get('/store/{id}', [StoreController::class, 'show']);
         });
+
+        Route::post('/user/retrieve', [UserManagementController::class, 'retrieveUser']);
     });
