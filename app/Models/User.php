@@ -33,6 +33,7 @@ class User extends Authenticatable
         'email',
         'username',
         'mobile_number',
+        'mpin',
         'password',
         'created_by',
         'updated_by',

@@ -44,6 +44,9 @@ Route::middleware([
 
             Route::put('/password', [PasswordController::class, 'update']);
             Route::delete('logout', [LoginController::class, 'logout']);
+            
+            Route::post('/user-management/mpin/update', [UserManagementController::class, 'updateMPIN']);
+            Route::post('/user-management/mpin/get', [UserManagementController::class, 'getMPIN']);
 
             // Route::get('/store', [StoreController::class, 'index']);
             // Route::post('/store', [StoreController::class, 'store']);
@@ -51,5 +54,6 @@ Route::middleware([
             // Route::get('/store/{id}', [StoreController::class, 'show']);
         });
 
-        Route::post('/user/retrieve', [UserManagementController::class, 'retrieveUser']);
+        Route::post('/user-management/user/retrieve', [UserManagementController::class, 'retrieve']);
+
     });

@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserManagementController extends Controller
 {
-    public function retrieveUser(Request $request)
+    public function retrieve(Request $request)
     {
         $input = $request->input('username');
 
@@ -66,5 +67,79 @@ class UserManagementController extends Controller
                 'access_token' => $accessToken
             ]
         ], 200);
+    }
+
+    public function updateMPIN(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mpin' => 'required|digits:4'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Retrieve the ID of the currently authenticated user
+        $userId = auth()->id();
+
+        // Encrypt MPIN before storing it for security reasons
+        $encryptedMPIN = bcrypt($request->input('mpin'));
+
+        // Update the user's MPIN securely with the update method
+        $updated = User::where('id', $userId)->update([
+            'mpin' => $encryptedMPIN
+        ]);
+
+        if ($updated) {
+            return response()->json([
+                'message' => 'success',
+                'body' => [
+                    'message' => 'MPIN has successfully updated!',
+                    'data' => [],
+                ]
+            ], 200);
+            
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Unable to update MPIN',
+            ], 422);
+        }
+    }
+
+    public function getMPIN(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mpin' => 'required|digits:4',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Retrieve the authenticated user
+        $user = $request->user();
+
+        // Check if the MPIN matches
+        if (!empty($user->mpin) && Hash::check($request->input('mpin'), $user->mpin)) {
+            return response()->json([
+                'message' => 'success',
+                'body' => [
+                    'message' => 'MPIN has successfully verified!',
+                    'data' => [],
+                ]
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'MPIN verification failed!',
+            ], 422);
+        }
     }
 }
