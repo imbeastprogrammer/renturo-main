@@ -36,7 +36,22 @@ class CreateStoreRequest extends FormRequest
                 }),
             ],
             'url' => 'max:100|unique:stores,url',
-            'logo' => 'nullable|string'
+            'logo' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'sub_category_id' => [
+                'required',
+                'exists:sub_categories,id',
+                // Ensure sub_category belongs to the specified category
+                Rule::exists('sub_categories', 'id')->where(function ($query) {
+                    $query->where('category_id', $this->category_id);
+                }),
+            ],
+            'address' => 'nullable|string',
+            'city' => 'nullable|string',
+            'state' => 'nullable|string',
+            'zip_code' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ];
     }
 
