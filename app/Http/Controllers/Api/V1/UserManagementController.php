@@ -138,7 +138,48 @@ class UserManagementController extends Controller
         } else {
             return response()->json([
                 'message' => 'failed',
-                'errors' => 'MPIN verification failed!',
+                'errors' => 'Invalid code. Please try again.',
+            ], 422);
+        }
+    }
+
+    public function resetMPIN(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mpin' => 'required|digits:4'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Retrieve the ID of the currently authenticated user
+        $userId = auth()->id();
+
+        // Encrypt MPIN before storing it for security reasons
+        $encryptedMPIN = bcrypt($request->input('mpin'));
+
+        // Update the user's MPIN securely with the update method
+        $updated = User::where('id', $userId)->update([
+            'mpin' => $encryptedMPIN
+        ]);
+
+        if ($updated) {
+            return response()->json([
+                'message' => 'success',
+                'body' => [
+                    'message' => 'MPIN has successfully updated!',
+                    'data' => [],
+                ]
+            ], 200);
+            
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Unable to update MPIN',
             ], 422);
         }
     }
