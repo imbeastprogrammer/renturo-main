@@ -150,13 +150,13 @@ class StoreController extends Controller
         $userId = $request->user()->id;
 
         // Retrieve all banks associated with the authenticated user
-        $stores = Store::where('user_id', $userId)->get();
+        $stores = Store::with(['category', 'subCategory'])->where('user_id', $userId)->get();
 
         // Check if any bank records were found
         if ($stores->isEmpty()) {
             return response()->json([
                 'message' => 'failed',
-                'errors' => 'No store found.'
+                'errors' => 'Store not found.'
             ], 404); 
         }
 

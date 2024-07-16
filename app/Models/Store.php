@@ -34,4 +34,11 @@ class Store extends Model
         return $this->hasMany(DynamicFormSubmission::class);
     }
 
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function subCategory() {
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
+    }
 }
