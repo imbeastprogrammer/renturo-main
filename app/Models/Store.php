@@ -22,6 +22,7 @@ class Store extends Model
         'zip_code',
         'latitude',
         'longitude',
+        'about'
     ];
 
     public function users() {

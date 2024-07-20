@@ -39,7 +39,7 @@ class UpdateStoreRequest extends FormRequest
                     return $query->where('user_id', Auth::id());
                 })->ignore($storeId)
             ],
-            'url' => 'max:100|unique:stores,url',
+            'url' => 'max:100|unique:stores,url,'.$storeId,
             'logo' => 'nullable|string'
         ];
     }

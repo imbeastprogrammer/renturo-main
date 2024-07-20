@@ -46,7 +46,16 @@ class CreateStoreRequest extends FormRequest
                     $query->where('category_id', $this->category_id);
                 }),
             ],
-            'address' => 'nullable|string',
+            'address' => [
+                'required',
+                'string',
+                'max:1000'
+            ],
+            'about' => [
+                'required',
+                'string',
+                'max:1000'
+            ],
             'city' => 'nullable|string',
             'state' => 'nullable|string',
             'zip_code' => 'nullable|string',
@@ -64,8 +73,8 @@ class CreateStoreRequest extends FormRequest
         // Generate a random url for the store
         $url = rand(10000000000000, 99999999999999);
 
-        $this->merge([
-            'url' => $url
-        ]);
+        // $this->merge([
+        //     'url' => $url
+        // ]);
     }
 }

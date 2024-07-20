@@ -58,7 +58,14 @@ class StoreController extends Controller
      */
     public function show($id)
     {
-        $store = Auth::user()->store()->find($id);
+        
+        // $store = Auth::user()->store()->find($id);
+
+        // Retrieve the authenticated user's ID
+        $userId = Auth::user()->id;
+
+        // Retrieve all store with the authenticated user
+        $store = Store::with(['category', 'subCategory'])->where('user_id', $userId)->first();
 
         if (!$store) { 
             return response()->json([
