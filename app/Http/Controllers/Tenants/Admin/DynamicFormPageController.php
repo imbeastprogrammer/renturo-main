@@ -18,6 +18,12 @@ class DynamicFormPageController extends Controller
      */
     public function index(Request $request)
     {
+
+        return response()->json([
+            "status" => "success",
+            "message" => "Dynamic form page was successfully fetched.",
+            "data" => 'index'
+        ], 201);
         $formPages = DynamicFormPage::with([
             "dynamicForm.subCategory", 
             "dynamicFormFields"
@@ -218,6 +224,7 @@ class DynamicFormPageController extends Controller
 
     public function search(Request $request)
     {
+
         $query = DynamicFormPage::query();
 
         $searchTerm = $request->form_page_search;

@@ -225,7 +225,7 @@ class DynamicFormFieldController extends Controller
             // For JSON request, return a success response
             if ($request->expectsJson()) {
                 return response()->json([
-                    "status" => "success",
+                    "status" => "failed",
                     "message" => "Failed to update fields." . $e->getMessage()
                 ], 500);
             }
