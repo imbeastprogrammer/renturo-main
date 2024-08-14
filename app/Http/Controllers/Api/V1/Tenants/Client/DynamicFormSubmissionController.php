@@ -50,6 +50,8 @@ class DynamicFormSubmissionController extends Controller
         // Check if the user has already made a submission for this form
         $existingSubmission = DynamicFormSubmission::where('user_id', $userId)
             ->where('dynamic_form_id', $formId)
+            ->where('store_id', $request->store_id)
+            ->where('name', $request->name)
             ->first();
     
         if ($existingSubmission) {
@@ -67,9 +69,11 @@ class DynamicFormSubmissionController extends Controller
     
         // Store the data
         $submission = DynamicFormSubmission::create([
-            'store_id' => $request->input('store_id'),
+            'store_id' => $request->store_id,
             'dynamic_form_id' => $formId,
             'user_id' => $userId,
+            'name' => $request->name,
+            'about' => $request->about,
             'data' => json_encode($processedData), // Ensure you're saving the processed data, not the validation rules
         ]);
     

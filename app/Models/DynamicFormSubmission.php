@@ -14,7 +14,9 @@ class DynamicFormSubmission extends Model
         'dynamic_form_id',
         'user_id',
         'store_id',
-        'data'
+        'data',
+        'name',
+        'about'
     ];
 
     public function dynamicForm()
@@ -22,7 +24,6 @@ class DynamicFormSubmission extends Model
         return $this->belongsTo(DynamicForm::class, 'dynamic_form_id');
     }
 
-    // Relationship to Store
     public function store()
     {
         return $this->belongsTo(Store::class);
