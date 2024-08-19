@@ -42,8 +42,11 @@ Route::middleware([
             // Route::put('/password', [PasswordController::class, 'update']);
             // Route::delete('logout', [LoginController::class, 'logout']);
 
-            Route::resource('/store', StoreController::class);
-            Route::get('/store/user/{userId}', [StoreController::class, 'getUserStores']);
+            Route::post('/store', [StoreController::class, 'store']);
+            Route::put('/store/{id}', [StoreController::class, 'update']);
+            Route::get('/store/{id}', [StoreController::class, 'show']);
+            Route::get('/store/{storeId}', [StoreController::class, 'show']);
+            Route::get('/user/stores', [StoreController::class, 'getUserStores']);
 
             Route::get('/form/{formId}', [DynamicFormController::class, 'show']);
 

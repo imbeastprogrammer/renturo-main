@@ -24,6 +24,6 @@ class SubCategory extends Model
     public function dynamicForms()
     {
         // One-to-Many relationship with DynamicForm
-        return $this->hasMany(DynamicForm::class);
+        return $this->hasMany(DynamicForm::class, 'subcategory_id');
     }
 }

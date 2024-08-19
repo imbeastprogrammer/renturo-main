@@ -20,4 +20,9 @@ class Category extends Model
     {
         return $this->hasMany(SubCategory::class);
     }
+
+    public function stores()
+    {
+        return $this->hasMany(Store::class);
+    }
 }

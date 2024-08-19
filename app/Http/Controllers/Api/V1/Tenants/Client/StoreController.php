@@ -28,7 +28,7 @@ class StoreController extends Controller
      */
     public function create()
     {
-        //
+        echo "No query implemented yet";
     }
 
     /**
@@ -56,16 +56,15 @@ class StoreController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($storeId)
     {
-        
-        // $store = Auth::user()->store()->find($id);
-
         // Retrieve the authenticated user's ID
         $userId = Auth::user()->id;
 
         // Retrieve all store with the authenticated user
-        $store = Store::with(['category', 'subCategory'])->where('user_id', $userId)->first();
+        $store = Store::with(['category', 'subCategory'])
+            ->where('id', $storeId) // store id
+            ->where('user_id', $userId)->first();
 
         if (!$store) { 
             return response()->json([
@@ -151,15 +150,16 @@ class StoreController extends Controller
         ], 200);
     }
 
-    public function getUserStores(Request $request) {
+    public function getUserStores() {
 
         // Retrieve the authenticated user's ID
-        $userId = $request->user()->id;
+        $userId = Auth::user()->id;
 
-        // Retrieve all banks associated with the authenticated user
-        $stores = Store::with(['category', 'subCategory'])->where('user_id', $userId)->get();
+        // Retrieve all stores associated with the authenticated user
+        $stores = Store::with(['category', 'subCategory.dynamicForms'])
+            ->where('user_id', $userId)->get();
 
-        // Check if any bank records were found
+        // Check if any stores records were found
         if ($stores->isEmpty()) {
             return response()->json([
                 'message' => 'failed',

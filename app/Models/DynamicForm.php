@@ -40,5 +40,4 @@ class DynamicForm extends Model
     {
         return $this->hasMany(DynamicFormSubmission::class);
     }
-
 }
