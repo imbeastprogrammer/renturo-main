@@ -150,14 +150,22 @@ class StoreController extends Controller
         ], 200);
     }
 
-    public function getUserStores() {
+    public function getUserStores($userId) {
 
         // Retrieve the authenticated user's ID
-        $userId = Auth::user()->id;
+        $authUserId = Auth::user()->id;
+
+        // Compare the UserID on URL against the current authenticated userId
+        if ($authUserId != $userId) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Resource not found.'
+            ], 404); 
+        }
 
         // Retrieve all stores associated with the authenticated user
         $stores = Store::with(['category', 'subCategory.dynamicForms'])
-            ->where('user_id', $userId)->get();
+            ->where('user_id', $authUserId)->get();
 
         // Check if any stores records were found
         if ($stores->isEmpty()) {
