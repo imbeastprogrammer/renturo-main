@@ -46,7 +46,7 @@ class StoreFormSubmissionRequest extends FormRequest
                 },
             ],
             'dynamic_form_id' => 'required|exists:dynamic_forms,id',
-            'dynamic_form_pages' => 'required|array',
+            'dynamic_form_pages' => 'array',
             // This rule ensures that each page ID is within the form's pages
             'dynamic_form_pages.*.dynamic_form_page_id' => [
                 'required',

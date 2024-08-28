@@ -50,9 +50,10 @@ Route::middleware([
 
             Route::resource('/forms', DynamicFormSubmissionController::class);
             Route::post('/forms/{formId}/submit', [DynamicFormSubmissionController::class, 'submit']);
-            Route::get('/forms/user/{userId}', [DynamicFormSubmissionController::class, 'getUserSubmission']);
-            Route::get('/forms/user/{userId}/form/{formId}', [DynamicFormSubmissionController::class, 'getUserFormSubmission']);
-
+            Route::get('/forms/user/{userId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissions']);
+            Route::get('/forms/user/{userId}/store/{storeId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissionByStoreId']);
+            Route::get('/forms/user/{userId}/form/{formId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissionByFormId']);
+            
             Route::resource('/banks', BankController::class);
             Route::get('/user/banks/', [BankController::class, 'getUserBanks']);
 

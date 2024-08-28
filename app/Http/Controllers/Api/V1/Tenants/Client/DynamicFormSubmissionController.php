@@ -292,14 +292,31 @@ class DynamicFormSubmissionController extends Controller
 
     }
     
-    public function getUserSubmission(Request $request, $userId) 
+    public function getUserDynamicFormSubmissions(Request $request, $userId) 
     {
-        $userId = $request->user()->id; // Use authenticated user ID to view their submissions
+
+        $authUserId = $request->user()->id; // Use authenticated user ID to view their submissions
+        
+        // Compare the UserID on URL against the current authenticated userId
+        if ($authUserId != $userId) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Resource not found.'
+            ], 404); 
+        }
         
         // Retrieve all submissions for the specific user
-        $formSubmissions = DynamicFormSubmission::with('dynamicForm.subCategory.category')
+        $formSubmissions = DynamicFormSubmission::with('dynamicForm')
                                                 ->where('user_id', $userId) 
                                                 ->get();
+
+        
+        if (empty($formSubmissions)) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Form submission not found.'
+            ], 404);
+        }
 
         $userSubmissions = [];
         foreach ($formSubmissions as $submission) {
@@ -308,6 +325,8 @@ class DynamicFormSubmissionController extends Controller
                 $userSubmissions[] = [
                     'form_name' => $dynamicForm->name,
                     'form_description' => $dynamicForm->description,
+                    'name' => $submission->name,
+                    'about' => $submission->about,
                     'created_at' => $dynamicForm->created_at,
                     'updated_at' => $dynamicForm->updated_at,
                     'category' => [
@@ -342,16 +361,88 @@ class DynamicFormSubmissionController extends Controller
         ], 200);
     }
 
-    public function getUserFormSubmission(Request $request, $userId, $formId)
+    public function getUserDynamicFormSubmissionByStoreId(Request $request, $userId, $storeId) 
     {
-        $userId = $request->user()->id; // Use authenticated user ID to view their submissions
+
+        $authUserId = $request->user()->id; // Use authenticated user ID to view their submissions
+        
+        // Compare the UserID on URL against the current authenticated userId
+        if ($authUserId != $userId) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Resource not found.'
+            ], 404); 
+        }
+        
+        // Retrieve all submissions for the specific user
+        $formSubmissions = DynamicFormSubmission::with('dynamicForm')
+                                                ->where('user_id', $userId) 
+                                                ->where('store_id', $storeId) 
+                                                ->get();
+
+        if (empty($formSubmissions)) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Form submission not found.'
+            ], 404);
+        }
+
+        $userSubmissions = [];
+        foreach ($formSubmissions as $submission) {
+            $dynamicForm = $submission->dynamicForm;
+            if ($dynamicForm) {
+                $userSubmissions[] = [
+                    'id' => $dynamicForm->id,
+                    'name' => $dynamicForm->name,
+                    'form_description' => $dynamicForm->description,
+                    'category' => [
+                        'id' => $dynamicForm->subCategory->category->id?? null,
+                        'name' => $dynamicForm->subCategory->category->name?? null
+                    ],
+                    'sub_category' => [ 
+                        'id' => $dynamicForm->subCategory->id?? null,
+                        'name' => $dynamicForm->subCategory->name?? null
+                    ],
+                    'dynamic_form_submission' => [
+                        'id' => $submission->id,
+                        'user_id' => $submission->user_id,
+                        'dynamic_form_id' => $submission->dynamic_form_id,
+                        'name' => $submission->name,
+                        'about' => $submission->about,
+                        'created_at' => $submission->created_at,
+                        'updated_at' => $submission->updated_at
+                    ]
+                ];
+            }
+        }
+                                            
+        return response()->json([
+            'message' =>'success',
+            'body' => [
+                'message' => 'Form submissions were fetched successfully.',
+                'data' => $userSubmissions
+            ]
+        ], 200);
+    }
+
+    public function getUserDynamicFormSubmissionByFormId(Request $request, $userId, $formId)
+    {
+        $authUserId = $request->user()->id; // Use authenticated user ID to view their submissions
+
+        // Compare the UserID on URL against the current authenticated userId
+        if ($authUserId != $userId) {
+            return response()->json([
+                'message' => 'failed',
+                'errors' => 'Resource not found.'
+            ], 404); 
+        }
 
         // Retrieve the submission for a specific user and form
         $submission = DynamicFormSubmission::where('user_id', $userId)
             ->where('dynamic_form_id', $formId)
             ->first();
 
-        if (!$submission) {
+        if (empty($submission)) {
             return response()->json([
                 'message' => 'failed',
                 'errors' => 'Form submission not found.'
