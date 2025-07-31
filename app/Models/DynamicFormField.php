@@ -41,7 +41,8 @@ class DynamicFormField extends Model
         'input_field_type',
         'is_required',
         'sort_no',
-        'data'
+        'data',
+        'value'
     ];
 
     protected $casts = [

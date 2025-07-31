@@ -19,39 +19,30 @@ class DynamicFormPageController extends Controller
     public function index(Request $request)
     {
 
-        return response()->json([
-            "status" => "success",
-            "message" => "Dynamic form page was successfully fetched.",
-            "data" => 'index'
-        ], 201);
         $formPages = DynamicFormPage::with([
             "dynamicForm.subCategory", 
             "dynamicFormFields"
-        ])->paginate(15);
-
+        ])->paginate(50);
+    
         $formPagesData = $formPages->map(function ($formPage) {
-
-            // Check if dynamicFormFields is not null
-            $fields = collect($formPage->dynamicFormFields)->map(function ($field) {
-               
-                // Map DynamicFormFields
-                $fields = $formPage->dynamicFormFields->map(function ($field) {
-                    return [
-                        "id" => $field->id,
-                        "user_id" => $field->user_id,
-                        "dynamic_form_page_id" => $field->dynamic_form_page_id,
-                        "input_field_label" => $field->input_field_label,
-                        "input_field_name" => $field->input_field_name,
-                        "input_field_type" => $field->input_field_type,
-                        "is_required" => $field->is_required,
-                        "data" => $field->data,
-                    ];
-                });
+    
+            // Map DynamicFormFields directly
+            $fields = $formPage->dynamicFormFields->map(function ($field) {
+                return [
+                    "id" => $field->id,
+                    "user_id" => $field->user_id,
+                    "dynamic_form_page_id" => $field->dynamic_form_page_id,
+                    "input_field_label" => $field->input_field_label,
+                    "input_field_name" => $field->input_field_name,
+                    "input_field_type" => $field->input_field_type,
+                    "is_required" => $field->is_required,
+                    "data" => $field->data,
+                ];
             });
-            
+    
             // Extract DynamicForm data if available
             $form = optional($formPage->dynamicForm)->toArray();
-
+    
             // Check if DynamicForm has fields and map them
             if ($formPage->dynamicForm && $formPage->dynamicForm->dynamicFields) {
                 $form["fields"] = $formPage->dynamicForm->dynamicFields->map(function ($dynamicField) {
@@ -67,7 +58,7 @@ class DynamicFormPageController extends Controller
                     ];
                 });
             }
-
+    
             // Return the mapped formPage data along with DynamicForm data
             return [
                 "id" => $formPage->id,
@@ -79,9 +70,9 @@ class DynamicFormPageController extends Controller
                 "dynamic_form_fields" => $fields,
             ];
         });
-
+    
         $formPages->setCollection($formPagesData);
-
+    
         // For JSON request, return a success response
         if ($request->expectsJson()) {
             return response()->json([

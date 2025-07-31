@@ -87,6 +87,7 @@ Route::middleware([
 
     Route::post('/form/pages/restore/{id}', [DynamicFormPageController::class, 'restore']);
     Route::get('/form/pages/search/', [DynamicFormPageController::class, 'search']);
+    Route::get('/form/pages/all', [DynamicFormPageController::class, 'index']);
     Route::resource('/form/pages', DynamicFormPageController::class);
 
     Route::post('/form/fields/restore/{id}', [DynamicFormFieldController::class, 'restore']);

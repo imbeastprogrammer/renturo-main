@@ -201,6 +201,8 @@ class DynamicFormSubmissionController extends Controller
     public function edit($id)
     {
         //
+
+        echo "123";
     }
 
     /**
@@ -224,7 +226,9 @@ class DynamicFormSubmissionController extends Controller
         $pagesData = $request->input('dynamic_form_pages', []);
         $processedData = $this->processSubmissionData($pagesData);
 
+     
         if ($existingSubmission) {
+
             // Update the existing submission
             $existingSubmission->data = json_encode($processedData);
             $existingSubmission->store_id = $storeId; // Update the store_id
