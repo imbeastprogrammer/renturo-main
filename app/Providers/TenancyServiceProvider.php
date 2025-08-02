@@ -136,6 +136,12 @@ class TenancyServiceProvider extends ServiceProvider
                 ->group(base_path('routes/tenants/admin.php'));
         }
 
+        if (file_exists(base_path('routes/tenants/owner.php'))) {
+            Route::namespace(static::$controllerNamespace)
+                ->prefix('owner')
+                ->group(base_path('routes/tenants/owner.php'));
+        }
+
         if (file_exists(base_path('routes/tenants/client.php'))) {
             Route::namespace(static::$controllerNamespace)
                 ->prefix('client')

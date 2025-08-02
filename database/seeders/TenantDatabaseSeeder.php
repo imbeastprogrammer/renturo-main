@@ -17,6 +17,7 @@ class TenantDatabaseSeeder extends Seeder
         $this->command->info('Starting to seed TenantDatabaseSeeder data...');
 
         $this->call([
+            TenantFormSystemSeeder::class,
             TenantPostSeeder::class
         ]);
 

@@ -22,10 +22,14 @@ class DynamicFormFieldObserver
      */
     public function creating(DynamicFormField $dynamicFormField)
     {
-        $dynamicFormField->user_id = Auth::user()->id;
+        // Only set user_id if not already set and user is authenticated
+        if (!$dynamicFormField->user_id && Auth::check()) {
+            $dynamicFormField->user_id = Auth::user()->id;
+        }
 
-        if (!$dynamicFormField->sort_no) {
-            $maxSortNo = DynamicFormField::where('dynamic_form_page_id', $this->request->dynamic_form_page_id)
+        // Only auto-set sort_no if not already set and user is authenticated
+        if (!$dynamicFormField->sort_no && Auth::check()) {
+            $maxSortNo = DynamicFormField::where('dynamic_form_page_id', $dynamicFormField->dynamic_form_page_id)
                 ->where('user_id', Auth::user()->id)->max('sort_no') + 1;
 
             $dynamicFormField->sort_no = $maxSortNo;

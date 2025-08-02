@@ -12,7 +12,6 @@ class DynamicForm extends Model
 
     // Fillable properties to protect against mass-assignment
     protected $fillable = [
-        'user_id',
         'name', 
         'description', 
         'subcategory_id'
@@ -30,11 +29,7 @@ class DynamicForm extends Model
         return $this->belongsTo(SubCategory::class, 'subcategory_id');
     }
 
-    public function user()
-    {
-        // Many-to-One relationship with User
-        return $this->belongsTo(User::class);
-    }
+
 
     public function dynamicFormSubmissions()
     {

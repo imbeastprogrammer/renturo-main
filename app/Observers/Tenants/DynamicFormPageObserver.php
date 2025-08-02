@@ -15,11 +15,14 @@ class DynamicFormPageObserver
      */
     public function creating(DynamicFormPage $dynamicFormPage)
     {
-        $dynamicFormPage->user_id = Auth::user()->id;
+        // Only set user_id if not already set and user is authenticated
+        if (!$dynamicFormPage->user_id && Auth::check()) {
+            $dynamicFormPage->user_id = Auth::user()->id;
+        }
 
-        if (!$dynamicFormPage->sort_no) {
+        // Only auto-set sort_no if not already set and user is authenticated
+        if (!$dynamicFormPage->sort_no && Auth::check()) {
             $maxSortNo = DynamicFormPage::where('user_id', Auth::user()->id)->max('sort_no') + 1;
-
             $dynamicFormPage->sort_no = $maxSortNo;
         }
     }

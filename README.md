@@ -1,12 +1,14 @@
-# How to Run a Laravel Project
+# Renturo - Multi-Tenant Business Platform
 
-This README file provides instructions on how to set up and run the project on your local machine.
+This README file provides comprehensive instructions on how to set up and run the Renturo project on your local machine.
 
 ## Tech Stack
 
-**Client:** HTML, CSS, JavaScript, React JS
-
-**Server:** PHP, Laravel
+**Backend:** PHP, Laravel 9.x, Multi-Tenant Architecture
+**Frontend:** React JS, TypeScript, Tailwind CSS, Inertia.js
+**Mobile:** Flutter (Client App)
+**Database:** MySQL with Multi-Tenant Support
+**Queue System:** Laravel Queues with Database Driver
 
 ## Prerequisites
 
@@ -48,28 +50,107 @@ cd your-laravel-project
 composer install
 ```
 
-## Running table migrations
+## Database Setup & Seeding
 
-1. To create the necessary tables in the database with seeder, run the migrations using the following command:
+### Central Database Setup
+1. To create the necessary tables in the central database with seeder, run the migrations using the following command:
 
 ```bash
 php artisan migrate --seed
 ```
 
-2. To seed the tenant's database, run the following command:
+### Tenant Database Setup
+2. To seed the tenant's database with categories, subcategories, and dynamic forms, run the following command:
 
 ```bash
 php artisan tenants:seed
 ```
 
-## Runnning the application
+### Individual Seeders
+You can also run specific seeders individually:
 
+```bash
+# Run all tenant seeders
+php artisan tenants:seed
+
+# Run just the form system (categories + dynamic forms)
+php artisan tenants:seed --class=TenantFormSystemSeeder
+
+# Run categories and subcategories only
+php artisan tenants:seed --class=TenantCategorySeeder
+
+# Run dynamic forms only
+php artisan tenants:seed --class=TenantDynamicFormSeeder
+
+# Run basketball arena form only
+php artisan tenants:seed --class=TenantBasketballArenaFormSeeder
+
+# Run posts seeder only
+php artisan tenants:seed --class=TenantPostSeeder
+```
+
+### Fresh Start (Complete Reset)
+To completely reset and recreate all tenant databases with fresh data:
+
+```bash
+php artisan tenants:migrate-fresh --seed
+```
+
+## Seeder System Overview
+
+### What Gets Created
+
+#### Categories & Subcategories (TenantCategorySeeder)
+- **10 Main Categories**: Sports & Recreation, Food & Dining, Beauty & Wellness, Health & Fitness, Events & Entertainment, Professional Services, Automotive, Home & Garden, Education, Travel & Tourism
+- **100+ Subcategories**: Each category has 10 specific subcategories (e.g., Basketball, Tennis, Swimming under Sports)
+
+#### Dynamic Forms (TenantDynamicFormSeeder)
+- **10 Pre-built Forms**: Basketball Arena, Restaurant Reservation, Salon Appointment, Gym Membership, Event Venue Booking, Tennis Court Booking, Swimming Pool, Spa Treatment, Catering Service, Conference Room
+- **Proper Relationships**: Each form is linked to its appropriate subcategory
+
+#### Basketball Arena Form (TenantBasketballArenaFormSeeder)
+- **Complete Form Structure**: 6 pages with 18 fields
+- **Pages**: Contact Information, Booking Details, Court & Activity, Equipment & Services, Additional Information, Agreement
+- **Field Types**: Text, Email, Date, Time, Number, Select, Checkbox, Radio, Textarea, Attachment, Rating
+- **Business Logic**: Complete basketball arena booking workflow
+
+#### Posts (TenantPostSeeder)
+- **Sample Posts**: Creates sample business listings and posts for testing
+
+### Seeder Dependencies
+```
+TenantDatabaseSeeder
+├── TenantFormSystemSeeder
+│   ├── TenantCategorySeeder (creates categories & subcategories)
+│   └── TenantDynamicFormSeeder (creates dynamic forms)
+├── TenantBasketballArenaFormSeeder (creates complete basketball form)
+└── TenantPostSeeder (creates sample posts)
+```
+
+## Running the Application
+
+### Backend (Laravel)
 1. In your terminal, navigate to the project directory if you're not already there.
 
 2. Use the following command to start the local development server:
 
 ```bash
 php artisan serve
+```
+
+### Frontend (React/Vite)
+3. In a separate terminal, start the frontend development server:
+
+```bash
+npm run dev
+```
+
+### Mobile App (Flutter)
+4. Navigate to the client directory and run the Flutter app:
+
+```bash
+cd ../client
+flutter run --flavor dev -t lib/main_dev.dart
 ```
 
 ## Running Laravel Queues (Do not forget this one)
@@ -124,8 +205,165 @@ If you want to clear all failed jobs from the failed jobs table, you can use the
 php artisan queue:flush
 ```
 
-## For troubleshooting
+## Basketball Arena Form System
 
+### Complete Form Structure
+The Basketball Arena form is a comprehensive booking system with 6 pages and 18 fields:
+
+#### Page 1: Contact Information
+- **Contact Person Name** (text, required)
+- **Phone Number** (text, required)
+- **Email Address** (email, required)
+
+#### Page 2: Booking Details
+- **Preferred Date** (date, required, future dates only)
+- **Start Time** (time, required)
+- **End Time** (time, required, must be after start time)
+- **Duration** (number, 1-8 hours, required)
+
+#### Page 3: Court & Activity
+- **Court Type** (select: Indoor/Outdoor, Full/Half Court)
+- **Court Number** (number, optional, 1-10)
+- **Booking Type** (select: Practice, Game, Tournament, Training)
+- **Number of Players** (number, 1-20, required)
+
+#### Page 4: Equipment & Services
+- **Equipment Needed** (checkboxes: Basketballs, Scoreboard, Referee, First Aid, Water, Towels)
+- **Skill Level** (radio: Beginner, Intermediate, Advanced, Professional)
+
+#### Page 5: Additional Information
+- **Special Requirements** (textarea, optional)
+- **Additional Notes** (textarea, optional)
+- **Team Roster** (file attachment, PDF/DOC, optional)
+
+#### Page 6: Agreement
+- **Terms and Conditions** (checkbox, required)
+- **Arena Rules Agreement** (checkbox, required)
+- **Court Quality Rating** (1-5 stars, optional)
+
+### Field Types Used
+- **Text**: Contact information
+- **Email**: Email validation
+- **Date**: Date picker with validation
+- **Time**: Time picker
+- **Number**: Numeric inputs with min/max
+- **Select**: Dropdown options
+- **Checkbox**: Multiple selections
+- **Radio**: Single choice
+- **Textarea**: Long text input
+- **Attachment**: File upload
+- **Rating**: Star rating system
+
+### Validation Rules
+- **Required fields**: Contact info, booking details, court type, player count, agreements
+- **Date validation**: Future dates only
+- **Time validation**: End time must be after start time
+- **Number ranges**: Duration (1-8 hours), Players (1-20), Court number (1-10)
+- **File types**: PDF, DOC, DOCX for team roster
+- **Email format**: Valid email addresses
+
+## Multi-Tenant Architecture
+
+### Access Points
+
+#### Central Admin (Super Admin)
+- **URL**: `http://main.renturo.test/super-admin`
+- **Purpose**: Manage tenants, users, and system-wide settings
+- **Features**: Tenant management, user administration, system configuration
+
+#### Tenant Admin
+- **URL**: `http://main.renturo.test/admin`
+- **Purpose**: Manage tenant-specific content and settings
+- **Features**: User management, post management, dynamic forms, categories
+
+#### Tenant Owner
+- **URL**: `http://main.renturo.test/owner`
+- **Purpose**: Business owner dashboard and management
+- **Features**: Post management, analytics, user management, settings
+
+#### Mobile App (Flutter)
+- **Purpose**: Client-facing mobile application
+- **Features**: Store management, dynamic forms, bookings, messaging
+
+### API Endpoints
+
+#### Central APIs
+- **Base URL**: `https://renturo.ngrok.app/api/v1/`
+- **Endpoints**: Authentication, user management, tenant management
+
+#### Client APIs (Mobile App)
+- **Base URL**: `https://renturo.ngrok.app/api/client/v1/`
+- **Endpoints**: Stores, forms, categories, chats, messages
+
+#### User APIs
+- **Base URL**: `https://renturo.ngrok.app/api/user/v1/`
+- **Endpoints**: Form submissions, user-specific data
+
+## Development Workflow
+
+### 1. Start Backend Services
+```bash
+# Start Laravel server
+php artisan serve --host=0.0.0.0 --port=8001
+
+# Start ngrok tunnel (in separate terminal)
+ngrok http --domain=renturo.ngrok.app 8001
+
+# Start queue worker (in separate terminal)
+php artisan queue:work
+```
+
+### 2. Start Frontend Services
+```bash
+# Start Vite dev server
+npm run dev
+```
+
+### 3. Start Mobile App
+```bash
+cd ../client
+flutter run --flavor dev -t lib/main_dev.dart
+```
+
+### Testing the Basketball Arena Form
+
+#### Admin Panel Testing
+1. **Access Admin Panel**: `http://main.renturo.test/admin`
+2. **Navigate to**: Post Management → Dynamic Forms
+3. **Find**: "Basketball Arena" form
+4. **View Form Builder**: See all 6 pages and 18 fields
+5. **Test Form Builder**: Drag and drop functionality
+
+#### Form Submission Testing
+1. **Access Form**: Via mobile app or web interface
+2. **Fill All Pages**: Complete all 6 pages
+3. **Test Validation**: Try submitting with missing required fields
+4. **Test File Upload**: Upload team roster document
+5. **Submit Form**: Verify all data is captured
+
+#### Database Verification
+```bash
+# Check form data in database
+php artisan tinker
+>>> App\Models\DynamicForm::with('dynamicFormPages.dynamicFormFields')->find(1)
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### Database Issues
+```bash
+# Clear all caches
+php artisan config:clear
+php artisan route:clear
+php artisan cache:clear
+
+# Reset tenant databases
+php artisan tenants:migrate-fresh --seed
+```
+
+#### Optimization
 **Run the Command:** Execute the following command to run the optimization:
 
 ```bash
@@ -137,3 +375,21 @@ This command performs several optimization tasks, including:
 - Caching the configuration files to reduce disk I/O.
 - Caching the routes to improve route registration speed.
 - Clearing the compiled class file if it exists to force recompilation.
+
+#### Valet Issues
+```bash
+# Restart Valet
+valet restart
+
+# Check Valet status
+valet status
+```
+
+#### Port Conflicts
+```bash
+# Check what's using a port
+lsof -i :8001
+
+# Kill processes using a port
+pkill -f "php artisan serve"
+```
