@@ -273,7 +273,7 @@ class TenantBasketballArenaFormSeeder extends Seeder
                     [
                         'input_field_label' => 'Team Roster',
                         'input_field_name' => 'team_roster',
-                        'input_field_type' => 'attachment',
+                        'input_field_type' => 'file',
                         'is_required' => false,
                         'sort_no' => 3,
                         'data' => [

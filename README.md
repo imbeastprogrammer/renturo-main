@@ -50,6 +50,107 @@ cd your-laravel-project
 composer install
 ```
 
+## After Reboot: Start & Verify (Quick Start)
+
+If you need `*.test` domains (e.g., `http://main.renturo.test`), use Valet. Otherwise, use Apache 8080 + artisan 8001. See the full runbook in `../DEV_SERVICES.md`.
+
+### A) Valet mode (for *.test domains)
+```bash
+# Start Valet (dnsmasq, nginx, php-fpm)
+valet start
+
+# Health check
+valet status | cat
+
+# Sanity checks
+lsof -nP -iTCP:80,443 -sTCP:LISTEN | cat   # nginx
+lsof -nP -iTCP:3306 -sTCP:LISTEN | cat     # MySQL
+
+# Verify a page
+curl -I http://main.renturo.test/login | cat
+
+# Stop Valet when switching back to Apache 8080
+valet stop
+```
+
+### B) Apache 8080 + artisan 8001 (recommended for ngrok/mobile)
+```bash
+# Start MySQL and Apache (XAMPP)
+sudo /Applications/XAMPP/xamppfiles/xampp startmysql
+sudo /Applications/XAMPP/xamppfiles/xampp startapache
+
+# Sanity checks
+lsof -nP -iTCP:8080,8443 -sTCP:LISTEN | cat  # Apache
+lsof -nP -iTCP:3306 -sTCP:LISTEN | cat       # MySQL
+
+# Start Laravel API on 8001
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+php artisan serve --host=127.0.0.1 --port=8001
+
+# In a new terminal, start Vite (frontend)
+npm run dev
+
+# Optional: expose API for mobile via ngrok
+ngrok http --domain=renturo.ngrok.app 8001
+
+# Verify
+curl -I http://127.0.0.1:8001 | cat
+curl -I http://localhost:5173 | cat
+```
+
+### Useful kill/diagnostics
+```bash
+# What’s listening on key ports
+lsof -nP -iTCP:80,443,8080,8443,8001,5173 -sTCP:LISTEN | cat
+
+# Stop typical dev processes if stuck
+pkill -f "php artisan serve|node .*vite|ngrok http 8001"
+```
+
+## Step-by-step to run (Laravel + Vite)
+
+1) Start database and web server (XAMPP)
+```bash
+sudo /Applications/XAMPP/xamppfiles/xampp startmysql
+sudo /Applications/XAMPP/xamppfiles/xampp startapache  # if using Apache 8080 route
+```
+
+2) Start Laravel API
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+php artisan serve --host=127.0.0.1 --port=8001
+```
+
+3) Start Vite (separate terminal)
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/renturo/main
+npm run dev
+```
+
+4) Optional: start ngrok for mobile
+```bash
+ngrok http --domain=renturo.ngrok.app 8001
+```
+
+5) Sanity checks (should all succeed)
+```bash
+curl -I http://127.0.0.1:8001 | cat                 # API local
+curl -I http://main.renturo.test/login | cat        # Valet domain (if using Valet)
+curl -I https://renturo.ngrok.app/login | cat       # ngrok tunnel (if enabled)
+lsof -nP -iTCP:80,8080,8001,5173,3306 -sTCP:LISTEN | cat
+```
+
+6) Tenancy checks (when using ngrok)
+```bash
+php artisan tinker --execute='use Stancl\\Tenancy\\Database\\Models\\Domain; foreach (Domain::all() as $d) echo $d->domain." -> ".$d->tenant_id."\n";'
+```
+
+### Common pitfalls to avoid
+- `APP_CENTRAL_DOMAIN` must NOT be set to a tenant domain. Use `renturo.test` (central), tenants use `main.renturo.test` and `renturo.ngrok.app`.
+- Missing tenant domain mapping in the central `domains` table → 404 via ngrok.
+- Hitting web route `/login` from mobile; mobile should call API `/api/v1/login` with JSON headers.
+- Multiple ngrok agents under one account → ERR_NGROK_108. Kill local agents or terminate sessions in dashboard.
+
 ## Database Setup & Seeding
 
 ### Central Database Setup
@@ -393,3 +494,48 @@ lsof -i :8001
 # Kill processes using a port
 pkill -f "php artisan serve"
 ```
+
+## Ngrok + Tenancy (Quick Guide)
+
+Use this when you need the API reachable from a device via the internet.
+
+### 1) .env changes for ngrok
+```env
+APP_URL=https://renturo.ngrok.app
+ASSET_URL=${APP_URL}
+SESSION_SECURE_COOKIE=true
+SANCTUM_STATEFUL_DOMAINS=localhost:5173,127.0.0.1:5173,renturo.test,main.renturo.test,renturo.ngrok.app
+FRONTEND_URL=http://localhost:5173
+TRUSTED_PROXIES=*
+TRUSTED_HOSTS=^.+\.ngrok\.app$|localhost|127\.0\.0\.1
+# Optional if you need cross‑subdomain cookies: SESSION_DOMAIN=.ngrok.app
+```
+
+Then clear caches:
+```bash
+php artisan config:clear && php artisan route:clear && php artisan cache:clear
+```
+
+### 2) Map the ngrok host to your tenant (central DB)
+Do not remove existing `main.renturo.test`. Add the ngrok host as an additional domain for the same tenant.
+
+```bash
+php artisan tinker --execute='use Stancl\\Tenancy\\Database\\Models\\Tenant; $t=Tenant::first(); $t->domains()->firstOrCreate(["domain"=>"renturo.ngrok.app"]);'
+```
+
+If you rotate random ngrok URLs, you must add each new hostname or use a reserved ngrok domain.
+
+### 3) Start tunnel and verify
+```bash
+ngrok http 8001
+curl -I https://renturo.ngrok.app | cat
+curl -I https://renturo.ngrok.app/login | cat
+```
+
+Switching back to Valet: set `APP_URL` to `http://main.renturo.test` (others can remain), stop ngrok, and start Valet.
+
+See `guides/NGROK_ENV.md` for a full, copy‑paste runbook and extra sanity checks.
+
+### Related docs
+- Root runbook: `guides/DEV_SERVICES.md`
+- Troubleshooting web+flutter: `guides/TROUBLESHOOTING_WEB_AND_FLUTTER.md`

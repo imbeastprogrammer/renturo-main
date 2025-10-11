@@ -1,5 +1,5 @@
+# Laravel & PHP
 /node_modules
-/public/build
 /public/hot
 /public/storage
 /storage/*.key
@@ -16,5 +16,27 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Laravel Mix
+/public/css
+/public/js
+/public/mix-manifest.json
+
+# Build files
+/public/build
+
+# Logs
+*.log
+storage/logs/*
+!storage/logs/.gitkeep
+
+# IDE
 .DS_Store
-**/.DS_Store
+Thumbs.db
+
+# Tenant data (optional - uncomment if you don't want to track tenant DBs)
+# /storage/tenants/*
+
+# Testing
+.phpunit.cache
+coverage/

@@ -90,6 +90,10 @@ function DesignerComponent({ element }: DesignerComponentProps) {
         });
     };
 
+    const safeOptions = Array.isArray(elementInstance.data?.options)
+        ? elementInstance.data.options
+        : [];
+
     return (
         <div className='w-full' onClick={() => setSelectedField(element)}>
             <div className='flex justify-between'>
@@ -107,7 +111,7 @@ function DesignerComponent({ element }: DesignerComponentProps) {
             <div className='pointer-events-none space-y-2'>
                 <Label className='text-[20px]'>{elementInstance.label}</Label>
                 <RadioGroup>
-                    {elementInstance.data.options.map((option) => (
+                    {safeOptions.map((option) => (
                         <div
                             key={option}
                             className='flex items-center gap-4 rounded-lg bg-metalic-blue/5 p-3 px-4 text-metalic-blue'
@@ -136,7 +140,9 @@ function PropertiesComponent({ element }: PropertiesComponentProps) {
         resolver: zodResolver(schema),
     });
 
-    const options = form.watch('data.options');
+    const options = Array.isArray(form.watch('data.options'))
+        ? form.watch('data.options')
+        : [];
 
     const { currentFieldType } = useFieldTypes(element.type);
 

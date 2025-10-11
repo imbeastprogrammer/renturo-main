@@ -173,7 +173,12 @@ function DesignerElementWrapper({
 
     if (draggable.isDragging) return null;
 
-    const DesignerElement = FormElements[element.type].designerComponent;
+    const elementDef = FormElements[element.type as ElementsType];
+    if (!elementDef) {
+        // Unknown field type, skip rendering to avoid crash
+        return null;
+    }
+    const DesignerElement = elementDef.designerComponent;
 
     return (
         <>
