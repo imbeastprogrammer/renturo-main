@@ -69,7 +69,7 @@ class VerifyMobileController extends Controller
         if (Auth::user()->role === User::ROLE_ADMIN) {
             return redirect()->to(RouteServiceProvider::ADMIN_HOME);
         } else if (Auth::user()->role === User::ROLE_OWNER) {
-            return redirect()->to(RouteServiceProvider::OWNER_HOME);
+            return redirect()->to(RouteServiceProvider::CLIENT_HOME);
         } else if (Auth::user()->role === User::ROLE_USER) {
             return redirect()->to(RouteServiceProvider::USER_HOME);
         } else {

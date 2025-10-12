@@ -18,33 +18,33 @@ Route::middleware([
 ])->group(function () {
 
     Route::get('/', function () {
-        return Inertia::render('tenants/owner/dashboard/index');
+        return Inertia::render('tenants/client/dashboard/index');
     });
     Route::get('/post-management', function () {
-        return Inertia::render('tenants/owner/post-management/index');
+        return Inertia::render('tenants/client/post-management/index');
     });
     Route::get('/post-management/list-of-properties', function () {
-        return Inertia::render('tenants/owner/post-management/list-of-properties/index');
+        return Inertia::render('tenants/client/post-management/list-of-properties/index');
     });
     Route::get('/post-management/analytics/ads', function () {
-        return Inertia::render('tenants/owner/post-management/analytics/advertisements/index');
+        return Inertia::render('tenants/client/post-management/analytics/advertisements/index');
     });
     Route::get('/post-management/analytics/listings', function () {
-        return Inertia::render('tenants/owner/post-management/analytics/listings/index');
+        return Inertia::render('tenants/client/post-management/analytics/listings/index');
     });
     Route::get('/post-management/analytics/promotions', function () {
-        return Inertia::render('tenants/owner/post-management/analytics/promotions/index');
+        return Inertia::render('tenants/client/post-management/analytics/promotions/index');
     });
     Route::get('/post-management/analytics/promotions/create', function () {
-        return Inertia::render('tenants/owner/post-management/analytics/promotions/create/index');
+        return Inertia::render('tenants/client/post-management/analytics/promotions/create/index');
     });
     Route::get('/post-management/calendar', function () {
-        return Inertia::render('tenants/owner/post-management/calendar/index');
+        return Inertia::render('tenants/client/post-management/calendar/index');
     });
     Route::get('/user-management', function () {
-        return Inertia::render('tenants/owner/user-management/index');
+        return Inertia::render('tenants/client/user-management/index');
     });
     Route::get('/settings', function () {
-        return Inertia::render('tenants/owner/settings/index');
+        return Inertia::render('tenants/client/settings/index');
     });
 });
