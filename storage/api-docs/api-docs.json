@@ -1,0 +1,235 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Renturo API Documentation",
+        "description": "Comprehensive API documentation for Renturo - Multi-tenant Property Rental Platform. This API serves three main applications: Client App (Property Owners), User App (Renters), and Admin Web Dashboard.",
+        "contact": {
+            "email": "support@renturo.com"
+        },
+        "license": {
+            "name": "Proprietary",
+            "url": "https://renturo.com/license"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://main.renturo.test",
+            "description": "Local Development Server (Tenant)"
+        },
+        {
+            "url": "http://renturo.test",
+            "description": "Local Development Server (Central)"
+        },
+        {
+            "url": "https://renturo.ngrok.app",
+            "description": "Local Development Server (Mobile via ngrok)"
+        },
+        {
+            "url": "https://api.renturo.com",
+            "description": "Production API Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User Login",
+                "description": "Authenticate user and return access token with OTP sent to mobile",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Email, phone number, or username",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "owner@main.renturo.test"
+                                    },
+                                    "password": {
+                                        "description": "User password (minimum 8 characters)",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Login successful, OTP sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Verification code was sent to your mobile number."
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "owner@main.renturo.test"
+                                                        },
+                                                        "username": {
+                                                            "type": "string",
+                                                            "example": "beastowner1234"
+                                                        },
+                                                        "role": {
+                                                            "type": "string",
+                                                            "example": "OWNER"
+                                                        },
+                                                        "mobile_number": {
+                                                            "type": "string",
+                                                            "example": "+639123456789"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "verification_code": {
+                                                    "description": "4-digit OTP (temporary in response, will be removed)",
+                                                    "type": "string",
+                                                    "example": "1234"
+                                                },
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/logout": {
+            "delete": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User Logout",
+                "description": "Revoke the current user's access token",
+                "operationId": "logout",
+                "responses": {
+                    "204": {
+                        "description": "Successfully logged out"
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "passport": {
+                "type": "oauth2",
+                "description": "Laravel Passport OAuth2 security",
+                "flows": {
+                    "password": {
+                        "authorizationUrl": "/oauth/authorize",
+                        "tokenUrl": "/oauth/token",
+                        "refreshUrl": "/oauth/token/refresh",
+                        "scopes": {}
+                    }
+                }
+            },
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter your Bearer token in the format: Bearer {token}",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "User authentication endpoints (Login, Register, Verify, Password Reset)"
+        }
+    ]
+}
