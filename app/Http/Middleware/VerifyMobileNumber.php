@@ -17,11 +17,22 @@ class VerifyMobileNumber
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::guard('api')->user();
+        // Check which guard has an authenticated user
+        $user = null;
+        $isApiRequest = false;
         
-        // If user is null, it means token is invalid/expired/revoked
-        // The auth:api middleware should have already rejected this,
-        // but we check again for safety
+        // Try API guard first (if user is authenticated via token)
+        if (Auth::guard('api')->check()) {
+            $user = Auth::guard('api')->user();
+            $isApiRequest = true;
+        }
+        // Otherwise, try web guard (session-based authentication)
+        elseif (Auth::guard('web')->check()) {
+            $user = Auth::guard('web')->user();
+            $isApiRequest = false;
+        }
+        
+        // If no user is authenticated on either guard
         if (!$user) {
             if ($request->expectsJson()) {
                 return response()->json([
@@ -34,7 +45,7 @@ class VerifyMobileNumber
         $verification = $user->verified_mobile_no;
         if (!$verification || !$verification->verified_at) {
             // For API requests, return JSON response
-            if ($request->expectsJson()) {
+            if ($isApiRequest || $request->expectsJson()) {
                 return response()->json([
                     'message' => 'failed',
                     'body' => [
