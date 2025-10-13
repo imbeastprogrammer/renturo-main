@@ -43,10 +43,10 @@ Route::middleware([
             });
 
             Route::put('/password', [PasswordController::class, 'update']);
-            Route::delete('logout', [LoginController::class, 'logout']);
             
             Route::post('/user-management/mpin/update', [UserManagementController::class, 'updateMPIN']);
             Route::post('/user-management/mpin/get', [UserManagementController::class, 'getMPIN']);
+            Route::delete('logout', [LoginController::class, 'logout']);
 
             // Route::get('/store', [StoreController::class, 'index']);
             // Route::post('/store', [StoreController::class, 'store']);

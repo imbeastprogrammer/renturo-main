@@ -17,15 +17,33 @@ class VerifyMobileNumber
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::user()->verified_mobile_no->verified_at) {
-            // return response()->json([
-            //     'message' => 'failed',
-            //     'body' => [
-            //         'message' => 'The mobile number has not been verified yet. Please check your mobile for the verification code.'
-            //     ]
-            // ], 403);
+        $user = Auth::guard('api')->user();
+        
+        // If user is null, it means token is invalid/expired/revoked
+        // The auth:api middleware should have already rejected this,
+        // but we check again for safety
+        if (!$user) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Unauthenticated'
+                ], 401);
+            }
+            return redirect('/login');
+        }
 
-            // Redirect to the otp verification page
+        $verification = $user->verified_mobile_no;
+        if (!$verification || !$verification->verified_at) {
+            // For API requests, return JSON response
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'failed',
+                    'body' => [
+                        'message' => 'The mobile number has not been verified yet. Please check your mobile for the verification code.'
+                    ]
+                ], 403);
+            }
+
+            // For web requests, redirect to OTP verification page
             return redirect('/login/otp');
         }
 

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'guard' => 'web',
+    'guard' => 'api',
 
     /*
     |--------------------------------------------------------------------------
@@ -59,6 +59,33 @@ return [
         'secret' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET'),
     ],
 
-    'key_path' => env('OAUTH_KEY_PATH', storage_path(''))
+    'key_path' => env('OAUTH_KEY_PATH', storage_path('')),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Token Lifetimes
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the amount of time that access tokens and refresh
+    | tokens should be valid for. This will be used when generating tokens
+    | during authentication or token refresh.
+    |
+    */
+
+    'token_ttl' => env('PASSPORT_TOKEN_TTL', 60), // minutes
+    'refresh_token_ttl' => env('PASSPORT_REFRESH_TOKEN_TTL', 20160), // minutes = 14 days
+
+    /*
+    |--------------------------------------------------------------------------
+    | Token Revocation
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify whether to revoke refresh tokens when the related
+    | access token is revoked. This is typically set to true as it prevents
+    | unauthorized access using revoked access tokens.
+    |
+    */
+
+    'revoke_refresh_tokens_on_logout' => true
 
 ];

@@ -5,6 +5,29 @@
          colors="true"
 >
     <testsuites>
+        <!-- API Tests -->
+        <testsuite name="Api">
+            <directory suffix="Test.php">./tests/Api</directory>
+        </testsuite>
+        <testsuite name="Api_Central">
+            <directory suffix="Test.php">./tests/Api/Central</directory>
+        </testsuite>
+        <testsuite name="Api_Tenant">
+            <directory suffix="Test.php">./tests/Api/Tenant</directory>
+        </testsuite>
+
+        <!-- Web Tests -->
+        <testsuite name="Web">
+            <directory suffix="Test.php">./tests/Web</directory>
+        </testsuite>
+        <testsuite name="Web_Central">
+            <directory suffix="Test.php">./tests/Web/Central</directory>
+        </testsuite>
+        <testsuite name="Web_Tenant">
+            <directory suffix="Test.php">./tests/Web/Tenant</directory>
+        </testsuite>
+
+        <!-- Legacy Test Suites -->
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Tenants\Auth\LoginRequest;
+use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Mail\Tenants\Auth\SendMobileVerificationCode;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -75,7 +75,12 @@ class LoginController extends Controller
 
         $user = $request->user();
 
-        $accessToken = $user->createToken('personal-access-token')->accessToken;
+        // Create token with configured TTL
+        $tokenTTL = config('passport.token_ttl', 60); // default 60 minutes
+        $token = $user->createToken('personal-access-token', [], Carbon::now()->addMinutes($tokenTTL));
+        $accessToken = $token->token;
+        $accessToken->expires_at = Carbon::now()->addMinutes($tokenTTL);
+        $accessToken->save();
 
         #TODO: check what is the purpose of mobileVerification()->mobile_number?
         
@@ -98,7 +103,7 @@ class LoginController extends Controller
                 'message' => 'Verification code was sent to your mobile number.',
                 'user' => $user,
                 'verification_code' => $verificationCode, // return temporary in response
-                'access_token' => $accessToken
+                'access_token' => $token->accessToken
             ]
         ], 201);
     }
@@ -126,9 +131,11 @@ class LoginController extends Controller
      */
     public function logout()
     {
-        $accessToken = Auth::user()->token();
+        $user = Auth::guard('api')->user();
+        $token = $user->token();
 
-        $accessToken->revoke();
+        // Revoke the current token
+        $token->revoke();
 
         return response()->noContent();
     }
