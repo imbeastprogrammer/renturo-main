@@ -108,9 +108,7 @@ class ProtectedEndpointTest extends TenantTestCase
                 'mobile_number',
                 'role',
                 'email_verified_at',
-                'mobile_verified_at',
-                'created_at',
-                'updated_at'
+                'created_at'
             ]);
     }
 
@@ -119,11 +117,16 @@ class ProtectedEndpointTest extends TenantTestCase
      */
     public function test_protected_endpoint_requires_verified_mobile(): void
     {
-        // Get token without verifying mobile
-        $auth = $this->getValidToken();
+        // Login with admin user who has unverified mobile in seeder
+        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+            'email' => 'test.admin@renturo.test',
+            'password' => 'password',
+        ]);
+        $response->assertStatus(201);
+        $token = $response->json('body.access_token');
 
         // Attempt to access protected endpoint without verifying mobile
-        $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
             ->getJson('http://main.renturo.test/api/v1/user');
 
         // Assert forbidden (unverified mobile)

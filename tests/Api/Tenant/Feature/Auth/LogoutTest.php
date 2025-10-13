@@ -102,11 +102,16 @@ class LogoutTest extends TenantTestCase
      */
     public function test_api_logout_requires_verified_mobile(): void
     {
-        // Get token without verifying mobile
-        $auth = $this->getValidToken();
+        // Login with admin user who has unverified mobile in seeder
+        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+            'email' => 'test.admin@renturo.test',
+            'password' => 'password',
+        ]);
+        $response->assertStatus(201);
+        $token = $response->json('body.access_token');
 
         // Attempt logout without verifying mobile
-        $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
             ->deleteJson('http://main.renturo.test/api/v1/logout');
 
         // Assert forbidden (unverified mobile)

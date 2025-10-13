@@ -200,6 +200,192 @@
                     }
                 ]
             }
+        },
+        "/api/v1/resend/mobile/verification": {
+            "post": {
+                "tags": [
+                    "Mobile Verification"
+                ],
+                "summary": "Resend Mobile Verification Code",
+                "description": "Request a new verification code to be sent to the user's mobile number. Rate limited to prevent abuse.",
+                "operationId": "resendMobileVerification",
+                "responses": {
+                    "201": {
+                        "description": "Verification code sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "The verification code for your mobile has been sent to the number +639123456789."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests - Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Too many request for verification code. Please retry after waiting for 300 seconds."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/verify/mobile": {
+            "put": {
+                "tags": [
+                    "Mobile Verification"
+                ],
+                "summary": "Verify Mobile Number",
+                "description": "Verify the user's mobile number using the verification code sent via SMS/Email",
+                "operationId": "verifyMobile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "description": "4-digit verification code",
+                                        "type": "string",
+                                        "example": "1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mobile number verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Your mobile phone number has been successfully verified."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid or expired verification code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "The code is either not valid or has expired."
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -230,6 +416,10 @@
         {
             "name": "Authentication",
             "description": "User authentication endpoints (Login, Register, Verify, Password Reset)"
+        },
+        {
+            "name": "Mobile Verification",
+            "description": "Mobile Verification"
         }
     ]
 }

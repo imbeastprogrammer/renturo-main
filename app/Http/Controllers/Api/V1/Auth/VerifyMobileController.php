@@ -14,7 +14,47 @@ use Auth;
 class VerifyMobileController extends Controller
 {
 
-    // To create mobile verification for authenticated user
+    /**
+     * @OA\Post(
+     *     path="/api/v1/resend/mobile/verification",
+     *     summary="Resend Mobile Verification Code",
+     *     description="Request a new verification code to be sent to the user's mobile number. Rate limited to prevent abuse.",
+     *     operationId="resendMobileVerification",
+     *     tags={"Mobile Verification"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=201,
+     *         description="Verification code sent successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="The verification code for your mobile has been sent to the number +639123456789.")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=429,
+     *         description="Too many requests - Rate limited",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Too many request for verification code. Please retry after waiting for 300 seconds.")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
     public function store()
     {
         try {
@@ -52,7 +92,54 @@ class VerifyMobileController extends Controller
         }
     }
 
-    // To update mobile verification code for authenticated user
+    /**
+     * @OA\Put(
+     *     path="/api/v1/verify/mobile",
+     *     summary="Verify Mobile Number",
+     *     description="Verify the user's mobile number using the verification code sent via SMS/Email",
+     *     operationId="verifyMobile",
+     *     tags={"Mobile Verification"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"code"},
+     *             @OA\Property(property="code", type="string", example="1234", description="4-digit verification code")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Mobile number verified successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Your mobile phone number has been successfully verified.")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid or expired verification code",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="The code is either not valid or has expired.")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
     public function update(Request $request)
     {
         try {
