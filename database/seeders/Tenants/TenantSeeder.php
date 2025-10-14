@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Tenants;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -96,6 +96,11 @@ class TenantSeeder extends Seeder
             Artisan::call("tenants:run passport:client --option='personal=personal' --option='name={$tenant->id}' --tenants={$tenant->id}");
             $output = Artisan::output();
             $this->command->info("Passport Command TenantSeeder Output: " . $output);
+
+            // Seed categories and subcategories
+            $this->call([
+                \Database\Seeders\Tenants\TenantCategorySeeder::class
+            ]);
 
             $this->command->info('Seeding completed for TenantSeeder data.');
         });
