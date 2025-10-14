@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Tenants;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,11 +19,11 @@ class TenantFormSystemSeeder extends Seeder
 
         // Step 1: Create categories and subcategories
         $this->command->info('Step 1: Creating categories and subcategories...');
-        $this->call(TenantCategorySeeder::class);
+        $this->call(\Database\Seeders\Tenants\TenantCategorySeeder::class);
 
         // Step 2: Create dynamic forms (which depend on subcategories)
         $this->command->info('Step 2: Creating dynamic forms...');
-        $this->call(TenantDynamicFormSeeder::class);
+        $this->call(\Database\Seeders\Tenants\TenantDynamicFormSeeder::class);
 
         $this->command->info('Seeding completed for TenantFormSystemSeeder data.');
         $this->command->info('Users, categories, subcategories, and dynamic forms have been created successfully!');

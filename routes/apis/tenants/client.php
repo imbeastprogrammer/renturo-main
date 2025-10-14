@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormController;
 use App\Http\Controllers\Api\V1\Tenants\Client\DynamicFormSubmissionController;
 use App\Http\Controllers\Api\V1\Tenants\Client\BankController;
 use App\Http\Controllers\API\V1\Tenants\Client\CategoryController;
+use App\Http\Controllers\API\V1\Tenants\Client\SubCategoryController;
 use App\Http\Controllers\API\V1\Tenants\Client\MessageController;
 use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
 use App\Http\Controllers\API\V1\Tenants\Client\DynamicFormAvailabilityController;
@@ -57,8 +58,11 @@ Route::middleware([
             Route::resource('/banks', BankController::class);
             Route::get('/user/banks/', [BankController::class, 'getUserBanks']);
 
-            Route::get('/categories', [CategoryController::class, 'index']);
+            // Categories & SubCategories
             Route::get('/categories/search', [CategoryController::class, 'search']);
+            Route::resource('/categories', CategoryController::class);
+            Route::get('/categories/{categoryId}/subcategories', [SubCategoryController::class, 'getByCategory']);
+            Route::resource('/subcategories', SubCategoryController::class);
 
             Route::resource('/chats', ChatController::class);
             Route::delete('/chats/{chat}/leave', [ChatController::class, 'leaveChat']);
