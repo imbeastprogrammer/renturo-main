@@ -16,7 +16,7 @@ class VerifyMobileTest extends TenantTestCase
      */
     private function getValidToken(): array
     {
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.owner@renturo.test',
             'password' => 'password',
         ]);
@@ -38,7 +38,7 @@ class VerifyMobileTest extends TenantTestCase
 
         // Verify mobile with the code from login
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => $auth['verificationCode']
             ]);
 
@@ -73,7 +73,7 @@ class VerifyMobileTest extends TenantTestCase
 
         // Try to verify with wrong code
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => '0000' // Wrong code
             ]);
 
@@ -102,7 +102,7 @@ class VerifyMobileTest extends TenantTestCase
 
         // Try to verify with expired code
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => $auth['verificationCode']
             ]);
 
@@ -122,7 +122,7 @@ class VerifyMobileTest extends TenantTestCase
     public function test_mobile_verification_requires_authentication(): void
     {
         // Try to verify without authentication
-        $response = $this->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+        $response = $this->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
             'code' => '1234'
         ]);
 
@@ -145,7 +145,7 @@ class VerifyMobileTest extends TenantTestCase
 
         // Resend verification code
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->postJson('http://main.renturo.test/api/v1/resend/mobile/verification');
+            ->postJson($this->getTestUrl('/api/v1/resend/mobile/verification'));
 
         // Assert successful resend
         $response->assertStatus(201)
@@ -167,7 +167,7 @@ class VerifyMobileTest extends TenantTestCase
 
         // Try to resend immediately (should be rate limited)
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->postJson('http://main.renturo.test/api/v1/resend/mobile/verification');
+            ->postJson($this->getTestUrl('/api/v1/resend/mobile/verification'));
 
         // Assert rate limit error
         $response->assertStatus(429)
@@ -185,7 +185,7 @@ class VerifyMobileTest extends TenantTestCase
     public function test_resend_verification_code_requires_authentication(): void
     {
         // Try to resend without authentication
-        $response = $this->postJson('http://main.renturo.test/api/v1/resend/mobile/verification');
+        $response = $this->postJson($this->getTestUrl('/api/v1/resend/mobile/verification'));
 
         // Assert unauthorized
         $response->assertStatus(401);
@@ -201,14 +201,14 @@ class VerifyMobileTest extends TenantTestCase
         
         // First verification
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => $auth['verificationCode']
             ]);
         $response->assertStatus(200);
 
         // Try to verify the same code again
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => $auth['verificationCode']
             ]);
 
@@ -231,14 +231,14 @@ class VerifyMobileTest extends TenantTestCase
         $auth = $this->getValidToken();
         
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => $auth['verificationCode']
             ]);
         $response->assertStatus(200);
 
         // Try to access protected endpoint
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
 
         // Assert successful access
         $response->assertStatus(200)
@@ -253,7 +253,7 @@ class VerifyMobileTest extends TenantTestCase
     public function test_unverified_user_cannot_access_protected_endpoints(): void
     {
         // Login with admin user who has unverified mobile in seeder
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.admin@renturo.test',
             'password' => 'password',
         ]);
@@ -262,7 +262,7 @@ class VerifyMobileTest extends TenantTestCase
 
         // Try to access protected endpoint without verification
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
 
         // Assert forbidden
         $response->assertStatus(403)

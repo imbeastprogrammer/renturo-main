@@ -47,13 +47,40 @@ Route::middleware([
             Route::get('/store/{storeId}', [StoreController::class, 'show']);
             Route::get('/stores/user/{userId}', [StoreController::class, 'getUserStores']);
 
-            Route::get('/form/{formId}', [DynamicFormController::class, 'show']);
+            // Dynamic Forms Routes
+            Route::prefix('forms')->group(function () {
+                // Form Templates
+                Route::get('/', [DynamicFormController::class, 'index']);
+                Route::get('/subcategory/{subcategoryId}', [DynamicFormController::class, 'getBySubcategory']);
+                Route::get('/{formId}', [DynamicFormController::class, 'show']);
 
-            Route::resource('/forms', DynamicFormSubmissionController::class);
-            Route::post('/forms/{formId}/submit', [DynamicFormSubmissionController::class, 'submit']);
-            Route::get('/forms/user/{userId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissions']);
-            Route::get('/forms/user/{userId}/store/{storeId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissionByStoreId']);
-            Route::get('/forms/user/{userId}/form/{formId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissionByFormId']);
+                // Form Pages
+                Route::prefix('pages')->group(function () {
+                    Route::get('/', [DynamicFormPageController::class, 'index']);
+                    Route::post('/', [DynamicFormPageController::class, 'store']);
+                    Route::get('/{pageId}', [DynamicFormPageController::class, 'show']);
+                    Route::put('/{pageId}', [DynamicFormPageController::class, 'update']);
+                    Route::delete('/{pageId}', [DynamicFormPageController::class, 'destroy']);
+                    Route::post('/reorder', [DynamicFormPageController::class, 'reorder']);
+                });
+
+                // Form Fields
+                Route::prefix('fields')->group(function () {
+                    Route::get('/', [DynamicFormFieldController::class, 'index']);
+                    Route::post('/', [DynamicFormFieldController::class, 'store']);
+                    Route::get('/{fieldId}', [DynamicFormFieldController::class, 'show']);
+                    Route::put('/{fieldId}', [DynamicFormFieldController::class, 'update']);
+                    Route::delete('/{fieldId}', [DynamicFormFieldController::class, 'destroy']);
+                    Route::post('/reorder', [DynamicFormFieldController::class, 'reorder']);
+                });
+
+                // Form Submissions
+                Route::post('/{formId}/submit', [DynamicFormSubmissionController::class, 'submit']);
+                Route::get('/user/{userId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissions']);
+                Route::get('/user/{userId}/store/{storeId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissionByStoreId']);
+                Route::get('/user/{userId}/form/{formId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissionByFormId']);
+                Route::delete('/submissions/{submissionId}', [DynamicFormSubmissionController::class, 'destroy']);
+            });
             
             Route::resource('/banks', BankController::class);
             Route::get('/user/banks/', [BankController::class, 'getUserBanks']);

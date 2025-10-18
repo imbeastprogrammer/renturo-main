@@ -200,9 +200,11 @@ class DynamicFormSubmissionController extends Controller
      */
     public function edit($id)
     {
-        //
-
-        echo "123";
+        // Not used - editing is handled by update method
+        return response()->json([
+            'message' => 'failed',
+            'errors' => 'Method not implemented. Use update method instead.'
+        ], 501);
     }
 
     /**
@@ -298,28 +300,31 @@ class DynamicFormSubmissionController extends Controller
     
     public function getUserDynamicFormSubmissions(Request $request, $userId) 
     {
-
         $authUserId = $request->user()->id; // Use authenticated user ID to view their submissions
         
-        // Compare the UserID on URL against the current authenticated userId
-        if ($authUserId != $userId) {
+        // Security: Compare the UserID on URL against the current authenticated userId
+        if ((int)$authUserId !== (int)$userId) {
             return response()->json([
                 'message' => 'failed',
-                'errors' => 'Resource not found.'
-            ], 404); 
+                'errors' => 'Unauthorized. You can only view your own submissions.'
+            ], 403); // Use 403 Forbidden instead of 404
         }
         
-        // Retrieve all submissions for the specific user
-        $formSubmissions = DynamicFormSubmission::with('dynamicForm')
+        // Retrieve all submissions for the specific user with eager loading
+        $formSubmissions = DynamicFormSubmission::with(['dynamicForm.subCategory.category'])
                                                 ->where('user_id', $userId) 
+                                                ->orderBy('created_at', 'desc')
                                                 ->get();
 
         
-        if (empty($formSubmissions)) {
+        if ($formSubmissions->isEmpty()) {
             return response()->json([
-                'message' => 'failed',
-                'errors' => 'Form submission not found.'
-            ], 404);
+                'message' => 'success',
+                'body' => [
+                    'message' => 'No submissions found.',
+                    'data' => []
+                ]
+            ], 200); // Return 200 with empty array instead of 404
         }
 
         $userSubmissions = [];

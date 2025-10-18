@@ -11,13 +11,17 @@ class CategoryTest extends TenantTestCase
 {
     use RefreshDatabase;
 
-    private string $baseUrl = 'http://main.renturo.test/api/v1';
-    private string $clientBaseUrl = 'http://main.renturo.test/api/client/v1';
+    private string $baseUrl;
+    private string $clientBaseUrl;
     private string $token;
 
     protected function setUp(): void
     {
         parent::setUp();
+        
+        // Set up URLs
+        $this->baseUrl = $this->getTestUrl('/api/v1');
+        $this->clientBaseUrl = $this->getTestUrl('/api/client/v1');
         
         // Get authenticated token for testing
         $response = $this->postJson($this->baseUrl . '/login', [

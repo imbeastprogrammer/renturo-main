@@ -16,7 +16,7 @@ class LogoutTest extends TenantTestCase
      */
     private function getValidToken(): array
     {
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.owner@renturo.test',
             'password' => 'password',
         ]);
@@ -34,7 +34,7 @@ class LogoutTest extends TenantTestCase
     private function verifyMobileNumber(string $token, string $verificationCode): void
     {
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => $verificationCode
             ]);
         $response->assertStatus(200);
@@ -51,14 +51,14 @@ class LogoutTest extends TenantTestCase
 
         // Perform logout with token
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->deleteJson('http://main.renturo.test/api/v1/logout');
+            ->deleteJson($this->getTestUrl('/api/v1/logout'));
 
         // Assert successful logout
         $response->assertStatus(204); // No content
 
         // Try to use the token again - should fail
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
         $response->assertStatus(401);
     }
 
@@ -90,7 +90,7 @@ class LogoutTest extends TenantTestCase
             // Attempt logout with invalid token
             $headers = $case['token'] ? ['Authorization' => $case['token']] : [];
             $response = $this->withHeaders($headers)
-                ->deleteJson('http://main.renturo.test/api/v1/logout');
+                ->deleteJson($this->getTestUrl('/api/v1/logout'));
 
             // Assert unauthorized
             $response->assertStatus($case['expected_status'], $case['description']);
@@ -103,7 +103,7 @@ class LogoutTest extends TenantTestCase
     public function test_api_logout_requires_verified_mobile(): void
     {
         // Login with admin user who has unverified mobile in seeder
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.admin@renturo.test',
             'password' => 'password',
         ]);
@@ -112,7 +112,7 @@ class LogoutTest extends TenantTestCase
 
         // Attempt logout without verifying mobile
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->deleteJson('http://main.renturo.test/api/v1/logout');
+            ->deleteJson($this->getTestUrl('/api/v1/logout'));
 
         // Assert forbidden (unverified mobile)
         $response->assertStatus(403)
@@ -138,7 +138,7 @@ class LogoutTest extends TenantTestCase
 
         // Attempt logout with expired token
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->deleteJson('http://main.renturo.test/api/v1/logout');
+            ->deleteJson($this->getTestUrl('/api/v1/logout'));
 
         // Assert unauthorized
         $response->assertStatus(401);

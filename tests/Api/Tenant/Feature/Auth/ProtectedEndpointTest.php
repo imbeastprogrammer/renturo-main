@@ -16,7 +16,7 @@ class ProtectedEndpointTest extends TenantTestCase
      */
     private function getValidToken(): array
     {
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.owner@renturo.test',
             'password' => 'password',
         ]);
@@ -34,7 +34,7 @@ class ProtectedEndpointTest extends TenantTestCase
     private function verifyMobileNumber(string $token, string $verificationCode): void
     {
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->putJson('http://main.renturo.test/api/v1/verify/mobile', [
+            ->putJson($this->getTestUrl('/api/v1/verify/mobile'), [
                 'code' => $verificationCode
             ]);
         $response->assertStatus(200);
@@ -73,7 +73,7 @@ class ProtectedEndpointTest extends TenantTestCase
             // Attempt to access protected endpoint with invalid token
             $headers = $case['token'] ? ['Authorization' => $case['token']] : [];
             $response = $this->withHeaders($headers)
-                ->getJson('http://main.renturo.test/api/v1/user');
+                ->getJson($this->getTestUrl('/api/v1/user'));
 
             // Assert unauthorized
             $response->assertStatus($case['expected_status'], $case['description']);
@@ -91,7 +91,7 @@ class ProtectedEndpointTest extends TenantTestCase
 
         // Access protected endpoint with token
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
 
         // Assert successful response with user data
         $response->assertStatus(200)
@@ -118,7 +118,7 @@ class ProtectedEndpointTest extends TenantTestCase
     public function test_protected_endpoint_requires_verified_mobile(): void
     {
         // Login with admin user who has unverified mobile in seeder
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.admin@renturo.test',
             'password' => 'password',
         ]);
@@ -127,7 +127,7 @@ class ProtectedEndpointTest extends TenantTestCase
 
         // Attempt to access protected endpoint without verifying mobile
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
 
         // Assert forbidden (unverified mobile)
         $response->assertStatus(403)
@@ -153,7 +153,7 @@ class ProtectedEndpointTest extends TenantTestCase
 
         // Attempt to access protected endpoint with expired token
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
 
         // Assert unauthorized
         $response->assertStatus(401);
@@ -170,12 +170,12 @@ class ProtectedEndpointTest extends TenantTestCase
 
         // Logout to revoke the token
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->deleteJson('http://main.renturo.test/api/v1/logout');
+            ->deleteJson($this->getTestUrl('/api/v1/logout'));
         $response->assertStatus(204);
 
         // Attempt to access protected endpoint with revoked token
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
 
         // Assert unauthorized
         $response->assertStatus(401);
@@ -196,7 +196,7 @@ class ProtectedEndpointTest extends TenantTestCase
 
         // Attempt to use the token from the previous tenant
         $response = $this->withHeader('Authorization', 'Bearer ' . $auth['token'])
-            ->getJson('http://main.renturo.test/api/v1/user');
+            ->getJson($this->getTestUrl('/api/v1/user'));
 
         // Assert unauthorized
         $response->assertStatus(401);

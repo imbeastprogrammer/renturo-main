@@ -17,7 +17,7 @@ class LoginTest extends TenantTestCase
     public function test_api_login_with_valid_credentials_returns_access_token(): void
     {
         // Use seeded owner account
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.owner@renturo.test',
             'password' => 'password',
         ]);
@@ -48,7 +48,7 @@ class LoginTest extends TenantTestCase
     public function test_api_login_with_invalid_password_returns_error(): void
     {
         // Attempt login with wrong password
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.owner@renturo.test',
             'password' => 'wrong-password',
         ]);
@@ -64,7 +64,7 @@ class LoginTest extends TenantTestCase
     public function test_api_login_with_non_existent_email_returns_error(): void
     {
         // Attempt login with non-existent email
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'nonexistent@example.com',
             'password' => 'password',
         ]);
@@ -78,7 +78,7 @@ class LoginTest extends TenantTestCase
      */
     public function test_api_login_requires_password(): void
     {
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test@example.com',
         ]);
 
@@ -91,7 +91,7 @@ class LoginTest extends TenantTestCase
      */
     public function test_api_login_requires_email(): void
     {
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'password' => 'password',
         ]);
 
@@ -105,7 +105,7 @@ class LoginTest extends TenantTestCase
     public function test_api_login_with_username_works(): void
     {
         // Attempt login with username (seeded user)
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'testowner', // Backend accepts username in email field
             'password' => 'password',
         ]);
@@ -121,7 +121,7 @@ class LoginTest extends TenantTestCase
     public function test_api_login_with_phone_number_works(): void
     {
         // Attempt login with phone number (seeded user)
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => '+639222222222', // Backend accepts phone in email field
             'password' => 'password',
         ]);
@@ -137,7 +137,7 @@ class LoginTest extends TenantTestCase
     public function test_api_login_creates_otp_verification(): void
     {
         // Login with seeded user
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.owner@renturo.test',
             'password' => 'password',
         ]);
@@ -167,7 +167,7 @@ class LoginTest extends TenantTestCase
         ];
 
         foreach ($users as $userData) {
-            $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+            $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
                 'email' => $userData['email'],
                 'password' => 'password',
             ]);
@@ -183,7 +183,7 @@ class LoginTest extends TenantTestCase
     public function test_api_login_response_includes_correct_user_information(): void
     {
         // Login with seeded owner
-        $response = $this->postJson('http://main.renturo.test/api/v1/login', [
+        $response = $this->postJson($this->getTestUrl('/api/v1/login'), [
             'email' => 'test.owner@renturo.test',
             'password' => 'password',
         ]);
