@@ -60,7 +60,8 @@ class DynamicFormTest extends TenantTestCase
         $this->assertEqualsCanonicalizing([
             'name',
             'description',
-            'subcategory_id'
+            'subcategory_id',
+            'user_id'
         ], $fillable);
     }
 

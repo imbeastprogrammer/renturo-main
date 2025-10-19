@@ -20,6 +20,7 @@ use App\Http\Controllers\Tenants\Admin\PostManagementPropertiesController;
 use App\Http\Controllers\Tenants\Admin\ReportsController;
 use App\Http\Controllers\Tenants\Admin\SettingsManagementController;
 use App\Http\Controllers\Tenants\Admin\SubCategoryManagementController;
+use App\Http\Controllers\Tenants\Admin\ListingController;
 
 use Inertia\Inertia;
 
@@ -97,4 +98,20 @@ Route::middleware([
     Route::post('/form/restore/{id}', [DynamicFormController::class, 'restore']);
     Route::get('/form/all/{id}', [DynamicFormController::class, 'getFormPagesAndFields']);
     Route::put('/form/all/{id}', [DynamicFormController::class, 'updateFormPagesAndFields']);
+
+    // Listings Management
+    Route::post('/listings/{id}/publish', [ListingController::class, 'publish'])->name('admin.listings.publish');
+    Route::post('/listings/{id}/unpublish', [ListingController::class, 'unpublish'])->name('admin.listings.unpublish');
+    Route::post('/listings/{id}/feature', [ListingController::class, 'feature'])->name('admin.listings.feature');
+    Route::post('/listings/{id}/verify', [ListingController::class, 'verify'])->name('admin.listings.verify');
+    Route::post('/listings/{id}/restore', [ListingController::class, 'restore'])->name('admin.listings.restore');
+    Route::resource('/listings', ListingController::class)->names([
+        'index' => 'admin.listings.index',
+        'create' => 'admin.listings.create',
+        'store' => 'admin.listings.store',
+        'show' => 'admin.listings.show',
+        'edit' => 'admin.listings.edit',
+        'update' => 'admin.listings.update',
+        'destroy' => 'admin.listings.destroy',
+    ]);
 });

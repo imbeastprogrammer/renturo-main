@@ -85,5 +85,11 @@ class TestDatabaseSeeder extends Seeder
             'verified_at' => null,
             'expires_at' => Carbon::now()->addMinutes(5),
         ]);
+
+        // Seed tenant-specific data
+        $this->call([
+            Tenants\TenantCategorySeeder::class,
+            Tenants\ListingSeeder::class,
+        ]);
     }
 }

@@ -16,6 +16,7 @@ use App\Http\Controllers\API\V1\Tenants\Client\SubCategoryController;
 use App\Http\Controllers\API\V1\Tenants\Client\MessageController;
 use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
 use App\Http\Controllers\API\V1\Tenants\Client\DynamicFormAvailabilityController;
+use App\Http\Controllers\API\V1\Tenants\Client\ListingController;
 
 use App\Http\Controllers\API\V1\ImageUploadController;
 use Database\Factories\ImageFactory;
@@ -90,6 +91,12 @@ Route::middleware([
             Route::resource('/categories', CategoryController::class);
             Route::get('/categories/{categoryId}/subcategories', [SubCategoryController::class, 'getByCategory']);
             Route::resource('/subcategories', SubCategoryController::class);
+
+            // Listings (for mobile app - browsing only)
+            Route::get('/listings/featured', [ListingController::class, 'featured']);
+            Route::get('/listings/slug/{slug}', [ListingController::class, 'showBySlug']);
+            Route::get('/listings/{id}', [ListingController::class, 'show']);
+            Route::get('/listings', [ListingController::class, 'index']);
 
             Route::resource('/chats', ChatController::class);
             Route::delete('/chats/{chat}/leave', [ChatController::class, 'leaveChat']);
