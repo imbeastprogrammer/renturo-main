@@ -1111,10 +1111,442 @@
                 ]
             }
         },
+        "/api/v1/form-availability": {
+            "get": {
+                "tags": [
+                    "Client - Dynamic Form Availability"
+                ],
+                "summary": "List all form availabilities",
+                "description": "Retrieve all form availability schedules for the authenticated user",
+                "operationId": "getFormAvailabilities",
+                "responses": {
+                    "200": {
+                        "description": "Form availabilities retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form availabilities retrieved successfully"
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "dynamic_form_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "store_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "recurring": {
+                                                                "type": "object"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Client - Dynamic Form Availability"
+                ],
+                "summary": "Create form availability",
+                "description": "Create a new form availability schedule for a dynamic form",
+                "operationId": "createFormAvailability",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "dynamic_form_id",
+                                    "store_id"
+                                ],
+                                "properties": {
+                                    "dynamic_form_id": {
+                                        "description": "Dynamic Form ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "store_id": {
+                                        "description": "Store ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "recurring": {
+                                        "description": "Recurring availability schedule by day of week. Each day contains array of time slots.",
+                                        "type": "object",
+                                        "additionalProperties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "09:00-12:00"
+                                            }
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Form availability created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Dynamic Form Availability Created Successfully"
+                                                },
+                                                "data": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "dynamic_form_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "store_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "recurring": {
+                                                            "description": "JSON encoded recurring schedule",
+                                                            "type": "string"
+                                                        },
+                                                        "created_at": {
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        },
+                                                        "updated_at": {
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/form-availability/{id}": {
+            "get": {
+                "tags": [
+                    "Client - Dynamic Form Availability"
+                ],
+                "summary": "Get form availability by ID",
+                "description": "Retrieve a specific form availability schedule",
+                "operationId": "getFormAvailabilityById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Form Availability ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Form availability retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form availability retrieved successfully"
+                                                },
+                                                "data": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "dynamic_form_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "store_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "recurring": {
+                                                            "type": "object"
+                                                        },
+                                                        "created_at": {
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        },
+                                                        "updated_at": {
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Form availability not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Client - Dynamic Form Availability"
+                ],
+                "summary": "Update form availability",
+                "description": "Update an existing form availability schedule",
+                "operationId": "updateFormAvailability",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Form Availability ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "dynamic_form_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "store_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "recurring": {
+                                        "description": "Updated recurring schedule",
+                                        "type": "object",
+                                        "additionalProperties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Form availability updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form availability updated successfully"
+                                                },
+                                                "data": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Form availability not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Client - Dynamic Form Availability"
+                ],
+                "summary": "Delete form availability",
+                "description": "Delete a form availability schedule",
+                "operationId": "deleteFormAvailability",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Form Availability ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Form availability deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form availability deleted successfully"
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Form availability not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/client/v1/forms": {
             "get": {
                 "tags": [
-                    "Dynamic Forms"
+                    "Client - Dynamic Forms"
                 ],
                 "summary": "Get all dynamic forms",
                 "description": "Retrieve a list of all dynamic forms with their subcategories and categories",
@@ -1208,7 +1640,7 @@
         "/api/client/v1/forms/subcategory/{subcategoryId}": {
             "get": {
                 "tags": [
-                    "Dynamic Forms"
+                    "Client - Dynamic Forms"
                 ],
                 "summary": "Get forms by subcategory",
                 "description": "Retrieve all dynamic forms for a specific subcategory",
@@ -1308,7 +1740,7 @@
         "/api/client/v1/forms/{id}": {
             "get": {
                 "tags": [
-                    "Dynamic Forms"
+                    "Client - Dynamic Forms"
                 ],
                 "summary": "Get form details",
                 "description": "Retrieve a specific dynamic form with all its pages, fields, and submitted values if they exist",
@@ -1527,7 +1959,7 @@
             },
             "put": {
                 "tags": [
-                    "Dynamic Forms"
+                    "Client - Dynamic Forms"
                 ],
                 "summary": "Update form (Admin Only)",
                 "description": "This endpoint is not available for clients as forms can only be updated by administrators",
@@ -1574,7 +2006,7 @@
             },
             "delete": {
                 "tags": [
-                    "Dynamic Forms"
+                    "Client - Dynamic Forms"
                 ],
                 "summary": "Delete form (Admin Only)",
                 "description": "This endpoint is not available for clients as forms can only be deleted by administrators",
@@ -1623,7 +2055,7 @@
         "/api/client/v1/forms/{id}/edit": {
             "get": {
                 "tags": [
-                    "Dynamic Forms"
+                    "Client - Dynamic Forms"
                 ],
                 "summary": "Edit form (Not Supported)",
                 "description": "This endpoint is not supported as forms can only be edited by administrators",
@@ -1660,6 +2092,778 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dynamic-forms/{formId}/submit": {
+            "put": {
+                "tags": [
+                    "Client - Dynamic Form Submissions"
+                ],
+                "summary": "Update form submission",
+                "description": "Update an existing form submission or create new if doesn't exist",
+                "operationId": "updateFormSubmission",
+                "parameters": [
+                    {
+                        "name": "formId",
+                        "in": "path",
+                        "description": "Dynamic Form ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "store_id",
+                                    "dynamic_form_pages"
+                                ],
+                                "properties": {
+                                    "store_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "dynamic_form_pages": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "dynamic_form_page_id": {
+                                                    "type": "integer"
+                                                },
+                                                "dynamic_form_fields": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "field_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "value": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Form updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form updated successfully"
+                                                },
+                                                "data": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Form submitted successfully (new submission)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form submitted successfully"
+                                                },
+                                                "data": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Client - Dynamic Form Submissions"
+                ],
+                "summary": "Submit a dynamic form",
+                "description": "Submit a completed dynamic form with all field values",
+                "operationId": "submitDynamicForm",
+                "parameters": [
+                    {
+                        "name": "formId",
+                        "in": "path",
+                        "description": "Dynamic Form ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "dynamic_form_id",
+                                    "store_id",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "dynamic_form_id": {
+                                        "description": "Dynamic Form ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "store_id": {
+                                        "description": "Store ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "Submission name",
+                                        "type": "string",
+                                        "example": "Basketball Court Registration"
+                                    },
+                                    "about": {
+                                        "description": "Submission description",
+                                        "type": "string",
+                                        "example": "Main court for weekend games"
+                                    },
+                                    "dynamic_form_pages": {
+                                        "description": "Array of form pages with field submissions",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "dynamic_form_page_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "dynamic_form_fields": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "field_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "value": {
+                                                                "type": "string",
+                                                                "example": "Full Court"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Form submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form was submitted successfully."
+                                                },
+                                                "data": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "dynamic_form_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "user_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "store_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Basketball Court Registration"
+                                                        },
+                                                        "about": {
+                                                            "type": "string",
+                                                            "example": "Main court"
+                                                        },
+                                                        "data": {
+                                                            "type": "string",
+                                                            "example": "{...}"
+                                                        },
+                                                        "created_at": {
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        },
+                                                        "updated_at": {
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or duplicate submission",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "errors": {
+                                            "type": "string",
+                                            "example": "You have already submitted this form."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dynamic-forms/submissions/{id}": {
+            "get": {
+                "tags": [
+                    "Client - Dynamic Form Submissions"
+                ],
+                "summary": "Get submission by ID",
+                "description": "Retrieve a specific form submission with all field values and metadata",
+                "operationId": "getFormSubmissionById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Submission ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Form submission retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form submission was fetched successfully."
+                                                },
+                                                "data": {
+                                                    "properties": {
+                                                        "dynamic_form_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Basketball Court Form"
+                                                        },
+                                                        "description": {
+                                                            "type": "string",
+                                                            "example": "Form for basketball courts"
+                                                        },
+                                                        "dynamic_form_pages": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "dynamic_form_page_id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "sort_no": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "dynamic_form_fields": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object"
+                                                                        }
+                                                                    },
+                                                                    "remarks": {
+                                                                        "type": "string",
+                                                                        "example": "existing"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Form submission not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dynamic-forms/submissions/{formId}": {
+            "delete": {
+                "tags": [
+                    "Client - Dynamic Form Submissions"
+                ],
+                "summary": "Delete form submission",
+                "description": "Delete a specific form submission",
+                "operationId": "deleteFormSubmission",
+                "parameters": [
+                    {
+                        "name": "formId",
+                        "in": "path",
+                        "description": "Form Submission ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Form submission deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form submission was successfully deleted."
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Form submission not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dynamic-forms/user/{userId}": {
+            "get": {
+                "tags": [
+                    "Client - Dynamic Form Submissions"
+                ],
+                "summary": "Get all user submissions",
+                "description": "Retrieve all form submissions for a specific user",
+                "operationId": "getUserFormSubmissions",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User submissions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form submissions were fetched successfully."
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "form_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "form_description": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "about": {
+                                                                "type": "string"
+                                                            },
+                                                            "category": {
+                                                                "type": "object"
+                                                            },
+                                                            "sub_category": {
+                                                                "type": "object"
+                                                            },
+                                                            "dynamic_form_submission": {
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dynamic-forms/user/{userId}/store/{storeId}": {
+            "get": {
+                "tags": [
+                    "Client - Dynamic Form Submissions"
+                ],
+                "summary": "Get user submissions by store",
+                "description": "Retrieve all form submissions for a user filtered by store ID",
+                "operationId": "getUserFormSubmissionsByStore",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "storeId",
+                        "in": "path",
+                        "description": "Store ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Store submissions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form submissions were fetched successfully."
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dynamic-forms/user/{userId}/form/{formId}": {
+            "get": {
+                "tags": [
+                    "Client - Dynamic Form Submissions"
+                ],
+                "summary": "Get user submission by form",
+                "description": "Retrieve a specific form submission for a user by form ID with detailed field values",
+                "operationId": "getUserFormSubmissionByForm",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "formId",
+                        "in": "path",
+                        "description": "Dynamic Form ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Form submission details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Form submission details were fetched successfully."
+                                                },
+                                                "data": {
+                                                    "properties": {
+                                                        "form_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "form_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "form_description": {
+                                                            "type": "string"
+                                                        },
+                                                        "dynamic_form_pages": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "page_id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "page_title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "sort_no": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "fields": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "properties": {
+                                                                                "field_id": {
+                                                                                    "type": "integer"
+                                                                                },
+                                                                                "field_label": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "sort_no": {
+                                                                                    "type": "integer"
+                                                                                },
+                                                                                "submitted_value": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "type": "object"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Form submission not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -5586,6 +6790,14 @@
     },
     "tags": [
         {
+            "name": "Client - Dynamic Form Availability",
+            "description": "API endpoints for managing dynamic form availability schedules (Client App)"
+        },
+        {
+            "name": "Client - Dynamic Form Submissions",
+            "description": "API endpoints for submitting and managing dynamic form submissions (Client App)"
+        },
+        {
             "name": "Client - Listings",
             "description": "API endpoints for browsing and viewing listings (Client/Mobile App)"
         },
@@ -5614,8 +6826,8 @@
             "description": "Categories"
         },
         {
-            "name": "Dynamic Forms",
-            "description": "Dynamic Forms"
+            "name": "Client - Dynamic Forms",
+            "description": "Client - Dynamic Forms"
         },
         {
             "name": "SubCategories",

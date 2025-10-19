@@ -15,7 +15,7 @@ class DynamicFormController extends Controller
      *     summary="Get all dynamic forms",
      *     description="Retrieve a list of all dynamic forms with their subcategories and categories",
      *     operationId="listDynamicForms",
-     *     tags={"Dynamic Forms"},
+     *     tags={"Client - Dynamic Forms"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Response(
      *         response=200,
@@ -75,7 +75,7 @@ class DynamicFormController extends Controller
      *     summary="Get forms by subcategory",
      *     description="Retrieve all dynamic forms for a specific subcategory",
      *     operationId="getFormsBySubcategory",
-     *     tags={"Dynamic Forms"},
+     *     tags={"Client - Dynamic Forms"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="subcategoryId",
@@ -146,7 +146,7 @@ class DynamicFormController extends Controller
      *     summary="Get form details",
      *     description="Retrieve a specific dynamic form with all its pages, fields, and submitted values if they exist",
      *     operationId="getFormDetails",
-     *     tags={"Dynamic Forms"},
+     *     tags={"Client - Dynamic Forms"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -348,7 +348,7 @@ class DynamicFormController extends Controller
      *     summary="Edit form (Not Supported)",
      *     description="This endpoint is not supported as forms can only be edited by administrators",
      *     operationId="editForm",
-     *     tags={"Dynamic Forms"},
+     *     tags={"Client - Dynamic Forms"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -382,7 +382,7 @@ class DynamicFormController extends Controller
      *     summary="Update form (Admin Only)",
      *     description="This endpoint is not available for clients as forms can only be updated by administrators",
      *     operationId="updateForm",
-     *     tags={"Dynamic Forms"},
+     *     tags={"Client - Dynamic Forms"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -416,7 +416,7 @@ class DynamicFormController extends Controller
      *     summary="Delete form (Admin Only)",
      *     description="This endpoint is not available for clients as forms can only be deleted by administrators",
      *     operationId="deleteForm",
-     *     tags={"Dynamic Forms"},
+     *     tags={"Client - Dynamic Forms"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",

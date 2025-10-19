@@ -11,6 +11,12 @@ use App\Models\DynamicFormPage;
 use App\Models\DynamicForm;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Tag(
+ *     name="Client - Dynamic Form Submissions",
+ *     description="API endpoints for submitting and managing dynamic form submissions (Client App)"
+ * )
+ */
 class DynamicFormSubmissionController extends Controller
 {
     /**
@@ -43,6 +49,85 @@ class DynamicFormSubmissionController extends Controller
     {
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/v1/dynamic-forms/{formId}/submit",
+     *     summary="Submit a dynamic form",
+     *     description="Submit a completed dynamic form with all field values",
+     *     operationId="submitDynamicForm",
+     *     tags={"Client - Dynamic Form Submissions"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="formId",
+     *         in="path",
+     *         description="Dynamic Form ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"dynamic_form_id", "store_id", "name"},
+     *             @OA\Property(property="dynamic_form_id", type="integer", example=1, description="Dynamic Form ID"),
+     *             @OA\Property(property="store_id", type="integer", example=1, description="Store ID"),
+     *             @OA\Property(property="name", type="string", example="Basketball Court Registration", description="Submission name"),
+     *             @OA\Property(property="about", type="string", example="Main court for weekend games", description="Submission description"),
+     *             @OA\Property(
+     *                 property="dynamic_form_pages",
+     *                 type="array",
+     *                 description="Array of form pages with field submissions",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="dynamic_form_page_id", type="integer", example=1),
+     *                     @OA\Property(
+     *                         property="dynamic_form_fields",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="field_id", type="integer", example=1),
+     *                             @OA\Property(property="value", type="string", example="Full Court")
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Form submitted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form was submitted successfully."),
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="dynamic_form_id", type="integer", example=1),
+     *                     @OA\Property(property="user_id", type="integer", example=1),
+     *                     @OA\Property(property="store_id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Basketball Court Registration"),
+     *                     @OA\Property(property="about", type="string", example="Main court"),
+     *                     @OA\Property(property="data", type="string", example="{...}"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error or duplicate submission",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(property="errors", type="string", example="You have already submitted this form.")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function submit(StoreFormSubmissionRequest $request, $formId)
     {
         $userId = $request->user()->id; // Assuming user authentication
@@ -92,10 +177,54 @@ class DynamicFormSubmissionController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/v1/dynamic-forms/submissions/{id}",
+     *     summary="Get submission by ID",
+     *     description="Retrieve a specific form submission with all field values and metadata",
+     *     operationId="getFormSubmissionById",
+     *     tags={"Client - Dynamic Form Submissions"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Submission ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Form submission retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form submission was fetched successfully."),
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="object",
+     *                     @OA\Property(property="dynamic_form_id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Basketball Court Form"),
+     *                     @OA\Property(property="description", type="string", example="Form for basketball courts"),
+     *                     @OA\Property(
+     *                         property="dynamic_form_pages",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="dynamic_form_page_id", type="integer"),
+     *                             @OA\Property(property="title", type="string"),
+     *                             @OA\Property(property="sort_no", type="integer"),
+     *                             @OA\Property(property="dynamic_form_fields", type="array", @OA\Items(type="object")),
+     *                             @OA\Property(property="remarks", type="string", example="existing")
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Form submission not found"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
      */
     public function show(Request $request, $id)
     {
@@ -208,11 +337,73 @@ class DynamicFormSubmissionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Put(
+     *     path="/api/v1/dynamic-forms/{formId}/submit",
+     *     summary="Update form submission",
+     *     description="Update an existing form submission or create new if doesn't exist",
+     *     operationId="updateFormSubmission",
+     *     tags={"Client - Dynamic Form Submissions"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="formId",
+     *         in="path",
+     *         description="Dynamic Form ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"store_id", "dynamic_form_pages"},
+     *             @OA\Property(property="store_id", type="integer", example=1),
+     *             @OA\Property(
+     *                 property="dynamic_form_pages",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="dynamic_form_page_id", type="integer"),
+     *                     @OA\Property(
+     *                         property="dynamic_form_fields",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="field_id", type="integer"),
+     *                             @OA\Property(property="value", type="string")
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Form updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form updated successfully"),
+     *                 @OA\Property(property="data", type="object")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Form submitted successfully (new submission)",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form submitted successfully"),
+     *                 @OA\Property(property="data", type="object")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
      */
     public function update(UpdateFormSubmissionRequest $request, $formId)
     {
@@ -264,10 +455,36 @@ class DynamicFormSubmissionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Delete(
+     *     path="/api/v1/dynamic-forms/submissions/{formId}",
+     *     summary="Delete form submission",
+     *     description="Delete a specific form submission",
+     *     operationId="deleteFormSubmission",
+     *     tags={"Client - Dynamic Form Submissions"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="formId",
+     *         in="path",
+     *         description="Form Submission ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Form submission deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form submission was successfully deleted."),
+     *                 @OA\Property(property="data", type="array", @OA\Items())
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Form submission not found"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
      */
     public function destroy(Request $request, $formId)
     {
@@ -298,6 +515,51 @@ class DynamicFormSubmissionController extends Controller
 
     }
     
+    /**
+     * @OA\Get(
+     *     path="/api/v1/dynamic-forms/user/{userId}",
+     *     summary="Get all user submissions",
+     *     description="Retrieve all form submissions for a specific user",
+     *     operationId="getUserFormSubmissions",
+     *     tags={"Client - Dynamic Form Submissions"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User submissions retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form submissions were fetched successfully."),
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="form_name", type="string"),
+     *                         @OA\Property(property="form_description", type="string"),
+     *                         @OA\Property(property="name", type="string"),
+     *                         @OA\Property(property="about", type="string"),
+     *                         @OA\Property(property="category", type="object"),
+     *                         @OA\Property(property="sub_category", type="object"),
+     *                         @OA\Property(property="dynamic_form_submission", type="object")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Unauthorized access"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function getUserDynamicFormSubmissions(Request $request, $userId) 
     {
         $authUserId = $request->user()->id; // Use authenticated user ID to view their submissions
@@ -370,6 +632,45 @@ class DynamicFormSubmissionController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/dynamic-forms/user/{userId}/store/{storeId}",
+     *     summary="Get user submissions by store",
+     *     description="Retrieve all form submissions for a user filtered by store ID",
+     *     operationId="getUserFormSubmissionsByStore",
+     *     tags={"Client - Dynamic Form Submissions"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="storeId",
+     *         in="path",
+     *         description="Store ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Store submissions retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form submissions were fetched successfully."),
+     *                 @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Resource not found"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function getUserDynamicFormSubmissionByStoreId(Request $request, $userId, $storeId) 
     {
 
@@ -434,6 +735,72 @@ class DynamicFormSubmissionController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/dynamic-forms/user/{userId}/form/{formId}",
+     *     summary="Get user submission by form",
+     *     description="Retrieve a specific form submission for a user by form ID with detailed field values",
+     *     operationId="getUserFormSubmissionByForm",
+     *     tags={"Client - Dynamic Form Submissions"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="formId",
+     *         in="path",
+     *         description="Dynamic Form ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Form submission details retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Form submission details were fetched successfully."),
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="object",
+     *                     @OA\Property(property="form_id", type="integer"),
+     *                     @OA\Property(property="form_name", type="string"),
+     *                     @OA\Property(property="form_description", type="string"),
+     *                     @OA\Property(
+     *                         property="dynamic_form_pages",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="page_id", type="integer"),
+     *                             @OA\Property(property="page_title", type="string"),
+     *                             @OA\Property(property="sort_no", type="integer"),
+     *                             @OA\Property(
+     *                                 property="fields",
+     *                                 type="array",
+     *                                 @OA\Items(
+     *                                     type="object",
+     *                                     @OA\Property(property="field_id", type="integer"),
+     *                                     @OA\Property(property="field_label", type="string"),
+     *                                     @OA\Property(property="sort_no", type="integer"),
+     *                                     @OA\Property(property="submitted_value", type="string")
+     *                                 )
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Form submission not found"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function getUserDynamicFormSubmissionByFormId(Request $request, $userId, $formId)
     {
         $authUserId = $request->user()->id; // Use authenticated user ID to view their submissions

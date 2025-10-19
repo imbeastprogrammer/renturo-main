@@ -16,7 +16,7 @@ use App\Http\Controllers\API\V1\Tenants\Client\SubCategoryController;
 use App\Http\Controllers\API\V1\Tenants\Client\MessageController;
 use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
 use App\Http\Controllers\API\V1\Tenants\Client\DynamicFormAvailabilityController;
-use App\Http\Controllers\API\V1\Tenants\Client\ListingController;
+use App\Http\Controllers\Api\V1\Tenants\Client\ListingController;
 
 use App\Http\Controllers\API\V1\ImageUploadController;
 use Database\Factories\ImageFactory;
@@ -51,31 +51,12 @@ Route::middleware([
             // Dynamic Forms Routes
             Route::prefix('forms')->group(function () {
                 // Form Templates
+                // Form Templates (Read-only for clients)
                 Route::get('/', [DynamicFormController::class, 'index']);
                 Route::get('/subcategory/{subcategoryId}', [DynamicFormController::class, 'getBySubcategory']);
                 Route::get('/{formId}', [DynamicFormController::class, 'show']);
 
-                // Form Pages
-                Route::prefix('pages')->group(function () {
-                    Route::get('/', [DynamicFormPageController::class, 'index']);
-                    Route::post('/', [DynamicFormPageController::class, 'store']);
-                    Route::get('/{pageId}', [DynamicFormPageController::class, 'show']);
-                    Route::put('/{pageId}', [DynamicFormPageController::class, 'update']);
-                    Route::delete('/{pageId}', [DynamicFormPageController::class, 'destroy']);
-                    Route::post('/reorder', [DynamicFormPageController::class, 'reorder']);
-                });
-
-                // Form Fields
-                Route::prefix('fields')->group(function () {
-                    Route::get('/', [DynamicFormFieldController::class, 'index']);
-                    Route::post('/', [DynamicFormFieldController::class, 'store']);
-                    Route::get('/{fieldId}', [DynamicFormFieldController::class, 'show']);
-                    Route::put('/{fieldId}', [DynamicFormFieldController::class, 'update']);
-                    Route::delete('/{fieldId}', [DynamicFormFieldController::class, 'destroy']);
-                    Route::post('/reorder', [DynamicFormFieldController::class, 'reorder']);
-                });
-
-                // Form Submissions
+                // Form Submissions (Client can submit and manage their own submissions)
                 Route::post('/{formId}/submit', [DynamicFormSubmissionController::class, 'submit']);
                 Route::get('/user/{userId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissions']);
                 Route::get('/user/{userId}/store/{storeId}', [DynamicFormSubmissionController::class, 'getUserDynamicFormSubmissionByStoreId']);

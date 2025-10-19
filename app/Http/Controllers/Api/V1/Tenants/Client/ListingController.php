@@ -152,7 +152,7 @@ class ListingController extends Controller
             $perPage = min($request->get('per_page', 15), 50); // Max 50 items per page
 
             $query = Listing::query()
-                ->with(['category', 'subCategory', 'photos', 'owner:id,name,email'])
+                ->with(['category', 'subCategory', 'photos', 'owner:id,first_name,last_name,email'])
                 ->published() // Only active and published listings
                 ->public(); // Only public visibility
 
@@ -205,6 +205,15 @@ class ListingController extends Controller
             // Instant booking filter
             if ($request->get('instant_booking')) {
                 $query->where('instant_booking', true);
+            }
+
+            // Amenities filter (AND logic - must have all specified amenities)
+            if ($amenities = $request->get('amenities')) {
+                $amenitiesArray = is_array($amenities) ? $amenities : explode(',', $amenities);
+                
+                foreach ($amenitiesArray as $amenity) {
+                    $query->whereJsonContains('amenities', trim($amenity));
+                }
             }
 
             // Sorting
@@ -283,8 +292,8 @@ class ListingController extends Controller
                     'category',
                     'subCategory',
                     'photos',
-                    'owner:id,name,email',
-                    'recurringAvailability',
+                    'owner:id,first_name,last_name,email',
+                    'availability',
                     'dynamicFormSubmission.dynamicFormFieldData.dynamicFormField'
                 ])
                 ->published()
@@ -303,7 +312,7 @@ class ListingController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Listing not found or not available',
+                'message' => 'Listing not found',
             ], 404);
 
         } catch (\Exception $e) {
@@ -354,8 +363,8 @@ class ListingController extends Controller
                     'category',
                     'subCategory',
                     'photos',
-                    'owner:id,name,email',
-                    'recurringAvailability',
+                    'owner:id,first_name,last_name,email',
+                    'availability',
                     'dynamicFormSubmission.dynamicFormFieldData.dynamicFormField'
                 ])
                 ->published()
@@ -375,7 +384,7 @@ class ListingController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Listing not found or not available',
+                'message' => 'Listing not found',
             ], 404);
 
         } catch (\Exception $e) {
@@ -423,7 +432,7 @@ class ListingController extends Controller
         try {
             $limit = min($request->get('limit', 10), 20); // Max 20 featured
 
-            $listings = Listing::with(['category', 'subCategory', 'photos', 'owner:id,name'])
+            $listings = Listing::with(['category', 'subCategory', 'photos', 'owner:id,first_name,last_name'])
                 ->published()
                 ->public()
                 ->featured()
