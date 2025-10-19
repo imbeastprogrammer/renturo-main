@@ -101,7 +101,7 @@ class ListingFactory extends Factory
             'meta_title' => null,
             'meta_description' => null,
             'meta_keywords' => null,
-            'published_at' => $this->faker->optional(0.8)->dateTimeBetween('-6 months', 'now'),
+            'published_at' => $this->faker->dateTimeBetween('-6 months', 'now'), // Always published for testing
         ];
     }
 
