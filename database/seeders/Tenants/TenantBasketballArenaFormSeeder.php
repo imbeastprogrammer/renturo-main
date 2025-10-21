@@ -28,8 +28,8 @@ class TenantBasketballArenaFormSeeder extends Seeder
             return;
         }
 
-        // Get the Basketball subcategory
-        $basketballSubcategory = SubCategory::where('name', 'Basketball')->first();
+        // Get the Basketball subcategory (try multiple variations)
+        $basketballSubcategory = SubCategory::where('name', 'like', '%Basketball%')->first();
         if (!$basketballSubcategory) {
             $this->command->error('Basketball subcategory not found. Please run TenantCategorySeeder first.');
             return;

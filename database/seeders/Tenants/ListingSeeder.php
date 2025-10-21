@@ -18,9 +18,12 @@ class ListingSeeder extends Seeder
     public function run(): void
     {
         // Get basketball category (assuming it exists from TenantCategorySeeder)
-        $basketballCategory = Category::where('name', 'like', '%Basketball%')->first();
-        $indoorSubCategory = SubCategory::where('name', 'like', '%Indoor%')->first();
-        $outdoorSubCategory = SubCategory::where('name', 'like', '%Outdoor%')->first();
+        $basketballCategory = Category::where('name', 'like', '%Sports%')->first();
+        $basketballSubCategory = SubCategory::where('name', 'like', '%Basketball%')->first();
+        
+        // Use basketball subcategory for all listings
+        $indoorSubCategory = $basketballSubCategory;
+        $outdoorSubCategory = $basketballSubCategory;
 
         // Get admin or first user
         $user = User::where('role', User::ROLE_ADMIN)->first() ?? User::first();
