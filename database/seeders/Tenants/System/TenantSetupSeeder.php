@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Tenants;
+namespace Database\Seeders\Tenants\System;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -10,7 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Artisan;
 
-class TenantSeeder extends Seeder
+class TenantSetupSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -99,7 +99,7 @@ class TenantSeeder extends Seeder
 
             // Seed categories and subcategories
             $this->call([
-                \Database\Seeders\Tenants\TenantCategorySeeder::class
+                \Database\Seeders\Tenants\Admin\CategorySeeder::class
             ]);
 
             $this->command->info('Seeding completed for TenantSeeder data.');

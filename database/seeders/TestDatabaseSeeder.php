@@ -88,9 +88,9 @@ class TestDatabaseSeeder extends Seeder
 
         // Seed tenant-specific data
         $this->call([
-            Tenants\TenantCategorySeeder::class,
-            Tenants\ListingSeeder::class,
-            Tenants\EndToEndBasketballCourtSeeder::class, // Complete end-to-end flow
+            Tenants\Admin\CategorySeeder::class,
+            Tenants\Client\ListingSeeder::class,
+            Tenants\E2E\BasketballCourtSeeder::class, // Complete end-to-end flow
         ]);
     }
 }

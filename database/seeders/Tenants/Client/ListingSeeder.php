@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Tenants;
+namespace Database\Seeders\Tenants\Client;
 
 use Illuminate\Database\Seeder;
 use App\Models\Listing;

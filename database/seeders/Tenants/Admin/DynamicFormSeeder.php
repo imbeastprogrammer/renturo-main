@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Seeders\Tenants;
+namespace Database\Seeders\Tenants\Admin;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\DynamicForm;
 use App\Models\SubCategory;
 
-class TenantDynamicFormSeeder extends Seeder
+class DynamicFormSeeder extends Seeder
 {
     /**
      * Run the database seeds.

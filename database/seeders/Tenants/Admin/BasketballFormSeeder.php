@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Tenants;
+namespace Database\Seeders\Tenants\Admin;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -10,7 +10,7 @@ use App\Models\DynamicFormField;
 use App\Models\SubCategory;
 use App\Models\User;
 
-class TenantBasketballArenaFormSeeder extends Seeder
+class BasketballFormSeeder extends Seeder
 {
     /**
      * Run the database seeds.

@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Seeders\Tenants;
+namespace Database\Seeders\Tenants\Admin;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\SubCategory;
 
-class TenantCategorySeeder extends Seeder
+class CategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.

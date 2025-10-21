@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Seeders\Tenants;
+namespace Database\Seeders\Tenants\Client;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Image;
 use App\Models\Post;
 
-class TenantPostSeeder extends Seeder
+class PostSeeder extends Seeder
 {
     /**
      * Run the database seeds.

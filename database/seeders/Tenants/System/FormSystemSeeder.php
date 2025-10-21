@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Seeders\Tenants;
+namespace Database\Seeders\Tenants\System;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TenantFormSystemSeeder extends Seeder
+class FormSystemSeeder extends Seeder
 {
     /**
      * Run the database seeds.
