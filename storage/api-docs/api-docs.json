@@ -400,7 +400,7 @@
         "/api/client/v1/categories": {
             "get": {
                 "tags": [
-                    "Categories"
+                    "Client - Categories"
                 ],
                 "summary": "Get all categories with subcategories",
                 "description": "Retrieve a list of all categories along with their subcategories. This endpoint returns all active categories that are not soft-deleted.",
@@ -544,7 +544,7 @@
             },
             "post": {
                 "tags": [
-                    "Categories"
+                    "Client - Categories"
                 ],
                 "summary": "Create a new category",
                 "description": "Create a new category. Only accessible by authenticated users.",
@@ -647,7 +647,7 @@
         "/api/client/v1/categories/{id}": {
             "get": {
                 "tags": [
-                    "Categories"
+                    "Client - Categories"
                 ],
                 "summary": "Get a specific category",
                 "description": "Retrieve a single category with its subcategories by ID",
@@ -766,7 +766,7 @@
             },
             "put": {
                 "tags": [
-                    "Categories"
+                    "Client - Categories"
                 ],
                 "summary": "Update a category",
                 "description": "Update an existing category by ID",
@@ -866,7 +866,7 @@
             },
             "delete": {
                 "tags": [
-                    "Categories"
+                    "Client - Categories"
                 ],
                 "summary": "Delete a category",
                 "description": "Soft delete a category by ID. This will not delete associated subcategories.",
@@ -941,7 +941,7 @@
         "/api/client/v1/categories/search": {
             "get": {
                 "tags": [
-                    "Categories"
+                    "Client - Categories"
                 ],
                 "summary": "Search categories and subcategories",
                 "description": "Search for categories by category name or subcategory name. The search is case-insensitive and requires a minimum of 3 characters. Returns a maximum of 10 results.",
@@ -3263,10 +3263,517 @@
                 ]
             }
         },
+        "/api/client/v1/stores": {
+            "post": {
+                "tags": [
+                    "Client - Stores"
+                ],
+                "summary": "Client - Create a new store",
+                "description": "Create a new store/venue for the authenticated user. This is typically used when a property owner registers their venue on the platform.",
+                "operationId": "createStore",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "url",
+                                    "category_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Elite Sports Complex"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "elite-sports-complex"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 9
+                                    },
+                                    "sub_category_id": {
+                                        "type": "integer",
+                                        "example": 56
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "example": "https://example.com/logo.png",
+                                        "nullable": true
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Sports Avenue",
+                                        "nullable": true
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Manila",
+                                        "nullable": true
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "Metro Manila",
+                                        "nullable": true
+                                    },
+                                    "zip_code": {
+                                        "type": "string",
+                                        "example": "1000",
+                                        "nullable": true
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 14.5995,
+                                        "nullable": true
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 120.9842,
+                                        "nullable": true
+                                    },
+                                    "about": {
+                                        "type": "string",
+                                        "example": "Premium sports facility",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Store created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Store has been created."
+                                                },
+                                                "data": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/stores/{storeId}": {
+            "get": {
+                "tags": [
+                    "Client - Stores"
+                ],
+                "summary": "Client - Get store details",
+                "description": "Retrieve details of a specific store owned by the authenticated user, including category and subcategory information.",
+                "operationId": "getStore",
+                "parameters": [
+                    {
+                        "name": "storeId",
+                        "in": "path",
+                        "description": "Store ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Store retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Store has been fetched."
+                                                },
+                                                "data": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Elite Sports Complex"
+                                                        },
+                                                        "url": {
+                                                            "type": "string",
+                                                            "example": "elite-sports-complex"
+                                                        },
+                                                        "category_id": {
+                                                            "type": "integer",
+                                                            "example": 9
+                                                        },
+                                                        "sub_category_id": {
+                                                            "type": "integer",
+                                                            "example": 56
+                                                        },
+                                                        "category": {
+                                                            "type": "object"
+                                                        },
+                                                        "subCategory": {
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Store not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/stores/{id}": {
+            "put": {
+                "tags": [
+                    "Client - Stores"
+                ],
+                "summary": "Client - Update store",
+                "description": "Update an existing store owned by the authenticated user.",
+                "operationId": "updateStore",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Store ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Elite Sports Complex Updated"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "elite-sports-complex-updated"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 9
+                                    },
+                                    "sub_category_id": {
+                                        "type": "integer",
+                                        "example": 56
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "zip_code": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "nullable": true
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "nullable": true
+                                    },
+                                    "about": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Store updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Store has been updated."
+                                                },
+                                                "data": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Store not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Client - Stores"
+                ],
+                "summary": "Client - Delete store",
+                "description": "Delete a store owned by the authenticated user. This is a soft delete.",
+                "operationId": "deleteStore",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Store ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Store deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Store has been deleted."
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Store not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/users/{userId}/stores": {
+            "get": {
+                "tags": [
+                    "Client - Stores"
+                ],
+                "summary": "Client - Get all user stores",
+                "description": "Retrieve all stores/venues owned by the authenticated user, including category, subcategory, and available dynamic forms.",
+                "operationId": "getUserStores",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID (must match authenticated user)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User stores retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "body": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "User store(s) was fetch successfully."
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Elite Sports Complex"
+                                                            },
+                                                            "url": {
+                                                                "type": "string",
+                                                                "example": "elite-sports-complex"
+                                                            },
+                                                            "category_id": {
+                                                                "type": "integer",
+                                                                "example": 9
+                                                            },
+                                                            "sub_category_id": {
+                                                                "type": "integer",
+                                                                "example": 56
+                                                            },
+                                                            "category": {
+                                                                "type": "object"
+                                                            },
+                                                            "subCategory": {
+                                                                "properties": {
+                                                                    "dynamicForms": {
+                                                                        "type": "array",
+                                                                        "items": {}
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Store not found or user ID mismatch"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/client/v1/subcategories": {
             "get": {
                 "tags": [
-                    "SubCategories"
+                    "Client - SubCategories"
                 ],
                 "summary": "Get all subcategories",
                 "description": "Retrieve a list of all subcategories with their parent categories",
@@ -3361,7 +3868,7 @@
             },
             "post": {
                 "tags": [
-                    "SubCategories"
+                    "Client - SubCategories"
                 ],
                 "summary": "Create a new subcategory",
                 "description": "Create a new subcategory under a specific category",
@@ -3458,7 +3965,7 @@
         "/api/client/v1/subcategories/{id}": {
             "get": {
                 "tags": [
-                    "SubCategories"
+                    "Client - SubCategories"
                 ],
                 "summary": "Get a specific subcategory",
                 "description": "Retrieve a single subcategory with its parent category by ID",
@@ -3577,7 +4084,7 @@
             },
             "put": {
                 "tags": [
-                    "SubCategories"
+                    "Client - SubCategories"
                 ],
                 "summary": "Update a subcategory",
                 "description": "Update an existing subcategory by ID",
@@ -3683,7 +4190,7 @@
             },
             "delete": {
                 "tags": [
-                    "SubCategories"
+                    "Client - SubCategories"
                 ],
                 "summary": "Delete a subcategory",
                 "description": "Soft delete a subcategory by ID",
@@ -3758,7 +4265,7 @@
         "/api/client/v1/categories/{categoryId}/subcategories": {
             "get": {
                 "tags": [
-                    "SubCategories"
+                    "Client - SubCategories"
                 ],
                 "summary": "Get subcategories by category",
                 "description": "Retrieve all subcategories for a specific category",
@@ -6806,6 +7313,14 @@
             "description": "User authentication endpoints (Login, Register, Verify, Password Reset)"
         },
         {
+            "name": "Client - Stores",
+            "description": "Store/Listing management for Property Owners"
+        },
+        {
+            "name": "Client - Categories",
+            "description": "Property categories and sub-categories"
+        },
+        {
             "name": "Admin Dynamic Forms",
             "description": "API endpoints for managing dynamic forms in the admin interface"
         },
@@ -6822,16 +7337,12 @@
             "description": "Mobile Verification"
         },
         {
-            "name": "Categories",
-            "description": "Categories"
-        },
-        {
             "name": "Client - Dynamic Forms",
             "description": "Client - Dynamic Forms"
         },
         {
-            "name": "SubCategories",
-            "description": "SubCategories"
+            "name": "Client - SubCategories",
+            "description": "Client - SubCategories"
         }
     ]
 }
