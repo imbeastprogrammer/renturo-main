@@ -15,7 +15,7 @@ class SubCategoryController extends Controller
      *     summary="Get all subcategories",
      *     description="Retrieve a list of all subcategories with their parent categories",
      *     operationId="getSubCategories",
-     *     tags={"SubCategories"},
+     *     tags={"Client - SubCategories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Response(
      *         response=200,
@@ -66,7 +66,7 @@ class SubCategoryController extends Controller
      *     summary="Create a new subcategory",
      *     description="Create a new subcategory under a specific category",
      *     operationId="storeSubCategory",
-     *     tags={"SubCategories"},
+     *     tags={"Client - SubCategories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -120,7 +120,7 @@ class SubCategoryController extends Controller
      *     summary="Get a specific subcategory",
      *     description="Retrieve a single subcategory with its parent category by ID",
      *     operationId="showSubCategory",
-     *     tags={"SubCategories"},
+     *     tags={"Client - SubCategories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -190,7 +190,7 @@ class SubCategoryController extends Controller
      *     summary="Update a subcategory",
      *     description="Update an existing subcategory by ID",
      *     operationId="updateSubCategory",
-     *     tags={"SubCategories"},
+     *     tags={"Client - SubCategories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -260,7 +260,7 @@ class SubCategoryController extends Controller
      *     summary="Delete a subcategory",
      *     description="Soft delete a subcategory by ID",
      *     operationId="destroySubCategory",
-     *     tags={"SubCategories"},
+     *     tags={"Client - SubCategories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -314,7 +314,7 @@ class SubCategoryController extends Controller
      *     summary="Get subcategories by category",
      *     description="Retrieve all subcategories for a specific category",
      *     operationId="getSubCategoriesByCategory",
-     *     tags={"SubCategories"},
+     *     tags={"Client - SubCategories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="categoryId",

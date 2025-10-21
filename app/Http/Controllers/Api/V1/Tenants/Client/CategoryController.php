@@ -14,7 +14,7 @@ class CategoryController extends Controller
      *     summary="Get all categories with subcategories",
      *     description="Retrieve a list of all categories along with their subcategories. This endpoint returns all active categories that are not soft-deleted.",
      *     operationId="getCategories",
-     *     tags={"Categories"},
+     *     tags={"Client - Categories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Response(
      *         response=200,
@@ -86,7 +86,7 @@ class CategoryController extends Controller
      *     summary="Create a new category",
      *     description="Create a new category. Only accessible by authenticated users.",
      *     operationId="storeCategory",
-     *     tags={"Categories"},
+     *     tags={"Client - Categories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -144,7 +144,7 @@ class CategoryController extends Controller
      *     summary="Get a specific category",
      *     description="Retrieve a single category with its subcategories by ID",
      *     operationId="showCategory",
-     *     tags={"Categories"},
+     *     tags={"Client - Categories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -216,7 +216,7 @@ class CategoryController extends Controller
      *     summary="Update a category",
      *     description="Update an existing category by ID",
      *     operationId="updateCategory",
-     *     tags={"Categories"},
+     *     tags={"Client - Categories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -284,7 +284,7 @@ class CategoryController extends Controller
      *     summary="Delete a category",
      *     description="Soft delete a category by ID. This will not delete associated subcategories.",
      *     operationId="destroyCategory",
-     *     tags={"Categories"},
+     *     tags={"Client - Categories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -338,7 +338,7 @@ class CategoryController extends Controller
      *     summary="Search categories and subcategories",
      *     description="Search for categories by category name or subcategory name. The search is case-insensitive and requires a minimum of 3 characters. Returns a maximum of 10 results.",
      *     operationId="searchCategories",
-     *     tags={"Categories"},
+     *     tags={"Client - Categories"},
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="query",
