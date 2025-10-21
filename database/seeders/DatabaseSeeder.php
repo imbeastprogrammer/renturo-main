@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
-            \Database\Seeders\Tenants\TenantSeeder::class
+            \Database\Seeders\Tenants\System\TenantSetupSeeder::class
         ]);
 
         $this->command->info('Seeding completed for DatabaseSeeder data.');

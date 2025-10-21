@@ -30,6 +30,25 @@ class BasketballCourtSeeder extends Seeder
         $this->command->info('═══════════════════════════════════════════════════════════');
         $this->command->info('');
 
+        // Step 0: Ensure Admin User Exists
+        $this->command->info('Step 0: Ensuring admin user exists...');
+        $admin = \App\Models\User::where('role', \App\Models\User::ROLE_ADMIN)->first();
+        if (!$admin) {
+            $admin = \App\Models\User::create([
+                'first_name' => 'Renturo',
+                'last_name' => 'Admin',
+                'username' => 'renturoadmin',
+                'email' => 'admin@renturo.ph',
+                'mobile_number' => '+639171234567',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => \App\Models\User::ROLE_ADMIN,
+            ]);
+            $this->command->info('  ✓ Created admin user (admin@renturo.ph)');
+        } else {
+            $this->command->info('  ✓ Admin user already exists');
+        }
+        $this->command->info('');
+
         // Step 1: Admin creates Categories & Subcategories
         $this->command->info('Step 1: Admin creates categories and subcategories...');
         $this->call(\Database\Seeders\Tenants\Admin\CategorySeeder::class);
@@ -42,14 +61,19 @@ class BasketballCourtSeeder extends Seeder
         $this->command->info('  ✓ Dynamic form with 3 pages and booking fields created');
         $this->command->info('');
 
-        // Step 3: Complete Listing Flow (Owners + Stores + Listings)
-        $this->command->info('Step 3: Creating complete basketball court listings...');
+         // Step 3: Court Owners Fill Out Forms (Dynamic Form Submissions)
+        $this->command->info('Step 3: Court owners register and fill out forms...');
+        $this->call(\Database\Seeders\Tenants\Client\DynamicFormSubmissionSeeder::class);
+        $this->command->info('  ✓ 4 Court owners with form submissions created');
+        $this->command->info('');
+
+        // Step 4: Complete Listing Flow (Convert Submissions to Listings)
+        $this->command->info('Step 4: Creating basketball court listings...');
         $this->command->info('  This includes:');
-        $this->command->info('  • Court owners registration');
-        $this->command->info('  • Venue store creation');
-        $this->command->info('  • Basketball court listings');
-        $this->command->info('  • Professional photos');
-        $this->command->info('  • Weekly availability schedules');
+        $this->command->info('  • Converting form submissions to listings');
+        $this->command->info('  • Adding professional photos');
+        $this->command->info('  • Setting weekly availability schedules');
+        $this->command->info('  • Publishing courts for booking');
         $this->call(\Database\Seeders\Tenants\Client\ListingSeeder::class);
         $this->command->info('  ✓ 4 Complete basketball court listings created');
         $this->command->info('');
@@ -68,6 +92,10 @@ class BasketballCourtSeeder extends Seeder
         $this->command->info('  • Contact Information page (Name, Phone, Email)');
         $this->command->info('  • Booking Details page (Date, Time, Duration)');
         $this->command->info('  • Court & Activity page (Court Type, Activity, Players)');
+        $this->command->info('✓ 4 Court Owners & Form Submissions:');
+        $this->command->info('  • Owners registered with complete profiles');
+        $this->command->info('  • Venue stores created');
+        $this->command->info('  • Form submissions with realistic data');
         $this->command->info('✓ 4 Premium Basketball Court Listings with:');
         $this->command->info('  • Complete property details (title, description, address)');
         $this->command->info('  • Professional court photos (5 per listing)');
@@ -98,6 +126,7 @@ class BasketballCourtSeeder extends Seeder
         $this->command->info('  • dynamic_forms (1 Basketball Arena form)');
         $this->command->info('  • dynamic_form_pages (3 pages: Contact, Booking, Court)');
         $this->command->info('  • dynamic_form_fields (10+ booking form fields)');
+        $this->command->info('  • dynamic_form_submissions (4 owner submissions) ← NEW!');
         $this->command->info('  • users (4 court owners + admin)');
         $this->command->info('  • stores (4 venue records)');
         $this->command->info('  • listings (4 basketball courts)');
