@@ -40,6 +40,14 @@ class ListingSeeder extends Seeder
 
         $this->command->info('Seeding basketball court listings...');
 
+        // Clean up existing listings from this seeder (to allow re-running)
+        $existingListings = Listing::where('slug', 'like', '%basketball-court%')->pluck('id');
+        if ($existingListings->isNotEmpty()) {
+            ListingPhoto::whereIn('listing_id', $existingListings)->delete();
+            ListingAvailability::whereIn('listing_id', $existingListings)->delete();
+            Listing::whereIn('id', $existingListings)->delete();
+        }
+
         // Featured Premium Indoor Basketball Court
         $listing1 = Listing::create([
             'user_id' => $user->id,
