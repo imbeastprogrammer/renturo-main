@@ -90,6 +90,7 @@ class TestDatabaseSeeder extends Seeder
         $this->call([
             Tenants\TenantCategorySeeder::class,
             Tenants\ListingSeeder::class,
+            Tenants\EndToEndBasketballCourtSeeder::class, // Complete end-to-end flow
         ]);
     }
 }
