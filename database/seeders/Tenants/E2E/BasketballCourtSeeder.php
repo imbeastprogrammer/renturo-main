@@ -61,7 +61,7 @@ class BasketballCourtSeeder extends Seeder
         $this->command->info('  ✓ Dynamic form with 3 pages and booking fields created');
         $this->command->info('');
 
-         // Step 3: Court Owners Fill Out Forms (Dynamic Form Submissions)
+        // Step 3: Court Owners Fill Out Forms (Dynamic Form Submissions)
         $this->command->info('Step 3: Court owners register and fill out forms...');
         $this->call(\Database\Seeders\Tenants\Client\DynamicFormSubmissionSeeder::class);
         $this->command->info('  ✓ 4 Court owners with form submissions created');

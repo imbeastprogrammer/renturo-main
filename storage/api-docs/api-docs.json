@@ -3263,6 +3263,510 @@
                 ]
             }
         },
+        "/api/client/v1/media/upload": {
+            "post": {
+                "tags": [
+                    "Client - Media"
+                ],
+                "summary": "Client - Upload media file",
+                "description": "Upload an image, video, or document to AWS S3. Supports profile photos, listing photos, store logos, posts, and more. Images are automatically resized and thumbnails are generated.",
+                "operationId": "uploadMedia",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "mediable_type",
+                                    "mediable_id",
+                                    "category"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "description": "File to upload (Image: max 10MB, Video: max 50MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "mediable_type": {
+                                        "description": "Entity type this media belongs to",
+                                        "type": "string",
+                                        "enum": [
+                                            "User",
+                                            "Listing",
+                                            "Store",
+                                            "Post",
+                                            "DynamicFormSubmission",
+                                            "Comment"
+                                        ],
+                                        "example": "User"
+                                    },
+                                    "mediable_id": {
+                                        "description": "ID of the entity",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category": {
+                                        "description": "Media category",
+                                        "type": "string",
+                                        "enum": [
+                                            "profile",
+                                            "cover",
+                                            "post",
+                                            "story",
+                                            "comment",
+                                            "listing",
+                                            "logo",
+                                            "banner",
+                                            "document",
+                                            "attachment",
+                                            "other"
+                                        ],
+                                        "example": "profile"
+                                    },
+                                    "is_primary": {
+                                        "description": "Set as primary media (optional)",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "metadata": {
+                                        "description": "Additional metadata (optional)",
+                                        "properties": {
+                                            "caption": {
+                                                "type": "string",
+                                                "example": "My profile photo"
+                                            },
+                                            "alt_text": {
+                                                "type": "string",
+                                                "example": "User profile picture"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Media uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Media uploaded successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "media_type": {
+                                                    "type": "string",
+                                                    "example": "image"
+                                                },
+                                                "category": {
+                                                    "type": "string",
+                                                    "example": "profile"
+                                                },
+                                                "s3_url": {
+                                                    "type": "string",
+                                                    "example": "https://s3.amazonaws.com/renturo/user/1/profile/uuid.jpg"
+                                                },
+                                                "thumbnail_url": {
+                                                    "type": "string",
+                                                    "example": "https://s3.amazonaws.com/renturo/user/1/profile/thumb_uuid.jpg"
+                                                },
+                                                "file_size": {
+                                                    "type": "integer",
+                                                    "example": 245678
+                                                },
+                                                "width": {
+                                                    "type": "integer",
+                                                    "example": 1920
+                                                },
+                                                "height": {
+                                                    "type": "integer",
+                                                    "example": 1080
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/media/{id}": {
+            "get": {
+                "tags": [
+                    "Client - Media"
+                ],
+                "summary": "Client - Get media details",
+                "description": "Retrieve details of a specific media file by ID",
+                "operationId": "getMedia",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Media ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Media details retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Media retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Media not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Client - Media"
+                ],
+                "summary": "Client - Delete media",
+                "description": "Delete a media file from S3 and database. Only the uploader or entity owner can delete.",
+                "operationId": "deleteMedia",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Media ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Media deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Media deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Media not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized to delete this media"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/media/entity/{type}/{id}": {
+            "get": {
+                "tags": [
+                    "Client - Media"
+                ],
+                "summary": "Client - Get all media for an entity",
+                "description": "Retrieve all media files associated with a specific entity (User, Listing, Store, Post, etc.)",
+                "operationId": "getEntityMedia",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "Entity type (User, Listing, Store, Post)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "User"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Entity ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category (optional)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "profile"
+                        }
+                    },
+                    {
+                        "name": "media_type",
+                        "in": "query",
+                        "description": "Filter by media type (optional)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "image",
+                                "video",
+                                "document"
+                            ],
+                            "example": "image"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Entity media retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Media retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/media/my-uploads": {
+            "get": {
+                "tags": [
+                    "Client - Media"
+                ],
+                "summary": "Client - Get my uploaded media",
+                "description": "Retrieve all media files uploaded by the authenticated user",
+                "operationId": "getMyMedia",
+                "parameters": [
+                    {
+                        "name": "media_type",
+                        "in": "query",
+                        "description": "Filter by media type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "image",
+                                "video",
+                                "document"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User media retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Media retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/media/{id}/set-primary": {
+            "patch": {
+                "tags": [
+                    "Client - Media"
+                ],
+                "summary": "Client - Set media as primary",
+                "description": "Set a media file as the primary/featured media for its entity (e.g., primary profile photo, main listing photo)",
+                "operationId": "setPrimaryMedia",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Media ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Media set as primary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Media set as primary successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Media not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/client/v1/stores": {
             "post": {
                 "tags": [
@@ -7339,6 +7843,10 @@
         {
             "name": "Client - Dynamic Forms",
             "description": "Client - Dynamic Forms"
+        },
+        {
+            "name": "Client - Media",
+            "description": "Client - Media"
         },
         {
             "name": "Client - SubCategories",

@@ -17,6 +17,7 @@ use App\Http\Controllers\API\V1\Tenants\Client\MessageController;
 use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
 use App\Http\Controllers\API\V1\Tenants\Client\DynamicFormAvailabilityController;
 use App\Http\Controllers\Api\V1\Tenants\Client\ListingController;
+use App\Http\Controllers\API\V1\Tenants\Client\MediaController;
 
 use App\Http\Controllers\API\V1\ImageUploadController;
 use Database\Factories\ImageFactory;
@@ -78,6 +79,14 @@ Route::middleware([
             Route::get('/listings/slug/{slug}', [ListingController::class, 'showBySlug']);
             Route::get('/listings/{id}', [ListingController::class, 'show']);
             Route::get('/listings', [ListingController::class, 'index']);
+
+            // Media routes
+            Route::post('/media/upload', [MediaController::class, 'upload']);
+            Route::get('/media/{id}', [MediaController::class, 'show']);
+            Route::delete('/media/{id}', [MediaController::class, 'destroy']);
+            Route::patch('/media/{id}/set-primary', [MediaController::class, 'setPrimary']);
+            Route::get('/media/entity/{type}/{id}', [MediaController::class, 'getEntityMedia']);
+            Route::get('/media/my-uploads', [MediaController::class, 'getMyMedia']);
 
             Route::resource('/chats', ChatController::class);
             Route::delete('/chats/{chat}/leave', [ChatController::class, 'leaveChat']);

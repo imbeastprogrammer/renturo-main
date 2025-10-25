@@ -33,6 +33,9 @@ class User extends Authenticatable
         'email',
         'username',
         'mobile_number',
+        'avatar',
+        'cover_photo',
+        'bio',
         'mpin',
         'password',
         'created_by',
@@ -139,5 +142,55 @@ class User extends Authenticatable
     public function dynamicFormAvailabilities()
     {
         return $this->hasMany(DynamicFormAvailability::class);
+    }
+
+    /**
+     * User has many media (polymorphic)
+     */
+    public function media()
+    {
+        return $this->morphMany(Media::class, 'mediable');
+    }
+
+    /**
+     * Get user's profile photo/avatar
+     */
+    public function profilePhoto()
+    {
+        return $this->media()->where('category', Media::CATEGORY_PROFILE)->latest()->first();
+    }
+
+    /**
+     * Get user's cover photo
+     */
+    public function coverPhoto()
+    {
+        return $this->media()->where('category', Media::CATEGORY_COVER)->latest()->first();
+    }
+
+    /**
+     * Get avatar URL (from media table or avatar column)
+     */
+    public function getAvatarUrlAttribute()
+    {
+        $profilePhoto = $this->profilePhoto();
+        if ($profilePhoto) {
+            return $profilePhoto->url;
+        }
+        
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
+    }
+
+    /**
+     * Get cover photo URL
+     */
+    public function getCoverPhotoUrlAttribute()
+    {
+        $cover = $this->coverPhoto();
+        if ($cover) {
+            return $cover->url;
+        }
+        
+        return $this->cover_photo ? asset('storage/' . $this->cover_photo) : null;
     }
 }
