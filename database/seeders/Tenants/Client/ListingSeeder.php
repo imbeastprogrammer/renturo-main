@@ -117,15 +117,18 @@ Amenities include free parking for up to 50 vehicles, on-site sports shop for eq
             ]);
         }
 
-        // Add availability for listing 1 (Monday to Sunday, full day)
-        for ($day = 1; $day <= 7; $day++) {
+        // Add availability for listing 1 (next 30 days, full day)
+        for ($i = 0; $i < 30; $i++) {
+            $date = now()->addDays($i);
             ListingAvailability::create([
                 'listing_id' => $listing1->id,
-                'availability_type' => ListingAvailability::TYPE_RECURRING,
-                'day_of_week' => $day % 7, // 0 = Sunday, 1 = Monday, etc.
-                'start_time' => '06:00:00',
-                'end_time' => '23:00:00',
-                'is_available' => true,
+                'available_date' => $date->format('Y-m-d'),
+                'start_time' => '06:00',
+                'end_time' => '23:00',
+                'slot_duration_minutes' => 60,
+                'duration_type' => 'hourly',
+                'status' => 'available',
+                'created_by' => $user->id,
             ]);
         }
 
@@ -190,15 +193,18 @@ Basic amenities include restrooms, drinking water, and nearby parking. Security 
             ]);
         }
 
-        // Add availability for listing 2 (Monday to Sunday, 6 AM to 10 PM)
-        for ($day = 0; $day <= 6; $day++) {
+        // Add availability for listing 2 (next 30 days, 6 AM to 10 PM)
+        for ($i = 0; $i < 30; $i++) {
+            $date = now()->addDays($i);
             ListingAvailability::create([
                 'listing_id' => $listing2->id,
-                'availability_type' => ListingAvailability::TYPE_RECURRING,
-                'day_of_week' => $day,
-                'start_time' => '06:00:00',
-                'end_time' => '22:00:00',
-                'is_available' => true,
+                'available_date' => $date->format('Y-m-d'),
+                'start_time' => '06:00',
+                'end_time' => '22:00',
+                'slot_duration_minutes' => 60,
+                'duration_type' => 'hourly',
+                'status' => 'available',
+                'created_by' => $user->id,
             ]);
         }
 
@@ -266,26 +272,37 @@ Amenities include changing room, secure storage, refreshments vending machine, a
             ]);
         }
 
-        // Add availability for listing 3 (Monday to Saturday, morning and evening only)
-        for ($day = 1; $day <= 6; $day++) {
+        // Add availability for listing 3 (next 30 days, morning and evening sessions only)
+        for ($i = 0; $i < 30; $i++) {
+            $date = now()->addDays($i);
+            
+            // Skip Sundays for training facility
+            if ($date->dayOfWeek === 0) {
+                continue;
+            }
+            
             // Morning session
             ListingAvailability::create([
                 'listing_id' => $listing3->id,
-                'availability_type' => ListingAvailability::TYPE_RECURRING,
-                'day_of_week' => $day % 7,
-                'start_time' => '06:00:00',
-                'end_time' => '12:00:00',
-                'is_available' => true,
+                'available_date' => $date->format('Y-m-d'),
+                'start_time' => '06:00',
+                'end_time' => '12:00',
+                'slot_duration_minutes' => 60,
+                'duration_type' => 'hourly',
+                'status' => 'available',
+                'created_by' => $user->id,
             ]);
 
             // Evening session
             ListingAvailability::create([
                 'listing_id' => $listing3->id,
-                'availability_type' => ListingAvailability::TYPE_RECURRING,
-                'day_of_week' => $day % 7,
-                'start_time' => '18:00:00',
-                'end_time' => '22:00:00',
-                'is_available' => true,
+                'available_date' => $date->format('Y-m-d'),
+                'start_time' => '18:00',
+                'end_time' => '22:00',
+                'slot_duration_minutes' => 60,
+                'duration_type' => 'hourly',
+                'status' => 'available',
+                'created_by' => $user->id,
             ]);
         }
 
@@ -348,15 +365,18 @@ Affordable rates make it accessible to everyone who loves the game.',
             ]);
         }
 
-        // Add availability for listing 4 (Monday to Sunday, 7 AM to 9 PM)
-        for ($day = 0; $day <= 6; $day++) {
+        // Add availability for listing 4 (next 30 days, 7 AM to 9 PM)
+        for ($i = 0; $i < 30; $i++) {
+            $date = now()->addDays($i);
             ListingAvailability::create([
                 'listing_id' => $listing4->id,
-                'availability_type' => ListingAvailability::TYPE_RECURRING,
-                'day_of_week' => $day,
-                'start_time' => '07:00:00',
-                'end_time' => '21:00:00',
-                'is_available' => true,
+                'available_date' => $date->format('Y-m-d'),
+                'start_time' => '07:00',
+                'end_time' => '21:00',
+                'slot_duration_minutes' => 60,
+                'duration_type' => 'hourly',
+                'status' => 'available',
+                'created_by' => $user->id,
             ]);
         }
 

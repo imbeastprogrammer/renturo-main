@@ -5,208 +5,189 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 /**
- * ListingAvailability Model
+ * Universal ListingAvailability Model
  * 
- * Represents availability windows for a listing.
- * Supports recurring (e.g., every Monday 8AM-5PM) and specific date availability.
- * 
- * @property int $id
- * @property int $listing_id
- * @property string $availability_type
- * @property int|null $day_of_week
- * @property string|null $start_time
- * @property string|null $end_time
- * @property string|null $available_date
- * @property string|null $start_date
- * @property string|null $end_date
- * @property float|null $price_override
- * @property bool $is_available
- * @property string|null $notes
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon|null $deleted_at
+ * Represents availability slots for any type of rental property:
+ * - Basketball courts (hourly slots)
+ * - Hotel rooms (daily slots with check-in/out)
+ * - Car rentals (daily/weekly slots)
+ * - Event venues (event-based slots)
+ * - Vacation rentals (nightly stays)
  */
 class ListingAvailability extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'listing_availability';
 
     /**
-     * Availability Types
+     * Status constants
      */
-    public const TYPE_RECURRING = 'recurring';
-    public const TYPE_SPECIFIC_DATE = 'specific_date';
-    public const TYPE_DATE_RANGE = 'date_range';
-    public const TYPE_BLOCKED = 'blocked';
+    const STATUS_AVAILABLE = 'available';
+    const STATUS_BLOCKED = 'blocked';
+    const STATUS_BOOKED = 'booked';
+    const STATUS_MAINTENANCE = 'maintenance';
+    const STATUS_CLEANING = 'cleaning';
+    const STATUS_RESERVED = 'reserved';
+    const STATUS_CANCELLED = 'cancelled';
 
     /**
-     * Days of Week
+     * Duration type constants
      */
-    public const SUNDAY = 0;
-    public const MONDAY = 1;
-    public const TUESDAY = 2;
-    public const WEDNESDAY = 3;
-    public const THURSDAY = 4;
-    public const FRIDAY = 5;
-    public const SATURDAY = 6;
+    const DURATION_HOURLY = 'hourly';
+    const DURATION_DAILY = 'daily';
+    const DURATION_WEEKLY = 'weekly';
+    const DURATION_MONTHLY = 'monthly';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
+     * Recurrence type constants
      */
+    const RECURRENCE_NONE = 'none';
+    const RECURRENCE_DAILY = 'daily';
+    const RECURRENCE_WEEKLY = 'weekly';
+    const RECURRENCE_MONTHLY = 'monthly';
+    const RECURRENCE_YEARLY = 'yearly';
+
     protected $fillable = [
         'listing_id',
-        'availability_type',
-        'day_of_week',
+        'unit_identifier',
+        'available_units',
+        'available_date',
         'start_time',
         'end_time',
-        'available_date',
-        'start_date',
-        'end_date',
-        'price_override',
-        'is_available',
+        'peak_hour_price',
+        'weekend_price',
+        'holiday_price',
+        'min_duration_hours',
+        'max_duration_hours',
+        'duration_type',
+        'slot_duration_minutes',
+        'recurrence_type',
+        'recurrence_pattern',
+        'recurrence_end_date',
+        'category_rules',
+        'booking_rules',
         'notes',
+        'metadata',
+        'status',
+        'created_by',
+        'updated_by',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'day_of_week' => 'integer',
-        'price_override' => 'decimal:2',
-        'is_available' => 'boolean',
         'available_date' => 'date',
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
+        'recurrence_end_date' => 'date',
+        'recurrence_pattern' => 'array',
+        'category_rules' => 'array',
+        'booking_rules' => 'array',
+        'metadata' => 'array',
+        'peak_hour_price' => 'decimal:2',
+        'weekend_price' => 'decimal:2',
+        'holiday_price' => 'decimal:2',
+        'available_units' => 'integer',
+        'min_duration_hours' => 'integer',
+        'max_duration_hours' => 'integer',
+        'slot_duration_minutes' => 'integer',
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
     /**
-     * Get the listing that owns the availability.
+     * Relationships
      */
-    public function listing()
+    public function listing(): BelongsTo
     {
         return $this->belongsTo(Listing::class);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Query Scopes
-    |--------------------------------------------------------------------------
-    */
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(ListingUnit::class, 'unit_identifier', 'unit_identifier')
+            ->where('listing_id', $this->listing_id);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 
     /**
-     * Scope to get only available slots.
+     * Scopes
      */
     public function scopeAvailable($query)
     {
-        return $query->where('is_available', true);
+        return $query->where('status', self::STATUS_AVAILABLE);
     }
 
-    /**
-     * Scope to get blocked slots.
-     */
+    public function scopeBooked($query)
+    {
+        return $query->where('status', self::STATUS_BOOKED);
+    }
+
     public function scopeBlocked($query)
     {
-        return $query->where('availability_type', self::TYPE_BLOCKED);
+        return $query->whereIn('status', [self::STATUS_BLOCKED, self::STATUS_MAINTENANCE, self::STATUS_CLEANING]);
     }
 
-    /**
-     * Scope to get recurring availability.
-     */
-    public function scopeRecurring($query)
+    public function scopeForDate($query, $date)
     {
-        return $query->where('availability_type', self::TYPE_RECURRING);
+        return $query->where('available_date', $date);
     }
 
-    /**
-     * Scope to get availability for a specific day of week.
-     */
-    public function scopeForDayOfWeek($query, int $dayOfWeek)
+    public function scopeForDateRange($query, $startDate, $endDate)
     {
-        return $query->where('day_of_week', $dayOfWeek);
+        return $query->whereBetween('available_date', [$startDate, $endDate]);
     }
 
-    /**
-     * Scope to get availability for a specific date.
-     */
-    public function scopeForDate($query, Carbon $date)
+    public function scopeForUnit($query, $unitIdentifier)
     {
-        return $query->where(function ($q) use ($date) {
-            // Specific date match
-            $q->where(function ($q2) use ($date) {
-                $q2->where('availability_type', self::TYPE_SPECIFIC_DATE)
-                    ->whereDate('available_date', $date->format('Y-m-d'));
-            })
-            // Date range match
-            ->orWhere(function ($q2) use ($date) {
-                $q2->where('availability_type', self::TYPE_DATE_RANGE)
-                    ->whereDate('start_date', '<=', $date->format('Y-m-d'))
-                    ->whereDate('end_date', '>=', $date->format('Y-m-d'));
-            })
-            // Recurring match (by day of week)
-            ->orWhere(function ($q2) use ($date) {
-                $q2->where('availability_type', self::TYPE_RECURRING)
-                    ->where('day_of_week', $date->dayOfWeek);
-            });
-        });
+        return $query->where('unit_identifier', $unitIdentifier);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Helper Methods
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Get the day name from day_of_week.
-     */
-    public function getDayName(): ?string
+    public function scopeForTimeRange($query, $startTime, $endTime)
     {
-        if ($this->day_of_week === null) {
-            return null;
-        }
+        return $query->where('start_time', '>=', $startTime)
+                    ->where('end_time', '<=', $endTime);
+    }
 
-        $days = [
-            self::SUNDAY => 'Sunday',
-            self::MONDAY => 'Monday',
-            self::TUESDAY => 'Tuesday',
-            self::WEDNESDAY => 'Wednesday',
-            self::THURSDAY => 'Thursday',
-            self::FRIDAY => 'Friday',
-            self::SATURDAY => 'Saturday',
-        ];
-
-        return $days[$this->day_of_week] ?? null;
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('available_date')
+                    ->orderBy('start_time')
+                    ->orderBy('unit_identifier');
     }
 
     /**
-     * Get the time range as a formatted string.
+     * Helper Methods
      */
-    public function getTimeRange(): ?string
+    public function isAvailable(): bool
+    {
+        return $this->status === self::STATUS_AVAILABLE;
+    }
+
+    public function isBooked(): bool
+    {
+        return $this->status === self::STATUS_BOOKED;
+    }
+
+    public function isBlocked(): bool
+    {
+        return in_array($this->status, [self::STATUS_BLOCKED, self::STATUS_MAINTENANCE, self::STATUS_CLEANING]);
+    }
+
+    public function getTimeRangeAttribute(): string
     {
         if (!$this->start_time || !$this->end_time) {
-            return null;
+            return 'All day';
         }
 
         $start = Carbon::parse($this->start_time)->format('g:i A');
@@ -215,139 +196,221 @@ class ListingAvailability extends Model
         return "{$start} - {$end}";
     }
 
-    /**
-     * Get the date range as a formatted string.
-     */
-    public function getDateRange(): ?string
+    public function getEffectivePriceAttribute(): ?float
     {
-        if ($this->availability_type === self::TYPE_SPECIFIC_DATE && $this->available_date) {
-            return $this->available_date->format('M d, Y');
+        $date = Carbon::parse($this->available_date);
+        $time = Carbon::parse($this->start_time);
+
+        // Check for holiday pricing
+        if ($this->holiday_price && $this->isHoliday($date)) {
+            return $this->holiday_price;
         }
 
-        if ($this->availability_type === self::TYPE_DATE_RANGE && $this->start_date && $this->end_date) {
-            return $this->start_date->format('M d, Y') . ' - ' . $this->end_date->format('M d, Y');
+        // Check for peak hour pricing (takes precedence over weekend)
+        if ($this->peak_hour_price && $this->isPeakHour($time)) {
+            return $this->peak_hour_price;
         }
 
-        return null;
+        // Check for weekend pricing
+        if ($this->weekend_price && $date->isWeekend()) {
+            return $this->weekend_price;
+        }
+
+        // Fall back to listing base price
+        if ($this->duration_type === self::DURATION_DAILY) {
+            return $this->listing->base_daily_price;
+        }
+
+        return $this->listing->base_hourly_price;
     }
 
-    /**
-     * Get a human-readable description of the availability.
-     */
-    public function getDescription(): string
+    public function getDurationInMinutesAttribute(): int
     {
-        $description = '';
-
-        if ($this->availability_type === self::TYPE_RECURRING) {
-            $description = 'Every ' . $this->getDayName();
-            if ($timeRange = $this->getTimeRange()) {
-                $description .= ' ' . $timeRange;
-            }
-        } elseif ($this->availability_type === self::TYPE_SPECIFIC_DATE) {
-            $description = $this->getDateRange();
-            if ($timeRange = $this->getTimeRange()) {
-                $description .= ' ' . $timeRange;
-            }
-        } elseif ($this->availability_type === self::TYPE_DATE_RANGE) {
-            $description = $this->getDateRange();
-        } elseif ($this->availability_type === self::TYPE_BLOCKED) {
-            $description = 'Blocked: ' . ($this->getDateRange() ?? 'Unavailable');
+        if (!$this->start_time || !$this->end_time) {
+            return 0;
         }
 
-        if (!$this->is_available) {
-            $description = 'Unavailable - ' . $description;
-        }
+        $start = Carbon::parse($this->start_time);
+        $end = Carbon::parse($this->end_time);
 
-        if ($this->notes) {
-            $description .= ' (' . $this->notes . ')';
-        }
-
-        return $description;
+        return $end->diffInMinutes($start);
     }
 
-    /**
-     * Check if this availability is for a recurring schedule.
-     */
-    public function isRecurring(): bool
+    public function generateTimeSlots(): array
     {
-        return $this->availability_type === self::TYPE_RECURRING;
-    }
-
-    /**
-     * Check if this availability is blocked.
-     */
-    public function isBlocked(): bool
-    {
-        return $this->availability_type === self::TYPE_BLOCKED || !$this->is_available;
-    }
-
-    /**
-     * Check if the availability applies to a given date.
-     */
-    public function appliesToDate(Carbon $date): bool
-    {
-        if ($this->availability_type === self::TYPE_SPECIFIC_DATE) {
-            return $this->available_date && $this->available_date->isSameDay($date);
+        if (!$this->start_time || !$this->end_time) {
+            return [];
         }
 
-        if ($this->availability_type === self::TYPE_DATE_RANGE) {
-            return $this->start_date && $this->end_date 
-                && $date->between($this->start_date, $this->end_date);
-        }
+        $slots = [];
+        $current = Carbon::parse($this->start_time);
+        $end = Carbon::parse($this->end_time);
 
-        if ($this->availability_type === self::TYPE_RECURRING) {
-            return $this->day_of_week === $date->dayOfWeek;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the price (override if set, otherwise from listing).
-     */
-    public function getPrice(string $priceType = 'price_per_hour'): ?float
-    {
-        if ($this->price_override) {
-            return $this->price_override;
-        }
-
-        return $this->listing ? $this->listing->$priceType : null;
-    }
-
-    /**
-     * Check if this slot overlaps with another availability slot.
-     */
-    public function overlapsWith(ListingAvailability $other): bool
-    {
-        // For recurring availability, check if they're on the same day
-        if ($this->isRecurring() && $other->isRecurring()) {
-            if ($this->day_of_week !== $other->day_of_week) {
-                return false;
+        while ($current->lt($end)) {
+            $slotEnd = $current->copy()->addMinutes($this->slot_duration_minutes);
+            
+            if ($slotEnd->lte($end)) {
+                $slots[] = [
+                    'start' => $current->format('H:i'),
+                    'end' => $slotEnd->format('H:i'),
+                    'duration_minutes' => $this->slot_duration_minutes,
+                    'price' => $this->effective_price,
+                    'available' => $this->isAvailable(),
+                    'unit' => $this->unit_identifier,
+                ];
             }
             
-            // Check time overlap
-            return $this->start_time < $other->end_time && $this->end_time > $other->start_time;
+            $current = $slotEnd;
         }
 
-        // For date-based availability, check date overlap
-        if ($this->available_date && $other->available_date) {
-            if (!$this->available_date->isSameDay($other->available_date)) {
-                return false;
-            }
-            
-            // Check time overlap if times are set
-            if ($this->start_time && $this->end_time && $other->start_time && $other->end_time) {
-                return $this->start_time < $other->end_time && $this->end_time > $other->start_time;
-            }
-            
-            return true;
+        return $slots;
+    }
+
+    public function checkAvailabilityConflict($startTime, $endTime, $date = null): bool
+    {
+        $date = $date ?: $this->available_date;
+
+        // Check if this slot conflicts with the requested time
+        $requestStart = Carbon::parse($startTime);
+        $requestEnd = Carbon::parse($endTime);
+        $slotStart = Carbon::parse($this->start_time);
+        $slotEnd = Carbon::parse($this->end_time);
+
+        // Check for time overlap
+        return $requestStart->lt($slotEnd) && $requestEnd->gt($slotStart);
+    }
+
+    public function markAsBooked(): bool
+    {
+        $this->status = self::STATUS_BOOKED;
+        return $this->save();
+    }
+
+    public function markAsAvailable(): bool
+    {
+        $this->status = self::STATUS_AVAILABLE;
+        return $this->save();
+    }
+
+    public function block($reason = null): bool
+    {
+        $this->status = self::STATUS_BLOCKED;
+        if ($reason) {
+            $this->notes = $reason;
+        }
+        return $this->save();
+    }
+
+    protected function isPeakHour(Carbon $time): bool
+    {
+        // Basic peak hour detection (6 PM - 10 PM)
+        $hour = $time->hour;
+        return $hour >= 18 && $hour < 22;
+    }
+
+    protected function isHoliday(Carbon $date): bool
+    {
+        // Basic holiday detection
+        $holidays = [
+            '01-01', // New Year
+            '12-25', // Christmas
+            '12-31', // New Year's Eve
+        ];
+
+        return in_array($date->format('m-d'), $holidays);
+    }
+
+    /**
+     * Category-specific formatting
+     */
+    public function formatForCategory(): array
+    {
+        $categoryName = strtolower($this->listing->category->name ?? '');
+        $subCategoryName = strtolower($this->listing->subCategory->name ?? '');
+
+        // Check category and subcategory names for sports-related keywords
+        if (str_contains($categoryName, 'sports') || str_contains($subCategoryName, 'basketball') || str_contains($subCategoryName, 'court')) {
+            return $this->formatForSports();
         }
 
-        // For date ranges
-        if ($this->start_date && $this->end_date && $other->start_date && $other->end_date) {
-            return $this->start_date <= $other->end_date && $this->end_date >= $other->start_date;
+        // Check for hotel/accommodation keywords
+        if (str_contains($categoryName, 'hotel') || str_contains($subCategoryName, 'room') || str_contains($categoryName, 'accommodation')) {
+            return $this->formatForHotel();
         }
 
-        return false;
+        // Check for transportation keywords
+        if (str_contains($categoryName, 'transport') || str_contains($subCategoryName, 'car') || str_contains($subCategoryName, 'rental')) {
+            return $this->formatForTransport();
+        }
+
+        // Check for event keywords
+        if (str_contains($categoryName, 'event') || str_contains($subCategoryName, 'venue') || str_contains($categoryName, 'venue')) {
+            return $this->formatForEvents();
+        }
+
+        return $this->formatGeneric();
+    }
+
+    protected function formatForSports(): array
+    {
+        return [
+            'type' => 'sports',
+            'date' => $this->available_date->format('Y-m-d'),
+            'time_slots' => $this->generateTimeSlots(),
+            'court' => $this->unit_identifier,
+            'hourly_rate' => $this->effective_price,
+            'available' => $this->isAvailable(),
+        ];
+    }
+
+    protected function formatForHotel(): array
+    {
+        return [
+            'type' => 'hotel',
+            'date' => $this->available_date->format('Y-m-d'),
+            'room' => $this->unit_identifier,
+            'check_in' => $this->category_rules['check_in_time'] ?? '15:00',
+            'check_out' => $this->category_rules['check_out_time'] ?? '11:00',
+            'nightly_rate' => $this->effective_price,
+            'available' => $this->isAvailable(),
+        ];
+    }
+
+    protected function formatForTransport(): array
+    {
+        return [
+            'type' => 'transport',
+            'date' => $this->available_date->format('Y-m-d'),
+            'vehicle' => $this->unit_identifier,
+            'daily_rate' => $this->effective_price,
+            'min_rental_days' => $this->min_duration_hours / 24,
+            'available' => $this->isAvailable(),
+        ];
+    }
+
+    protected function formatForEvents(): array
+    {
+        return [
+            'type' => 'event',
+            'date' => $this->available_date->format('Y-m-d'),
+            'venue' => $this->unit_identifier,
+            'time_range' => $this->time_range,
+            'event_rate' => $this->effective_price,
+            'setup_time' => $this->category_rules['setup_hours'] ?? 2,
+            'available' => $this->isAvailable(),
+        ];
+    }
+
+    protected function formatGeneric(): array
+    {
+        return [
+            'type' => 'general',
+            'date' => $this->available_date->format('Y-m-d'),
+            'time_range' => $this->time_range,
+            'unit' => $this->unit_identifier,
+            'price' => $this->effective_price,
+            'duration_type' => $this->duration_type,
+            'available' => $this->isAvailable(),
+        ];
     }
 }

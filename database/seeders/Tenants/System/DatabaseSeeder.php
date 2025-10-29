@@ -14,13 +14,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->command->info('Starting to seed Tenant Database...');
+        $this->command->info('🌟 Starting to seed Tenant Database with Universal Availability System...');
 
         $this->call([
             \Database\Seeders\Tenants\System\FormSystemSeeder::class,
-            \Database\Seeders\Tenants\Client\PostSeeder::class
+            \Database\Seeders\Tenants\Client\PostSeeder::class,
+            \Database\Seeders\Tenants\E2E\UniversalPropertySeeder::class
         ]);
 
-        $this->command->info('Seeding completed for Tenant Database.');
+        $this->command->info('✅ Seeding completed for Tenant Database with Universal Availability System!');
     }
 }

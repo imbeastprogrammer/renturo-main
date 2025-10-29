@@ -280,6 +280,38 @@ class Listing extends Model
     }
 
     /**
+     * Listing has many units (for multi-unit properties)
+     */
+    public function units()
+    {
+        return $this->hasMany(ListingUnit::class);
+    }
+
+    /**
+     * Listing has many availability templates
+     */
+    public function availabilityTemplates()
+    {
+        return $this->hasMany(AvailabilityTemplate::class);
+    }
+
+    /**
+     * Get active units only
+     */
+    public function activeUnits()
+    {
+        return $this->units()->where('status', 'active');
+    }
+
+    /**
+     * Get active availability templates
+     */
+    public function activeTemplates()
+    {
+        return $this->availabilityTemplates()->where('is_active', true);
+    }
+
+    /**
      * Get recurring availability (e.g., every Monday 8AM-5PM).
      */
     public function recurringAvailability()
@@ -429,6 +461,194 @@ class Listing extends Model
             ", [$latitude, $longitude, $latitude])
             ->having('distance', '<=', $radiusKm)
             ->orderBy('distance');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Universal Inventory Methods
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Check if listing is single unit (basketball court, entire house)
+     */
+    public function isSingleUnit(): bool
+    {
+        return $this->inventory_type === 'single';
+    }
+
+    /**
+     * Check if listing has multiple units (hotel rooms, car fleet)
+     */
+    public function isMultiUnit(): bool
+    {
+        return $this->inventory_type === 'multiple';
+    }
+
+    /**
+     * Check if listing is shared resource (conference room)
+     */
+    public function isSharedResource(): bool
+    {
+        return $this->inventory_type === 'shared';
+    }
+
+    /**
+     * Get availability for date range (universal method)
+     */
+    public function getAvailabilityForDateRange($startDate, $endDate, $unitIdentifier = null)
+    {
+        $query = $this->availability()
+            ->whereBetween('available_date', [$startDate, $endDate])
+            ->orderBy('available_date')
+            ->orderBy('start_time');
+
+        if ($unitIdentifier) {
+            $query->where('unit_identifier', $unitIdentifier);
+        }
+
+        return $query->get()->groupBy('available_date');
+    }
+
+    /**
+     * Check if listing has availability for specific date and time
+     */
+    public function hasAvailabilityAt($date, $startTime = null, $endTime = null, $unitIdentifier = null): bool
+    {
+        $query = $this->availability()
+            ->where('available_date', $date)
+            ->where('status', 'available');
+
+        if ($unitIdentifier) {
+            $query->where('unit_identifier', $unitIdentifier);
+        }
+
+        if ($startTime && $endTime) {
+            $query->where('start_time', '<=', $startTime)
+                  ->where('end_time', '>=', $endTime);
+        }
+
+        return $query->exists();
+    }
+
+    /**
+     * Get available units for a specific date
+     */
+    public function getAvailableUnits($date)
+    {
+        if ($this->isSingleUnit()) {
+            return $this->hasAvailabilityAt($date) ? [null] : [];
+        }
+
+        return $this->availability()
+            ->where('available_date', $date)
+            ->where('status', 'available')
+            ->pluck('unit_identifier')
+            ->unique()
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Create availability from template
+     */
+    public function applyTemplate(AvailabilityTemplate $template, $startDate, $endDate)
+    {
+        return $template->applyToDateRange(
+            \Carbon\Carbon::parse($startDate),
+            \Carbon\Carbon::parse($endDate)
+        );
+    }
+
+    /**
+     * Get effective pricing for date/time
+     */
+    public function getEffectivePrice($date, $time = null, $durationType = 'hourly')
+    {
+        $carbonDate = \Carbon\Carbon::parse($date);
+        $carbonTime = $time ? \Carbon\Carbon::parse($time) : null;
+
+        // Check for specific availability pricing first
+        $availability = $this->availability()
+            ->where('available_date', $date)
+            ->when($time, function ($query) use ($time) {
+                $query->where('start_time', '<=', $time)
+                      ->where('end_time', '>', $time);
+            })
+            ->first();
+
+        if ($availability) {
+            return $availability->effective_price;
+        }
+
+        // Fall back to base pricing
+        $basePrice = match($durationType) {
+            'daily' => $this->base_daily_price,
+            'weekly' => $this->base_weekly_price,
+            'monthly' => $this->base_monthly_price,
+            default => $this->base_hourly_price,
+        };
+
+        // Apply modifiers
+        if ($carbonDate->isWeekend()) {
+            $basePrice *= 1.2; // 20% weekend surcharge
+        }
+
+        if ($carbonTime && $carbonTime->hour >= 18 && $carbonTime->hour < 22) {
+            $basePrice *= 1.3; // 30% peak hour surcharge
+        }
+
+        return $basePrice;
+    }
+
+    /**
+     * Get occupancy rate for date range
+     */
+    public function getOccupancyRate($startDate, $endDate): float
+    {
+        $totalSlots = $this->availability()
+            ->whereBetween('available_date', [$startDate, $endDate])
+            ->count();
+
+        if ($totalSlots === 0) {
+            return 0;
+        }
+
+        $bookedSlots = $this->availability()
+            ->whereBetween('available_date', [$startDate, $endDate])
+            ->where('status', 'booked')
+            ->count();
+
+        return ($bookedSlots / $totalSlots) * 100;
+    }
+
+    /**
+     * Get revenue potential for date range
+     */
+    public function getRevenuePotential($startDate, $endDate): array
+    {
+        $availability = $this->availability()
+            ->whereBetween('available_date', [$startDate, $endDate])
+            ->get();
+
+        $potential = 0;
+        $earned = 0;
+
+        foreach ($availability as $slot) {
+            $slotRevenue = $slot->effective_price * ($slot->duration_in_minutes / 60);
+            $potential += $slotRevenue;
+
+            if ($slot->status === 'booked') {
+                $earned += $slotRevenue;
+            }
+        }
+
+        return [
+            'potential' => $potential,
+            'earned' => $earned,
+            'lost' => $potential - $earned,
+            'percentage' => $potential > 0 ? ($earned / $potential) * 100 : 0,
+        ];
     }
 
     /*
