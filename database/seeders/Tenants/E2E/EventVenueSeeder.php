@@ -70,27 +70,20 @@ class EventVenueSeeder extends Seeder
         // Create Events category if it doesn't exist
         $category = Category::firstOrCreate([
             'name' => 'Events & Venues'
-        ], [
-            'description' => 'Event spaces and venue rentals for special occasions',
-            'icon' => 'calendar-event',
-            'is_active' => true
         ]);
 
         // Create event venue subcategories
         $subcategories = [
-            ['name' => 'Wedding Venue', 'description' => 'Beautiful spaces for wedding ceremonies and receptions'],
-            ['name' => 'Conference Center', 'description' => 'Professional meeting and conference facilities'],
-            ['name' => 'Party Hall', 'description' => 'Celebration spaces for parties and social events'],
-            ['name' => 'Outdoor Venue', 'description' => 'Gardens, parks, and outdoor event spaces'],
+            'Wedding Venue',
+            'Conference Center',
+            'Party Hall',
+            'Outdoor Venue',
         ];
 
-        foreach ($subcategories as $subcat) {
+        foreach ($subcategories as $subcatName) {
             SubCategory::firstOrCreate([
-                'name' => $subcat['name'],
+                'name' => $subcatName,
                 'category_id' => $category->id
-            ], [
-                'description' => $subcat['description'],
-                'is_active' => true
             ]);
         }
     }

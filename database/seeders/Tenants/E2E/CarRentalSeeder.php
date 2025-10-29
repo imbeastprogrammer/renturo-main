@@ -70,27 +70,20 @@ class CarRentalSeeder extends Seeder
         // Create Transportation category if it doesn't exist
         $category = Category::firstOrCreate([
             'name' => 'Transportation'
-        ], [
-            'description' => 'Vehicle rentals and transportation services',
-            'icon' => 'car',
-            'is_active' => true
         ]);
 
         // Create car rental subcategories
         $subcategories = [
-            ['name' => 'Economy Car', 'description' => 'Budget-friendly economy vehicles'],
-            ['name' => 'Luxury Car', 'description' => 'Premium luxury vehicle rentals'],
-            ['name' => 'SUV Rental', 'description' => 'Sport utility vehicles and large cars'],
-            ['name' => 'Van Rental', 'description' => 'Vans and large capacity vehicles'],
+            'Economy Car',
+            'Luxury Car',
+            'SUV Rental',
+            'Van Rental',
         ];
 
-        foreach ($subcategories as $subcat) {
+        foreach ($subcategories as $subcatName) {
             SubCategory::firstOrCreate([
-                'name' => $subcat['name'],
+                'name' => $subcatName,
                 'category_id' => $category->id
-            ], [
-                'description' => $subcat['description'],
-                'is_active' => true
             ]);
         }
     }

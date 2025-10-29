@@ -70,27 +70,20 @@ class HotelSeeder extends Seeder
         // Create Accommodation category if it doesn't exist
         $category = Category::firstOrCreate([
             'name' => 'Accommodation'
-        ], [
-            'description' => 'Hotels, resorts, and accommodation facilities',
-            'icon' => 'hotel',
-            'is_active' => true
         ]);
 
         // Create hotel subcategories
         $subcategories = [
-            ['name' => 'Luxury Hotel', 'description' => 'Premium luxury hotel accommodations'],
-            ['name' => 'Business Hotel', 'description' => 'Business-focused hotel accommodations'],
-            ['name' => 'Boutique Hotel', 'description' => 'Unique boutique hotel experiences'],
-            ['name' => 'Resort', 'description' => 'Resort and vacation accommodations'],
+            'Luxury Hotel',
+            'Business Hotel', 
+            'Boutique Hotel',
+            'Resort',
         ];
 
-        foreach ($subcategories as $subcat) {
+        foreach ($subcategories as $subcatName) {
             SubCategory::firstOrCreate([
-                'name' => $subcat['name'],
+                'name' => $subcatName,
                 'category_id' => $category->id
-            ], [
-                'description' => $subcat['description'],
-                'is_active' => true
             ]);
         }
     }

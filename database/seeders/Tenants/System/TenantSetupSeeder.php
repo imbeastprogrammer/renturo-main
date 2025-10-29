@@ -102,6 +102,11 @@ class TenantSetupSeeder extends Seeder
                 \Database\Seeders\Tenants\Admin\CategorySeeder::class
             ]);
 
+            // Run the tenant's main database seeder with Universal Property System
+            $this->call([
+                \Database\Seeders\Tenants\System\DatabaseSeeder::class
+            ]);
+
             $this->command->info('Seeding completed for TenantSeeder data.');
         });
     }

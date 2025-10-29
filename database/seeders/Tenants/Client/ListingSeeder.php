@@ -6,9 +6,11 @@ use Illuminate\Database\Seeder;
 use App\Models\Listing;
 use App\Models\ListingPhoto;
 use App\Models\ListingAvailability;
+use App\Models\AvailabilityTemplate;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\User;
+use Carbon\Carbon;
 
 class ListingSeeder extends Seeder
 {
@@ -117,20 +119,44 @@ Amenities include free parking for up to 50 vehicles, on-site sports shop for eq
             ]);
         }
 
-        // Add availability for listing 1 (next 30 days, full day)
-        for ($i = 0; $i < 30; $i++) {
-            $date = now()->addDays($i);
-            ListingAvailability::create([
-                'listing_id' => $listing1->id,
-                'available_date' => $date->format('Y-m-d'),
-                'start_time' => '06:00',
-                'end_time' => '23:00',
-                'slot_duration_minutes' => 60,
-                'duration_type' => 'hourly',
-                'status' => 'available',
-                'created_by' => $user->id,
-            ]);
-        }
+        // Create availability template for listing 1 (PROPER WAY)
+        $premiumTemplate = AvailabilityTemplate::create([
+            'listing_id' => $listing1->id,
+            'name' => 'Premium Indoor Court Schedule',
+            'description' => 'Full-day schedule for premium indoor basketball court',
+            'days_of_week' => [0,1,2,3,4,5,6], // All days
+            'start_time' => '06:00',
+            'end_time' => '23:00',
+            'slot_duration_minutes' => 60,
+            'base_hourly_price' => 1200.00,
+            'base_daily_price' => 8000.00,
+            'peak_hour_multiplier' => 1.25, // 25% more during peak hours
+            'weekend_multiplier' => 1.15, // 15% more on weekends
+            'peak_start_time' => '18:00',
+            'peak_end_time' => '22:00',
+            'duration_type' => 'hourly',
+            'min_duration_hours' => 2,
+            'max_duration_hours' => 8,
+            'advance_booking_hours' => 24,
+            'cancellation_hours' => 24,
+            'booking_rules' => [
+                'min_booking_hours' => 2,
+                'max_booking_hours' => 8,
+                'advance_booking_required' => true,
+                'cancellation_policy' => '24 hours notice required',
+                'peak_hour_surcharge' => '25% during 6-10 PM'
+            ],
+            'is_active' => true,
+            'auto_apply' => true,
+            'auto_apply_days_ahead' => 30,
+            'created_by' => $user->id,
+        ]);
+
+        // Apply template to generate actual availability slots
+        $premiumTemplate->applyToDateRange(
+            Carbon::now(),
+            Carbon::now()->addDays(30)
+        );
 
         // Outdoor Community Basketball Court
         $listing2 = Listing::create([
@@ -193,20 +219,39 @@ Basic amenities include restrooms, drinking water, and nearby parking. Security 
             ]);
         }
 
-        // Add availability for listing 2 (next 30 days, 6 AM to 10 PM)
-        for ($i = 0; $i < 30; $i++) {
-            $date = now()->addDays($i);
-            ListingAvailability::create([
-                'listing_id' => $listing2->id,
-                'available_date' => $date->format('Y-m-d'),
-                'start_time' => '06:00',
-                'end_time' => '22:00',
-                'slot_duration_minutes' => 60,
-                'duration_type' => 'hourly',
-                'status' => 'available',
-                'created_by' => $user->id,
-            ]);
-        }
+        // Create availability template for listing 2 (PROPER WAY)
+        $outdoorTemplate = AvailabilityTemplate::create([
+            'listing_id' => $listing2->id,
+            'name' => 'Outdoor Court Daily Schedule',
+            'description' => 'Standard daily schedule for outdoor basketball court',
+            'days_of_week' => [0,1,2,3,4,5,6], // All days
+            'start_time' => '06:00',
+            'end_time' => '22:00',
+            'slot_duration_minutes' => 60,
+            'base_hourly_price' => 400.00,
+            'base_daily_price' => 2500.00,
+            'duration_type' => 'hourly',
+            'min_duration_hours' => 1,
+            'max_duration_hours' => 6,
+            'advance_booking_hours' => 2,
+            'cancellation_hours' => 12,
+            'booking_rules' => [
+                'min_booking_hours' => 1,
+                'max_booking_hours' => 6,
+                'advance_booking_required' => true,
+                'cancellation_policy' => '12 hours notice required'
+            ],
+            'is_active' => true,
+            'auto_apply' => true,
+            'auto_apply_days_ahead' => 30,
+            'created_by' => $user->id,
+        ]);
+
+        // Apply template to generate actual availability slots
+        $outdoorTemplate->applyToDateRange(
+            Carbon::now(),
+            Carbon::now()->addDays(30)
+        );
 
         // Half-Court Training Facility
         $listing3 = Listing::create([

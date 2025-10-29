@@ -236,8 +236,7 @@ class AvailabilityTemplate extends Model
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'slot_duration_minutes' => $this->slot_duration_minutes,
-            'hourly_price' => $basePrice,
-            'daily_price' => $this->base_daily_price,
+            // Map template fields to listing_availability schema
             'peak_hour_price' => $isPeakHour ? $basePrice : null,
             'weekend_price' => $isWeekend ? $basePrice : null,
             'holiday_price' => $isHoliday ? $basePrice : null,
