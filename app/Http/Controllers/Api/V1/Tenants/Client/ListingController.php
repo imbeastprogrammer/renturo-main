@@ -127,6 +127,41 @@ class ListingController extends Controller
      *         required=false,
      *         @OA\Schema(type="string", example="newest")
      *     ),
+     *     @OA\Parameter(
+     *         name="check_in_date",
+     *         in="query",
+     *         description="Filter by availability start date (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date", example="2025-11-15")
+     *     ),
+     *     @OA\Parameter(
+     *         name="check_out_date",
+     *         in="query",
+     *         description="Filter by availability end date (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date", example="2025-11-20")
+     *     ),
+     *     @OA\Parameter(
+     *         name="check_in_time",
+     *         in="query",
+     *         description="Filter by start time (HH:MM) - for hourly bookings",
+     *         required=false,
+     *         @OA\Schema(type="string", example="14:00")
+     *     ),
+     *     @OA\Parameter(
+     *         name="check_out_time",
+     *         in="query",
+     *         description="Filter by end time (HH:MM) - for hourly bookings",
+     *         required=false,
+     *         @OA\Schema(type="string", example="16:00")
+     *     ),
+     *     @OA\Parameter(
+     *         name="available_only",
+     *         in="query",
+     *         description="Show only listings with any future availability (1 or 0)",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Listings retrieved successfully",
@@ -282,10 +317,18 @@ class ListingController extends Controller
                 return $listing;
             });
 
+            // Build filter facets (subcategory counts) for the response
+            $facets = [];
+            if ($request->has('category_id') && !$request->has('sub_category_id')) {
+                // User searched by category only, provide subcategory filters
+                $facets = $this->getSubcategoryFacets($request);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Listings retrieved successfully',
                 'data' => $listings,
+                'facets' => $facets,
             ], 200);
 
         } catch (\Exception $e) {
@@ -446,6 +489,60 @@ class ListingController extends Controller
                 'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
             ], 500);
         }
+    }
+
+    /**
+     * Get subcategory facets for filtering
+     * Returns count of listings per subcategory based on current search criteria
+     */
+    protected function getSubcategoryFacets(Request $request): array
+    {
+        $categoryId = $request->get('category_id');
+        
+        // Build the same query as the main search (without pagination)
+        $baseQuery = Listing::query()
+            ->published()
+            ->public()
+            ->byCategory($categoryId);
+
+        // Apply same filters as main search
+        if ($search = $request->get('search')) {
+            $baseQuery->search($search);
+        }
+        if ($city = $request->get('city')) {
+            $baseQuery->byLocation($city);
+        }
+        if ($province = $request->get('province')) {
+            $baseQuery->byLocation(null, $province);
+        }
+        if ($request->has('check_in_date') && $request->has('check_out_date')) {
+            $baseQuery->availableForDateRange(
+                $request->get('check_in_date'),
+                $request->get('check_out_date'),
+                $request->get('check_in_time'),
+                $request->get('check_out_time')
+            );
+        } elseif ($request->get('available_only')) {
+            $baseQuery->hasAvailability();
+        }
+
+        // Group by subcategory and count
+        $facets = $baseQuery
+            ->selectRaw('sub_category_id, COUNT(*) as count')
+            ->with('subCategory:id,name,slug')
+            ->groupBy('sub_category_id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->sub_category_id,
+                    'name' => $item->subCategory->name ?? 'Uncategorized',
+                    'slug' => $item->subCategory->slug ?? '',
+                    'count' => $item->count,
+                ];
+            })
+            ->toArray();
+
+        return $facets;
     }
 
     /**
