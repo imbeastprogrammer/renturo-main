@@ -26,7 +26,7 @@ class AvailabilityController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/v1/availability/listing/{listingId}",
+     *     path="/api/client/v1/availability/listing/{listingId}",
      *     tags={"Client - Availability"},
      *     summary="Get availability for a specific listing",
      *     description="Retrieve availability slots for any property type with flexible filtering",
@@ -183,7 +183,7 @@ class AvailabilityController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/availability",
+     *     path="/api/client/v1/availability",
      *     tags={"Client - Availability"},
      *     summary="Create availability slots",
      *     description="Create new availability slots for any property type",
@@ -337,7 +337,7 @@ class AvailabilityController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/availability/{id}",
+     *     path="/api/client/v1/availability/{id}",
      *     tags={"Client - Availability"},
      *     summary="Get specific availability slot",
      *     description="Retrieve details of a specific availability slot",
@@ -424,7 +424,7 @@ class AvailabilityController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/availability/{id}",
+     *     path="/api/client/v1/availability/{id}",
      *     tags={"Client - Availability"},
      *     summary="Update availability slot",
      *     description="Update an existing availability slot",
@@ -538,7 +538,7 @@ class AvailabilityController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/availability/{id}",
+     *     path="/api/client/v1/availability/{id}",
      *     tags={"Client - Availability"},
      *     summary="Delete availability slot",
      *     description="Delete an availability slot (soft delete)",
@@ -607,7 +607,7 @@ class AvailabilityController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/availability/bulk",
+     *     path="/api/client/v1/availability/bulk",
      *     tags={"Client - Availability"},
      *     summary="Create bulk availability",
      *     description="Create availability for multiple dates using templates or date ranges",
@@ -769,7 +769,7 @@ class AvailabilityController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/availability/check",
+     *     path="/api/client/v1/availability/check",
      *     tags={"Client - Availability"},
      *     summary="Check availability for booking",
      *     description="Check if a specific time slot is available for booking",
