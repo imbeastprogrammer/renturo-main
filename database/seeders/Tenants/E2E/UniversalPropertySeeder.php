@@ -39,9 +39,15 @@ class UniversalPropertySeeder extends Seeder
             $this->command->info('');
 
             // Step 4: Event Venues (Events & Venues)
-            $this->command->info('🎪 Step 4/4: Seeding Event Venues (Event Properties)...');
+            $this->command->info('🎪 Step 4/5: Seeding Event Venues (Event Properties)...');
             $this->call(EventVenueSeeder::class);
             $this->command->info('✅ Event venues seeded successfully!');
+            $this->command->info('');
+
+            // Step 5: Sample Bookings
+            $this->command->info('🎫 Step 5/5: Creating Sample Bookings...');
+            $this->call(BookingSeeder::class);
+            $this->command->info('✅ Sample bookings created successfully!');
             $this->command->info('');
 
             $endTime = microtime(true);
@@ -107,7 +113,7 @@ class UniversalPropertySeeder extends Seeder
             'total_units' => DB::table('listing_units')->count(),
             'total_templates' => DB::table('availability_templates')->count(),
             'total_availability' => DB::table('listing_availability')->count(),
-            'total_bookings' => DB::table('listing_availability')->where('status', 'booked')->count()
+            'total_bookings' => DB::table('bookings')->count()
         ];
     }
 }
