@@ -473,18 +473,50 @@ class Listing extends Model
 
     /**
      * Scope to filter listings available for specific date range
+     * ONLY shows listings if ALL requested dates/times are available
      */
     public function scopeAvailableForDateRange($query, $checkInDate, $checkOutDate, $checkInTime = null, $checkOutTime = null)
     {
-        return $query->whereHas('availability', function ($q) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
-            $q->whereBetween('available_date', [$checkInDate, $checkOutDate])
-                ->where('status', 'available');
+        return $query->where(function ($q) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+            // First, check if listing has NO conflicting bookings
+            $q->whereDoesntHave('bookings', function ($bookingQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+                $bookingQuery->whereIn('status', ['pending', 'confirmed', 'paid', 'checked_in', 'in_progress'])
+                    ->where(function ($dateQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+                        if ($checkInTime && $checkOutTime) {
+                            // Hourly booking - check for time overlap
+                            $dateQuery->where(function ($overlapQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+                                $overlapQuery->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
+                                    ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
+                                    ->orWhere(function ($encompassQuery) use ($checkInDate, $checkOutDate) {
+                                        $encompassQuery->where('check_in_date', '<=', $checkInDate)
+                                            ->where('check_out_date', '>=', $checkOutDate);
+                                    });
+                            });
+                        } else {
+                            // Daily booking - check for date overlap
+                            $dateQuery->where(function ($overlapQuery) use ($checkInDate, $checkOutDate) {
+                                $overlapQuery->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
+                                    ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
+                                    ->orWhere(function ($encompassQuery) use ($checkInDate, $checkOutDate) {
+                                        $encompassQuery->where('check_in_date', '<=', $checkInDate)
+                                            ->where('check_out_date', '>=', $checkOutDate);
+                                    });
+                            });
+                        }
+                    });
+            });
             
-            // If time-based booking, filter by time slots
-            if ($checkInTime && $checkOutTime) {
-                $q->where('start_time', '<=', $checkInTime)
-                  ->where('end_time', '>=', $checkOutTime);
-            }
+            // Second, verify availability slots exist for the requested dates
+            $q->whereHas('availability', function ($availQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+                $availQuery->whereBetween('available_date', [$checkInDate, $checkOutDate])
+                    ->where('status', 'available');
+                
+                // If time-based booking, ensure the time slots match
+                if ($checkInTime && $checkOutTime) {
+                    $availQuery->where('start_time', '<=', $checkInTime)
+                        ->where('end_time', '>=', $checkOutTime);
+                }
+            });
         });
     }
 

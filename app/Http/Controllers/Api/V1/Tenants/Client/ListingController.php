@@ -254,10 +254,24 @@ class ListingController extends Controller
 
             // Add availability status to each listing
             $listings->getCollection()->transform(function ($listing) use ($request) {
-                $availabilityStatus = $listing->getAvailabilityStatus(
-                    $request->get('check_in_date'),
-                    $request->get('check_out_date')
-                );
+                $checkInDate = $request->get('check_in_date');
+                $checkOutDate = $request->get('check_out_date');
+                $checkInTime = $request->get('check_in_time');
+                $checkOutTime = $request->get('check_out_time');
+                
+                // Get availability status for the specific dates searched
+                $availabilityStatus = $listing->getAvailabilityStatus($checkInDate, $checkOutDate);
+                
+                // Add search context to help users understand what they're seeing
+                if ($checkInDate && $checkOutDate) {
+                    $availabilityStatus['search_dates'] = [
+                        'check_in' => $checkInDate,
+                        'check_out' => $checkOutDate,
+                        'check_in_time' => $checkInTime,
+                        'check_out_time' => $checkOutTime,
+                    ];
+                    $availabilityStatus['matched_search'] = true;
+                }
                 
                 $listing->availability_status = $availabilityStatus;
                 return $listing;
