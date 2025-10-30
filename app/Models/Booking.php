@@ -242,8 +242,11 @@ class Booking extends Model
     public function getDurationInHours(): int
     {
         if ($this->check_in_time && $this->check_out_time) {
-            $checkIn = Carbon::parse($this->check_in_date . ' ' . $this->check_in_time);
-            $checkOut = Carbon::parse($this->check_out_date . ' ' . $this->check_out_time);
+            $checkInDate = $this->check_in_date instanceof Carbon ? $this->check_in_date->format('Y-m-d') : $this->check_in_date;
+            $checkOutDate = $this->check_out_date instanceof Carbon ? $this->check_out_date->format('Y-m-d') : $this->check_out_date;
+            
+            $checkIn = Carbon::parse($checkInDate . ' ' . $this->check_in_time);
+            $checkOut = Carbon::parse($checkOutDate . ' ' . $this->check_out_time);
             return $checkIn->diffInHours($checkOut);
         }
         
@@ -260,10 +263,10 @@ class Booking extends Model
         }
 
         // Check cancellation policy based on listing
-        $hoursBeforeCheckIn = Carbon::now()->diffInHours(
-            Carbon::parse($this->check_in_date . ' ' . ($this->check_in_time ?? '00:00:00')),
-            false
-        );
+        $checkInDate = $this->check_in_date instanceof Carbon ? $this->check_in_date->format('Y-m-d') : $this->check_in_date;
+        $checkInDateTime = Carbon::parse($checkInDate . ' ' . ($this->check_in_time ?? '00:00:00'));
+        
+        $hoursBeforeCheckIn = Carbon::now()->diffInHours($checkInDateTime, false);
 
         $cancellationHours = $this->listing->cancellation_hours ?? 24;
         
@@ -416,10 +419,10 @@ class Booking extends Model
      */
     protected function calculateCancellationFee(): float
     {
-        $hoursBeforeCheckIn = Carbon::now()->diffInHours(
-            Carbon::parse($this->check_in_date . ' ' . ($this->check_in_time ?? '00:00:00')),
-            false
-        );
+        $checkInDate = $this->check_in_date instanceof Carbon ? $this->check_in_date->format('Y-m-d') : $this->check_in_date;
+        $checkInDateTime = Carbon::parse($checkInDate . ' ' . ($this->check_in_time ?? '00:00:00'));
+        
+        $hoursBeforeCheckIn = Carbon::now()->diffInHours($checkInDateTime, false);
 
         // Example cancellation policy
         if ($hoursBeforeCheckIn >= 168) { // 7 days
