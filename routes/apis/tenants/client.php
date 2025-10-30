@@ -19,6 +19,7 @@ use App\Http\Controllers\API\V1\Tenants\Client\DynamicFormAvailabilityController
 use App\Http\Controllers\Api\V1\Tenants\Client\ListingController;
 use App\Http\Controllers\API\V1\Tenants\Client\MediaController;
 use App\Http\Controllers\Api\V1\Tenants\Client\AvailabilityController;
+use App\Http\Controllers\Api\V1\Tenants\Client\BookingController;
 
 use App\Http\Controllers\API\V1\ImageUploadController;
 use Database\Factories\ImageFactory;
@@ -94,6 +95,11 @@ Route::middleware([
             Route::get('/availability/check', [AvailabilityController::class, 'checkAvailability']);
             Route::post('/availability/bulk', [AvailabilityController::class, 'bulkCreate']);
             Route::resource('/availability', AvailabilityController::class)->except(['index']);
+
+            // Booking Management Routes
+            Route::get('/bookings/check-availability', [BookingController::class, 'checkAvailability']);
+            Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancel']);
+            Route::resource('/bookings', BookingController::class)->only(['index', 'store', 'show']);
 
             Route::resource('/chats', ChatController::class);
             Route::delete('/chats/{chat}/leave', [ChatController::class, 'leaveChat']);

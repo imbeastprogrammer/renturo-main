@@ -280,6 +280,14 @@ class Listing extends Model
     }
 
     /**
+     * Get all bookings for this listing
+     */
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    /**
      * Listing has many units (for multi-unit properties)
      */
     public function units()
