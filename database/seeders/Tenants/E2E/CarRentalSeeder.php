@@ -98,19 +98,19 @@ class CarRentalSeeder extends Seeder
                 'first_name' => 'Michael',
                 'last_name' => 'Thompson',
                 'email' => 'michael.thompson@speedyrentals.com',
-                'mobile' => '+1234567893'
+                'mobile_number' => '+1234567893'
             ],
             [
                 'first_name' => 'Elena',
                 'last_name' => 'Vasquez',
                 'email' => 'elena.vasquez@luxuryrides.com',
-                'mobile' => '+1234567894'
+                'mobile_number' => '+1234567894'
             ],
             [
                 'first_name' => 'David',
                 'last_name' => 'Kim',
                 'email' => 'david.kim@familyvans.com',
-                'mobile' => '+1234567895'
+                'mobile_number' => '+1234567895'
             ]
         ];
 
@@ -164,18 +164,16 @@ class CarRentalSeeder extends Seeder
                 'name' => $storeData['name'],
                 'user_id' => $owners[$storeData['owner_index']]->id
             ], [
-                'description' => $storeData['description'],
+                'url' => strtolower(str_replace(' ', '-', $storeData['name'])),
+                'about' => $storeData['description'],
                 'category_id' => $transportationCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'address' => 'Airport District, Metro City',
                 'city' => 'Metro City',
                 'state' => 'State',
-                'country' => 'Country',
-                'postal_code' => '12345',
-                'phone' => '+1234567890',
-                'email' => strtolower(str_replace(' ', '', $storeData['name'])) . '@rental.com',
-                'website' => 'https://' . strtolower(str_replace(' ', '', $storeData['name'])) . '.com',
-                'is_active' => true
+                'zip_code' => '12345',
+                'latitude' => 14.5995 + (rand(-100, 100) / 1000),
+                'longitude' => 120.9842 + (rand(-100, 100) / 1000)
             ]);
         }
 
@@ -260,7 +258,7 @@ class CarRentalSeeder extends Seeder
                 ->first();
 
             $rental = Listing::create([
-                'store_id' => $stores[$rentalData['store_index']]->id,
+                'user_id' => $stores[$rentalData['store_index']]->user_id,
                 'category_id' => $transportationCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'title' => $rentalData['title'],
@@ -273,12 +271,11 @@ class CarRentalSeeder extends Seeder
                 'amenities' => $rentalData['amenities'],
                 'address' => $stores[$rentalData['store_index']]->address,
                 'city' => $stores[$rentalData['store_index']]->city,
-                'state' => $stores[$rentalData['store_index']]->state,
-                'country' => $stores[$rentalData['store_index']]->country,
-                'postal_code' => $stores[$rentalData['store_index']]->postal_code,
-                'latitude' => 40.7128 + (rand(-100, 100) / 1000),
-                'longitude' => -74.0060 + (rand(-100, 100) / 1000),
-                'is_active' => true,
+                'province' => $stores[$rentalData['store_index']]->state,
+                'postal_code' => $stores[$rentalData['store_index']]->zip_code,
+                'latitude' => 14.5995 + (rand(-100, 100) / 1000),
+                'longitude' => 120.9842 + (rand(-100, 100) / 1000),
+                'status' => 'active',
                 'is_featured' => true
             ]);
 
@@ -304,7 +301,8 @@ class CarRentalSeeder extends Seeder
                             'last_service' => Carbon::now()->subDays(rand(1, 90))->format('Y-m-d')
                         ],
                         'price_modifier' => $vehicleType['price_modifier'],
-                        'status' => 'available'
+                        'status' => 'active',
+                        'created_by' => $rental->user_id
                     ]);
                 }
             }
@@ -331,8 +329,7 @@ class CarRentalSeeder extends Seeder
                 'end_time' => '18:00:00',
                 'slot_duration_minutes' => 60, // 1-hour slots
                 'base_hourly_price' => $rental->base_hourly_price,
-                'hourly_price' => $rental->base_hourly_price,
-                'daily_price' => null,
+                'base_daily_price' => null,
                 'booking_rules' => [
                     'min_rental_hours' => 2,
                     'max_rental_hours' => 24,
@@ -344,7 +341,8 @@ class CarRentalSeeder extends Seeder
                     'driver_age_requirement' => 21,
                     'additional_driver_fee' => 15.00
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $rental->user_id
             ]);
 
             // Daily rental template (all days)
@@ -355,9 +353,8 @@ class CarRentalSeeder extends Seeder
                 'start_time' => '09:00:00', // Pickup time
                 'end_time' => '09:00:00', // Return time (next day)
                 'slot_duration_minutes' => 1440, // Daily slots
-                'base_hourly_price' => null,
-                'hourly_price' => null,
-                'daily_price' => $rental->base_daily_price,
+                'base_hourly_price' => $rental->base_daily_price, // Required field
+                'base_daily_price' => $rental->base_daily_price,
                 'booking_rules' => [
                     'min_rental_days' => 1,
                     'max_rental_days' => 30,
@@ -369,7 +366,8 @@ class CarRentalSeeder extends Seeder
                     'fuel_policy' => 'Return with same fuel level',
                     'mileage_limit' => 'Unlimited'
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $rental->user_id
             ]);
 
             // Weekend premium template
@@ -380,9 +378,8 @@ class CarRentalSeeder extends Seeder
                 'start_time' => '09:00:00',
                 'end_time' => '09:00:00',
                 'slot_duration_minutes' => 1440,
-                'base_hourly_price' => null,
-                'hourly_price' => null,
-                'daily_price' => $rental->base_daily_price * 1.25, // 25% premium
+                'base_hourly_price' => $rental->base_daily_price * 1.25, // Required field
+                'base_daily_price' => $rental->base_daily_price * 1.25, // 25% premium
                 'booking_rules' => [
                     'min_rental_days' => 2, // Minimum 2 days on weekends
                     'max_rental_days' => 30,
@@ -390,7 +387,8 @@ class CarRentalSeeder extends Seeder
                     'cancellation_policy' => '48 hours',
                     'weekend_surcharge' => 'Included in rate'
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $rental->user_id
             ]);
         }
 
@@ -466,7 +464,7 @@ class CarRentalSeeder extends Seeder
                                             'pickup_location' => 'Main Office',
                                             'rental_type' => 'hourly'
                                         ],
-                                        'created_by' => $rental->store->user_id
+                                        'created_by' => $rental->user_id
                                     ]);
                                     
                                     $startTime->addHour();
@@ -497,7 +495,7 @@ class CarRentalSeeder extends Seeder
                                         'return_time' => '09:00',
                                         'rental_type' => 'daily'
                                     ],
-                                    'created_by' => $rental->store->user_id
+                                    'created_by' => $rental->user_id
                                 ]);
                             }
                         }
@@ -536,7 +534,7 @@ class CarRentalSeeder extends Seeder
             foreach ($availableSlots as $slot) {
                 $slot->update([
                     'status' => 'booked',
-                    'updated_by' => $rental->store->user_id
+                    'updated_by' => $rental->user_id
                 ]);
             }
         }

@@ -111,3 +111,5 @@ class UniversalPropertySeeder extends Seeder
         ];
     }
 }
+
+

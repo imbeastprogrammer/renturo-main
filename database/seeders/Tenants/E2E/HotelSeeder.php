@@ -98,19 +98,19 @@ class HotelSeeder extends Seeder
                 'first_name' => 'Maria',
                 'last_name' => 'Rodriguez',
                 'email' => 'maria.rodriguez@grandhotel.com',
-                'mobile' => '+1234567890'
+                'mobile_number' => '+1234567890'
             ],
             [
                 'first_name' => 'James',
                 'last_name' => 'Wilson',
                 'email' => 'james.wilson@businessinn.com',
-                'mobile' => '+1234567891'
+                'mobile_number' => '+1234567891'
             ],
             [
                 'first_name' => 'Sophie',
                 'last_name' => 'Chen',
                 'email' => 'sophie.chen@boutiquesuites.com',
-                'mobile' => '+1234567892'
+                'mobile_number' => '+1234567892'
             ]
         ];
 
@@ -164,18 +164,16 @@ class HotelSeeder extends Seeder
                 'name' => $storeData['name'],
                 'user_id' => $owners[$storeData['owner_index']]->id
             ], [
-                'description' => $storeData['description'],
+                'url' => strtolower(str_replace(' ', '-', $storeData['name'])),
+                'about' => $storeData['description'],
                 'category_id' => $accommodationCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'address' => 'Downtown District, Metro City',
                 'city' => 'Metro City',
                 'state' => 'State',
-                'country' => 'Country',
-                'postal_code' => '12345',
-                'phone' => '+1234567890',
-                'email' => strtolower(str_replace(' ', '', $storeData['name'])) . '@hotel.com',
-                'website' => 'https://' . strtolower(str_replace(' ', '', $storeData['name'])) . '.com',
-                'is_active' => true
+                'zip_code' => '12345',
+                'latitude' => 14.5995 + (rand(-100, 100) / 1000),
+                'longitude' => 120.9842 + (rand(-100, 100) / 1000)
             ]);
         }
 
@@ -188,6 +186,10 @@ class HotelSeeder extends Seeder
         
         $hotels = [];
         $accommodationCategory = Category::where('name', 'Accommodation')->first();
+        
+        if (!$accommodationCategory) {
+            throw new \Exception('Accommodation category not found. Please run ensureHotelCategories first.');
+        }
 
         $hotelListings = [
             [
@@ -252,9 +254,17 @@ class HotelSeeder extends Seeder
             $subcategory = SubCategory::where('name', $hotelData['subcategory'])
                 ->where('category_id', $accommodationCategory->id)
                 ->first();
+            
+            if (!$subcategory) {
+                throw new \Exception("Subcategory '{$hotelData['subcategory']}' not found for Accommodation category.");
+            }
+            
+            if (!isset($stores[$hotelData['store_index']])) {
+                throw new \Exception("Store at index {$hotelData['store_index']} not found.");
+            }
 
             $hotel = Listing::create([
-                'store_id' => $stores[$hotelData['store_index']]->id,
+                'user_id' => $stores[$hotelData['store_index']]->user_id,
                 'category_id' => $accommodationCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'title' => $hotelData['title'],
@@ -266,12 +276,11 @@ class HotelSeeder extends Seeder
                 'amenities' => $hotelData['amenities'],
                 'address' => $stores[$hotelData['store_index']]->address,
                 'city' => $stores[$hotelData['store_index']]->city,
-                'state' => $stores[$hotelData['store_index']]->state,
-                'country' => $stores[$hotelData['store_index']]->country,
-                'postal_code' => $stores[$hotelData['store_index']]->postal_code,
-                'latitude' => 40.7128 + (rand(-100, 100) / 1000),
-                'longitude' => -74.0060 + (rand(-100, 100) / 1000),
-                'is_active' => true,
+                'province' => $stores[$hotelData['store_index']]->state,
+                'postal_code' => $stores[$hotelData['store_index']]->zip_code,
+                'latitude' => 14.5995 + (rand(-100, 100) / 1000),
+                'longitude' => 120.9842 + (rand(-100, 100) / 1000),
+                'status' => 'active',
                 'is_featured' => true
             ]);
 
@@ -290,7 +299,8 @@ class HotelSeeder extends Seeder
                             'view' => rand(0, 1) ? 'City View' : 'Garden View'
                         ],
                         'price_modifier' => $roomType['price_modifier'],
-                        'status' => 'available'
+                        'status' => 'active',
+                        'created_by' => $hotel->user_id
                     ]);
                 }
             }
@@ -316,9 +326,8 @@ class HotelSeeder extends Seeder
                 'start_time' => '15:00:00', // Check-in time
                 'end_time' => '11:00:00', // Check-out time (next day)
                 'slot_duration_minutes' => 1440, // Daily slots
-                'base_hourly_price' => null, // Not used for daily
-                'hourly_price' => null,
-                'daily_price' => $hotel->base_daily_price,
+                'base_hourly_price' => $hotel->base_daily_price, // Required field
+                'base_daily_price' => $hotel->base_daily_price,
                 'booking_rules' => [
                     'min_stay_nights' => 1,
                     'max_stay_nights' => 30,
@@ -329,7 +338,8 @@ class HotelSeeder extends Seeder
                     'extra_guest_fee' => 25.00,
                     'pet_policy' => 'Pets allowed with $50 fee'
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $hotel->user_id
             ]);
 
             // Weekend premium template
@@ -340,9 +350,8 @@ class HotelSeeder extends Seeder
                 'start_time' => '15:00:00',
                 'end_time' => '11:00:00',
                 'slot_duration_minutes' => 1440,
-                'base_hourly_price' => null,
-                'hourly_price' => null,
-                'daily_price' => $hotel->base_daily_price * 1.3, // 30% premium
+                'base_hourly_price' => $hotel->base_daily_price * 1.3, // Required field
+                'base_daily_price' => $hotel->base_daily_price * 1.3, // 30% premium
                 'booking_rules' => [
                     'min_stay_nights' => 2, // Minimum 2 nights on weekends
                     'max_stay_nights' => 30,
@@ -351,7 +360,8 @@ class HotelSeeder extends Seeder
                     'check_in_time' => '15:00',
                     'check_out_time' => '11:00'
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $hotel->user_id
             ]);
         }
 
@@ -426,7 +436,7 @@ class HotelSeeder extends Seeder
                                 'check_in_time' => '15:00',
                                 'check_out_time' => '11:00'
                             ],
-                            'created_by' => $hotel->store->user_id
+                            'created_by' => $hotel->user_id
                         ]);
                     }
                 }
@@ -461,7 +471,7 @@ class HotelSeeder extends Seeder
             foreach ($availableSlots as $slot) {
                 $slot->update([
                     'status' => 'booked',
-                    'updated_by' => $hotel->store->user_id
+                    'updated_by' => $hotel->user_id
                 ]);
             }
         }

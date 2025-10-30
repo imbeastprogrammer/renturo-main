@@ -98,19 +98,19 @@ class EventVenueSeeder extends Seeder
                 'first_name' => 'Isabella',
                 'last_name' => 'Martinez',
                 'email' => 'isabella.martinez@grandballroom.com',
-                'mobile' => '+1234567896'
+                'mobile_number' => '+1234567896'
             ],
             [
                 'first_name' => 'Robert',
                 'last_name' => 'Johnson',
                 'email' => 'robert.johnson@conferenceplus.com',
-                'mobile' => '+1234567897'
+                'mobile_number' => '+1234567897'
             ],
             [
                 'first_name' => 'Priya',
                 'last_name' => 'Patel',
                 'email' => 'priya.patel@gardenparty.com',
-                'mobile' => '+1234567898'
+                'mobile_number' => '+1234567898'
             ]
         ];
 
@@ -164,18 +164,16 @@ class EventVenueSeeder extends Seeder
                 'name' => $storeData['name'],
                 'user_id' => $owners[$storeData['owner_index']]->id
             ], [
-                'description' => $storeData['description'],
+                'url' => strtolower(str_replace(' ', '-', $storeData['name'])),
+                'about' => $storeData['description'],
                 'category_id' => $eventsCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'address' => 'Events District, Metro City',
                 'city' => 'Metro City',
                 'state' => 'State',
-                'country' => 'Country',
-                'postal_code' => '12345',
-                'phone' => '+1234567890',
-                'email' => strtolower(str_replace(' ', '', $storeData['name'])) . '@events.com',
-                'website' => 'https://' . strtolower(str_replace(' ', '', $storeData['name'])) . '.com',
-                'is_active' => true
+                'zip_code' => '12345',
+                'latitude' => 14.5995 + (rand(-100, 100) / 1000),
+                'longitude' => 120.9842 + (rand(-100, 100) / 1000)
             ]);
         }
 
@@ -206,10 +204,10 @@ class EventVenueSeeder extends Seeder
                 ],
                 'spaces' => [
                     ['name' => 'Grand Ballroom', 'capacity' => 300, 'price_modifier' => 0],
-                    ['name' => 'Garden Pavilion', 'capacity' => 150, 'price_modifier' => -500],
-                    ['name' => 'Intimate Chapel', 'capacity' => 80, 'price_modifier' => -1000],
-                    ['name' => 'Rooftop Terrace', 'capacity' => 120, 'price_modifier' => -300],
-                    ['name' => 'VIP Lounge', 'capacity' => 50, 'price_modifier' => -1500]
+                    ['name' => 'Garden Pavilion', 'capacity' => 150, 'price_modifier' => -200],
+                    ['name' => 'Intimate Chapel', 'capacity' => 80, 'price_modifier' => -400],
+                    ['name' => 'Rooftop Terrace', 'capacity' => 120, 'price_modifier' => -150],
+                    ['name' => 'VIP Lounge', 'capacity' => 50, 'price_modifier' => -500]
                 ]
             ],
             [
@@ -266,7 +264,7 @@ class EventVenueSeeder extends Seeder
                 ->first();
 
             $venue = Listing::create([
-                'store_id' => $stores[$venueData['store_index']]->id,
+                'user_id' => $stores[$venueData['store_index']]->user_id,
                 'category_id' => $eventsCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'title' => $venueData['title'],
@@ -279,12 +277,11 @@ class EventVenueSeeder extends Seeder
                 'amenities' => $venueData['amenities'],
                 'address' => $stores[$venueData['store_index']]->address,
                 'city' => $stores[$venueData['store_index']]->city,
-                'state' => $stores[$venueData['store_index']]->state,
-                'country' => $stores[$venueData['store_index']]->country,
-                'postal_code' => $stores[$venueData['store_index']]->postal_code,
-                'latitude' => 40.7128 + (rand(-100, 100) / 1000),
-                'longitude' => -74.0060 + (rand(-100, 100) / 1000),
-                'is_active' => true,
+                'province' => $stores[$venueData['store_index']]->state,
+                'postal_code' => $stores[$venueData['store_index']]->zip_code,
+                'latitude' => 14.5995 + (rand(-100, 100) / 1000),
+                'longitude' => 120.9842 + (rand(-100, 100) / 1000),
+                'status' => 'active',
                 'is_featured' => true
             ]);
 
@@ -306,7 +303,8 @@ class EventVenueSeeder extends Seeder
                         'cleanup_time_hours' => rand(1, 3)
                     ],
                     'price_modifier' => $space['price_modifier'],
-                    'status' => 'available'
+                    'status' => 'active',
+                    'created_by' => $venue->user_id
                 ]);
             }
 
@@ -331,9 +329,8 @@ class EventVenueSeeder extends Seeder
                 'start_time' => '08:00:00', // Setup starts
                 'end_time' => '23:00:00', // Event ends
                 'slot_duration_minutes' => 900, // 15-hour blocks
-                'base_hourly_price' => null,
-                'hourly_price' => null,
-                'daily_price' => $venue->base_daily_price,
+                'base_hourly_price' => $venue->base_daily_price, // Required field
+                'base_daily_price' => $venue->base_daily_price,
                 'booking_rules' => [
                     'min_duration_hours' => 6,
                     'max_duration_hours' => 15,
@@ -345,7 +342,8 @@ class EventVenueSeeder extends Seeder
                     'final_payment_due' => '7 days before event',
                     'overtime_rate' => 150.00
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $venue->user_id
             ]);
 
             // Half day event template
@@ -356,9 +354,8 @@ class EventVenueSeeder extends Seeder
                 'start_time' => '09:00:00',
                 'end_time' => '17:00:00',
                 'slot_duration_minutes' => 480, // 8-hour blocks
-                'base_hourly_price' => null,
-                'hourly_price' => null,
-                'daily_price' => $venue->base_daily_price * 0.6, // 60% of full day rate
+                'base_hourly_price' => $venue->base_daily_price * 0.6, // Required field
+                'base_daily_price' => $venue->base_daily_price * 0.6, // 60% of full day rate
                 'booking_rules' => [
                     'min_duration_hours' => 4,
                     'max_duration_hours' => 8,
@@ -367,7 +364,8 @@ class EventVenueSeeder extends Seeder
                     'advance_booking_days' => 180,
                     'cancellation_policy' => '14 days for full refund, 7 days for 50% refund'
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $venue->user_id
             ]);
 
             // Hourly meeting template (for conference centers)
@@ -380,8 +378,7 @@ class EventVenueSeeder extends Seeder
                     'end_time' => '18:00:00',
                     'slot_duration_minutes' => 60, // 1-hour slots
                     'base_hourly_price' => $venue->base_hourly_price,
-                    'hourly_price' => $venue->base_hourly_price,
-                    'daily_price' => null,
+                    'base_daily_price' => null,
                     'booking_rules' => [
                         'min_duration_hours' => 1,
                         'max_duration_hours' => 8,
@@ -390,7 +387,8 @@ class EventVenueSeeder extends Seeder
                         'setup_time_minutes' => 15,
                         'cleanup_time_minutes' => 15
                     ],
-                    'is_active' => true
+                    'is_active' => true,
+                    'created_by' => $venue->user_id
                 ]);
             }
 
@@ -402,9 +400,8 @@ class EventVenueSeeder extends Seeder
                 'start_time' => '08:00:00',
                 'end_time' => '23:00:00',
                 'slot_duration_minutes' => 900,
-                'base_hourly_price' => null,
-                'hourly_price' => null,
-                'daily_price' => $venue->base_daily_price * 1.4, // 40% premium
+                'base_hourly_price' => $venue->base_daily_price * 1.4, // Required field
+                'base_daily_price' => $venue->base_daily_price * 1.4, // 40% premium
                 'booking_rules' => [
                     'min_duration_hours' => 8,
                     'max_duration_hours' => 15,
@@ -413,7 +410,8 @@ class EventVenueSeeder extends Seeder
                     'weekend_surcharge' => 'Included in rate',
                     'deposit_required' => '60% of total cost'
                 ],
-                'is_active' => true
+                'is_active' => true,
+                'created_by' => $venue->user_id
             ]);
         }
 
@@ -490,7 +488,7 @@ class EventVenueSeeder extends Seeder
                                             'setup_time_hours' => $unit->unit_features['setup_time_hours'] ?? 1,
                                             'rental_type' => 'hourly'
                                         ],
-                                        'created_by' => $venue->store->user_id
+                                        'created_by' => $venue->user_id
                                     ]);
                                     
                                     $startTime->addHour();
@@ -523,7 +521,7 @@ class EventVenueSeeder extends Seeder
                                         'event_duration' => $template->name,
                                         'rental_type' => 'event'
                                     ],
-                                    'created_by' => $venue->store->user_id
+                                    'created_by' => $venue->user_id
                                 ]);
                             }
                         }
@@ -562,7 +560,7 @@ class EventVenueSeeder extends Seeder
             foreach ($availableSlots as $slot) {
                 $slot->update([
                     'status' => 'booked',
-                    'updated_by' => $venue->store->user_id
+                    'updated_by' => $venue->user_id
                 ]);
             }
         }
