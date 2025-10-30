@@ -471,6 +471,34 @@ class Listing extends Model
             ->orderBy('distance');
     }
 
+    /**
+     * Scope to filter listings available for specific date range
+     */
+    public function scopeAvailableForDateRange($query, $checkInDate, $checkOutDate, $checkInTime = null, $checkOutTime = null)
+    {
+        return $query->whereHas('availability', function ($q) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+            $q->whereBetween('available_date', [$checkInDate, $checkOutDate])
+                ->where('status', 'available');
+            
+            // If time-based booking, filter by time slots
+            if ($checkInTime && $checkOutTime) {
+                $q->where('start_time', '<=', $checkInTime)
+                  ->where('end_time', '>=', $checkOutTime);
+            }
+        });
+    }
+
+    /**
+     * Scope to filter listings that have any future availability
+     */
+    public function scopeHasAvailability($query)
+    {
+        return $query->whereHas('availability', function ($q) {
+            $q->where('available_date', '>=', now()->toDateString())
+              ->where('status', 'available');
+        });
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Universal Inventory Methods
@@ -869,6 +897,78 @@ class Listing extends Model
     public function archive(): void
     {
         $this->update(['status' => self::STATUS_ARCHIVED]);
+    }
+
+    /**
+     * Get availability status for specific date range
+     * Returns: 'available', 'partially_available', 'fully_booked', 'no_slots'
+     */
+    public function getAvailabilityStatus($checkInDate = null, $checkOutDate = null): array
+    {
+        // Default to next 30 days if no dates provided
+        $startDate = $checkInDate ?? now()->toDateString();
+        $endDate = $checkOutDate ?? now()->addDays(30)->toDateString();
+
+        $totalSlots = $this->availability()
+            ->whereBetween('available_date', [$startDate, $endDate])
+            ->count();
+
+        if ($totalSlots === 0) {
+            return [
+                'status' => 'no_slots',
+                'label' => 'No availability data',
+                'available_slots' => 0,
+                'total_slots' => 0,
+                'percentage' => 0,
+            ];
+        }
+
+        $availableSlots = $this->availability()
+            ->whereBetween('available_date', [$startDate, $endDate])
+            ->where('status', 'available')
+            ->count();
+
+        $percentage = round(($availableSlots / $totalSlots) * 100);
+
+        if ($availableSlots === 0) {
+            $status = 'fully_booked';
+            $label = 'Fully Booked';
+        } elseif ($availableSlots === $totalSlots) {
+            $status = 'available';
+            $label = 'Available';
+        } else {
+            $status = 'partially_available';
+            $label = 'Limited Availability';
+        }
+
+        return [
+            'status' => $status,
+            'label' => $label,
+            'available_slots' => $availableSlots,
+            'total_slots' => $totalSlots,
+            'percentage' => $percentage,
+        ];
+    }
+
+    /**
+     * Check if listing is available for a specific date/time
+     */
+    public function isAvailableFor($checkInDate, $checkOutDate, $checkInTime = null, $checkOutTime = null): bool
+    {
+        $query = $this->availability()
+            ->whereBetween('available_date', [$checkInDate, $checkOutDate])
+            ->where('status', 'available');
+
+        if ($checkInTime && $checkOutTime) {
+            $query->where('start_time', '<=', $checkInTime)
+                  ->where('end_time', '>=', $checkOutTime);
+        }
+
+        // For date range booking, ensure all dates have availability
+        $requiredDays = \Carbon\Carbon::parse($checkInDate)->diffInDays(\Carbon\Carbon::parse($checkOutDate)) + 1;
+        $availableDays = $query->distinct('available_date')->count();
+
+        return $availableDays >= $requiredDays;
     }
 
     /**

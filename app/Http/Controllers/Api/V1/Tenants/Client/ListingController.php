@@ -216,6 +216,19 @@ class ListingController extends Controller
                 }
             }
 
+            // Availability filter for specific dates (NEW!)
+            if ($request->has('check_in_date') && $request->has('check_out_date')) {
+                $query->availableForDateRange(
+                    $request->get('check_in_date'),
+                    $request->get('check_out_date'),
+                    $request->get('check_in_time'),
+                    $request->get('check_out_time')
+                );
+            } elseif ($request->get('available_only')) {
+                // Filter to show only listings with any availability
+                $query->hasAvailability();
+            }
+
             // Sorting
             $sortBy = $request->get('sort_by', 'newest');
             switch ($sortBy) {
@@ -238,6 +251,17 @@ class ListingController extends Controller
             }
 
             $listings = $query->paginate($perPage);
+
+            // Add availability status to each listing
+            $listings->getCollection()->transform(function ($listing) use ($request) {
+                $availabilityStatus = $listing->getAvailabilityStatus(
+                    $request->get('check_in_date'),
+                    $request->get('check_out_date')
+                );
+                
+                $listing->availability_status = $availabilityStatus;
+                return $listing;
+            });
 
             return response()->json([
                 'success' => true,
@@ -302,6 +326,9 @@ class ListingController extends Controller
 
             // Increment views count
             $listing->incrementViews();
+
+            // Add availability status
+            $listing->availability_status = $listing->getAvailabilityStatus();
 
             return response()->json([
                 'success' => true,
