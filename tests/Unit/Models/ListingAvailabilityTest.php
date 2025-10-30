@@ -2,19 +2,24 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase\TenantTestCase;
+use Tests\TestCase\UnitTenantTestCase;
 use App\Models\Listing;
 use App\Models\ListingAvailability;
+use App\Models\ListingUnit;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ListingAvailabilityTest extends TenantTestCase
+class ListingAvailabilityTest extends UnitTenantTestCase
 {
     use RefreshDatabase;
 
-    protected Listing $listing;
+    protected Listing $basketballCourt;
+    protected Listing $hotel;
+    protected Listing $carRental;
+    protected User $owner;
 
     protected function setUp(): void
     {
@@ -23,412 +28,498 @@ class ListingAvailabilityTest extends TenantTestCase
         // Run tenant migrations
         $this->artisan('migrate', ['--path' => 'database/migrations/tenant']);
 
-        $user = User::factory()->create();
-        $category = Category::factory()->create();
+        $this->owner = User::factory()->create();
         
-        $this->listing = Listing::factory()->create([
-            'user_id' => $user->id,
-            'category_id' => $category->id,
+        // Create categories for different property types
+        $sportsCategory = Category::factory()->create(['name' => 'Sports Venues']);
+        $basketballSubCategory = SubCategory::factory()->create([
+            'category_id' => $sportsCategory->id,
+            'name' => 'Basketball Courts'
+        ]);
+
+        $hotelCategory = Category::factory()->create(['name' => 'Hotels']);
+        $hotelSubCategory = SubCategory::factory()->create([
+            'category_id' => $hotelCategory->id,
+            'name' => 'Hotel Rooms'
+        ]);
+
+        $transportCategory = Category::factory()->create(['name' => 'Transportation']);
+        $carSubCategory = SubCategory::factory()->create([
+            'category_id' => $transportCategory->id,
+            'name' => 'Car Rental'
+        ]);
+
+        // Create different types of listings for testing
+        $this->basketballCourt = Listing::factory()->create([
+            'user_id' => $this->owner->id,
+            'category_id' => $sportsCategory->id,
+            'sub_category_id' => $basketballSubCategory->id,
+            'inventory_type' => 'single',
+            'total_units' => 1,
+            'base_hourly_price' => 1800.00,
+            'duration_unit' => 'hours',
+        ]);
+
+        $this->hotel = Listing::factory()->create([
+            'user_id' => $this->owner->id,
+            'category_id' => $hotelCategory->id,
+            'sub_category_id' => $hotelSubCategory->id,
+            'inventory_type' => 'multiple',
+            'total_units' => 3,
+            'base_daily_price' => 5000.00,
+            'duration_unit' => 'days',
+        ]);
+
+        $this->carRental = Listing::factory()->create([
+            'user_id' => $this->owner->id,
+            'category_id' => $transportCategory->id,
+            'sub_category_id' => $carSubCategory->id,
+            'inventory_type' => 'multiple',
+            'total_units' => 5,
+            'base_daily_price' => 2500.00,
+            'duration_unit' => 'days',
         ]);
     }
 
     /** @test */
-    public function it_can_create_availability()
+    public function it_can_create_universal_availability()
     {
-        $availability = ListingAvailability::factory()->create([
-            'listing_id' => $this->listing->id,
-            'availability_type' => ListingAvailability::TYPE_RECURRING,
-            'day_of_week' => ListingAvailability::MONDAY,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '22:00',
+            'slot_duration_minutes' => 60,
+            'duration_type' => 'hourly',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
         $this->assertInstanceOf(ListingAvailability::class, $availability);
-        $this->assertEquals(ListingAvailability::TYPE_RECURRING, $availability->availability_type);
+        $this->assertEquals('available', $availability->status);
+        $this->assertEquals(60, $availability->slot_duration_minutes);
         $this->assertDatabaseHas('listing_availability', [
-            'listing_id' => $this->listing->id,
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
         ]);
     }
 
     /** @test */
     public function it_belongs_to_a_listing()
     {
-        $availability = ListingAvailability::factory()->create([
-            'listing_id' => $this->listing->id,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '22:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
         $this->assertInstanceOf(Listing::class, $availability->listing);
-        $this->assertEquals($this->listing->id, $availability->listing->id);
+        $this->assertEquals($this->basketballCourt->id, $availability->listing->id);
     }
 
     /** @test */
-    public function it_scopes_available_slots()
+    public function it_can_have_unit_identifier_for_multi_unit_properties()
     {
-        ListingAvailability::factory()->count(3)->create([
-            'listing_id' => $this->listing->id,
-            'is_available' => true,
+        // Create hotel room units
+        $room101 = ListingUnit::create([
+            'listing_id' => $this->hotel->id,
+            'unit_identifier' => 'Room-101',
+            'unit_name' => 'Deluxe Ocean View',
+            'status' => 'active',
+            'created_by' => $this->owner->id,
         ]);
 
-        ListingAvailability::factory()->count(2)->blocked()->create([
-            'listing_id' => $this->listing->id,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->hotel->id,
+            'unit_identifier' => 'Room-101',
+            'available_date' => '2025-12-25',
+            'start_time' => '15:00', // Check-in
+            'end_time' => '11:00',   // Check-out next day
+            'duration_type' => 'daily',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        $availableSlots = ListingAvailability::available()->get();
-        $this->assertCount(3, $availableSlots);
+        $this->assertEquals('Room-101', $availability->unit_identifier);
+        $this->assertInstanceOf(ListingUnit::class, $availability->unit);
     }
 
     /** @test */
-    public function it_scopes_blocked_slots()
+    public function it_generates_time_slots_for_hourly_bookings()
     {
-        ListingAvailability::factory()->count(2)->create([
-            'listing_id' => $this->listing->id,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '12:00',
+            'slot_duration_minutes' => 60,
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        ListingAvailability::factory()->count(3)->blocked()->create([
-            'listing_id' => $this->listing->id,
-        ]);
+        $slots = $availability->generateTimeSlots();
 
-        $blockedSlots = ListingAvailability::blocked()->get();
-        $this->assertCount(3, $blockedSlots);
+        $this->assertCount(4, $slots); // 8-9, 9-10, 10-11, 11-12
+        $this->assertEquals('08:00', $slots[0]['start']);
+        $this->assertEquals('09:00', $slots[0]['end']);
+        $this->assertEquals(60, $slots[0]['duration_minutes']);
+        $this->assertTrue($slots[0]['available']);
     }
 
     /** @test */
-    public function it_scopes_recurring_availability()
+    public function it_calculates_effective_pricing_with_modifiers()
     {
-        ListingAvailability::factory()->count(5)->recurring()->create([
-            'listing_id' => $this->listing->id,
+        // Create availability with different pricing
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-28', // Saturday
+            'start_time' => '19:00', // Peak hour
+            'end_time' => '20:00',
+            'peak_hour_price' => 2200.00,
+            'weekend_price' => 2000.00,
+            'holiday_price' => 2500.00,
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        ListingAvailability::factory()->specificDate()->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $recurringAvailability = ListingAvailability::recurring()->get();
-        $this->assertCount(5, $recurringAvailability);
+        // Test peak hour pricing (should take precedence)
+        $this->assertEquals(2200.00, $availability->effective_price);
     }
 
     /** @test */
-    public function it_scopes_by_day_of_week()
+    public function it_formats_for_different_categories()
     {
-        ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
+        // Basketball court (sports)
+        $basketballAvailability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '22:00',
+            'slot_duration_minutes' => 60,
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        ListingAvailability::factory()->forDay(ListingAvailability::TUESDAY)->create([
-            'listing_id' => $this->listing->id,
+        $sportsFormat = $basketballAvailability->formatForCategory();
+        $this->assertEquals('sports', $sportsFormat['type']);
+        $this->assertArrayHasKey('time_slots', $sportsFormat);
+        $this->assertArrayHasKey('hourly_rate', $sportsFormat);
+
+        // Hotel room (accommodation)
+        $hotelAvailability = ListingAvailability::create([
+            'listing_id' => $this->hotel->id,
+            'unit_identifier' => 'Room-101',
+            'available_date' => '2025-12-25',
+            'duration_type' => 'daily',
+            'category_rules' => [
+                'check_in_time' => '15:00',
+                'check_out_time' => '11:00'
+            ],
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $mondayAvailability = ListingAvailability::forDayOfWeek(ListingAvailability::MONDAY)->get();
-        $this->assertCount(2, $mondayAvailability);
+        $hotelFormat = $hotelAvailability->formatForCategory();
+        $this->assertEquals('hotel', $hotelFormat['type']);
+        $this->assertEquals('Room-101', $hotelFormat['room']);
+        $this->assertEquals('15:00', $hotelFormat['check_in']);
+        $this->assertEquals('11:00', $hotelFormat['check_out']);
     }
 
     /** @test */
-    public function it_scopes_by_specific_date()
+    public function it_checks_availability_conflicts()
     {
-        $testDate = Carbon::parse('2025-12-25');
-
-        // Specific date match
-        ListingAvailability::factory()->specificDate($testDate)->create([
-            'listing_id' => $this->listing->id,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '10:00',
+            'end_time' => '12:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        // Date range match
-        ListingAvailability::factory()->dateRange(
-            $testDate->copy()->subDays(5),
-            $testDate->copy()->addDays(5)
-        )->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        // Recurring match (Wednesday = 3)
-        ListingAvailability::factory()->forDay($testDate->dayOfWeek)->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        // Non-matching
-        ListingAvailability::factory()->specificDate($testDate->copy()->addMonths(1))->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $availability = ListingAvailability::forDate($testDate)->get();
-        $this->assertCount(3, $availability);
-    }
-
-    /** @test */
-    public function it_gets_day_name_from_day_of_week()
-    {
-        $availability = ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $this->assertEquals('Monday', $availability->getDayName());
-    }
-
-    /** @test */
-    public function it_gets_time_range()
-    {
-        $availability = ListingAvailability::factory()->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '08:00:00',
-            'end_time' => '17:00:00',
-        ]);
-
-        $timeRange = $availability->getTimeRange();
-        $this->assertStringContainsString('AM', $timeRange);
-        $this->assertStringContainsString('PM', $timeRange);
-    }
-
-    /** @test */
-    public function it_gets_date_range_for_specific_date()
-    {
-        $date = Carbon::parse('2025-12-25');
+        // Overlapping request
+        $this->assertTrue($availability->checkAvailabilityConflict('11:00', '13:00'));
         
-        $availability = ListingAvailability::factory()->specificDate($date)->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $dateRange = $availability->getDateRange();
-        $this->assertStringContainsString('Dec 25', $dateRange);
-        $this->assertStringContainsString('2025', $dateRange);
-    }
-
-    /** @test */
-    public function it_gets_date_range_for_date_range_type()
-    {
-        $startDate = Carbon::parse('2025-12-01');
-        $endDate = Carbon::parse('2025-12-31');
+        // Non-overlapping request
+        $this->assertFalse($availability->checkAvailabilityConflict('13:00', '15:00'));
         
-        $availability = ListingAvailability::factory()->dateRange($startDate, $endDate)->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $dateRange = $availability->getDateRange();
-        $this->assertStringContainsString('Dec 01', $dateRange);
-        $this->assertStringContainsString('Dec 31', $dateRange);
-        $this->assertStringContainsString('-', $dateRange);
+        // Exact match
+        $this->assertTrue($availability->checkAvailabilityConflict('10:00', '12:00'));
     }
 
     /** @test */
-    public function it_gets_human_readable_description()
+    public function it_manages_status_transitions()
     {
-        $availability = ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '08:00:00',
-            'end_time' => '17:00:00',
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '10:00',
+            'end_time' => '12:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        $description = $availability->getDescription();
-        $this->assertStringContainsString('Monday', $description);
-        $this->assertStringContainsString('AM', $description);
-        $this->assertStringContainsString('PM', $description);
+        $this->assertTrue($availability->isAvailable());
+        $this->assertFalse($availability->isBooked());
+        $this->assertFalse($availability->isBlocked());
+
+        // Mark as booked
+        $availability->markAsBooked();
+        $this->assertTrue($availability->isBooked());
+        $this->assertFalse($availability->isAvailable());
+
+        // Mark as available again
+        $availability->markAsAvailable();
+        $this->assertTrue($availability->isAvailable());
+        $this->assertFalse($availability->isBooked());
+
+        // Block with reason
+        $availability->block('Maintenance required');
+        $this->assertTrue($availability->isBlocked());
+        $this->assertEquals('Maintenance required', $availability->notes);
     }
 
     /** @test */
-    public function it_checks_if_is_recurring()
+    public function it_scopes_by_status()
     {
-        $recurring = ListingAvailability::factory()->recurring()->create([
-            'listing_id' => $this->listing->id,
+        // Create different status availability
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '10:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        $specific = ListingAvailability::factory()->specificDate()->create([
-            'listing_id' => $this->listing->id,
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '10:00',
+            'end_time' => '12:00',
+            'status' => 'booked',
+            'created_by' => $this->owner->id,
         ]);
 
-        $this->assertTrue($recurring->isRecurring());
-        $this->assertFalse($specific->isRecurring());
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '12:00',
+            'end_time' => '14:00',
+            'status' => 'maintenance',
+            'created_by' => $this->owner->id,
+        ]);
+
+        $available = ListingAvailability::available()->get();
+        $booked = ListingAvailability::booked()->get();
+        $blocked = ListingAvailability::blocked()->get();
+
+        $this->assertCount(1, $available);
+        $this->assertCount(1, $booked);
+        $this->assertCount(1, $blocked);
     }
 
     /** @test */
-    public function it_checks_if_is_blocked()
+    public function it_scopes_by_date_and_time_range()
     {
-        $blocked = ListingAvailability::factory()->blocked()->create([
-            'listing_id' => $this->listing->id,
+        $date = '2025-12-25';
+        
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => $date,
+            'start_time' => '08:00',
+            'end_time' => '10:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        $available = ListingAvailability::factory()->create([
-            'listing_id' => $this->listing->id,
-            'is_available' => true,
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-26', // Different date
+            'start_time' => '08:00',
+            'end_time' => '10:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        $this->assertTrue($blocked->isBlocked());
-        $this->assertFalse($available->isBlocked());
+        $forDate = ListingAvailability::forDate($date)->get();
+        $this->assertCount(1, $forDate);
+
+        $dateRange = ListingAvailability::forDateRange('2025-12-25', '2025-12-26')->get();
+        $this->assertCount(2, $dateRange);
     }
 
     /** @test */
-    public function it_checks_if_applies_to_date()
+    public function it_scopes_by_unit_identifier()
     {
-        $testDate = Carbon::parse('2025-12-25'); // Wednesday
-
-        // Recurring on Wednesday
-        $recurring = ListingAvailability::factory()->forDay($testDate->dayOfWeek)->create([
-            'listing_id' => $this->listing->id,
+        ListingAvailability::create([
+            'listing_id' => $this->hotel->id,
+            'unit_identifier' => 'Room-101',
+            'available_date' => '2025-12-25',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        // Specific date
-        $specific = ListingAvailability::factory()->specificDate($testDate)->create([
-            'listing_id' => $this->listing->id,
+        ListingAvailability::create([
+            'listing_id' => $this->hotel->id,
+            'unit_identifier' => 'Room-102',
+            'available_date' => '2025-12-25',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        // Date range
-        $range = ListingAvailability::factory()->dateRange(
-            $testDate->copy()->subDays(5),
-            $testDate->copy()->addDays(5)
-        )->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        // Non-matching
-        $nonMatching = ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $this->assertTrue($recurring->appliesToDate($testDate));
-        $this->assertTrue($specific->appliesToDate($testDate));
-        $this->assertTrue($range->appliesToDate($testDate));
-        $this->assertFalse($nonMatching->appliesToDate($testDate));
+        $room101 = ListingAvailability::forUnit('Room-101')->get();
+        $this->assertCount(1, $room101);
+        $this->assertEquals('Room-101', $room101->first()->unit_identifier);
     }
 
     /** @test */
-    public function it_gets_price_with_override()
+    public function it_calculates_duration_in_minutes()
     {
-        $listing = Listing::factory()->create([
-            'user_id' => User::factory()->create()->id,
-            'category_id' => Category::factory()->create()->id,
-            'price_per_hour' => 500,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '10:00',
+            'end_time' => '12:30',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        $availabilityWithOverride = ListingAvailability::factory()->withPriceOverride(1000)->create([
-            'listing_id' => $listing->id,
-        ]);
-
-        $availabilityWithoutOverride = ListingAvailability::factory()->create([
-            'listing_id' => $listing->id,
-            'price_override' => null,
-        ]);
-
-        $this->assertEquals(1000, $availabilityWithOverride->getPrice());
-        $this->assertEquals(500, $availabilityWithoutOverride->getPrice());
+        $this->assertEquals(150, $availability->duration_in_minutes); // 2.5 hours = 150 minutes
     }
 
     /** @test */
-    public function it_detects_overlapping_recurring_slots()
+    public function it_gets_time_range_attribute()
     {
-        $slot1 = ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '08:00:00',
-            'end_time' => '12:00:00',
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '17:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        // Overlapping (same day, overlapping time)
-        $slot2 = ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '10:00:00',
-            'end_time' => '14:00:00',
-        ]);
-
-        // Non-overlapping (same day, different time)
-        $slot3 = ListingAvailability::factory()->forDay(ListingAvailability::MONDAY)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '14:00:00',
-            'end_time' => '18:00:00',
-        ]);
-
-        // Non-overlapping (different day)
-        $slot4 = ListingAvailability::factory()->forDay(ListingAvailability::TUESDAY)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '08:00:00',
-            'end_time' => '12:00:00',
-        ]);
-
-        $this->assertTrue($slot1->overlapsWith($slot2));
-        $this->assertFalse($slot1->overlapsWith($slot3));
-        $this->assertFalse($slot1->overlapsWith($slot4));
+        $timeRange = $availability->time_range;
+        $this->assertStringContainsString('8:00 AM', $timeRange);
+        $this->assertStringContainsString('5:00 PM', $timeRange);
+        $this->assertStringContainsString('-', $timeRange);
     }
 
     /** @test */
-    public function it_detects_overlapping_specific_dates()
+    public function it_handles_all_day_availability()
     {
-        $date1 = Carbon::parse('2025-12-25');
-        $date2 = Carbon::parse('2025-12-26');
-
-        $slot1 = ListingAvailability::factory()->specificDate($date1)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '08:00:00',
-            'end_time' => '12:00:00',
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->hotel->id,
+            'unit_identifier' => 'Room-101',
+            'available_date' => '2025-12-25',
+            'start_time' => null,
+            'end_time' => null,
+            'duration_type' => 'daily',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        // Overlapping (same date, overlapping time)
-        $slot2 = ListingAvailability::factory()->specificDate($date1)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '10:00:00',
-            'end_time' => '14:00:00',
-        ]);
-
-        // Non-overlapping (different date)
-        $slot3 = ListingAvailability::factory()->specificDate($date2)->create([
-            'listing_id' => $this->listing->id,
-            'start_time' => '08:00:00',
-            'end_time' => '12:00:00',
-        ]);
-
-        $this->assertTrue($slot1->overlapsWith($slot2));
-        $this->assertFalse($slot1->overlapsWith($slot3));
-    }
-
-    /** @test */
-    public function it_detects_overlapping_date_ranges()
-    {
-        $slot1 = ListingAvailability::factory()->dateRange(
-            Carbon::parse('2025-12-01'),
-            Carbon::parse('2025-12-15')
-        )->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        // Overlapping range
-        $slot2 = ListingAvailability::factory()->dateRange(
-            Carbon::parse('2025-12-10'),
-            Carbon::parse('2025-12-20')
-        )->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        // Non-overlapping range
-        $slot3 = ListingAvailability::factory()->dateRange(
-            Carbon::parse('2025-12-20'),
-            Carbon::parse('2025-12-31')
-        )->create([
-            'listing_id' => $this->listing->id,
-        ]);
-
-        $this->assertTrue($slot1->overlapsWith($slot2));
-        $this->assertFalse($slot1->overlapsWith($slot3));
+        $this->assertEquals('All day', $availability->time_range);
+        $this->assertEquals(0, $availability->duration_in_minutes);
+        $this->assertEmpty($availability->generateTimeSlots());
     }
 
     /** @test */
     public function it_casts_attributes_correctly()
     {
-        $availability = ListingAvailability::factory()->create([
-            'listing_id' => $this->listing->id,
-            'day_of_week' => 1,
-            'is_available' => true,
-            'price_override' => 1234.56,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '17:00',
+            'peak_hour_price' => 2200.50,
+            'weekend_price' => 2000.75,
+            'available_units' => 3,
+            'slot_duration_minutes' => 60,
+            'recurrence_pattern' => ['monday', 'wednesday', 'friday'],
+            'category_rules' => ['check_in' => '15:00'],
+            'booking_rules' => ['min_advance' => 24],
+            'metadata' => ['notes' => 'Premium court'],
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
-        $this->assertIsInt($availability->day_of_week);
-        $this->assertIsBool($availability->is_available);
-        // Price is cast as string in database, check if it's numeric
-        $this->assertTrue(is_numeric($availability->price_override));
-        $this->assertEquals('1234.56', $availability->price_override);
+        // Test decimal casting
+        $this->assertEquals(2200.50, $availability->peak_hour_price);
+        $this->assertEquals(2000.75, $availability->weekend_price);
+        
+        // Test integer casting
+        $this->assertIsInt($availability->available_units);
+        $this->assertIsInt($availability->slot_duration_minutes);
+        
+        // Test array casting
+        $this->assertIsArray($availability->recurrence_pattern);
+        $this->assertIsArray($availability->category_rules);
+        $this->assertIsArray($availability->booking_rules);
+        $this->assertIsArray($availability->metadata);
+        
+        // Test date casting
+        $this->assertInstanceOf(Carbon::class, $availability->available_date);
+    }
+
+    /** @test */
+    public function it_orders_availability_correctly()
+    {
+        // Create availability in random order
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-26',
+            'start_time' => '10:00',
+            'end_time' => '12:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
+        ]);
+
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '14:00',
+            'end_time' => '16:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
+        ]);
+
+        ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '10:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
+        ]);
+
+        $ordered = ListingAvailability::ordered()->get();
+        
+        // Should be ordered by date, then time
+        $this->assertEquals('2025-12-25', $ordered[0]->available_date->format('Y-m-d'));
+        $this->assertEquals('08:00', $ordered[0]->start_time->format('H:i'));
+        
+        $this->assertEquals('2025-12-25', $ordered[1]->available_date->format('Y-m-d'));
+        $this->assertEquals('14:00', $ordered[1]->start_time->format('H:i'));
+        
+        $this->assertEquals('2025-12-26', $ordered[2]->available_date->format('Y-m-d'));
     }
 
     /** @test */
     public function it_soft_deletes_availability()
     {
-        $availability = ListingAvailability::factory()->create([
-            'listing_id' => $this->listing->id,
+        $availability = ListingAvailability::create([
+            'listing_id' => $this->basketballCourt->id,
+            'available_date' => '2025-12-25',
+            'start_time' => '08:00',
+            'end_time' => '10:00',
+            'status' => 'available',
+            'created_by' => $this->owner->id,
         ]);
 
         $availability->delete();

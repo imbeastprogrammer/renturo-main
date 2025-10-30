@@ -18,6 +18,7 @@ use App\Http\Controllers\API\V1\Tenants\Client\ChatController;
 use App\Http\Controllers\API\V1\Tenants\Client\DynamicFormAvailabilityController;
 use App\Http\Controllers\Api\V1\Tenants\Client\ListingController;
 use App\Http\Controllers\API\V1\Tenants\Client\MediaController;
+use App\Http\Controllers\Api\V1\Tenants\Client\AvailabilityController;
 
 use App\Http\Controllers\API\V1\ImageUploadController;
 use Database\Factories\ImageFactory;
@@ -87,6 +88,12 @@ Route::middleware([
             Route::patch('/media/{id}/set-primary', [MediaController::class, 'setPrimary']);
             Route::get('/media/entity/{type}/{id}', [MediaController::class, 'getEntityMedia']);
             Route::get('/media/my-uploads', [MediaController::class, 'getMyMedia']);
+
+            // Universal Availability Management Routes
+            Route::get('/availability/listing/{listingId}', [AvailabilityController::class, 'getListingAvailability']);
+            Route::get('/availability/check', [AvailabilityController::class, 'checkAvailability']);
+            Route::post('/availability/bulk', [AvailabilityController::class, 'bulkCreate']);
+            Route::resource('/availability', AvailabilityController::class)->except(['index']);
 
             Route::resource('/chats', ChatController::class);
             Route::delete('/chats/{chat}/leave', [ChatController::class, 'leaveChat']);

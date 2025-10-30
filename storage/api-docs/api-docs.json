@@ -397,6 +397,941 @@
                 ]
             }
         },
+        "/v1/availability/listing/{listingId}": {
+            "get": {
+                "tags": [
+                    "Client - Availability"
+                ],
+                "summary": "Get availability for a specific listing",
+                "description": "Retrieve availability slots for any property type with flexible filtering",
+                "operationId": "9fd5580028837eaeca4f131a56059791",
+                "parameters": [
+                    {
+                        "name": "listingId",
+                        "in": "path",
+                        "description": "ID of the listing",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Start date for availability search (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "End date for availability search (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "unit_identifier",
+                        "in": "query",
+                        "description": "Filter by specific unit (for multi-unit properties)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by availability status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "available",
+                                "booked",
+                                "blocked",
+                                "maintenance"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "duration_type",
+                        "in": "query",
+                        "description": "Filter by duration type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "hourly",
+                                "daily",
+                                "weekly",
+                                "monthly"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Availability retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "listing_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "inventory_type": {
+                                                    "type": "string",
+                                                    "example": "single"
+                                                },
+                                                "total_units": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "availability": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "available_date": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2025-11-01"
+                                                            },
+                                                            "start_time": {
+                                                                "type": "string",
+                                                                "format": "time",
+                                                                "example": "09:00:00"
+                                                            },
+                                                            "end_time": {
+                                                                "type": "string",
+                                                                "format": "time",
+                                                                "example": "10:00:00"
+                                                            },
+                                                            "unit_identifier": {
+                                                                "type": "string",
+                                                                "example": "court-1"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "available"
+                                                            },
+                                                            "duration_type": {
+                                                                "type": "string",
+                                                                "example": "hourly"
+                                                            },
+                                                            "effective_price": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 50
+                                                            },
+                                                            "available_units": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "category_format": {
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Listing not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/availability": {
+            "post": {
+                "tags": [
+                    "Client - Availability"
+                ],
+                "summary": "Create availability slots",
+                "description": "Create new availability slots for any property type",
+                "operationId": "1f9d58f87621e75817633c6eb838ec10",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "listing_id",
+                                    "available_date",
+                                    "start_time",
+                                    "end_time",
+                                    "duration_type"
+                                ],
+                                "properties": {
+                                    "listing_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "available_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-01"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "09:00:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "17:00:00"
+                                    },
+                                    "unit_identifier": {
+                                        "type": "string",
+                                        "example": "court-1"
+                                    },
+                                    "duration_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "hourly",
+                                            "daily",
+                                            "weekly",
+                                            "monthly"
+                                        ],
+                                        "example": "hourly"
+                                    },
+                                    "slot_duration_minutes": {
+                                        "type": "integer",
+                                        "example": 60
+                                    },
+                                    "available_units": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "peak_hour_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 75
+                                    },
+                                    "weekend_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 65
+                                    },
+                                    "holiday_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 85
+                                    },
+                                    "min_duration_hours": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "max_duration_hours": {
+                                        "type": "integer",
+                                        "example": 8
+                                    },
+                                    "booking_rules": {
+                                        "type": "object"
+                                    },
+                                    "metadata": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Availability created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability slots created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "slots_created": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "availability": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "available_date": {
+                                                                "type": "string",
+                                                                "format": "date",
+                                                                "example": "2025-11-01"
+                                                            },
+                                                            "start_time": {
+                                                                "type": "string",
+                                                                "format": "time",
+                                                                "example": "09:00:00"
+                                                            },
+                                                            "end_time": {
+                                                                "type": "string",
+                                                                "format": "time",
+                                                                "example": "10:00:00"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "available"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/availability/{id}": {
+            "get": {
+                "tags": [
+                    "Client - Availability"
+                ],
+                "summary": "Get specific availability slot",
+                "description": "Retrieve details of a specific availability slot",
+                "operationId": "4e1ef73f1c0f5ba7763d8e134e7c1948",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the availability slot",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Availability slot retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "listing_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "available_date": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2025-11-01"
+                                                },
+                                                "start_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "09:00:00"
+                                                },
+                                                "end_time": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "10:00:00"
+                                                },
+                                                "unit_identifier": {
+                                                    "type": "string",
+                                                    "example": "court-1"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "available"
+                                                },
+                                                "duration_type": {
+                                                    "type": "string",
+                                                    "example": "hourly"
+                                                },
+                                                "effective_price": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 50
+                                                },
+                                                "category_format": {
+                                                    "type": "object"
+                                                },
+                                                "listing": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "title": {
+                                                            "type": "string",
+                                                            "example": "Premium Basketball Court"
+                                                        },
+                                                        "inventory_type": {
+                                                            "type": "string",
+                                                            "example": "single"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Availability slot not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Client - Availability"
+                ],
+                "summary": "Update availability slot",
+                "description": "Update an existing availability slot",
+                "operationId": "ea7b311d0ee069aba135b22ee4d60e18",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the availability slot",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "available_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-01"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "09:00:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "10:00:00"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "available",
+                                            "booked",
+                                            "blocked",
+                                            "maintenance"
+                                        ],
+                                        "example": "available"
+                                    },
+                                    "peak_hour_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 75
+                                    },
+                                    "weekend_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 65
+                                    },
+                                    "holiday_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 85
+                                    },
+                                    "available_units": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "booking_rules": {
+                                        "type": "object"
+                                    },
+                                    "metadata": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Availability updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "available"
+                                                },
+                                                "effective_price": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 75
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Availability slot not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized to update this availability"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Client - Availability"
+                ],
+                "summary": "Delete availability slot",
+                "description": "Delete an availability slot (soft delete)",
+                "operationId": "2a760c858e5ed0e7c253ad5e2b4e749f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the availability slot",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Availability deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Availability slot not found"
+                    },
+                    "403": {
+                        "description": "Unauthorized to delete this availability"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/availability/bulk": {
+            "post": {
+                "tags": [
+                    "Client - Availability"
+                ],
+                "summary": "Create bulk availability",
+                "description": "Create availability for multiple dates using templates or date ranges",
+                "operationId": "8de72bf5cce7c8b56dacb9fa17aa4d45",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "listing_id",
+                                    "start_date",
+                                    "end_date"
+                                ],
+                                "properties": {
+                                    "listing_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-30"
+                                    },
+                                    "template_id": {
+                                        "description": "Use existing template",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "days_of_week": {
+                                        "description": "0=Sunday, 6=Saturday",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "maximum": 6,
+                                            "minimum": 0
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5
+                                        ]
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "09:00:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "17:00:00"
+                                    },
+                                    "duration_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "hourly",
+                                            "daily"
+                                        ],
+                                        "example": "hourly"
+                                    },
+                                    "slot_duration_minutes": {
+                                        "type": "integer",
+                                        "example": 60
+                                    },
+                                    "unit_identifier": {
+                                        "type": "string",
+                                        "example": "court-1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bulk availability created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bulk availability created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "dates_processed": {
+                                                    "type": "integer",
+                                                    "example": 22
+                                                },
+                                                "slots_created": {
+                                                    "type": "integer",
+                                                    "example": 176
+                                                },
+                                                "template_used": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Listing or template not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/availability/check": {
+            "get": {
+                "tags": [
+                    "Client - Availability"
+                ],
+                "summary": "Check availability for booking",
+                "description": "Check if a specific time slot is available for booking",
+                "operationId": "a6396e974c408250e77dc5c258ed33bd",
+                "parameters": [
+                    {
+                        "name": "listing_id",
+                        "in": "query",
+                        "description": "ID of the listing",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Date to check (YYYY-MM-DD)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "start_time",
+                        "in": "query",
+                        "description": "Start time (HH:MM:SS)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "time"
+                        }
+                    },
+                    {
+                        "name": "end_time",
+                        "in": "query",
+                        "description": "End time (HH:MM:SS)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "time"
+                        }
+                    },
+                    {
+                        "name": "unit_identifier",
+                        "in": "query",
+                        "description": "Specific unit to check",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Availability check completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability check completed"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "available": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "total_price": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 150
+                                                },
+                                                "available_units": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "slots": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "start_time": {
+                                                                "type": "string",
+                                                                "format": "time",
+                                                                "example": "09:00:00"
+                                                            },
+                                                            "end_time": {
+                                                                "type": "string",
+                                                                "format": "time",
+                                                                "example": "10:00:00"
+                                                            },
+                                                            "price": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 50
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Listing not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/client/v1/categories": {
             "get": {
                 "tags": [
@@ -7800,6 +8735,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Client - Availability",
+            "description": "Universal availability management for all property types (sports courts, hotels, cars, venues, etc.)"
+        },
         {
             "name": "Client - Dynamic Form Availability",
             "description": "API endpoints for managing dynamic form availability schedules (Client App)"

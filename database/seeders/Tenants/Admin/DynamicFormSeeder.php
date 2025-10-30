@@ -34,7 +34,7 @@ class DynamicFormSeeder extends Seeder
         if (!$basketballSubcategory) {
             $basketballSubcategory = SubCategory::firstOrCreate(
                 ['name' => 'Basketball'],
-                ['category_id' => 1, 'description' => 'Basketball courts and facilities']
+                ['category_id' => 1]
             );
         }
         if (!$restaurantSubcategory) {
