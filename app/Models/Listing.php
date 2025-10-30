@@ -473,50 +473,53 @@ class Listing extends Model
 
     /**
      * Scope to filter listings available for specific date range
-     * ONLY shows listings if ALL requested dates/times are available
+     * 
+     * Behavior:
+     * - WITH time: Shows only if EXACT time slots are available
+     * - WITHOUT time: Shows if ANY availability exists for the dates
      */
     public function scopeAvailableForDateRange($query, $checkInDate, $checkOutDate, $checkInTime = null, $checkOutTime = null)
     {
         return $query->where(function ($q) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
-            // First, check if listing has NO conflicting bookings
-            $q->whereDoesntHave('bookings', function ($bookingQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
-                $bookingQuery->whereIn('status', ['pending', 'confirmed', 'paid', 'checked_in', 'in_progress'])
-                    ->where(function ($dateQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
-                        if ($checkInTime && $checkOutTime) {
-                            // Hourly booking - check for time overlap
-                            $dateQuery->where(function ($overlapQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
-                                $overlapQuery->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
-                                    ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
-                                    ->orWhere(function ($encompassQuery) use ($checkInDate, $checkOutDate) {
-                                        $encompassQuery->where('check_in_date', '<=', $checkInDate)
-                                            ->where('check_out_date', '>=', $checkOutDate);
-                                    });
-                            });
-                        } else {
-                            // Daily booking - check for date overlap
-                            $dateQuery->where(function ($overlapQuery) use ($checkInDate, $checkOutDate) {
-                                $overlapQuery->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
-                                    ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
-                                    ->orWhere(function ($encompassQuery) use ($checkInDate, $checkOutDate) {
-                                        $encompassQuery->where('check_in_date', '<=', $checkInDate)
-                                            ->where('check_out_date', '>=', $checkOutDate);
-                                    });
-                            });
-                        }
-                    });
-            });
-            
-            // Second, verify availability slots exist for the requested dates
-            $q->whereHas('availability', function ($availQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
-                $availQuery->whereBetween('available_date', [$checkInDate, $checkOutDate])
-                    ->where('status', 'available');
+            if ($checkInTime && $checkOutTime) {
+                // SPECIFIC TIME SEARCH: User specified exact times
+                // Rule: Show ONLY if the exact time slot is free
                 
-                // If time-based booking, ensure the time slots match
-                if ($checkInTime && $checkOutTime) {
-                    $availQuery->where('start_time', '<=', $checkInTime)
+                $q->whereDoesntHave('bookings', function ($bookingQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+                    $bookingQuery->whereIn('status', ['pending', 'confirmed', 'paid', 'checked_in', 'in_progress'])
+                        ->where(function ($dateQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+                            $dateQuery->where('check_in_date', '=', $checkInDate)
+                                ->where(function ($timeQuery) use ($checkInTime, $checkOutTime) {
+                                    // Check if booked time overlaps with requested time
+                                    $timeQuery->where(function ($overlap) use ($checkInTime, $checkOutTime) {
+                                        $overlap->where('check_in_time', '<', $checkOutTime)
+                                            ->where('check_out_time', '>', $checkInTime);
+                                    });
+                                });
+                        });
+                });
+                
+                // Verify availability slot exists for exact time
+                $q->whereHas('availability', function ($availQuery) use ($checkInDate, $checkOutDate, $checkInTime, $checkOutTime) {
+                    $availQuery->whereBetween('available_date', [$checkInDate, $checkOutDate])
+                        ->where('status', 'available')
+                        ->where('start_time', '<=', $checkInTime)
                         ->where('end_time', '>=', $checkOutTime);
-                }
-            });
+                });
+                
+            } else {
+                // DATE-ONLY SEARCH: User only specified dates (no time)
+                // Rule: Show if there's ANY availability on those dates
+                
+                // For daily bookings (hotels, car rentals), check if dates are free
+                $q->whereHas('availability', function ($availQuery) use ($checkInDate, $checkOutDate) {
+                    $availQuery->whereBetween('available_date', [$checkInDate, $checkOutDate])
+                        ->where('status', 'available');
+                });
+                
+                // Note: We DON'T filter out listings with partial bookings on the date
+                // because the user might want a different time slot
+            }
         });
     }
 
@@ -1001,6 +1004,29 @@ class Listing extends Model
         $availableDays = $query->distinct('available_date')->count();
 
         return $availableDays >= $requiredDays;
+    }
+
+    /**
+     * Get available time slots for a specific date
+     * Useful when user searches without specifying time
+     */
+    public function getAvailableTimeSlots($date): array
+    {
+        $slots = $this->availability()
+            ->where('available_date', $date)
+            ->where('status', 'available')
+            ->orderBy('start_time')
+            ->get();
+
+        return $slots->map(function ($slot) {
+            return [
+                'start_time' => $slot->start_time,
+                'end_time' => $slot->end_time,
+                'duration_hours' => $slot->getDurationInHours(),
+                'price' => $slot->effective_price,
+                'time_range' => $slot->time_range,
+            ];
+        })->toArray();
     }
 
     /**

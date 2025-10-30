@@ -271,6 +271,11 @@ class ListingController extends Controller
                         'check_out_time' => $checkOutTime,
                     ];
                     $availabilityStatus['matched_search'] = true;
+                    
+                    // If user searched without time, show available time slots
+                    if (!$checkInTime && !$checkOutTime && $checkInDate === $checkOutDate) {
+                        $availabilityStatus['available_time_slots'] = $listing->getAvailableTimeSlots($checkInDate);
+                    }
                 }
                 
                 $listing->availability_status = $availabilityStatus;
