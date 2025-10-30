@@ -4278,6 +4278,58 @@
                             "type": "string",
                             "example": "newest"
                         }
+                    },
+                    {
+                        "name": "check_in_date",
+                        "in": "query",
+                        "description": "Filter by availability start date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-11-15"
+                        }
+                    },
+                    {
+                        "name": "check_out_date",
+                        "in": "query",
+                        "description": "Filter by availability end date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-11-20"
+                        }
+                    },
+                    {
+                        "name": "check_in_time",
+                        "in": "query",
+                        "description": "Filter by start time (HH:MM) - for hourly bookings",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "14:00"
+                        }
+                    },
+                    {
+                        "name": "check_out_time",
+                        "in": "query",
+                        "description": "Filter by end time (HH:MM) - for hourly bookings",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "16:00"
+                        }
+                    },
+                    {
+                        "name": "available_only",
+                        "in": "query",
+                        "description": "Show only listings with any future availability (1 or 0)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
                     }
                 ],
                 "responses": {
