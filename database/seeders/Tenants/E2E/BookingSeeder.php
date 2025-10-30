@@ -98,14 +98,20 @@ class BookingSeeder extends Seeder
         ];
 
         foreach ($renterData as $data) {
-            $renters[] = User::firstOrCreate(
-                ['email' => $data['email']],
-                array_merge($data, [
+            // Check if user exists by email or mobile number
+            $user = User::where('email', $data['email'])
+                ->orWhere('mobile_number', $data['mobile_number'])
+                ->first();
+            
+            if (!$user) {
+                $user = User::create(array_merge($data, [
                     'password' => bcrypt('password123'),
                     'email_verified_at' => now(),
                     'role' => 'user',
-                ])
-            );
+                ]));
+            }
+            
+            $renters[] = $user;
         }
 
         return $renters;
