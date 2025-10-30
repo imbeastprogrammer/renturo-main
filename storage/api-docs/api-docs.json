@@ -397,14 +397,14 @@
                 ]
             }
         },
-        "/v1/availability/listing/{listingId}": {
+        "/api/client/v1/availability/listing/{listingId}": {
             "get": {
                 "tags": [
                     "Client - Availability"
                 ],
                 "summary": "Get availability for a specific listing",
                 "description": "Retrieve availability slots for any property type with flexible filtering",
-                "operationId": "9fd5580028837eaeca4f131a56059791",
+                "operationId": "6825a5b2a507d9c51a305ff958ca2750",
                 "parameters": [
                     {
                         "name": "listingId",
@@ -578,14 +578,14 @@
                 ]
             }
         },
-        "/v1/availability": {
+        "/api/client/v1/availability": {
             "post": {
                 "tags": [
                     "Client - Availability"
                 ],
                 "summary": "Create availability slots",
                 "description": "Create new availability slots for any property type",
-                "operationId": "1f9d58f87621e75817633c6eb838ec10",
+                "operationId": "04513d93d31a47134e88f90f1b10079f",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -750,14 +750,14 @@
                 ]
             }
         },
-        "/v1/availability/{id}": {
+        "/api/client/v1/availability/{id}": {
             "get": {
                 "tags": [
                     "Client - Availability"
                 ],
                 "summary": "Get specific availability slot",
                 "description": "Retrieve details of a specific availability slot",
-                "operationId": "4e1ef73f1c0f5ba7763d8e134e7c1948",
+                "operationId": "25fcc6a462eacebaa362accfed11f3e1",
                 "parameters": [
                     {
                         "name": "id",
@@ -874,7 +874,7 @@
                 ],
                 "summary": "Update availability slot",
                 "description": "Update an existing availability slot",
-                "operationId": "ea7b311d0ee069aba135b22ee4d60e18",
+                "operationId": "0c97e36d60ef7b64eaccd7db9f8a117c",
                 "parameters": [
                     {
                         "name": "id",
@@ -1009,7 +1009,7 @@
                 ],
                 "summary": "Delete availability slot",
                 "description": "Delete an availability slot (soft delete)",
-                "operationId": "2a760c858e5ed0e7c253ad5e2b4e749f",
+                "operationId": "913d2ce63413e64d45e9bbb72df52ce8",
                 "parameters": [
                     {
                         "name": "id",
@@ -1056,14 +1056,14 @@
                 ]
             }
         },
-        "/v1/availability/bulk": {
+        "/api/client/v1/availability/bulk": {
             "post": {
                 "tags": [
                     "Client - Availability"
                 ],
                 "summary": "Create bulk availability",
                 "description": "Create availability for multiple dates using templates or date ranges",
-                "operationId": "8de72bf5cce7c8b56dacb9fa17aa4d45",
+                "operationId": "abc9593bcde513288a51be77d7a9491e",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1194,14 +1194,14 @@
                 ]
             }
         },
-        "/v1/availability/check": {
+        "/api/client/v1/availability/check": {
             "get": {
                 "tags": [
                     "Client - Availability"
                 ],
                 "summary": "Check availability for booking",
                 "description": "Check if a specific time slot is available for booking",
-                "operationId": "a6396e974c408250e77dc5c258ed33bd",
+                "operationId": "a3c951bb23c7294974427df86b6eb145",
                 "parameters": [
                     {
                         "name": "listing_id",
