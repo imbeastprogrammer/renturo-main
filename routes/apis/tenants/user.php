@@ -8,6 +8,7 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Middleware\RedirectIfTenantActivated;
 
 use App\Http\Controllers\Api\V1\Tenants\User\DynamicFormSubmissionController;
+use App\Http\Controllers\Api\V1\Tenants\User\BookingController;
 
 Route::middleware([
     'api',
@@ -34,5 +35,12 @@ Route::middleware([
 
             Route::get('/forms', [DynamicFormSubmissionController::class, 'index']);
             Route::get('/form/{formId}', [DynamicFormSubmissionController::class, 'show']);
+
+            // User Booking Routes (for renters/end users)
+            Route::get('/bookings/check-availability', [BookingController::class, 'checkAvailability']);
+            Route::get('/bookings', [BookingController::class, 'index']);
+            Route::post('/bookings', [BookingController::class, 'store']);
+            Route::get('/bookings/{id}', [BookingController::class, 'show']);
+            Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancel']);
         });
     });

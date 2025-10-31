@@ -4,20 +4,18 @@ namespace App\Http\Controllers\Api\V1\Tenants\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
-use App\Models\Listing;
 use App\Models\ListingAvailability;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 
 /**
  * @OA\Tag(
  *     name="Client - Bookings",
- *     description="Booking management for all property types with conflict detection and status management"
+ *     description="Booking management for property owners/clients"
  * )
  */
 class BookingController extends Controller
@@ -26,14 +24,14 @@ class BookingController extends Controller
      * @OA\Get(
      *     path="/api/client/v1/bookings",
      *     tags={"Client - Bookings"},
-     *     summary="Get user's bookings",
-     *     description="Retrieve all bookings for the authenticated user with filtering options",
+     *     summary="Get property bookings",
+     *     description="Retrieve all bookings for properties owned by the authenticated client/owner",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
      *         required=false,
-     *         description="Filter by status (pending, confirmed, paid, checked_in, in_progress, completed, cancelled)",
+     *         description="Filter by status (pending, confirmed, paid, checked_in, in_progress, completed, cancelled, rejected)",
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
@@ -47,7 +45,7 @@ class BookingController extends Controller
      *         name="listing_id",
      *         in="query",
      *         required=false,
-     *         description="Filter by listing ID",
+     *         description="Filter by specific property ID",
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
@@ -55,21 +53,32 @@ class BookingController extends Controller
      *         description="Bookings retrieved successfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Bookings retrieved successfully"),
-     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *             @OA\Property(property="message", type="string", example="Property bookings retrieved successfully"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="statistics", type="object")
      *         )
-     *     )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=500, description="Server error")
      * )
      */
     public function index(Request $request): JsonResponse
     {
         try {
-            $query = Booking::with(['listing', 'listingUnit', 'owner'])
-                ->forUser(Auth::id());
+            $query = Booking::with(['listing', 'listingUnit', 'user'])
+                ->forOwner(Auth::id()); // Only bookings for MY properties
 
             // Apply filters
             if ($request->has('status')) {
                 $query->where('status', $request->status);
+            }
+
+            if ($request->has('listing_id')) {
+                // Verify owner owns this listing
+                $query->whereHas('listing', function($q) use ($request) {
+                    $q->where('id', $request->listing_id)
+                      ->where('user_id', Auth::id());
+                });
             }
 
             if ($request->has('type')) {
@@ -81,221 +90,34 @@ class BookingController extends Controller
                 };
             }
 
-            if ($request->has('listing_id')) {
-                $query->forListing($request->listing_id);
-            }
-
+            // Get bookings
             $bookings = $query->orderBy('check_in_date', 'desc')->get();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Bookings retrieved successfully',
-                'data' => $bookings
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Error retrieving bookings: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while retrieving bookings'
-            ], 500);
-        }
-    }
-
-    /**
-     * @OA\Post(
-     *     path="/api/client/v1/bookings",
-     *     tags={"Client - Bookings"},
-     *     summary="Create a new booking",
-     *     description="Create a booking with automatic conflict detection and availability locking",
-     *     security={{"bearerAuth": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"listing_id", "check_in_date", "check_out_date"},
-     *             @OA\Property(property="listing_id", type="integer", example=1),
-     *             @OA\Property(property="listing_unit_id", type="integer", example=1),
-     *             @OA\Property(property="check_in_date", type="string", format="date", example="2025-11-01"),
-     *             @OA\Property(property="check_out_date", type="string", format="date", example="2025-11-03"),
-     *             @OA\Property(property="check_in_time", type="string", format="time", example="14:00"),
-     *             @OA\Property(property="check_out_time", type="string", format="time", example="16:00"),
-     *             @OA\Property(property="number_of_guests", type="integer", example=2),
-     *             @OA\Property(property="number_of_players", type="integer", example=10),
-     *             @OA\Property(property="special_requests", type="string", example="Need extra towels"),
-     *             @OA\Property(property="guest_details", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Booking created successfully",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Booking created successfully"),
-     *             @OA\Property(property="data", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=409,
-     *         description="Booking conflict detected"
-     *     )
-     * )
-     */
-    public function store(Request $request): JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'listing_id' => 'required|exists:listings,id',
-                'listing_unit_id' => 'nullable|exists:listing_units,id',
-                'check_in_date' => 'required|date|after_or_equal:today',
-                'check_out_date' => 'required|date|after:check_in_date',
-                'check_in_time' => 'nullable|date_format:H:i',
-                'check_out_time' => 'nullable|date_format:H:i|after:check_in_time',
-                'number_of_guests' => 'nullable|integer|min:1',
-                'number_of_players' => 'nullable|integer|min:1',
-                'number_of_vehicles' => 'nullable|integer|min:1',
-                'special_requests' => 'nullable|string|max:1000',
-                'guest_details' => 'nullable|array',
-            ]);
-
-            // Start transaction
-            DB::beginTransaction();
-
-            // Get listing
-            $listing = Listing::findOrFail($validated['listing_id']);
-
-            // Check for booking conflicts
-            if (Booking::hasConflict(
-                $validated['listing_id'],
-                $validated['check_in_date'],
-                $validated['check_out_date'],
-                $validated['check_in_time'] ?? null,
-                $validated['check_out_time'] ?? null
-            )) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Booking conflict detected. The selected dates/times are already booked.'
-                ], 409);
-            }
-
-            // Calculate duration
-            $checkIn = Carbon::parse($validated['check_in_date']);
-            $checkOut = Carbon::parse($validated['check_out_date']);
-            $durationDays = $checkIn->diffInDays($checkOut);
-            
-            $durationHours = null;
-            if (isset($validated['check_in_time']) && isset($validated['check_out_time'])) {
-                $checkInDateTime = Carbon::parse($validated['check_in_date'] . ' ' . $validated['check_in_time']);
-                $checkOutDateTime = Carbon::parse($validated['check_out_date'] . ' ' . $validated['check_out_time']);
-                $durationHours = $checkInDateTime->diffInHours($checkOutDateTime);
-            }
-
-            // Determine duration type
-            $durationType = $durationHours ? 'hourly' : 'daily';
-
-            // Calculate pricing
-            $basePrice = $durationType === 'hourly' 
-                ? ($listing->base_hourly_price ?? $listing->price_per_hour)
-                : ($listing->base_daily_price ?? $listing->price_per_day);
-            
-            $duration = $durationType === 'hourly' ? $durationHours : $durationDays;
-            $subtotal = $basePrice * $duration;
-            
-            // Calculate fees
-            $serviceFee = $subtotal * ($listing->service_fee_percentage ?? 5) / 100;
-            $cleaningFee = $listing->cleaning_fee ?? 0;
-            $taxAmount = $subtotal * 0.12; // 12% tax (adjust as needed)
-            
-            $totalPrice = $subtotal + $serviceFee + $cleaningFee + $taxAmount;
-
-            // Create booking
-            $booking = Booking::create([
-                'booking_number' => Booking::generateBookingNumber(),
-                'booking_type' => 'rental',
-                'listing_id' => $validated['listing_id'],
-                'listing_unit_id' => $validated['listing_unit_id'] ?? null,
-                'user_id' => Auth::id(),
-                'owner_id' => $listing->user_id,
-                'booking_date' => now(),
-                'check_in_date' => $validated['check_in_date'],
-                'check_out_date' => $validated['check_out_date'],
-                'check_in_time' => $validated['check_in_time'] ?? null,
-                'check_out_time' => $validated['check_out_time'] ?? null,
-                'duration_hours' => $durationHours,
-                'duration_days' => $durationDays,
-                'duration_type' => $durationType,
-                'base_price' => $basePrice,
-                'subtotal' => $subtotal,
-                'service_fee' => $serviceFee,
-                'cleaning_fee' => $cleaningFee,
-                'security_deposit' => $listing->security_deposit ?? 0,
-                'tax_amount' => $taxAmount,
-                'discount_amount' => 0,
-                'total_price' => $totalPrice,
-                'currency' => $listing->currency ?? 'PHP',
-                'number_of_guests' => $validated['number_of_guests'] ?? 1,
-                'number_of_players' => $validated['number_of_players'] ?? null,
-                'number_of_vehicles' => $validated['number_of_vehicles'] ?? null,
-                'guest_details' => $validated['guest_details'] ?? null,
-                'status' => $listing->instant_booking ? 'confirmed' : 'pending',
-                'payment_status' => 'pending',
-                'special_requests' => $validated['special_requests'] ?? null,
-                'auto_confirmed' => $listing->instant_booking ?? false,
-                'requires_approval' => !($listing->instant_booking ?? false),
-                'booking_source' => 'mobile_app',
-                'platform' => $request->header('User-Agent'),
-            ]);
-
-            // Auto-confirm if instant booking
-            if ($listing->instant_booking) {
-                $booking->confirm();
-            }
-
-            // Mark availability slots as booked
-            $this->markAvailabilityAsBooked($booking);
-
-            DB::commit();
+            // Calculate quick statistics
+            $stats = [
+                'total' => $bookings->count(),
+                'pending' => $bookings->where('status', 'pending')->count(),
+                'confirmed' => $bookings->whereIn('status', ['confirmed', 'paid'])->count(),
+                'active' => $bookings->whereIn('status', ['checked_in', 'in_progress'])->count(),
+                'completed' => $bookings->where('status', 'completed')->count(),
+                'cancelled' => $bookings->where('status', 'cancelled')->count(),
+                'total_revenue' => $bookings->whereIn('status', ['paid', 'completed'])->sum('total_price'),
+            ];
 
             return response()->json([
                 'success' => true,
-                'message' => 'Booking created successfully',
-                'data' => $booking->load(['listing', 'listingUnit', 'owner'])
-            ], 201);
+                'message' => 'Property bookings retrieved successfully',
+                'data' => $bookings,
+                'statistics' => $stats
+            ]);
 
-        } catch (ValidationException $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error creating booking: ' . $e->getMessage());
+            Log::error('Error retrieving property bookings: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while creating the booking'
+                'message' => 'An error occurred while retrieving property bookings'
             ], 500);
         }
-    }
-
-    /**
-     * Mark availability slots as booked
-     */
-    protected function markAvailabilityAsBooked(Booking $booking): void
-    {
-        $query = ListingAvailability::where('listing_id', $booking->listing_id)
-            ->where('available_date', '>=', $booking->check_in_date)
-            ->where('available_date', '<=', $booking->check_out_date)
-            ->where('status', 'available');
-
-        if ($booking->listing_unit_id) {
-            $query->where('unit_identifier', $booking->listingUnit->unit_identifier);
-        }
-
-        $query->update([
-            'status' => 'booked',
-            'updated_by' => Auth::id()
-        ]);
     }
 
     /**
@@ -303,7 +125,7 @@ class BookingController extends Controller
      *     path="/api/client/v1/bookings/{id}",
      *     tags={"Client - Bookings"},
      *     summary="Get booking details",
-     *     description="Retrieve detailed information about a specific booking",
+     *     description="Get detailed information about a specific booking for MY property",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -314,22 +136,23 @@ class BookingController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Booking details retrieved successfully"
+     *         description="Booking details retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Booking details retrieved successfully"),
+     *             @OA\Property(property="data", type="object")
+     *         )
      *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Booking not found"
-     *     )
+     *     @OA\Response(response=404, description="Booking not found or not owned by you"),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=500, description="Server error")
      * )
      */
     public function show($id): JsonResponse
     {
         try {
-            $booking = Booking::with(['listing', 'listingUnit', 'user', 'owner'])
-                ->where(function($query) {
-                    $query->where('user_id', Auth::id())
-                          ->orWhere('owner_id', Auth::id());
-                })
+            $booking = Booking::with(['listing', 'listingUnit', 'user'])
+                ->where('owner_id', Auth::id()) // Only MY property bookings
                 ->findOrFail($id);
 
             return response()->json([
@@ -341,17 +164,101 @@ class BookingController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Booking not found'
+                'message' => 'Booking not found or not owned by you'
             ], 404);
         }
     }
 
     /**
      * @OA\Put(
-     *     path="/api/client/v1/bookings/{id}/cancel",
+     *     path="/api/client/v1/bookings/{id}/confirm",
      *     tags={"Client - Bookings"},
-     *     summary="Cancel a booking",
-     *     description="Cancel a booking with automatic refund calculation based on cancellation policy",
+     *     summary="Confirm a pending booking",
+     *     description="Accept and confirm a pending booking request for YOUR property",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Booking ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Booking confirmed successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Booking confirmed successfully"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Cannot confirm this booking"),
+     *     @OA\Response(response=409, description="Booking conflict detected"),
+     *     @OA\Response(response=404, description="Booking not found"),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=500, description="Server error")
+     * )
+     */
+    public function confirm($id): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $booking = Booking::where('owner_id', Auth::id())->findOrFail($id);
+
+            if ($booking->status !== 'pending') {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only pending bookings can be confirmed'
+                ], 400);
+            }
+
+            // Double-check for conflicts
+            if (Booking::hasConflict(
+                $booking->listing_id,
+                $booking->check_in_date,
+                $booking->check_out_date,
+                $booking->check_in_time,
+                $booking->check_out_time,
+                $booking->id
+            )) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Booking conflict detected. Another booking may have been confirmed for this time.'
+                ], 409);
+            }
+
+            $booking->confirm();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking confirmed successfully',
+                'data' => [
+                    'booking' => $booking->fresh(['listing', 'user']),
+                    'confirmation_code' => $booking->confirmation_code
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error confirming booking: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while confirming the booking'
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/client/v1/bookings/{id}/reject",
+     *     tags={"Client - Bookings"},
+     *     summary="Reject a pending booking",
+     *     description="Decline a booking request with a reason",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -361,49 +268,151 @@ class BookingController extends Controller
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\RequestBody(
-     *         required=false,
+     *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="reason", type="string", example="Change of plans")
+     *             required={"reason"},
+     *             @OA\Property(property="reason", type="string", example="Property under maintenance")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Booking cancelled successfully"
+     *         description="Booking rejected successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Booking rejected successfully"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Cannot reject this booking"),
+     *     @OA\Response(response=404, description="Booking not found"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=500, description="Server error")
+     * )
+     */
+    public function reject(Request $request, $id): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $request->validate([
+                'reason' => 'required|string|max:500'
+            ]);
+
+            $booking = Booking::where('owner_id', Auth::id())->findOrFail($id);
+
+            if ($booking->status !== 'pending') {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only pending bookings can be rejected'
+                ], 400);
+            }
+
+            $booking->reject($request->input('reason'));
+
+            // Release availability slots
+            $this->releaseAvailability($booking);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking rejected successfully',
+                'data' => $booking->fresh(['listing', 'user'])
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error rejecting booking: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while rejecting the booking'
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/client/v1/bookings/{id}/cancel",
+     *     tags={"Client - Bookings"},
+     *     summary="Cancel a booking (owner-initiated)",
+     *     description="Owner cancels a booking with a reason (full refund to renter)",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Booking ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"reason"},
+     *             @OA\Property(property="reason", type="string", example="Emergency maintenance required")
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Booking cannot be cancelled"
-     *     )
+     *         response=200,
+     *         description="Booking cancelled successfully. Renter will receive full refund.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Booking cancelled successfully. Renter will receive full refund."),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Cannot cancel this booking"),
+     *     @OA\Response(response=404, description="Booking not found"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=500, description="Server error")
      * )
      */
     public function cancel(Request $request, $id): JsonResponse
     {
         try {
-            $booking = Booking::where('user_id', Auth::id())->findOrFail($id);
+            DB::beginTransaction();
 
-            if (!$booking->isCancellable()) {
+            $request->validate([
+                'reason' => 'required|string|max:500'
+            ]);
+
+            $booking = Booking::where('owner_id', Auth::id())->findOrFail($id);
+
+            if (!in_array($booking->status, ['pending', 'confirmed', 'paid'])) {
+                DB::rollBack();
                 return response()->json([
                     'success' => false,
-                    'message' => 'This booking cannot be cancelled at this time'
+                    'message' => 'This booking cannot be cancelled'
                 ], 400);
             }
 
-            $booking->cancel(Auth::id(), $request->input('reason'));
+            // Owner cancellation = full refund to renter (no cancellation fee)
+            $booking->status = 'cancelled';
+            $booking->cancelled_at = now();
+            $booking->cancelled_by = Auth::id();
+            $booking->cancellation_reason = $request->input('reason');
+            $booking->cancellation_fee = 0; // No fee when owner cancels
+            $booking->refund_amount = $booking->total_price; // Full refund to renter
+            $booking->save();
 
             // Release availability slots
             $this->releaseAvailability($booking);
 
+            DB::commit();
+
             return response()->json([
                 'success' => true,
-                'message' => 'Booking cancelled successfully',
+                'message' => 'Booking cancelled successfully. Renter will receive full refund.',
                 'data' => [
-                    'booking' => $booking->fresh(),
-                    'refund_amount' => $booking->refund_amount,
-                    'cancellation_fee' => $booking->cancellation_fee
+                    'booking' => $booking->fresh(['listing', 'user']),
+                    'refund_amount' => $booking->refund_amount
                 ]
             ]);
 
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error cancelling booking: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
@@ -413,7 +422,120 @@ class BookingController extends Controller
     }
 
     /**
-     * Release availability slots
+     * @OA\Get(
+     *     path="/api/client/v1/bookings/statistics",
+     *     tags={"Client - Bookings"},
+     *     summary="Get booking statistics",
+     *     description="Get comprehensive booking statistics for YOUR properties",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="listing_id",
+     *         in="query",
+     *         required=false,
+     *         description="Filter statistics by specific property",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="from_date",
+     *         in="query",
+     *         required=false,
+     *         description="Start date for statistics (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="to_date",
+     *         in="query",
+     *         required=false,
+     *         description="End date for statistics (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Statistics retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Statistics retrieved successfully"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=500, description="Server error")
+     * )
+     */
+    public function statistics(Request $request): JsonResponse
+    {
+        try {
+            $query = Booking::where('owner_id', Auth::id());
+
+            if ($request->has('listing_id')) {
+                $query->where('listing_id', $request->listing_id);
+            }
+
+            if ($request->has('from_date')) {
+                $query->where('check_in_date', '>=', $request->from_date);
+            }
+
+            if ($request->has('to_date')) {
+                $query->where('check_out_date', '<=', $request->to_date);
+            }
+
+            $bookings = $query->get();
+
+            $statistics = [
+                'total_bookings' => $bookings->count(),
+                'pending_bookings' => $bookings->where('status', 'pending')->count(),
+                'confirmed_bookings' => $bookings->whereIn('status', ['confirmed', 'paid'])->count(),
+                'active_bookings' => $bookings->whereIn('status', ['checked_in', 'in_progress'])->count(),
+                'completed_bookings' => $bookings->where('status', 'completed')->count(),
+                'cancelled_bookings' => $bookings->where('status', 'cancelled')->count(),
+                'rejected_bookings' => $bookings->where('status', 'rejected')->count(),
+                
+                'total_revenue' => round($bookings->whereIn('status', ['paid', 'completed'])->sum('total_price'), 2),
+                'pending_revenue' => round($bookings->whereIn('status', ['confirmed', 'paid'])->sum('total_price'), 2),
+                'average_booking_value' => round($bookings->whereIn('status', ['paid', 'completed'])->avg('total_price'), 2),
+                
+                'cancellation_rate' => $bookings->count() > 0 
+                    ? round(($bookings->where('status', 'cancelled')->count() / $bookings->count()) * 100, 2) 
+                    : 0,
+                
+                'by_month' => $bookings->groupBy(function($booking) {
+                    return Carbon::parse($booking->check_in_date)->format('Y-m');
+                })->map(function($group) {
+                    return [
+                        'count' => $group->count(),
+                        'revenue' => round($group->whereIn('status', ['paid', 'completed'])->sum('total_price'), 2)
+                    ];
+                }),
+                
+                'by_status' => [
+                    'pending' => $bookings->where('status', 'pending')->count(),
+                    'confirmed' => $bookings->where('status', 'confirmed')->count(),
+                    'paid' => $bookings->where('status', 'paid')->count(),
+                    'checked_in' => $bookings->where('status', 'checked_in')->count(),
+                    'in_progress' => $bookings->where('status', 'in_progress')->count(),
+                    'completed' => $bookings->where('status', 'completed')->count(),
+                    'cancelled' => $bookings->where('status', 'cancelled')->count(),
+                    'rejected' => $bookings->where('status', 'rejected')->count(),
+                ],
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Statistics retrieved successfully',
+                'data' => $statistics
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error retrieving booking statistics: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while retrieving statistics'
+            ], 500);
+        }
+    }
+
+    /**
+     * Release availability slots when booking is cancelled/rejected
      */
     protected function releaseAvailability(Booking $booking): void
     {
@@ -431,82 +553,4 @@ class BookingController extends Controller
             'updated_by' => Auth::id()
         ]);
     }
-
-    /**
-     * @OA\Get(
-     *     path="/api/client/v1/bookings/check-availability",
-     *     tags={"Client - Bookings"},
-     *     summary="Check booking availability",
-     *     description="Check if a booking can be made for the specified dates/times",
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(
-     *         name="listing_id",
-     *         in="query",
-     *         required=true,
-     *         description="Listing ID",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="check_in_date",
-     *         in="query",
-     *         required=true,
-     *         description="Check-in date (YYYY-MM-DD)",
-     *         @OA\Schema(type="string", format="date")
-     *     ),
-     *     @OA\Parameter(
-     *         name="check_out_date",
-     *         in="query",
-     *         required=true,
-     *         description="Check-out date (YYYY-MM-DD)",
-     *         @OA\Schema(type="string", format="date")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Availability check completed"
-     *     )
-     * )
-     */
-    public function checkAvailability(Request $request): JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'listing_id' => 'required|exists:listings,id',
-                'check_in_date' => 'required|date',
-                'check_out_date' => 'required|date|after:check_in_date',
-                'check_in_time' => 'nullable|date_format:H:i',
-                'check_out_time' => 'nullable|date_format:H:i',
-            ]);
-
-            $hasConflict = Booking::hasConflict(
-                $validated['listing_id'],
-                $validated['check_in_date'],
-                $validated['check_out_date'],
-                $validated['check_in_time'] ?? null,
-                $validated['check_out_time'] ?? null
-            );
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Availability check completed',
-                'data' => [
-                    'available' => !$hasConflict,
-                    'has_conflict' => $hasConflict
-                ]
-            ]);
-
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            Log::error('Error checking availability: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while checking availability'
-            ], 500);
-        }
-    }
 }
-

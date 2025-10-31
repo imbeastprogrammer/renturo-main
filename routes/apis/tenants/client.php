@@ -96,10 +96,13 @@ Route::middleware([
             Route::post('/availability/bulk', [AvailabilityController::class, 'bulkCreate']);
             Route::resource('/availability', AvailabilityController::class)->except(['index']);
 
-            // Booking Management Routes
-            Route::get('/bookings/check-availability', [BookingController::class, 'checkAvailability']);
+            // Client Booking Management Routes (for property owners)
+            Route::get('/bookings/statistics', [BookingController::class, 'statistics']);
+            Route::get('/bookings', [BookingController::class, 'index']);
+            Route::get('/bookings/{id}', [BookingController::class, 'show']);
+            Route::put('/bookings/{id}/confirm', [BookingController::class, 'confirm']);
+            Route::put('/bookings/{id}/reject', [BookingController::class, 'reject']);
             Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancel']);
-            Route::resource('/bookings', BookingController::class)->only(['index', 'store', 'show']);
 
             Route::resource('/chats', ChatController::class);
             Route::delete('/chats/{chat}/leave', [ChatController::class, 'leaveChat']);

@@ -1337,14 +1337,14 @@
                 "tags": [
                     "Client - Bookings"
                 ],
-                "summary": "Get user's bookings",
-                "description": "Retrieve all bookings for the authenticated user with filtering options",
+                "summary": "Get property bookings",
+                "description": "Retrieve all bookings for properties owned by the authenticated client/owner",
                 "operationId": "faafdbcb084b28207843eea7aec8273f",
                 "parameters": [
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "Filter by status (pending, confirmed, paid, checked_in, in_progress, completed, cancelled)",
+                        "description": "Filter by status (pending, confirmed, paid, checked_in, in_progress, completed, cancelled, rejected)",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -1362,7 +1362,7 @@
                     {
                         "name": "listing_id",
                         "in": "query",
-                        "description": "Filter by listing ID",
+                        "description": "Filter by specific property ID",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -1382,110 +1382,15 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Bookings retrieved successfully"
+                                            "example": "Property bookings retrieved successfully"
                                         },
                                         "data": {
                                             "type": "array",
                                             "items": {
                                                 "type": "object"
                                             }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Client - Bookings"
-                ],
-                "summary": "Create a new booking",
-                "description": "Create a booking with automatic conflict detection and availability locking",
-                "operationId": "856b629d00c0487bc0a28c4e4a49a8f5",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "listing_id",
-                                    "check_in_date",
-                                    "check_out_date"
-                                ],
-                                "properties": {
-                                    "listing_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "listing_unit_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "check_in_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2025-11-01"
-                                    },
-                                    "check_out_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2025-11-03"
-                                    },
-                                    "check_in_time": {
-                                        "type": "string",
-                                        "format": "time",
-                                        "example": "14:00"
-                                    },
-                                    "check_out_time": {
-                                        "type": "string",
-                                        "format": "time",
-                                        "example": "16:00"
-                                    },
-                                    "number_of_guests": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "number_of_players": {
-                                        "type": "integer",
-                                        "example": 10
-                                    },
-                                    "special_requests": {
-                                        "type": "string",
-                                        "example": "Need extra towels"
-                                    },
-                                    "guest_details": {
-                                        "type": "object"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Booking created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
                                         },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Booking created successfully"
-                                        },
-                                        "data": {
+                                        "statistics": {
                                             "type": "object"
                                         }
                                     },
@@ -1494,8 +1399,11 @@
                             }
                         }
                     },
-                    "409": {
-                        "description": "Booking conflict detected"
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
                     }
                 },
                 "security": [
@@ -1511,7 +1419,7 @@
                     "Client - Bookings"
                 ],
                 "summary": "Get booking details",
-                "description": "Retrieve detailed information about a specific booking",
+                "description": "Get detailed information about a specific booking for MY property",
                 "operationId": "53b3d389c8d9f17f8dc6b2c75010dbde",
                 "parameters": [
                     {
@@ -1526,10 +1434,187 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Booking details retrieved successfully"
+                        "description": "Booking details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking details retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found or not owned by you"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/bookings/{id}/confirm": {
+            "put": {
+                "tags": [
+                    "Client - Bookings"
+                ],
+                "summary": "Confirm a pending booking",
+                "description": "Accept and confirm a pending booking request for YOUR property",
+                "operationId": "b936463d9fc378ecde99525c4d884f98",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Booking ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking confirmed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking confirmed successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Cannot confirm this booking"
+                    },
+                    "409": {
+                        "description": "Booking conflict detected"
                     },
                     "404": {
                         "description": "Booking not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/client/v1/bookings/{id}/reject": {
+            "put": {
+                "tags": [
+                    "Client - Bookings"
+                ],
+                "summary": "Reject a pending booking",
+                "description": "Decline a booking request with a reason",
+                "operationId": "d5bee91563e89aa618b79556ecda853b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Booking ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Property under maintenance"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Booking rejected successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking rejected successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Cannot reject this booking"
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
                     }
                 },
                 "security": [
@@ -1544,8 +1629,8 @@
                 "tags": [
                     "Client - Bookings"
                 ],
-                "summary": "Cancel a booking",
-                "description": "Cancel a booking with automatic refund calculation based on cancellation policy",
+                "summary": "Cancel a booking (owner-initiated)",
+                "description": "Owner cancels a booking with a reason (full refund to renter)",
                 "operationId": "c0ade481b253f1b4f2a15efcc20beaf6",
                 "parameters": [
                     {
@@ -1559,14 +1644,17 @@
                     }
                 ],
                 "requestBody": {
-                    "required": false,
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "reason"
+                                ],
                                 "properties": {
                                     "reason": {
                                         "type": "string",
-                                        "example": "Change of plans"
+                                        "example": "Emergency maintenance required"
                                     }
                                 },
                                 "type": "object"
@@ -1576,10 +1664,42 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Booking cancelled successfully"
+                        "description": "Booking cancelled successfully. Renter will receive full refund.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking cancelled successfully. Renter will receive full refund."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Booking cannot be cancelled"
+                        "description": "Cannot cancel this booking"
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
                     }
                 },
                 "security": [
@@ -1589,39 +1709,39 @@
                 ]
             }
         },
-        "/api/client/v1/bookings/check-availability": {
+        "/api/client/v1/bookings/statistics": {
             "get": {
                 "tags": [
                     "Client - Bookings"
                 ],
-                "summary": "Check booking availability",
-                "description": "Check if a booking can be made for the specified dates/times",
-                "operationId": "53a20aae4c8d936cdeebf6d608c70273",
+                "summary": "Get booking statistics",
+                "description": "Get comprehensive booking statistics for YOUR properties",
+                "operationId": "8748889a4cb189d44a2e5db0ce063e0d",
                 "parameters": [
                     {
                         "name": "listing_id",
                         "in": "query",
-                        "description": "Listing ID",
-                        "required": true,
+                        "description": "Filter statistics by specific property",
+                        "required": false,
                         "schema": {
                             "type": "integer"
                         }
                     },
                     {
-                        "name": "check_in_date",
+                        "name": "from_date",
                         "in": "query",
-                        "description": "Check-in date (YYYY-MM-DD)",
-                        "required": true,
+                        "description": "Start date for statistics (YYYY-MM-DD)",
+                        "required": false,
                         "schema": {
                             "type": "string",
                             "format": "date"
                         }
                     },
                     {
-                        "name": "check_out_date",
+                        "name": "to_date",
                         "in": "query",
-                        "description": "Check-out date (YYYY-MM-DD)",
-                        "required": true,
+                        "description": "End date for statistics (YYYY-MM-DD)",
+                        "required": false,
                         "schema": {
                             "type": "string",
                             "format": "date"
@@ -1630,7 +1750,33 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Availability check completed"
+                        "description": "Statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Statistics retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
                     }
                 },
                 "security": [
@@ -6164,6 +6310,428 @@
                 ]
             }
         },
+        "/api/user/v1/bookings": {
+            "get": {
+                "tags": [
+                    "User - Bookings"
+                ],
+                "summary": "Get my bookings",
+                "description": "Retrieve all bookings made by the authenticated user with filtering options",
+                "operationId": "aa0a7332d9e336be8969257c6f33e620",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status (pending, confirmed, paid, checked_in, in_progress, completed, cancelled)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Filter by type (upcoming, current, past)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "My bookings retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "My bookings retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User - Bookings"
+                ],
+                "summary": "Create a new booking",
+                "description": "Create a booking with automatic conflict detection and availability locking",
+                "operationId": "2fbcad498118effb9f0c028aada94acb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "listing_id",
+                                    "check_in_date",
+                                    "check_out_date"
+                                ],
+                                "properties": {
+                                    "listing_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "listing_unit_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "check_in_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-01"
+                                    },
+                                    "check_out_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-03"
+                                    },
+                                    "check_in_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "14:00"
+                                    },
+                                    "check_out_time": {
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "16:00"
+                                    },
+                                    "number_of_guests": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "number_of_players": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "special_requests": {
+                                        "type": "string",
+                                        "example": "Need extra towels"
+                                    },
+                                    "guest_details": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Booking created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking created successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Booking conflict detected"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user/v1/bookings/{id}": {
+            "get": {
+                "tags": [
+                    "User - Bookings"
+                ],
+                "summary": "Get my booking details",
+                "description": "Retrieve detailed information about a specific booking I created",
+                "operationId": "4d4fd54aba4ba31896b7b796d5469456",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Booking ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking details retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user/v1/bookings/{id}/cancel": {
+            "put": {
+                "tags": [
+                    "User - Bookings"
+                ],
+                "summary": "Cancel my booking",
+                "description": "Cancel a booking with automatic refund calculation based on cancellation policy",
+                "operationId": "0d84afb6f03420818ea63f1eb6c93a56",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Booking ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Change of plans"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Booking cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking cancelled successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Booking cannot be cancelled"
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user/v1/bookings/check-availability": {
+            "get": {
+                "tags": [
+                    "User - Bookings"
+                ],
+                "summary": "Check booking availability",
+                "description": "Check if a booking can be made for the specified dates/times before creating the booking",
+                "operationId": "3174ac24e456e7f5f1e1053024f5b177",
+                "parameters": [
+                    {
+                        "name": "listing_id",
+                        "in": "query",
+                        "description": "Listing ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "check_in_date",
+                        "in": "query",
+                        "description": "Check-in date (YYYY-MM-DD)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "check_out_date",
+                        "in": "query",
+                        "description": "Check-out date (YYYY-MM-DD)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "check_in_time",
+                        "in": "query",
+                        "description": "Check-in time (HH:mm)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "time"
+                        }
+                    },
+                    {
+                        "name": "check_out_time",
+                        "in": "query",
+                        "description": "Check-out time (HH:mm)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "time"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Availability check completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability check completed"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "available": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "has_conflict": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/admin/form": {
             "get": {
                 "tags": [
@@ -9101,7 +9669,7 @@
         },
         {
             "name": "Client - Bookings",
-            "description": "Booking management for all property types with conflict detection and status management"
+            "description": "Booking management for property owners/clients"
         },
         {
             "name": "Client - Dynamic Form Availability",
@@ -9114,6 +9682,10 @@
         {
             "name": "Client - Listings",
             "description": "API endpoints for browsing and viewing listings (Client/Mobile App)"
+        },
+        {
+            "name": "User - Bookings",
+            "description": "Booking management for renters"
         },
         {
             "name": "Authentication",
