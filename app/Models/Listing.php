@@ -101,6 +101,7 @@ class Listing extends Model
      */
     protected $fillable = [
         'user_id',
+        'store_id',
         'category_id',
         'sub_category_id',
         'listing_type',
@@ -221,6 +222,14 @@ class Listing extends Model
     public function owner()
     {
         return $this->user();
+    }
+
+    /**
+     * Get the store (business) that this listing belongs to.
+     */
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 
     /**

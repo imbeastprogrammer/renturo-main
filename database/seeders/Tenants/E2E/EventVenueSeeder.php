@@ -265,6 +265,7 @@ class EventVenueSeeder extends Seeder
 
             $venue = Listing::create([
                 'user_id' => $stores[$venueData['store_index']]->user_id,
+                'store_id' => $stores[$venueData['store_index']]->id,
                 'category_id' => $eventsCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'title' => $venueData['title'],

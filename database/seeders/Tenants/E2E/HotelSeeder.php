@@ -265,6 +265,7 @@ class HotelSeeder extends Seeder
 
             $hotel = Listing::create([
                 'user_id' => $stores[$hotelData['store_index']]->user_id,
+                'store_id' => $stores[$hotelData['store_index']]->id,
                 'category_id' => $accommodationCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'title' => $hotelData['title'],

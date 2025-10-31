@@ -259,6 +259,7 @@ class CarRentalSeeder extends Seeder
 
             $rental = Listing::create([
                 'user_id' => $stores[$rentalData['store_index']]->user_id,
+                'store_id' => $stores[$rentalData['store_index']]->id,
                 'category_id' => $transportationCategory->id,
                 'sub_category_id' => $subcategory->id,
                 'title' => $rentalData['title'],

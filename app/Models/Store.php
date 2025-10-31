@@ -43,7 +43,18 @@ class Store extends Model
         return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
 
+    /**
+     * Get all listings (properties) that belong to this store
+     */
     public function listings()
+    {
+        return $this->hasMany(Listing::class);
+    }
+
+    /**
+     * Backward compatibility: Get dynamic form submissions for this store
+     */
+    public function formSubmissions()
     {
         return $this->hasMany(DynamicFormSubmission::class);
     }

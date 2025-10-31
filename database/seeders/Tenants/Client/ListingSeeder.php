@@ -10,6 +10,7 @@ use App\Models\AvailabilityTemplate;
 use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\User;
+use App\Models\Store;
 use Carbon\Carbon;
 
 class ListingSeeder extends Seeder
@@ -40,6 +41,23 @@ class ListingSeeder extends Seeder
             return;
         }
 
+        // Get or create a default store for basketball listings
+        $store = Store::firstOrCreate(
+            ['user_id' => $user->id, 'name' => 'Elite Sports Complex'],
+            [
+                'url' => 'elite-sports-' . uniqid(),
+                'category_id' => $basketballCategory->id,
+                'sub_category_id' => $basketballSubCategory?->id,
+                'address' => '123 Sports Avenue, Bonifacio Global City',
+                'city' => 'Taguig',
+                'state' => 'Metro Manila',
+                'zip_code' => '1634',
+                'latitude' => 14.5547,
+                'longitude' => 121.0511,
+                'about' => 'Premier sports facility offering world-class basketball courts and amenities.',
+            ]
+        );
+
         $this->command->info('Seeding basketball court listings...');
 
         // Clean up existing listings from this seeder (to allow re-running)
@@ -53,6 +71,7 @@ class ListingSeeder extends Seeder
         // Featured Premium Indoor Basketball Court
         $listing1 = Listing::create([
             'user_id' => $user->id,
+            'store_id' => $store->id,
             'category_id' => $basketballCategory->id,
             'sub_category_id' => $indoorSubCategory?->id,
             'listing_type' => Listing::TYPE_SPORTS,
@@ -161,6 +180,7 @@ Amenities include free parking for up to 50 vehicles, on-site sports shop for eq
         // Outdoor Community Basketball Court
         $listing2 = Listing::create([
             'user_id' => $user->id,
+            'store_id' => $store->id,
             'category_id' => $basketballCategory->id,
             'sub_category_id' => $outdoorSubCategory?->id,
             'listing_type' => Listing::TYPE_SPORTS,
@@ -256,6 +276,7 @@ Basic amenities include restrooms, drinking water, and nearby parking. Security 
         // Half-Court Training Facility
         $listing3 = Listing::create([
             'user_id' => $user->id,
+            'store_id' => $store->id,
             'category_id' => $basketballCategory->id,
             'sub_category_id' => $indoorSubCategory?->id,
             'listing_type' => Listing::TYPE_SPORTS,
@@ -354,6 +375,7 @@ Amenities include changing room, secure storage, refreshments vending machine, a
         // Budget-Friendly Community Court
         $listing4 = Listing::create([
             'user_id' => $user->id,
+            'store_id' => $store->id,
             'category_id' => $basketballCategory->id,
             'sub_category_id' => $outdoorSubCategory?->id,
             'listing_type' => Listing::TYPE_SPORTS,
