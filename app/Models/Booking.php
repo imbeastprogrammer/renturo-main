@@ -17,7 +17,7 @@ class Booking extends Model
         'booking_number',
         'booking_type',
         'listing_id',
-        'listing_unit_id',
+        'dynamic_form_submission_id', // The specific unit being booked
         'user_id',
         'owner_id',
         'booking_date',
@@ -105,9 +105,20 @@ class Booking extends Model
         return $this->belongsTo(Listing::class);
     }
 
-    public function listingUnit(): BelongsTo
+    /**
+     * Get the booked unit (dynamic form submission)
+     */
+    public function unit(): BelongsTo
     {
-        return $this->belongsTo(ListingUnit::class);
+        return $this->belongsTo(DynamicFormSubmission::class, 'dynamic_form_submission_id');
+    }
+
+    /**
+     * Alias for unit() for backward compatibility
+     */
+    public function dynamicFormSubmission(): BelongsTo
+    {
+        return $this->unit();
     }
 
     public function user(): BelongsTo

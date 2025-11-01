@@ -116,22 +116,12 @@ class Listing extends Model
         'postal_code',
         'latitude',
         'longitude',
-        'price_per_hour',
-        'price_per_day',
-        'price_per_week',
-        'price_per_month',
-        'currency',
-        'max_capacity',
-        'amenities',
+        'inventory_type', // 'single' or 'multiple'
+        'total_units',
         'status',
         'visibility',
         'is_featured',
         'is_verified',
-        'instant_booking',
-        'minimum_booking_hours',
-        'maximum_booking_hours',
-        'advance_booking_days',
-        'cancellation_hours',
         'views_count',
         'bookings_count',
         'average_rating',
@@ -148,18 +138,12 @@ class Listing extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'amenities' => 'array',
         'meta_keywords' => 'array',
         'latitude' => 'decimal:7',
         'longitude' => 'decimal:7',
-        'price_per_hour' => 'decimal:2',
-        'price_per_day' => 'decimal:2',
-        'price_per_week' => 'decimal:2',
-        'price_per_month' => 'decimal:2',
         'average_rating' => 'decimal:2',
         'is_featured' => 'boolean',
         'is_verified' => 'boolean',
-        'instant_booking' => 'boolean',
         'published_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -297,11 +281,20 @@ class Listing extends Model
     }
 
     /**
-     * Listing has many units (for multi-unit properties)
+     * Listing has many units (dynamic form submissions)
+     * For multi-unit properties, each submission represents one bookable unit
      */
     public function units()
     {
-        return $this->hasMany(ListingUnit::class);
+        return $this->hasMany(DynamicFormSubmission::class, 'listing_id');
+    }
+
+    /**
+     * Get pricing information for this listing
+     */
+    public function pricing()
+    {
+        return $this->hasOne(ListingPricing::class);
     }
 
     /**
@@ -449,17 +442,18 @@ class Listing extends Model
     }
 
     /**
-     * Scope to filter by price range.
+     * Scope to filter by price range (using pricing relationship).
      */
-    public function scopeByPriceRange($query, $minPrice = null, $maxPrice = null, $priceType = 'price_per_hour')
+    public function scopeByPriceRange($query, $minPrice = null, $maxPrice = null)
     {
-        if ($minPrice) {
-            $query->where($priceType, '>=', $minPrice);
-        }
-        if ($maxPrice) {
-            $query->where($priceType, '<=', $maxPrice);
-        }
-        return $query;
+        return $query->whereHas('pricing', function ($q) use ($minPrice, $maxPrice) {
+            if ($minPrice) {
+                $q->where('price_min', '>=', $minPrice);
+            }
+            if ($maxPrice) {
+                $q->where('price_max', '<=', $maxPrice);
+            }
+        });
     }
 
     /**
@@ -566,11 +560,15 @@ class Listing extends Model
     }
 
     /**
-     * Check if listing is shared resource (conference room)
+     * Get total number of units
      */
-    public function isSharedResource(): bool
+    public function getTotalUnits(): int
     {
-        return $this->inventory_type === 'shared';
+        if ($this->isSingleUnit()) {
+            return 1;
+        }
+        
+        return $this->units()->count();
     }
 
     /**
@@ -645,6 +643,10 @@ class Listing extends Model
      */
     public function getEffectivePrice($date, $time = null, $durationType = 'hourly')
     {
+        if (!$this->pricing) {
+            return null;
+        }
+
         $carbonDate = \Carbon\Carbon::parse($date);
         $carbonTime = $time ? \Carbon\Carbon::parse($time) : null;
 
@@ -661,15 +663,14 @@ class Listing extends Model
             return $availability->effective_price;
         }
 
-        // Fall back to base pricing
-        $basePrice = match($durationType) {
-            'daily' => $this->base_daily_price,
-            'weekly' => $this->base_weekly_price,
-            'monthly' => $this->base_monthly_price,
-            default => $this->base_hourly_price,
-        };
+        // Fall back to base pricing from pricing relationship
+        $basePrice = $this->pricing->getPriceForDurationType($durationType);
 
-        // Apply modifiers
+        if (!$basePrice) {
+            return null;
+        }
+
+        // Apply modifiers (these should ideally be in ListingAvailability)
         if ($carbonDate->isWeekend()) {
             $basePrice *= 1.2; // 20% weekend surcharge
         }
@@ -807,35 +808,27 @@ class Listing extends Model
     }
 
     /**
-     * Get the lowest price available.
+     * Get the lowest price available (from pricing relationship).
      */
     public function getLowestPrice(): ?float
     {
-        $prices = array_filter([
-            $this->price_per_hour,
-            $this->price_per_day,
-            $this->price_per_week,
-            $this->price_per_month,
-        ]);
+        if (!$this->pricing) {
+            return null;
+        }
 
-        return !empty($prices) ? min($prices) : null;
+        return $this->pricing->price_min;
     }
 
     /**
      * Get a formatted price string.
      */
-    public function getFormattedPrice(string $priceType = 'price_per_hour'): string
+    public function getFormattedPrice(): string
     {
-        $price = $this->$priceType;
-        
-        if (!$price) {
+        if (!$this->pricing) {
             return 'Contact for pricing';
         }
 
-        $formatted = number_format($price, 2);
-        $period = str_replace('price_per_', '', $priceType);
-
-        return "{$this->currency} {$formatted}/{$period}";
+        return $this->pricing->formatted_price_range;
     }
 
     /**

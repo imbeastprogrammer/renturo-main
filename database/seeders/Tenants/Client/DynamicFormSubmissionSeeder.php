@@ -76,9 +76,9 @@ class DynamicFormSubmissionSeeder extends Seeder
             'user_id' => $owner1->id,
             'store_id' => $store1->id,
             'dynamic_form_id' => $basketballForm->id,
-            'name' => 'Elite Sports Complex - Premium Indoor Court Registration',
-            'about' => 'Professional NBA-standard indoor basketball court with premium facilities',
-            'data' => json_encode([
+            'listing_id' => null, // Will be linked after listing is created
+            'status' => 'active',
+            'data' => [
                 'contact_information' => [
                     'Contact Person Name' => 'Michael Rodriguez',
                     'Phone Number' => '+639171234501',
@@ -104,7 +104,7 @@ class DynamicFormSubmissionSeeder extends Seeder
                     'Equipment Rental' => 'Basketballs, jerseys, training equipment',
                     'Special Features' => 'FIBA-certified court, instant replay system, professional referee services',
                 ],
-            ]),
+            ],
         ]);
 
         $this->command->info("  ✓ Created submission for {$store1->name}");
@@ -136,9 +136,9 @@ class DynamicFormSubmissionSeeder extends Seeder
             'user_id' => $owner2->id,
             'store_id' => $store2->id,
             'dynamic_form_id' => $basketballForm->id,
-            'name' => 'Sunshine Outdoor Courts - Main Court Registration',
-            'about' => 'Full-size outdoor basketball court with excellent lighting and maintained surface',
-            'data' => json_encode([
+            'listing_id' => null,
+            'status' => 'active',
+            'data' => [
                 'contact_information' => [
                     'Contact Person Name' => 'Jose Santos',
                     'Phone Number' => '+639171234502',
@@ -164,7 +164,7 @@ class DynamicFormSubmissionSeeder extends Seeder
                     'Equipment Rental' => 'Basketballs available',
                     'Special Features' => 'Covered spectator area, water fountain, first aid kit',
                 ],
-            ]),
+            ],
         ]);
 
         $this->command->info("  ✓ Created submission for {$store2->name}");
@@ -196,9 +196,9 @@ class DynamicFormSubmissionSeeder extends Seeder
             'user_id' => $owner3->id,
             'store_id' => $store3->id,
             'dynamic_form_id' => $basketballForm->id,
-            'name' => 'Pro Training Center - Half Court Registration',
-            'about' => 'Professional training facility with specialized equipment for skills development',
-            'data' => json_encode([
+            'listing_id' => null,
+            'status' => 'active',
+            'data' => [
                 'contact_information' => [
                     'Contact Person Name' => 'Carlos Reyes',
                     'Phone Number' => '+639171234503',
@@ -224,7 +224,7 @@ class DynamicFormSubmissionSeeder extends Seeder
                     'Equipment Rental' => 'Training cones, agility ladders, resistance bands, basketballs',
                     'Special Features' => 'Wall mirrors, video recording system, professional coaching available',
                 ],
-            ]),
+            ],
         ]);
 
         $this->command->info("  ✓ Created submission for {$store3->name}");
@@ -256,9 +256,9 @@ class DynamicFormSubmissionSeeder extends Seeder
             'user_id' => $owner4->id,
             'store_id' => $store4->id,
             'dynamic_form_id' => $basketballForm->id,
-            'name' => 'Barangay Court - Community Registration',
-            'about' => 'Budget-friendly outdoor court perfect for casual games and community events',
-            'data' => json_encode([
+            'listing_id' => null,
+            'status' => 'active',
+            'data' => [
                 'contact_information' => [
                     'Contact Person Name' => 'Juan Dela Cruz',
                     'Phone Number' => '+639171234504',
@@ -284,7 +284,7 @@ class DynamicFormSubmissionSeeder extends Seeder
                     'Equipment Rental' => 'No',
                     'Special Features' => 'Clean and safe, regular maintenance, community-friendly pricing',
                 ],
-            ]),
+            ],
         ]);
 
         $this->command->info("  ✓ Created submission for {$store4->name}");

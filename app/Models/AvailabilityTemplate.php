@@ -14,6 +14,7 @@ class AvailabilityTemplate extends Model
 
     protected $fillable = [
         'listing_id',
+        'unit_ids',
         'name',
         'description',
         'days_of_week',
@@ -21,7 +22,12 @@ class AvailabilityTemplate extends Model
         'date_ranges',
         'start_time',
         'end_time',
+        'booking_mode',
         'slot_duration_minutes',
+        'slot_start_offset',
+        'time_increment_minutes',
+        'min_duration_minutes',
+        'max_duration_minutes',
         'base_hourly_price',
         'base_daily_price',
         'peak_hour_multiplier',
@@ -29,8 +35,6 @@ class AvailabilityTemplate extends Model
         'holiday_multiplier',
         'peak_start_time',
         'peak_end_time',
-        'min_duration_hours',
-        'max_duration_hours',
         'duration_type',
         'advance_booking_hours',
         'max_advance_booking_days',
@@ -50,6 +54,7 @@ class AvailabilityTemplate extends Model
     ];
 
     protected $casts = [
+        'unit_ids' => 'array',
         'days_of_week' => 'array',
         'specific_dates' => 'array',
         'date_ranges' => 'array',
@@ -71,14 +76,22 @@ class AvailabilityTemplate extends Model
         'valid_from' => 'date',
         'valid_until' => 'date',
         'slot_duration_minutes' => 'integer',
-        'min_duration_hours' => 'integer',
-        'max_duration_hours' => 'integer',
+        'slot_start_offset' => 'integer',
+        'time_increment_minutes' => 'integer',
+        'min_duration_minutes' => 'integer',
+        'max_duration_minutes' => 'integer',
         'advance_booking_hours' => 'integer',
         'max_advance_booking_days' => 'integer',
         'cancellation_hours' => 'integer',
         'priority' => 'integer',
         'auto_apply_days_ahead' => 'integer',
     ];
+
+    /**
+     * Booking mode constants
+     */
+    const MODE_FIXED_SLOTS = 'fixed_slots';
+    const MODE_FLEXIBLE = 'flexible';
 
     /**
      * Duration type constants
@@ -380,5 +393,124 @@ class AvailabilityTemplate extends Model
         $endDate = Carbon::today()->addDays($this->auto_apply_days_ahead);
 
         return $this->applyToDateRange($startDate, $endDate);
+    }
+
+    /**
+     * Check if template applies to specific unit
+     */
+    public function appliesToUnit($unitId): bool
+    {
+        // If unit_ids is null, applies to all units
+        if (empty($this->unit_ids)) {
+            return true;
+        }
+
+        return in_array($unitId, $this->unit_ids);
+    }
+
+    /**
+     * Check if template uses fixed slots mode
+     */
+    public function isFixedSlotsMode(): bool
+    {
+        return $this->booking_mode === self::MODE_FIXED_SLOTS;
+    }
+
+    /**
+     * Check if template uses flexible mode
+     */
+    public function isFlexibleMode(): bool
+    {
+        return $this->booking_mode === self::MODE_FLEXIBLE;
+    }
+
+    /**
+     * Generate fixed time slots for this template
+     */
+    public function generateFixedSlots(): array
+    {
+        if (!$this->isFixedSlotsMode()) {
+            return [];
+        }
+
+        $slots = [];
+        $current = Carbon::parse($this->start_time)->addMinutes($this->slot_start_offset);
+        $end = Carbon::parse($this->end_time);
+
+        while ($current->lt($end)) {
+            $slotEnd = $current->copy()->addMinutes($this->slot_duration_minutes);
+            
+            if ($slotEnd->lte($end)) {
+                $slots[] = [
+                    'start' => $current->format('H:i'),
+                    'end' => $slotEnd->format('H:i'),
+                ];
+            }
+
+            $current->addMinutes($this->slot_duration_minutes);
+        }
+
+        return $slots;
+    }
+
+    /**
+     * Validate flexible booking time
+     */
+    public function validateFlexibleTime(string $startTime, int $durationMinutes): bool
+    {
+        if (!$this->isFlexibleMode()) {
+            return false;
+        }
+
+        $start = Carbon::parse($startTime);
+        $end = $start->copy()->addMinutes($durationMinutes);
+        $templateStart = Carbon::parse($this->start_time);
+        $templateEnd = Carbon::parse($this->end_time);
+
+        // Check within operating hours
+        if ($start->lt($templateStart) || $end->gt($templateEnd)) {
+            return false;
+        }
+
+        // Check duration limits
+        if ($durationMinutes < $this->min_duration_minutes) {
+            return false;
+        }
+
+        if ($this->max_duration_minutes && $durationMinutes > $this->max_duration_minutes) {
+            return false;
+        }
+
+        // Check time increment
+        $minutes = $start->minute;
+        if ($minutes % $this->time_increment_minutes !== 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a specific time is covered by this template
+     */
+    public function coversTime(string $startTime, string $endTime): bool
+    {
+        $start = Carbon::parse($startTime);
+        $end = Carbon::parse($endTime);
+        $templateStart = Carbon::parse($this->start_time);
+        $templateEnd = Carbon::parse($this->end_time);
+
+        return $start->gte($templateStart) && $end->lte($templateEnd);
+    }
+
+    /**
+     * Scope: Templates for specific unit
+     */
+    public function scopeForUnit($query, $unitId)
+    {
+        return $query->where(function ($q) use ($unitId) {
+            $q->whereJsonContains('unit_ids', $unitId)
+              ->orWhereNull('unit_ids');
+        });
     }
 }

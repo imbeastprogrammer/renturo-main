@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('listing_id')->constrained()->onDelete('cascade');
             
+            // Unit-specific templates (optional - null means applies to all units)
+            $table->json('unit_ids')->nullable(); // [1,2] for specific units, null for all units
+            
             // Template identification
             $table->string('name'); // "Weekday Schedule", "Weekend Schedule", "Holiday Hours"
             $table->text('description')->nullable(); // Template description
@@ -27,7 +30,18 @@ return new class extends Migration
             // Time configuration
             $table->time('start_time');
             $table->time('end_time');
-            $table->integer('slot_duration_minutes')->default(60);
+            
+            // Booking mode configuration
+            $table->enum('booking_mode', ['fixed_slots', 'flexible'])->default('fixed_slots');
+            
+            // Fixed Slots Mode settings
+            $table->integer('slot_duration_minutes')->default(60); // Duration of each slot
+            $table->integer('slot_start_offset')->default(0); // 0=on the hour, 30=half-past
+            
+            // Flexible Mode settings
+            $table->integer('time_increment_minutes')->default(30); // Renter can start every X minutes
+            $table->integer('min_duration_minutes')->default(60); // Minimum booking duration
+            $table->integer('max_duration_minutes')->nullable(); // Maximum booking duration
             
             // Pricing configuration
             $table->decimal('base_hourly_price', 10, 2);
@@ -41,8 +55,6 @@ return new class extends Migration
             $table->time('peak_end_time')->nullable();   // e.g., 22:00 (10 PM)
             
             // Booking rules
-            $table->integer('min_duration_hours')->default(1);
-            $table->integer('max_duration_hours')->nullable();
             $table->enum('duration_type', ['hourly', 'daily', 'weekly', 'monthly'])->default('hourly');
             $table->integer('advance_booking_hours')->default(1); // Min hours in advance
             $table->integer('max_advance_booking_days')->nullable(); // Max days in advance
