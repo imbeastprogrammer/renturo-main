@@ -18,6 +18,7 @@ return new class extends Migration
             
             // Owner/Creator Information
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('store_id')->nullable()->constrained()->onDelete('cascade');
             
             // Category & Type
             $table->foreignId('category_id')->constrained()->onDelete('restrict');
@@ -28,7 +29,7 @@ return new class extends Migration
             $table->foreignId('dynamic_form_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('dynamic_form_submission_id')->nullable()->constrained()->onDelete('set null');
             
-            // Core Listing Information
+            // Core Listing Information (Parent/Facility Level)
             $table->string('title');
             $table->text('description');
             $table->string('slug')->unique();
@@ -41,29 +42,15 @@ return new class extends Migration
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             
-            // Pricing
-            $table->decimal('price_per_hour', 10, 2)->nullable();
-            $table->decimal('price_per_day', 10, 2)->nullable();
-            $table->decimal('price_per_week', 10, 2)->nullable();
-            $table->decimal('price_per_month', 10, 2)->nullable();
-            $table->string('currency', 3)->default('PHP');
-            
-            // Capacity & Basic Amenities
-            $table->integer('max_capacity')->nullable();
-            $table->json('amenities')->nullable(); // ["parking", "restroom", "wifi", "lockers"]
+            // Inventory Management
+            $table->enum('inventory_type', ['single', 'multiple'])->default('single'); // single unit or multiple units
+            $table->integer('total_units')->default(1); // Total number of bookable units
             
             // Status & Visibility
             $table->enum('status', ['draft', 'active', 'inactive', 'suspended', 'archived'])->default('draft');
             $table->enum('visibility', ['public', 'private', 'unlisted'])->default('public');
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_verified')->default(false);
-            
-            // Booking Settings
-            $table->boolean('instant_booking')->default(false);
-            $table->integer('minimum_booking_hours')->default(1);
-            $table->integer('maximum_booking_hours')->nullable();
-            $table->integer('advance_booking_days')->default(30); // How far in advance can users book
-            $table->integer('cancellation_hours')->default(24); // Hours before booking to allow cancellation
             
             // Statistics
             $table->integer('views_count')->default(0);
@@ -88,6 +75,7 @@ return new class extends Migration
             $table->index(['latitude', 'longitude']);
             $table->index('is_featured');
             $table->index('published_at');
+            $table->index('inventory_type');
         });
     }
 

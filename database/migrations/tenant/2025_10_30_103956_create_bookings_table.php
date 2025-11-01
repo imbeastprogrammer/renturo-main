@@ -20,7 +20,7 @@ return new class extends Migration
             
             // Related entities
             $table->foreignId('listing_id')->constrained()->onDelete('cascade');
-            $table->foreignId('listing_unit_id')->nullable()->constrained()->onDelete('cascade'); // For multi-unit properties
+            $table->foreignId('dynamic_form_submission_id')->nullable()->constrained()->onDelete('cascade'); // Specific unit booked
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Renter/Guest
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade'); // Property owner
             

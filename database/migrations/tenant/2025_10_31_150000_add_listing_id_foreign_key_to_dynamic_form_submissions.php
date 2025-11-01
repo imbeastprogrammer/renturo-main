@@ -14,8 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::table('dynamic_form_submissions', function (Blueprint $table) {
-            $table->string('name')->nullable();
-            $table->text('about')->nullable();
+            // Add foreign key constraint for listing_id (now that listings table exists)
+            $table->foreign('listing_id')
+                  ->references('id')
+                  ->on('listings')
+                  ->onDelete('cascade');
         });
     }
 
@@ -27,7 +30,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('dynamic_form_submissions', function (Blueprint $table) {
-            $table->dropColumn(['name', 'about']);
+            $table->dropForeign(['listing_id']);
         });
     }
 };
+

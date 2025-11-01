@@ -28,7 +28,7 @@ class UniversalPropertySeeder extends Seeder
 
             // Step 2: Hotels (Accommodation)
             $this->command->info('🏨 Step 2/4: Seeding Hotels (Accommodation Properties)...');
-            $this->call(HotelSeeder::class);
+            $this->call(HotelSeederNew::class);
             $this->command->info('✅ Hotels seeded successfully!');
             $this->command->info('');
 
@@ -107,10 +107,10 @@ class UniversalPropertySeeder extends Seeder
     private function getSystemStatistics(): array
     {
         return [
-            'total_owners' => DB::table('users')->where('role', 'owner')->count(),
+            'total_owners' => DB::table('users')->where('role', 'client')->count(),
             'total_stores' => DB::table('stores')->count(),
             'total_listings' => DB::table('listings')->count(),
-            'total_units' => DB::table('listing_units')->count(),
+            'total_units' => DB::table('dynamic_form_submissions')->count(), // Units are now in dynamic_form_submissions
             'total_templates' => DB::table('availability_templates')->count(),
             'total_availability' => DB::table('listing_availability')->count(),
             'total_bookings' => DB::table('bookings')->count()
